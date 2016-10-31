@@ -1,15 +1,15 @@
 <?php
 
-namespace zhuravljov\yii\queue\drivers;
+namespace zhuravljov\yii\queue\sync;
 
-use zhuravljov\yii\queue\Driver;
+use zhuravljov\yii\queue\BaseDriver;
 
 /**
  * Class SyncDriver
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class SyncDriver extends Driver
+class Driver extends BaseDriver
 {
     private $_messages = [];
 

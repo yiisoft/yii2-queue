@@ -1,19 +1,20 @@
 <?php
 
-namespace zhuravljov\yii\queue\drivers;
+namespace zhuravljov\yii\queue\db;
 
+use yii\base\BootstrapInterface;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
-use zhuravljov\yii\queue\Driver;
+use zhuravljov\yii\queue\BaseDriver;
 
 /**
  * Class DbDriver
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class DbDriver extends Driver
+class Driver extends BaseDriver implements BootstrapInterface
 {
     /**
      * @var Connection|array|string
@@ -33,6 +34,19 @@ class DbDriver extends Driver
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::class);
         $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
+    {
+        if ($app instanceof \yii\console\Application) {
+            $app->controllerMap[$this->queue->id] = [
+                'class' => Command::class,
+                'queue' => $this,
+            ];
+        }
     }
 
     /**

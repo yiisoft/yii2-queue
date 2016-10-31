@@ -7,9 +7,11 @@ use yii\base\Object;
 /**
  * Queue driver interface
  *
+ * @property Queue $queue
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class Driver extends Object
+abstract class BaseDriver extends Object
 {
     private $_queue;
 

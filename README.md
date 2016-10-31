@@ -71,11 +71,39 @@ Yii::$app->queue->push(new DownloadJob([
 ]));
 ```
 
-Способ выполнения задач зависит от используемого драйвера. В общем случае
-используются консольные команды.
+Способ выполнения задач зависит от используемого драйвера.
 
 
-### Консольные команды
+### Драйвер db\Driver
+
+Для хранения очереди использует базу данных.
+
+Пример настройки:
+
+```php
+'driver' => [
+    'class' => \zhuravljov\yii\queue\db\Driver::class,
+    'db' => 'db', // ID подключения к базе данных,
+    'mutex' => \yii\mutex\MysqlMutex::class, // мьютекс для синхронизации запросов
+    'tableName' => '{{%queue}}', // таблица для хранения очереди
+]
+```
+
+Схема таблицы на примере MySQL:
+
+```SQL
+CREATE TABLE `queue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job` text NOT NULL,
+  `created_at` int(11) NOT NULL,
+  `started_at` int(11) DEFAULT NULL,
+  `finished_at` int(11) DEFAULT NULL,
+  `error` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+```
+
+Для выполнения задач используются консольные команды.
 
 ```bash
 yii queue/run-all
@@ -109,48 +137,20 @@ yii queue/purge
 Команда `purge` чистит очередь.
 
 
-### Драйвер DbDriver
-
-Для хранения очереди использует базу данных.
-
-Пример настройки:
-
-```php
-'driver' => [
-    'class' => \zhuravljov\yii\queue\drivers\DbDriver::class,
-    'db' => 'db', // ID подключения к базе данных,
-    'mutex' => \yii\mutex\MysqlMutex::class, // мьютекс для синхронизации запросов
-    'tableName' => '{{%queue}}', // таблица для хранения очереди
-]
-```
-
-Схема таблицы на примере MySQL:
-
-```SQL
-CREATE TABLE `queue` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `job` text NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `started_at` int(11) DEFAULT NULL,
-  `finished_at` int(11) DEFAULT NULL,
-  `error` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-```
-
 ### Драйвер SyncDriver
 
 Драйвер используется для отладки. Добавленные в очередь задачи
-сразу же выполняются в том же процессе. Поэтому, консольные команды для него
-не актуальны.
+сразу же выполняются в том же процессе.
 
 Настройка:
 
 ```php
-'driver' => \zhuravljov\yii\queue\drivers\SyncDriver::class
+'driver' => \zhuravljov\yii\queue\sync\Driver::class
 ```
 
-### Отладочный режим
+
+Отладочный режим
+----------------
 
 Для удобств разработки в отладочный модуль Yii можно добавить панель, которая
 будет выводить список поставленных в очередь заданий и их количество.

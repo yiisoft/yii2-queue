@@ -9,6 +9,8 @@ use yii\base\Component;
 /**
  * Class Queue
  *
+ * @property string $id of component
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Queue extends Component implements BootstrapInterface
@@ -18,7 +20,7 @@ class Queue extends Component implements BootstrapInterface
     const EVENT_ON_RELEASE = 'onRelease';
 
     /**
-     * @var Driver|array|string
+     * @var BaseDriver|array|string
      */
     public $driver = [];
 
@@ -36,18 +38,22 @@ class Queue extends Component implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if ($app instanceof \yii\console\Application) {
-            // Finds queue component id and adds console command
-            foreach ($app->getComponents(false) as $id => $component) {
-                if ($component === $this) {
-                    $app->controllerMap[$id] = [
-                        'class' => Command::class,
-                        'queue' => $this,
-                    ];
-                    break;
-                }
+        if ($this->driver instanceof BootstrapInterface) {
+            $this->driver->bootstrap($app);
+        }
+    }
+
+    /**
+     * @return string component id
+     */
+    public function getId()
+    {
+        foreach (Yii::$app->getComponents(false) as $id => $component) {
+            if ($component === $this) {
+                return $id;
             }
         }
+        return null;
     }
 
     /**

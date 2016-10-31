@@ -1,24 +1,24 @@
 <?php
 
-namespace zhuravljov\yii\queue;
+namespace zhuravljov\yii\queue\db;
 
 use yii\console\Controller;
 use yii\helpers\Console;
 
 /**
- * Manages application queue.
+ * Manages application db-queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Command extends Controller
 {
     /**
-     * @var Queue
+     * @var \zhuravljov\yii\queue\Queue
      */
     public $queue;
 
     /**
-     * Runs one job from queue.
+     * Runs one job from db-queue.
      */
     public function actionRunOne()
     {
@@ -30,7 +30,7 @@ class Command extends Controller
     }
 
     /**
-     * Runs all jobs from queue.
+     * Runs all jobs from db-queue.
      * It can be used as cron job.
      */
     public function actionRunAll()
@@ -43,7 +43,7 @@ class Command extends Controller
     }
 
     /**
-     * Listens queue and runs new jobs.
+     * Listens db-queue and runs new jobs.
      * It can be used as demon process.
      *
      * @param integer $delay Number of seconds for waiting new job.
@@ -54,7 +54,7 @@ class Command extends Controller
     }
 
     /**
-     * Purges the queue.
+     * Purges the db-queue.
      */
     public function actionPurge()
     {
