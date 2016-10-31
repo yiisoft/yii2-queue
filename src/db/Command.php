@@ -23,7 +23,7 @@ class Command extends Controller
     public function actionRunOne()
     {
         if ($this->queue->work(true)) {
-            $this->stdout("Job has been run.\n", Console::FG_GREEN);
+            $this->stdout("Job has been complete.\n", Console::FG_GREEN);
         } else {
             $this->stdout("Job not found.\n", Console::FG_RED);
         }
@@ -35,11 +35,12 @@ class Command extends Controller
      */
     public function actionRunAll()
     {
+        $this->stdout("Worker has been started.\n", Console::FG_GREEN);
         $count = 0;
         while ($this->queue->work(false)) {
             $count++;
         }
-        $this->stdout("$count jobs has been run.\n", Console::FG_GREEN);
+        $this->stdout("$count jobs have been complete.\n", Console::FG_GREEN);
     }
 
     /**
@@ -50,7 +51,12 @@ class Command extends Controller
      */
     public function actionRunLoop($delay = 3)
     {
-        while ($this->queue->work(false) || sleep($delay) === 0);
+        $this->stdout("Worker has been started.\n", Console::FG_GREEN);
+        while (($run = $this->queue->work(false)) || !$delay || sleep($delay) === 0) {
+            if ($run) {
+                $this->stdout("Job has been complete.\n", Console::FG_GREEN);
+            }
+        }
     }
 
     /**

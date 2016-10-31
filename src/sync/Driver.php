@@ -19,13 +19,14 @@ class Driver extends BaseDriver
     {
         parent::init();
         Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
+            Yii::info('Worker has been started.', __CLASS__);
             ob_start();
             $count = 0;
             while ($this->getQueue()->work(false)) {
                 $count++;
             }
             Yii::trace(ob_get_clean(), __CLASS__);
-            Yii::info("$count jobs has been run.\n", __CLASS__);
+            Yii::info("$count jobs have been complete.", __CLASS__);
         });
     }
 
