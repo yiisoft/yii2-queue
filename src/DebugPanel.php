@@ -1,17 +1,17 @@
 <?php
 
-namespace zhuravljov\yii\queue\debug;
+namespace zhuravljov\yii\queue;
 
 use Yii;
-use zhuravljov\yii\queue\Event;
-use zhuravljov\yii\queue\Queue;
+use yii\debug\Panel;
+use yii\helpers\VarDumper;
 
 /**
  * Class Panel
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Panel extends \yii\debug\Panel
+class DebugPanel extends Panel
 {
     private $_jobs = [];
 
@@ -39,10 +39,14 @@ class Panel extends \yii\debug\Panel
      */
     public function getSummary()
     {
-        return Yii::$app->view->render(
-            '@vendor/zhuravljov/yii2-queue/src/debug/views/summary',
-            ['panel' => $this, 'count' => count($this->data['jobs'])]
-        );
+        $url = $this->getUrl();
+        $count = count($this->data['jobs']);
+
+        return <<<HTML
+<div class="yii-debug-toolbar__block">
+    <a href="{$url}">Queue <span class="yii-debug-toolbar__label">{$count}</span></a>
+</div>
+HTML;
     }
 
     /**
@@ -50,14 +54,17 @@ class Panel extends \yii\debug\Panel
      */
     public function getDetail()
     {
+        $count = count($this->data['jobs']);
         $jobs = [];
         foreach ($this->data['jobs'] as $serialized) {
             $jobs[] = unserialize($serialized);
         }
-        return Yii::$app->view->render(
-            '@vendor/zhuravljov/yii2-queue/src/debug/views/detail',
-            ['panel' => $this, 'jobs' => $jobs]
-        );
+        $html = VarDumper::dumpAsString($jobs, 10, true);
+
+        return <<<HTML
+<h1>Pushed {$count} jobs</h1>
+{$html}
+HTML;
     }
 
     /**
