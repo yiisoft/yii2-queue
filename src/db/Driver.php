@@ -44,7 +44,7 @@ class Driver extends BaseDriver implements BootstrapInterface
         if ($app instanceof \yii\console\Application) {
             $app->controllerMap[$this->queue->id] = [
                 'class' => Command::class,
-                'queue' => $this,
+                'queue' => $this->queue,
             ];
         }
     }
