@@ -2,6 +2,8 @@
 
 namespace zhuravljov\yii\queue\sync;
 
+use Yii;
+use yii\base\Application;
 use zhuravljov\yii\queue\BaseDriver;
 
 /**
@@ -12,7 +14,20 @@ use zhuravljov\yii\queue\BaseDriver;
 class Driver extends BaseDriver
 {
     private $_messages = [];
-    private $_locked = false;
+
+    public function init()
+    {
+        parent::init();
+        Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
+            ob_start();
+            $count = 0;
+            while ($this->getQueue()->work(false)) {
+                $count++;
+            }
+            Yii::trace(ob_get_clean(), __CLASS__);
+            Yii::info("$count jobs has been run.\n", __CLASS__);
+        });
+    }
 
     /**
      * @inheritdoc
@@ -20,7 +35,6 @@ class Driver extends BaseDriver
     public function push($job)
     {
         $this->_messages[] = serialize($job);
-        while ($this->getQueue()->work(false));
     }
 
     /**
@@ -28,15 +42,13 @@ class Driver extends BaseDriver
      */
     public function pop(&$message, &$job)
     {
-        if (!$this->_locked) {
-            $message = array_shift($this->_messages);
-            if ($message !== null) {
-                $this->_locked = true;
-                $job = unserialize($message);
-                return true;
-            }
+        $message = array_shift($this->_messages);
+        if ($message !== null) {
+            $job = unserialize($message);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -44,7 +56,6 @@ class Driver extends BaseDriver
      */
     public function release($message)
     {
-        $this->_locked = false;
     }
 
     /**
