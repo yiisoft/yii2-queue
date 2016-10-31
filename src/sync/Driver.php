@@ -12,6 +12,7 @@ use zhuravljov\yii\queue\BaseDriver;
 class Driver extends BaseDriver
 {
     private $_messages = [];
+    private $_locked = false;
 
     /**
      * @inheritdoc
@@ -19,7 +20,7 @@ class Driver extends BaseDriver
     public function push($job)
     {
         $this->_messages[] = serialize($job);
-        $this->getQueue()->work(false);
+        while ($this->getQueue()->work(false));
     }
 
     /**
@@ -27,13 +28,15 @@ class Driver extends BaseDriver
      */
     public function pop(&$message, &$job)
     {
-        $message = array_shift($this->_messages);
-        if ($message !== null) {
-            $job = unserialize($message);
-            return true;
-        } else {
-            return false;
+        if (!$this->_locked) {
+            $message = array_shift($this->_messages);
+            if ($message !== null) {
+                $this->_locked = true;
+                $job = unserialize($message);
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -41,6 +44,7 @@ class Driver extends BaseDriver
      */
     public function release($message)
     {
+        $this->_locked = false;
     }
 
     /**
