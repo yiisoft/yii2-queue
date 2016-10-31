@@ -27,7 +27,7 @@ class Driver extends BaseDriver
      */
     public function pop(&$message, &$job)
     {
-        $message = array_pop($this->_messages);
+        $message = array_shift($this->_messages);
         if ($message !== null) {
             $job = unserialize($message);
             return true;
