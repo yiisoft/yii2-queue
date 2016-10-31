@@ -5,7 +5,7 @@ namespace zhuravljov\yii\queue;
 use yii\base\Object;
 
 /**
- * Class Driver
+ * Queue driver interface
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -32,12 +32,16 @@ abstract class Driver extends Object
     }
 
     /**
+     * Pushes job to the storage.
+     *
      * @param Job $job
      * @return mixed $message
      */
     abstract public function push($job);
 
     /**
+     * Pops message and job from the storage.
+     *
      * @param mixed $message
      * @param Job $job
      * @return boolean
@@ -45,7 +49,14 @@ abstract class Driver extends Object
     abstract public function pop(&$message, &$job);
 
     /**
+     * Releases the message.
+     *
      * @param $message
      */
     abstract public function release($message);
+
+    /**
+     * Purges the storage.
+     */
+    abstract public function purge();
 }

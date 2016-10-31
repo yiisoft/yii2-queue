@@ -3,7 +3,6 @@
 namespace zhuravljov\yii\queue\drivers;
 
 use zhuravljov\yii\queue\Driver;
-use zhuravljov\yii\queue\Queue;
 
 /**
  * Class SyncDriver
@@ -42,5 +41,13 @@ class SyncDriver extends Driver
      */
     public function release($message)
     {
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function purge()
+    {
+        $this->_messages = [];
     }
 }

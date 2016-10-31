@@ -20,7 +20,7 @@ class DbDriver extends Driver
      */
     public $db = 'db';
     /**
-     * @var Mutex
+     * @var Mutex|array|string
      */
     public $mutex = 'mutex';
     /**
@@ -56,6 +56,8 @@ class DbDriver extends Driver
      */
     public function pop(&$message, &$job)
     {
+        $this->mutex->acquire(__CLASS__);
+
         $message = (new Query())
             ->from($this->tableName)
             ->where(['started_at' => null])
@@ -63,18 +65,23 @@ class DbDriver extends Driver
             ->limit(1)
             ->one($this->db);
 
-        if ($message) {
+        if (is_array($message)) {
             $message['started_at'] = time();
             $this->db->createCommand()->update(
                 $this->tableName,
                 ['started_at' => $message['started_at']],
                 ['id' => $message['id']]
             )->execute();
-
-            $job = unserialize($message['job']);
         }
 
-        return !!$message;
+        $this->mutex->release(__CLASS__);
+
+        if (is_array($message)) {
+            $job = unserialize($message['job']);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -87,5 +94,20 @@ class DbDriver extends Driver
             ['finished_at' => time()],
             ['id' => $message['id']]
         )->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function purge()
+    {
+        $this->mutex->acquire(__CLASS__);
+
+        $this->db->createCommand()->delete(
+            $this->tableName,
+            ['started_at' => null]
+        )->execute();
+
+        $this->mutex->release(__CLASS__);
     }
 }

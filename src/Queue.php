@@ -87,4 +87,12 @@ class Queue extends Component implements BootstrapInterface
             return false;
         }
     }
+
+    /**
+     * Purges the queue
+     */
+    public function purge()
+    {
+        $this->driver->purge();
+    }
 }

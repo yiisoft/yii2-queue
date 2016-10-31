@@ -52,4 +52,12 @@ class Command extends Controller
     {
         while ($this->queue->work(false) || sleep($delay) === 0);
     }
+
+    /**
+     * Purges the queue.
+     */
+    public function actionPurge()
+    {
+        $this->queue->purge();
+    }
 }
