@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\queue;
 
 use Yii;
+use yii\base\BootstrapInterface;
 use yii\base\Component;
 
 /**
@@ -10,7 +11,7 @@ use yii\base\Component;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends Component
+class Queue extends Component implements BootstrapInterface
 {
     const EVENT_ON_PUSH = 'onPush';
     const EVENT_ON_POP = 'onPop';
@@ -28,6 +29,25 @@ class Queue extends Component
     {
         parent::init();
         $this->driver = Yii::createObject($this->driver, [$this]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
+    {
+        if ($app instanceof \yii\console\Application) {
+            // Finds queue component id and adds console command
+            foreach ($app->getComponents(false) as $id => $component) {
+                if ($component === $this) {
+                    $app->controllerMap[$id] = [
+                        'class' => Command::class,
+                        'queue' => $this,
+                    ];
+                    break;
+                }
+            }
+        }
     }
 
     /**
