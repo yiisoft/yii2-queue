@@ -84,8 +84,8 @@ Yii::$app->queue->push(new DownloadJob([
 'driver' => [
     'class' => \zhuravljov\yii\queue\db\Driver::class,
     'db' => 'db', // ID подключения к базе данных,
-    'mutex' => \yii\mutex\MysqlMutex::class, // мьютекс для синхронизации запросов
     'tableName' => '{{%queue}}', // таблица для хранения очереди
+    'mutex' => \yii\mutex\MysqlMutex::class, // мьютекс для синхронизации запросов
 ]
 ```
 
@@ -98,7 +98,6 @@ CREATE TABLE `queue` (
   `created_at` int(11) NOT NULL,
   `started_at` int(11) DEFAULT NULL,
   `finished_at` int(11) DEFAULT NULL,
-  `error` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
 ```
@@ -137,7 +136,7 @@ yii queue/purge
 Команда `purge` чистит очередь.
 
 
-### Драйвер SyncDriver
+### Драйвер sync\Driver
 
 Драйвер используется для отладки. Добавленные в очередь задачи
 сразу же выполняются в том же процессе.
