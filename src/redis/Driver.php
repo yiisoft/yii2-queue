@@ -5,7 +5,7 @@ namespace zhuravljov\yii\queue\redis;
 use yii\base\BootstrapInterface;
 use yii\di\Instance;
 use yii\redis\Connection;
-use zhuravljov\yii\queue\BaseDriver;
+use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
  * Redis Driver

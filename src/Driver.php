@@ -11,7 +11,7 @@ use yii\base\Object;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class BaseDriver extends Object
+abstract class Driver extends Object
 {
     private $_queue;
 

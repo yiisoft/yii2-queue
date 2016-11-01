@@ -4,7 +4,7 @@ namespace zhuravljov\yii\queue\sync;
 
 use Yii;
 use yii\base\Application;
-use zhuravljov\yii\queue\BaseDriver;
+use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
  * Class SyncDriver

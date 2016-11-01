@@ -20,7 +20,7 @@ class Queue extends Component implements BootstrapInterface
     const EVENT_ON_RELEASE = 'onRelease';
 
     /**
-     * @var BaseDriver|array|string
+     * @var Driver|array|string
      */
     public $driver = [];
 
