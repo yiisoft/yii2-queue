@@ -83,7 +83,7 @@ Yii::$app->queue->push(new DownloadJob([
 ```php
 'driver' => [
     'class' => \zhuravljov\yii\queue\db\Driver::class,
-    'db' => 'db', // ID подключения к базе данных,
+    'db' => 'db', // ID подключения
     'tableName' => '{{%queue}}', // таблица для хранения очереди
     'mutex' => \yii\mutex\MysqlMutex::class, // мьютекс для синхронизации запросов
 ]
@@ -147,7 +147,7 @@ yii queue/purge
 ```php
 'driver' => [
     'class' => \zhuravljov\yii\queue\redis\Driver::class,
-    'redis' => 'redis', // ID подключения к базе данных,
+    'redis' => 'redis', // ID подключения
 ]
 ```
 
