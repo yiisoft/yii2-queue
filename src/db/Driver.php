@@ -28,6 +28,10 @@ class Driver extends BaseDriver implements BootstrapInterface
      * @var string table name
      */
     public $tableName = '{{%queue}}';
+    /**
+     * @var boolean ability to delete released messages from table
+     */
+    public $deleteReleased = false;
 
     public function init()
     {
@@ -103,11 +107,18 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function release($message)
     {
-        $this->db->createCommand()->update(
-            $this->tableName,
-            ['finished_at' => time()],
-            ['id' => $message['id']]
-        )->execute();
+        if ($this->deleteReleased) {
+            $this->db->createCommand()->delete(
+                $this->tableName,
+                ['id' => $message['id']]
+            )->execute();
+        } else {
+            $this->db->createCommand()->update(
+                $this->tableName,
+                ['finished_at' => time()],
+                ['id' => $message['id']]
+            )->execute();
+        }
     }
 
     /**
