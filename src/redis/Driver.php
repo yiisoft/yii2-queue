@@ -10,8 +10,6 @@ use zhuravljov\yii\queue\BaseDriver;
 /**
  * Redis Driver
  *
- * @property string $key
- *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Driver extends BaseDriver implements BootstrapInterface
@@ -23,7 +21,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @var string
      */
-    public $keyPrefix = '';
+    public $prefix = '';
 
     /**
      * @inheritdoc
@@ -50,9 +48,9 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @return string
      */
-    public function getKey()
+    protected function getKey()
     {
-        return $this->keyPrefix . $this->queue->id;
+        return $this->prefix . $this->queue->id;
     }
 
     /**
