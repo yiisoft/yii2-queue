@@ -1,0 +1,76 @@
+<?php
+
+namespace zhuravljov\yii\queue\debug;
+
+use Yii;
+use yii\base\ViewContextInterface;
+use zhuravljov\yii\queue\Event;
+use zhuravljov\yii\queue\Queue;
+
+/**
+ * Class Panel
+ *
+ * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ */
+class Panel extends \yii\debug\Panel implements ViewContextInterface
+{
+    private $_jobs = [];
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        Event::on(Queue::class, Queue::EVENT_ON_PUSH, function (Event $event) {
+            $this->_jobs[] = serialize($event->job);
+        });
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return 'Queue';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getViewPath()
+    {
+        return __DIR__ . '/views';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSummary()
+    {
+        return Yii::$app->view->render('summary', [
+            'url' => $this->getUrl(),
+            'count' => count($this->data['jobs']),
+        ], $this);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDetail()
+    {
+        return Yii::$app->view->render('detail', [
+            'jobs' => array_map(function ($serialized) {
+                return unserialize($serialized);
+            }, $this->data['jobs']),
+        ], $this);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save()
+    {
+        return ['jobs' => $this->_jobs];
+    }
+}
