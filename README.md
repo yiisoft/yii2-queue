@@ -5,6 +5,10 @@ Extension for async execution of jobs through a queue mechanism.
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
+[![Latest Stable Version](https://poser.pugx.org/zhuravljov/yii2-queue/v/stable.svg)](https://packagist.org/packages/zhuravljov/yii2-queue)
+[![Total Downloads](https://poser.pugx.org/zhuravljov/yii2-queue/downloads.svg)](https://packagist.org/packages/zhuravljov/yii2-queue)
+[![Build Status](https://travis-ci.org/zhuravljov/yii2-queue.svg)](https://travis-ci.org/zhuravljov/yii2-queue)
+
 Installation
 ------------
 
