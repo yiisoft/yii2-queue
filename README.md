@@ -23,3 +23,32 @@ or add
 ```
 
 to the require section of your `composer.json` file.
+
+Basic Usage
+-----------
+
+Job class example:
+
+```php
+class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
+{
+    public $url;
+    public $file;
+    
+    public function run($queue)
+    {
+        file_put_contents($this->file, file_get_contents($this->url));
+    }
+}
+```
+
+Pushes job into queue:
+
+```php
+Yii::$app->queue->push(new DownloadJob([
+    'url' => 'http://example.com/image.jpg',
+    'file' => '/tmp/image.jpg',
+]));
+```
+
+For more details see [the guide](docs/guide/README.md).
