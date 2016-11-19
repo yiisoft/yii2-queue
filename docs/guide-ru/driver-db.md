@@ -30,9 +30,15 @@ CREATE TABLE `queue` (
   `created_at` int(11) NOT NULL,
   `started_at` int(11) DEFAULT NULL,
   `finished_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `started_at` (`started_at`)
 ) ENGINE=InnoDB
 ```
+
+Миграции смотрите в [src/db/migrations](../../src/db/migrations).
+
+Консоль
+-------
 
 Для выполнения задач используются консольные команды.
 
@@ -40,7 +46,7 @@ CREATE TABLE `queue` (
 yii queue/run-all
 ```
 
-Эта команда в цикле извлекает задания из очереди и выполняет их, пока очередь не опустеет, и
+Команда `run-all` в цикле извлекает задания из очереди и выполняет их, пока очередь не опустеет, и
 завершает свою работу. Это способ подойдет для обработки очереди заданий через cron.
 
 ```bash
@@ -56,8 +62,8 @@ yii queue/run-loop [delay]
 yii queue/run-one
 ```
 
-Эта команда выполняет самую первую задачу в очереди. Можно использовать в процессе разработки и
-отладки.
+Команда `run-one` выполняет самую первую задачу в очереди. Можно использовать в процессе разработки
+и отладки.
 
 ```bash
 yii queue/purge
