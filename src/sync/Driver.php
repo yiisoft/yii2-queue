@@ -21,7 +21,9 @@ class Driver extends BaseDriver
         Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
             Yii::info('Worker has been started.', __CLASS__);
             ob_start();
-            $this->getQueue()->work();
+            foreach (array_keys($this->_messages) as $channel) {
+                $this->getQueue()->work($channel);
+            }
             Yii::trace(ob_get_clean(), __CLASS__);
             Yii::info("Jobs have been complete.", __CLASS__);
         });
@@ -30,21 +32,23 @@ class Driver extends BaseDriver
     /**
      * @inheritdoc
      */
-    public function push($job)
+    public function push($channel, $job)
     {
-        $this->_messages[] = serialize($job);
+        $this->_messages[$channel][] = serialize($job);
     }
 
     /**
      * @inheritdoc
      */
-    public function work($handler)
+    public function work($channel, $handler)
     {
         $count = 0;
-        while (($message = array_shift($this->_messages)) !== null) {
-            $count++;
-            $job = unserialize($message);
-            call_user_func($handler, $job);
+        if (!empty($this->_messages[$channel])) {
+            while (($message = array_shift($this->_messages[$channel])) !== null) {
+                $count++;
+                $job = unserialize($message);
+                call_user_func($handler, $job);
+            }
         }
         return $count;
     }
@@ -52,8 +56,8 @@ class Driver extends BaseDriver
     /**
      * @inheritdoc
      */
-    public function purge()
+    public function purge($channel)
     {
-        $this->_messages = [];
+        $this->_messages[$channel] = [];
     }
 }

@@ -56,26 +56,22 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function push($job)
+    public function push($channel, $job)
     {
-        $this->db->createCommand()->insert(
-            $this->tableName,
-            ['job' => serialize($job), 'created_at' => time()]
-        )->execute();
-
-        return (new Query())
-            ->from($this->tableName)
-            ->where(['id' => $this->db->lastInsertID])
-            ->one($this->db);
+        $this->db->createCommand()->insert($this->tableName, [
+            'channel' => $channel,
+            'job' => serialize($job),
+            'created_at' => time(),
+        ])->execute();
     }
 
     /**
      * @inheritdoc
      */
-    public function work($handler)
+    public function work($channel, $handler)
     {
         $count = 0;
-        while ($message = $this->pop()) {
+        while ($message = $this->pop($channel)) {
             $count++;
             $job = unserialize($message['job']);
             call_user_func($handler, $job);
@@ -84,13 +80,13 @@ class Driver extends BaseDriver implements BootstrapInterface
         return $count;
     }
 
-    protected function pop()
+    protected function pop($channel)
     {
-        $this->mutex->acquire(__CLASS__);
+        $this->mutex->acquire(__CLASS__ . $channel);
 
         $message = (new Query())
             ->from($this->tableName)
-            ->where(['started_at' => null])
+            ->where(['channel' => $channel, 'started_at' => null])
             ->orderBy(['id' => SORT_ASC])
             ->limit(1)
             ->one($this->db);
@@ -104,7 +100,7 @@ class Driver extends BaseDriver implements BootstrapInterface
             )->execute();
         }
 
-        $this->mutex->release(__CLASS__);
+        $this->mutex->release(__CLASS__ . $channel);
 
         return $message;
     }
@@ -128,15 +124,15 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function purge()
+    public function purge($channel)
     {
-        $this->mutex->acquire(__CLASS__);
+        $this->mutex->acquire(__CLASS__ . $channel);
 
         $this->db->createCommand()->delete(
             $this->tableName,
             ['started_at' => null]
         )->execute();
 
-        $this->mutex->release(__CLASS__);
+        $this->mutex->release(__CLASS__ . $channel);
     }
 }

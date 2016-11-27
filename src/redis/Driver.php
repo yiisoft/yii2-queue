@@ -46,30 +46,31 @@ class Driver extends BaseDriver implements BootstrapInterface
     }
 
     /**
+     * @param string $channel
      * @return string
      */
-    protected function getKey()
+    protected function getKey($channel)
     {
-        return $this->prefix . $this->queue->id;
+        return $this->prefix . $this->queue->id . ':' . $channel;
     }
 
     /**
      * @inheritdoc
      */
-    public function push($job)
+    public function push($channel, $job)
     {
         $message = serialize($job);
-        $this->redis->executeCommand('RPUSH', [$this->getKey(), $message]);
+        $this->redis->executeCommand('RPUSH', [$this->getKey($channel), $message]);
         return $message;
     }
 
     /**
      * @inheritdoc
      */
-    public function work($handler)
+    public function work($channel, $handler)
     {
         $count = 0;
-        while (($message = $this->redis->executeCommand('LPOP', [$this->getKey()])) !== null) {
+        while (($message = $this->redis->executeCommand('LPOP', [$this->getKey($channel)])) !== null) {
             $count++;
             $job = unserialize($message);
             call_user_func($handler, $job);
@@ -80,8 +81,8 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function purge()
+    public function purge($channel)
     {
-        $this->redis->executeCommand('DEL', [$this->getKey()]);
+        $this->redis->executeCommand('DEL', [$this->getKey($channel)]);
     }
 }

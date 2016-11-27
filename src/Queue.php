@@ -70,38 +70,54 @@ class Queue extends Component implements BootstrapInterface
     }
 
     /**
+     * @param string $channel
      * @param Job $job
      */
-    public function push(Job $job)
+    public function push($channel, Job $job)
     {
-        $this->driver->push($job);
-        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
+        $this->driver->push($channel, $job);
+        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent([
+            'channel' => $channel,
+            'job' => $job,
+        ]));
     }
 
     /**
+     * @param string $channel
      * @return integer count of jobs that has been handled
      */
-    public function work()
+    public function work($channel)
     {
-        return $this->driver->work(function (Job $job) {
+        return $this->driver->work($channel, function (Job $job) use ($channel) {
             $error = null;
-            $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent(['job' => $job]));
+            $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent([
+                'channel' => $channel,
+                'job' => $job,
+            ]));
             try {
                 $job->run();
             } catch (\Exception $error) {
-                $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent(['job' => $job, 'error' => $error]));
+                $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent([
+                    'channel' => $channel,
+                    'job' => $job,
+                    'error' => $error,
+                ]));
             }
             if (!$error) {
-                $this->trigger(self::EVENT_AFTER_WORK, new JobEvent(['job' => $job]));
+                $this->trigger(self::EVENT_AFTER_WORK, new JobEvent([
+                    'channel' => $channel,
+                    'job' => $job,
+                ]));
             }
         });
     }
 
     /**
      * Purges the queue
+     * @param string $channel
      */
-    public function purge()
+    public function purge($channel)
     {
-        $this->driver->purge();
+        $this->driver->purge($channel);
     }
 }
