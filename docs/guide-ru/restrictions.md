@@ -14,7 +14,7 @@
 Например:
 
 ```php
-Yii::$app->queue->push(new SomeJob([
+Yii::$app->queue->push('channel', new SomeJob([
     'userId' => Yii::$app->user->id,
     'bookId' => $book->id,
     'someUrl' => Url::to(['controller/action']),

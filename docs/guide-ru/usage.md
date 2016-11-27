@@ -20,7 +20,7 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
 Отправить задание в очередь можно с помощью кода:
 
 ```php
-Yii::$app->queue->push(new DownloadJob([
+Yii::$app->queue->push('channel', new DownloadJob([
     'url' => 'http://example.com/image.jpg',
     'file' => '/tmp/image.jpg',
 ]));

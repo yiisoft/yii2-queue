@@ -49,7 +49,7 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
 Pushes job into queue:
 
 ```php
-Yii::$app->queue->push(new DownloadJob([
+Yii::$app->queue->push('channel', new DownloadJob([
     'url' => 'http://example.com/image.jpg',
     'file' => '/tmp/image.jpg',
 ]));
