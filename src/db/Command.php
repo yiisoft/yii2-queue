@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\queue\db;
 
 use yii\console\Controller;
+use yii\db\Query;
 use yii\helpers\Console;
 use zhuravljov\yii\queue\VerboseBehavior;
 
@@ -17,6 +18,27 @@ class Command extends Controller
      * @var \zhuravljov\yii\queue\Queue
      */
     public $queue;
+
+    /**
+     * List of channels.
+     */
+    public function actionChannels()
+    {
+        /** @var Driver $driver */
+        $driver = $this->queue->driver;
+        $rows = (new Query())
+            ->select(['channel', 'count' => 'SUM(started_at IS NULL)'])
+            ->from($driver->tableName)
+            ->groupBy(['channel'])
+            ->orderBy(['channel' => SORT_ASC])
+            ->all($driver->db);
+
+        foreach ($rows as $row) {
+            $this->stdout('- ');
+            $this->stdout($row['channel'], Console::FG_YELLOW);
+            $this->stdout(": $row[count] jobs\n");
+        }
+    }
 
     /**
      * Runs all jobs from db-queue.
