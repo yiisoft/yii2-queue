@@ -59,13 +59,6 @@ yii queue/run-loop [delay]
 демон-супервизор, например `supervisord`.
 
 ```bash
-yii queue/run-one
-```
-
-Команда `run-one` выполняет самую первую задачу в очереди. Можно использовать в процессе разработки
-и отладки.
-
-```bash
 yii queue/purge
 ```
 

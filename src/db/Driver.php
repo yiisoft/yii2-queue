@@ -72,7 +72,19 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function pop(&$message, &$job)
+    public function work($handler)
+    {
+        $count = 0;
+        while ($message = $this->pop()) {
+            $count++;
+            $job = unserialize($message['job']);
+            call_user_func($handler, $job);
+            $this->release($message);
+        }
+        return $count;
+    }
+
+    protected function pop()
     {
         $this->mutex->acquire(__CLASS__);
 
@@ -94,18 +106,10 @@ class Driver extends BaseDriver implements BootstrapInterface
 
         $this->mutex->release(__CLASS__);
 
-        if (is_array($message)) {
-            $job = unserialize($message['job']);
-            return true;
-        } else {
-            return false;
-        }
+        return $message;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function release($message)
+    protected function release($message)
     {
         if ($this->deleteReleased) {
             $this->db->createCommand()->delete(

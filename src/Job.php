@@ -9,8 +9,5 @@ namespace zhuravljov\yii\queue;
  */
 interface Job
 {
-    /**
-     * @param Queue $queue
-     */
-    public function run($queue);
+    public function run();
 }

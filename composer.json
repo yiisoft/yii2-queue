@@ -13,6 +13,10 @@
     "require": {
         "yiisoft/yii2": "*"
     },
+    "require-dev": {
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-redis": "*"
+    },
     "autoload": {
         "psr-4": {
             "zhuravljov\\yii\\queue\\": "src"

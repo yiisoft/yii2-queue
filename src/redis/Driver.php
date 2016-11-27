@@ -66,22 +66,15 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function pop(&$message, &$job)
+    public function work($handler)
     {
-        $message = $this->redis->executeCommand('LPOP', [$this->getKey()]);
-        if ($message !== null) {
+        $count = 0;
+        while (($message = $this->redis->executeCommand('LPOP', [$this->getKey()])) !== null) {
+            $count++;
             $job = unserialize($message);
-            return true;
-        } else {
-            return false;
+            call_user_func($handler, $job);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function release($message)
-    {
+        return $count;
     }
 
     /**

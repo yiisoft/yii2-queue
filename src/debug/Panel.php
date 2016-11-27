@@ -4,7 +4,7 @@ namespace zhuravljov\yii\queue\debug;
 
 use Yii;
 use yii\base\ViewContextInterface;
-use zhuravljov\yii\queue\Event;
+use zhuravljov\yii\queue\JobEvent;
 use zhuravljov\yii\queue\Queue;
 
 /**
@@ -22,7 +22,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     public function init()
     {
         parent::init();
-        Event::on(Queue::class, Queue::EVENT_ON_PUSH, function (Event $event) {
+        JobEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (JobEvent $event) {
             $this->_jobs[] = serialize($event->job);
         });
     }

@@ -21,12 +21,9 @@ class Driver extends BaseDriver
         Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
             Yii::info('Worker has been started.', __CLASS__);
             ob_start();
-            $count = 0;
-            while ($this->getQueue()->work(false)) {
-                $count++;
-            }
+            $this->getQueue()->work();
             Yii::trace(ob_get_clean(), __CLASS__);
-            Yii::info("$count jobs have been complete.", __CLASS__);
+            Yii::info("Jobs have been complete.", __CLASS__);
         });
     }
 
@@ -41,22 +38,15 @@ class Driver extends BaseDriver
     /**
      * @inheritdoc
      */
-    public function pop(&$message, &$job)
+    public function work($handler)
     {
-        $message = array_shift($this->_messages);
-        if ($message !== null) {
+        $count = 0;
+        while (($message = array_shift($this->_messages)) !== null) {
+            $count++;
             $job = unserialize($message);
-            return true;
-        } else {
-            return false;
+            call_user_func($handler, $job);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function release($message)
-    {
+        return $count;
     }
 
     /**

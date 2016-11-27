@@ -4,6 +4,7 @@ namespace zhuravljov\yii\queue\db;
 
 use yii\console\Controller;
 use yii\helpers\Console;
+use zhuravljov\yii\queue\VerboseBehavior;
 
 /**
  * Manages application db-queue.
@@ -18,29 +19,15 @@ class Command extends Controller
     public $queue;
 
     /**
-     * Runs one job from db-queue.
-     */
-    public function actionRunOne()
-    {
-        if ($this->queue->work(true)) {
-            $this->stdout("Job has been complete.\n", Console::FG_GREEN);
-        } else {
-            $this->stdout("Job not found.\n", Console::FG_RED);
-        }
-    }
-
-    /**
      * Runs all jobs from db-queue.
      * It can be used as cron job.
      */
     public function actionRunAll()
     {
-        $this->stdout("Worker has been started.\n", Console::FG_GREEN);
-        $count = 0;
-        while ($this->queue->work(false)) {
-            $count++;
-        }
-        $this->stdout("$count jobs have been complete.\n", Console::FG_GREEN);
+        $this->stdout("Worker has started.\n", Console::FG_GREEN);
+        $this->queue->attachBehavior('verbose', VerboseBehavior::class);
+        $count = $this->queue->work();
+        $this->stdout("$count jobs have been run.\n", Console::FG_GREEN);
     }
 
     /**
@@ -51,12 +38,11 @@ class Command extends Controller
      */
     public function actionRunLoop($delay = 3)
     {
-        $this->stdout("Worker has been started.\n", Console::FG_GREEN);
-        while (($run = $this->queue->work(false)) || !$delay || sleep($delay) === 0) {
-            if ($run) {
-                $this->stdout("Job has been complete.\n", Console::FG_GREEN);
-            }
-        }
+        $this->stdout(date('Y-m-d H:i:s') . ": worker has started.\n", Console::FG_GREEN);
+        $this->queue->attachBehavior('verbose', VerboseBehavior::class);
+        do {
+            $this->queue->work();
+        } while (!$delay || sleep($delay) === 0);
     }
 
     /**

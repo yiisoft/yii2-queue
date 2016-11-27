@@ -42,20 +42,10 @@ abstract class Driver extends Object
     abstract public function push($job);
 
     /**
-     * Pops message and job from the storage.
-     *
-     * @param mixed $message
-     * @param Job $job
-     * @return boolean
+     * @param callable $handler
+     * @return integer count of jobs that has been handled
      */
-    abstract public function pop(&$message, &$job);
-
-    /**
-     * Releases the message.
-     *
-     * @param $message
-     */
-    abstract public function release($message);
+    abstract public function work($handler);
 
     /**
      * Purges the storage.

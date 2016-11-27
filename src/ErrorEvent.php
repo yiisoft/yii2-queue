@@ -3,14 +3,14 @@
 namespace zhuravljov\yii\queue;
 
 /**
- * Class Event
+ * Class ErrorEvent
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Event extends \yii\base\Event
+class ErrorEvent extends JobEvent
 {
     /**
-     * @var Job $job
+     * @var \Exception
      */
-    public $job;
+    public $error;
 }

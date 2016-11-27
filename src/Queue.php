@@ -15,9 +15,22 @@ use yii\base\Component;
  */
 class Queue extends Component implements BootstrapInterface
 {
-    const EVENT_ON_PUSH = 'onPush';
-    const EVENT_ON_POP = 'onPop';
-    const EVENT_ON_RELEASE = 'onRelease';
+    /**
+     * @event JobEvent
+     */
+    const EVENT_AFTER_PUSH = 'afterPush';
+    /**
+     * @event JobEvent
+     */
+    const EVENT_BEFORE_WORK = 'beforeWork';
+    /**
+     * @event JobEvent
+     */
+    const EVENT_AFTER_WORK = 'afterWork';
+    /**
+     * @event ErrorEvent
+     */
+    const EVENT_AFTER_ERROR = 'afterError';
 
     /**
      * @var Driver|array|string
@@ -62,36 +75,26 @@ class Queue extends Component implements BootstrapInterface
     public function push(Job $job)
     {
         $this->driver->push($job);
-        $this->trigger(self::EVENT_ON_PUSH, new Event(['job' => $job]));
+        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
     }
 
     /**
-     * @param boolean $throw
-     * @return boolean
-     * @throws
+     * @return integer count of jobs that has been handled
      */
-    public function work($throw = true)
+    public function work()
     {
-        if ($this->driver->pop($message, $job)) {
-            $this->trigger(self::EVENT_ON_POP, new Event(['job' => $job]));
+        return $this->driver->work(function (Job $job) {
+            $error = null;
+            $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent(['job' => $job]));
             try {
-                /** @var Job $job */
-                $job->run($this);
-            } catch (\Exception $e) {
-                if ($throw) {
-                    throw $e;
-                } else {
-                    Yii::error($e, __METHOD__);
-                }
-            } finally {
-                $this->driver->release($message);
-                $this->trigger(self::EVENT_ON_RELEASE, new Event(['job' => $job]));
+                $job->run();
+            } catch (\Exception $error) {
+                $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent(['job' => $job, 'error' => $error]));
             }
-
-            return true;
-        } else {
-            return false;
-        }
+            if (!$error) {
+                $this->trigger(self::EVENT_AFTER_WORK, new JobEvent(['job' => $job]));
+            }
+        });
     }
 
     /**

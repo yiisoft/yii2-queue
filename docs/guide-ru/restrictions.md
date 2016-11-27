@@ -30,7 +30,7 @@ class SomeJob extends Object implements \zhuravljov\yii\queue\Job
     public $bookId;
     public $someUrl;
     
-    public function run($queue)
+    public function run()
     {
         $user = User::findOne($this->userId);
         $book = Book::findOne($this->bookId);
