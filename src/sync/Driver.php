@@ -22,7 +22,7 @@ class Driver extends BaseDriver
             Yii::info('Worker has been started.', __CLASS__);
             ob_start();
             foreach (array_keys($this->_messages) as $channel) {
-                $this->getQueue()->work($channel);
+                $this->getQueue()->run($channel);
             }
             Yii::trace(ob_get_clean(), __CLASS__);
             Yii::info("Jobs have been complete.", __CLASS__);
@@ -40,7 +40,7 @@ class Driver extends BaseDriver
     /**
      * @inheritdoc
      */
-    public function work($channel, $handler)
+    public function run($channel, $handler)
     {
         $count = 0;
         if (!empty($this->_messages[$channel])) {

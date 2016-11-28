@@ -50,7 +50,7 @@ class Command extends Controller
     {
         $this->stdout("Worker has started.\n", Console::FG_GREEN);
         $this->queue->attachBehavior('verbose', VerboseBehavior::class);
-        $count = $this->queue->work($channel);
+        $count = $this->queue->run($channel);
         $this->stdout("$count jobs have been run.\n", Console::FG_GREEN);
     }
 
@@ -66,7 +66,7 @@ class Command extends Controller
         $this->stdout(date('Y-m-d H:i:s') . ": worker has started.\n", Console::FG_GREEN);
         $this->queue->attachBehavior('verbose', VerboseBehavior::class);
         do {
-            $this->queue->work($channel);
+            $this->queue->run($channel);
         } while (!$delay || sleep($delay) === 0);
     }
 

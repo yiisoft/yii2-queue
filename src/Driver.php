@@ -46,7 +46,7 @@ abstract class Driver extends Object
      * @param callable $handler
      * @return integer count of jobs that has been handled
      */
-    abstract public function work($channel, $handler);
+    abstract public function run($channel, $handler);
 
     /**
      * Purges the storage.

@@ -67,7 +67,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function work($channel, $handler)
+    public function run($channel, $handler)
     {
         $count = 0;
         while (($message = $this->redis->executeCommand('LPOP', [$this->getKey($channel)])) !== null) {

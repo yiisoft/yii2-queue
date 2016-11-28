@@ -86,9 +86,9 @@ class Queue extends Component implements BootstrapInterface
      * @param string $channel
      * @return integer count of jobs that has been handled
      */
-    public function work($channel)
+    public function run($channel)
     {
-        return $this->driver->work($channel, function (Job $job) use ($channel) {
+        return $this->driver->run($channel, function (Job $job) use ($channel) {
             $error = null;
             $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent([
                 'channel' => $channel,
