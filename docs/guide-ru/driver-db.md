@@ -27,7 +27,7 @@ return [
 CREATE TABLE `queue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `channel` varchar(255) NOT NULL,
-  `job` text NOT NULL,
+  `job` blob NOT NULL,
   `created_at` int(11) NOT NULL,
   `started_at` int(11) DEFAULT NULL,
   `finished_at` int(11) DEFAULT NULL,
