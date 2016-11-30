@@ -19,7 +19,7 @@ class m0001_queue extends Migration
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
             'channel' => $this->string()->notNull(),
-            'job' => $this->text()->notNull(),
+            'job' => $this->blob()->notNull(),
             'created_at' => $this->integer()->notNull(),
             'started_at' => $this->integer(),
             'finished_at' => $this->integer(),
