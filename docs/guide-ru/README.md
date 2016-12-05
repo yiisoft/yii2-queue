@@ -16,3 +16,4 @@
 * [Синхронный драйвер](driver-sync.md)
 * [Db драйвер](driver-db.md)
 * [Redis драйвер](driver-redis.md)
+* [RabbitMQ драйвер](driver-amqp.md)

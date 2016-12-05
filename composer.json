@@ -15,7 +15,8 @@
     },
     "require-dev": {
         "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-redis": "*"
+        "yiisoft/yii2-redis": "*",
+        "php-amqplib/php-amqplib": "*"
     },
     "autoload": {
         "psr-4": {
