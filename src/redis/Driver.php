@@ -26,10 +26,11 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function push($channel, $job)
     {
-        parent::init();
-        $this->redis = Instance::ensure($this->redis, Connection::class);
+        $key = $this->getKey($channel);
+        $message = serialize($job);
+        $this->redis->executeCommand('RPUSH', [$key, $message]);
     }
 
     /**
@@ -40,9 +41,31 @@ class Driver extends BaseDriver implements BootstrapInterface
         if ($app instanceof \yii\console\Application) {
             $app->controllerMap[$this->queue->id] = [
                 'class' => Command::class,
-                'queue' => $this->queue,
+                'driver' => $this,
             ];
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->redis = Instance::ensure($this->redis, Connection::class);
+    }
+
+    public function run($channel)
+    {
+        while (($message = $this->pop($channel)) !== null) {
+            $job = unserialize($message);
+            $this->getQueue()->run($channel, $job);
+        }
+    }
+
+    protected function pop($channel)
+    {
+        return $this->redis->executeCommand('LPOP', [$this->getKey($channel)]);
     }
 
     /**
@@ -52,37 +75,5 @@ class Driver extends BaseDriver implements BootstrapInterface
     protected function getKey($channel)
     {
         return $this->prefix . $this->queue->id . ':' . $channel;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function push($channel, $job)
-    {
-        $message = serialize($job);
-        $this->redis->executeCommand('RPUSH', [$this->getKey($channel), $message]);
-        return $message;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function run($channel, $handler)
-    {
-        $count = 0;
-        while (($message = $this->redis->executeCommand('LPOP', [$this->getKey($channel)])) !== null) {
-            $count++;
-            $job = unserialize($message);
-            call_user_func($handler, $job);
-        }
-        return $count;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function purge($channel)
-    {
-        $this->redis->executeCommand('DEL', [$this->getKey($channel)]);
     }
 }

@@ -13,21 +13,12 @@ use zhuravljov\yii\queue\Driver as BaseDriver;
  */
 class Driver extends BaseDriver
 {
-    private $_messages = [];
+    /**
+     * @var boolean
+     */
+    public $handle = false;
 
-    public function init()
-    {
-        parent::init();
-        Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
-            Yii::info('Worker has been started.', __CLASS__);
-            ob_start();
-            foreach (array_keys($this->_messages) as $channel) {
-                $this->getQueue()->run($channel);
-            }
-            Yii::trace(ob_get_clean(), __CLASS__);
-            Yii::info("Jobs have been complete.", __CLASS__);
-        });
-    }
+    private $_messages = [];
 
     /**
      * @inheritdoc
@@ -40,24 +31,31 @@ class Driver extends BaseDriver
     /**
      * @inheritdoc
      */
-    public function run($channel, $handler)
+    public function init()
     {
-        $count = 0;
-        if (!empty($this->_messages[$channel])) {
-            while (($message = array_shift($this->_messages[$channel])) !== null) {
-                $count++;
-                $job = unserialize($message);
-                call_user_func($handler, $job);
-            }
+        parent::init();
+        if ($this->handle) {
+            Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
+                ob_start();
+                $this->run();
+                ob_clean();
+            });
         }
-        return $count;
     }
 
     /**
-     * @inheritdoc
+     * Run jobs from all channels.
      */
-    public function purge($channel)
+    public function run()
     {
-        $this->_messages[$channel] = [];
+        while ($this->_messages) {
+            $messages = reset($this->_messages);
+            $channel = key($this->_messages);
+            array_shift($this->_messages);
+            foreach ($messages as $message) {
+                $job = unserialize($message);
+                $this->getQueue()->run($channel, $job);
+            }
+        }
     }
 }

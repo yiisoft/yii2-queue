@@ -33,26 +33,6 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public $deleteReleased = false;
 
-    public function init()
-    {
-        parent::init();
-        $this->db = Instance::ensure($this->db, Connection::class);
-        $this->mutex = Instance::ensure($this->mutex, Mutex::class);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bootstrap($app)
-    {
-        if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[$this->queue->id] = [
-                'class' => Command::class,
-                'queue' => $this->queue,
-            ];
-        }
-    }
-
     /**
      * @inheritdoc
      */
@@ -68,16 +48,30 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function run($channel, $handler)
+    public function bootstrap($app)
     {
-        $count = 0;
+        if ($app instanceof \yii\console\Application) {
+            $app->controllerMap[$this->queue->id] = [
+                'class' => Command::class,
+                'driver' => $this,
+            ];
+        }
+    }
+
+    public function init()
+    {
+        parent::init();
+        $this->db = Instance::ensure($this->db, Connection::class);
+        $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+    }
+
+    public function run($channel)
+    {
         while ($message = $this->pop($channel)) {
-            $count++;
             $job = unserialize($message['job']);
-            call_user_func($handler, $job);
+            $this->getQueue()->run($channel, $job);
             $this->release($message);
         }
-        return $count;
     }
 
     protected function pop($channel)
@@ -119,20 +113,5 @@ class Driver extends BaseDriver implements BootstrapInterface
                 ['id' => $message['id']]
             )->execute();
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function purge($channel)
-    {
-        $this->mutex->acquire(__CLASS__ . $channel);
-
-        $this->db->createCommand()->delete(
-            $this->tableName,
-            ['started_at' => null]
-        )->execute();
-
-        $this->mutex->release(__CLASS__ . $channel);
     }
 }

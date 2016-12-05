@@ -84,40 +84,29 @@ class Queue extends Component implements BootstrapInterface
 
     /**
      * @param string $channel
-     * @return integer count of jobs that has been handled
+     * @param Job $job
      */
-    public function run($channel)
+    public function run($channel, Job $job)
     {
-        return $this->driver->run($channel, function (Job $job) use ($channel) {
-            $error = null;
-            $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent([
+        $error = null;
+        $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent([
+            'channel' => $channel,
+            'job' => $job,
+        ]));
+        try {
+            $job->run();
+        } catch (\Exception $error) {
+            $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent([
+                'channel' => $channel,
+                'job' => $job,
+                'error' => $error,
+            ]));
+        }
+        if (!$error) {
+            $this->trigger(self::EVENT_AFTER_WORK, new JobEvent([
                 'channel' => $channel,
                 'job' => $job,
             ]));
-            try {
-                $job->run();
-            } catch (\Exception $error) {
-                $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent([
-                    'channel' => $channel,
-                    'job' => $job,
-                    'error' => $error,
-                ]));
-            }
-            if (!$error) {
-                $this->trigger(self::EVENT_AFTER_WORK, new JobEvent([
-                    'channel' => $channel,
-                    'job' => $job,
-                ]));
-            }
-        });
-    }
-
-    /**
-     * Purges the queue
-     * @param string $channel
-     */
-    public function purge($channel)
-    {
-        $this->driver->purge($channel);
+        }
     }
 }

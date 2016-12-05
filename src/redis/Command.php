@@ -3,7 +3,6 @@
 namespace zhuravljov\yii\queue\redis;
 
 use yii\console\Controller;
-use yii\helpers\Console;
 use zhuravljov\yii\queue\VerboseBehavior;
 
 /**
@@ -14,9 +13,9 @@ use zhuravljov\yii\queue\VerboseBehavior;
 class Command extends Controller
 {
     /**
-     * @var \zhuravljov\yii\queue\Queue
+     * @var Driver
      */
-    public $queue;
+    public $driver;
 
     /**
      * Runs all jobs from redis-queue.
@@ -26,10 +25,8 @@ class Command extends Controller
      */
     public function actionRun($channel)
     {
-        $this->stdout("Worker has started.\n", Console::FG_GREEN);
-        $this->queue->attachBehavior('verbose', VerboseBehavior::class);
-        $count = $this->queue->run($channel);
-        $this->stdout("$count jobs have been run.\n", Console::FG_GREEN);
+        $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
+        $this->driver->run($channel);
     }
 
     /**
@@ -41,20 +38,9 @@ class Command extends Controller
      */
     public function actionListen($channel, $delay = 3)
     {
-        $this->stdout(date('Y-m-d H:i:s') . ": worker has started.\n", Console::FG_GREEN);
-        $this->queue->attachBehavior('verbose', VerboseBehavior::class);
+        $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
         do {
-            $this->queue->run($channel);
+            $this->driver->run($channel);
         } while (!$delay || sleep($delay) === 0);
-    }
-
-    /**
-     * Purges the redis-queue.
-     *
-     * @param string $channel
-     */
-    public function actionPurge($channel)
-    {
-        $this->queue->purge($channel);
     }
 }
