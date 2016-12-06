@@ -4,6 +4,7 @@ namespace zhuravljov\yii\queue\redis;
 
 use yii\base\BootstrapInterface;
 use yii\di\Instance;
+use yii\helpers\Inflector;
 use yii\redis\Connection;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
@@ -38,7 +39,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function bootstrap($app)
     {
         if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[$this->queue->id] = [
+            $app->controllerMap[Inflector::camel2id($this->queue->id)] = [
                 'class' => Command::class,
                 'driver' => $this,
             ];
