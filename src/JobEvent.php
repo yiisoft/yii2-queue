@@ -12,10 +12,6 @@ use yii\base\Event;
 class JobEvent extends Event
 {
     /**
-     * @var string
-     */
-    public $channel;
-    /**
      * @var Job
      */
     public $job;

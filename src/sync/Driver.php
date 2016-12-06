@@ -17,16 +17,10 @@ class Driver extends BaseDriver
      * @var boolean
      */
     public $handle = false;
-
-    private $_messages = [];
-
     /**
-     * @inheritdoc
+     * @var array
      */
-    public function push($channel, $job)
-    {
-        $this->_messages[$channel][] = serialize($job);
-    }
+    private $_messages = [];
 
     /**
      * @inheritdoc
@@ -37,25 +31,20 @@ class Driver extends BaseDriver
         if ($this->handle) {
             Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
                 ob_start();
-                $this->run();
+                while (($message = array_shift($this->_messages)) !== null) {
+                    $job = unserialize($message);
+                    $this->getQueue()->run($job);
+                }
                 ob_clean();
             });
         }
     }
 
     /**
-     * Run jobs from all channels.
+     * @inheritdoc
      */
-    public function run()
+    public function push($job)
     {
-        while ($this->_messages) {
-            $messages = reset($this->_messages);
-            $channel = key($this->_messages);
-            array_shift($this->_messages);
-            foreach ($messages as $message) {
-                $job = unserialize($message);
-                $this->getQueue()->run($channel, $job);
-            }
-        }
+        $this->_messages[] = serialize($job);
     }
 }

@@ -29,20 +29,19 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public $tableName = '{{%queue}}';
     /**
+     * @var string
+     */
+    public $channel = 'queue';
+    /**
      * @var boolean ability to delete released messages from table
      */
     public $deleteReleased = false;
 
-    /**
-     * @inheritdoc
-     */
-    public function push($channel, $job)
+    public function init()
     {
-        $this->db->createCommand()->insert($this->tableName, [
-            'channel' => $channel,
-            'job' => serialize($job),
-            'created_at' => time(),
-        ])->execute();
+        parent::init();
+        $this->db = Instance::ensure($this->db, Connection::class);
+        $this->mutex = Instance::ensure($this->mutex, Mutex::class);
     }
 
     /**
@@ -58,29 +57,34 @@ class Driver extends BaseDriver implements BootstrapInterface
         }
     }
 
-    public function init()
+    /**
+     * @inheritdoc
+     */
+    public function push($job)
     {
-        parent::init();
-        $this->db = Instance::ensure($this->db, Connection::class);
-        $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+        $this->db->createCommand()->insert($this->tableName, [
+            'channel' => $this->channel,
+            'job' => serialize($job),
+            'created_at' => time(),
+        ])->execute();
     }
 
-    public function run($channel)
+    public function run()
     {
-        while ($message = $this->pop($channel)) {
+        while ($message = $this->pop()) {
             $job = unserialize($message['job']);
-            $this->getQueue()->run($channel, $job);
+            $this->getQueue()->run($job);
             $this->release($message);
         }
     }
 
-    protected function pop($channel)
+    protected function pop()
     {
-        $this->mutex->acquire(__CLASS__ . $channel);
+        $this->mutex->acquire(__CLASS__ . $this->channel);
 
         $message = (new Query())
             ->from($this->tableName)
-            ->where(['channel' => $channel, 'started_at' => null])
+            ->where(['channel' => $this->channel, 'started_at' => null])
             ->orderBy(['id' => SORT_ASC])
             ->limit(1)
             ->one($this->db);
@@ -94,7 +98,7 @@ class Driver extends BaseDriver implements BootstrapInterface
             )->execute();
         }
 
-        $this->mutex->release(__CLASS__ . $channel);
+        $this->mutex->release(__CLASS__ . $this->channel);
 
         return $message;
     }

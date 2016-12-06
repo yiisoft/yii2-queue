@@ -70,43 +70,28 @@ class Queue extends Component implements BootstrapInterface
     }
 
     /**
-     * @param string $channel
      * @param Job $job
      */
-    public function push($channel, Job $job)
+    public function push(Job $job)
     {
-        $this->driver->push($channel, $job);
-        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent([
-            'channel' => $channel,
-            'job' => $job,
-        ]));
+        $this->driver->push($job);
+        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
     }
 
     /**
-     * @param string $channel
      * @param Job $job
      */
-    public function run($channel, Job $job)
+    public function run(Job $job)
     {
         $error = null;
-        $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent([
-            'channel' => $channel,
-            'job' => $job,
-        ]));
+        $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent(['job' => $job]));
         try {
             $job->run();
         } catch (\Exception $error) {
-            $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent([
-                'channel' => $channel,
-                'job' => $job,
-                'error' => $error,
-            ]));
+            $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent(['job' => $job, 'error' => $error]));
         }
         if (!$error) {
-            $this->trigger(self::EVENT_AFTER_WORK, new JobEvent([
-                'channel' => $channel,
-                'job' => $job,
-            ]));
+            $this->trigger(self::EVENT_AFTER_WORK, new JobEvent(['job' => $job]));
         }
     }
 }

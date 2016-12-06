@@ -20,27 +20,24 @@ class Command extends Controller
     /**
      * Runs all jobs from redis-queue.
      * It can be used as cron job.
-     *
-     * @param string $channel
      */
-    public function actionRun($channel)
+    public function actionRun()
     {
         $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
-        $this->driver->run($channel);
+        $this->driver->run();
     }
 
     /**
      * Listens redis-queue and runs new jobs.
      * It can be used as demon process.
      *
-     * @param string $channel
      * @param integer $delay Number of seconds for waiting new job.
      */
-    public function actionListen($channel, $delay = 3)
+    public function actionListen($delay = 3)
     {
         $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
         do {
-            $this->driver->run($channel);
+            $this->driver->run();
         } while (!$delay || sleep($delay) === 0);
     }
 }

@@ -21,16 +21,15 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @var string
      */
-    public $prefix = '';
+    public $channel = 'queue';
 
     /**
      * @inheritdoc
      */
-    public function push($channel, $job)
+    public function init()
     {
-        $key = $this->getKey($channel);
-        $message = serialize($job);
-        $this->redis->executeCommand('RPUSH', [$key, $message]);
+        parent::init();
+        $this->redis = Instance::ensure($this->redis, Connection::class);
     }
 
     /**
@@ -49,31 +48,22 @@ class Driver extends BaseDriver implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function push($job)
     {
-        parent::init();
-        $this->redis = Instance::ensure($this->redis, Connection::class);
+        $message = serialize($job);
+        $this->redis->executeCommand('RPUSH', [$this->channel, $message]);
     }
 
-    public function run($channel)
+    public function run()
     {
-        while (($message = $this->pop($channel)) !== null) {
+        while (($message = $this->pop()) !== null) {
             $job = unserialize($message);
-            $this->getQueue()->run($channel, $job);
+            $this->getQueue()->run($job);
         }
     }
 
-    protected function pop($channel)
+    protected function pop()
     {
-        return $this->redis->executeCommand('LPOP', [$this->getKey($channel)]);
-    }
-
-    /**
-     * @param string $channel
-     * @return string
-     */
-    protected function getKey($channel)
-    {
-        return $this->prefix . $this->queue->id . ':' . $channel;
+        return $this->redis->executeCommand('LPOP', [$this->channel]);
     }
 }

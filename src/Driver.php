@@ -36,8 +36,7 @@ abstract class Driver extends Object
     /**
      * Pushes job to the storage.
      *
-     * @param string $channel
      * @param Job $job
      */
-    abstract public function push($channel, $job);
+    abstract public function push($job);
 }
