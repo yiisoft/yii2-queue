@@ -70,9 +70,9 @@ class Queue extends Component implements BootstrapInterface
     }
 
     /**
-     * @param Job $job
+     * @param Job|mixed $job
      */
-    public function push(Job $job)
+    public function push($job)
     {
         $this->driver->push($job);
         $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));

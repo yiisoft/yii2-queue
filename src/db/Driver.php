@@ -65,7 +65,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
-            'job' => serialize($job),
+            'job' => $this->serialize($job),
             'created_at' => time(),
         ])->execute();
     }
@@ -73,8 +73,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function run()
     {
         while ($message = $this->pop()) {
-            $job = unserialize($message['job']);
-            $this->getQueue()->run($job);
+            $this->getQueue()->run($this->unserialize($message['job']));
             $this->release($message);
         }
     }

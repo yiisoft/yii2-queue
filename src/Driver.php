@@ -13,6 +13,14 @@ use yii\base\Object;
  */
 abstract class Driver extends Object
 {
+    /**
+     * @var callable
+     */
+    public $serializer = 'serialize';
+
+    /**
+     * @var Queue
+     */
     private $_queue;
 
     /**
@@ -34,9 +42,27 @@ abstract class Driver extends Object
     }
 
     /**
+     * @param Job|mixed $job
+     * @return string
+     */
+    protected function serialize($job)
+    {
+        return call_user_func($this->serializer, $job);
+    }
+
+    /**
+     * @param string $serialized
+     * @return Job
+     */
+    protected function unserialize($serialized)
+    {
+        return unserialize($serialized);
+    }
+
+    /**
      * Pushes job to the storage.
      *
-     * @param Job $job
+     * @param Job|mixed $job
      */
     abstract public function push($job);
 }

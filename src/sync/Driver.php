@@ -32,8 +32,7 @@ class Driver extends BaseDriver
             Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
                 ob_start();
                 while (($message = array_shift($this->_messages)) !== null) {
-                    $job = unserialize($message);
-                    $this->getQueue()->run($job);
+                    $this->getQueue()->run($this->unserialize($message));
                 }
                 ob_clean();
             });
@@ -45,6 +44,6 @@ class Driver extends BaseDriver
      */
     public function push($job)
     {
-        $this->_messages[] = serialize($job);
+        $this->_messages[] = $this->serialize($job);
     }
 }

@@ -24,7 +24,11 @@ class LogBehavior extends Behavior
     {
         return [
             Queue::EVENT_AFTER_PUSH => function (JobEvent $event) {
-                Yii::info(get_class($event->job) . ' pushed.', Queue::class);
+                if ($event->job instanceof Job) {
+                    Yii::info(get_class($event->job) . ' pushed.', Queue::class);
+                } else {
+                    Yii::info('Mixed data pushed.', Queue::class);
+                }
             },
             Queue::EVENT_BEFORE_WORK => function (JobEvent $event) {
                 Yii::info(get_class($event->job) . ' started.', Queue::class);

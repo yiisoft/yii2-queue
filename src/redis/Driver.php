@@ -51,15 +51,13 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function push($job)
     {
-        $message = serialize($job);
-        $this->redis->executeCommand('RPUSH', [$this->channel, $message]);
+        $this->redis->executeCommand('RPUSH', [$this->channel, $this->serialize($job)]);
     }
 
     public function run()
     {
         while (($message = $this->pop()) !== null) {
-            $job = unserialize($message);
-            $this->getQueue()->run($job);
+            $this->getQueue()->run($this->unserialize($message));
         }
     }
 
