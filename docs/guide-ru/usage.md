@@ -111,7 +111,7 @@ return [
 
 ```php
 // Отправка задания в очередь для обработки встроенным воркером
-Yii::$app->queue->push(new DownloadJob([
+Yii::$app->queue1->push(new DownloadJob([
     'url' => 'http://example.com/image.jpg',
     'file' => '/tmp/image.jpg',
 ]));
