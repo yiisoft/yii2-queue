@@ -35,9 +35,11 @@ class LogBehavior extends Behavior
             },
             Queue::EVENT_AFTER_WORK => function (JobEvent $event) {
                 Yii::info(get_class($event->job) . ' finished.', Queue::class);
+                Yii::getLogger()->flush();
             },
             Queue::EVENT_AFTER_ERROR => function (ErrorEvent $event) {
                 Yii::error(get_class($event->job) . ' error ' . $event->error, Queue::class);
+                Yii::getLogger()->flush();
             },
         ];
     }
