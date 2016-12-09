@@ -2,15 +2,14 @@
 
 namespace zhuravljov\yii\queue\db;
 
-use yii\console\Controller;
-use zhuravljov\yii\queue\VerboseBehavior;
+use zhuravljov\yii\queue\Command as BaseCommand;
 
 /**
  * Manages application db-queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Command extends Controller
+class Command extends BaseCommand
 {
     /**
      * @var Driver
@@ -23,7 +22,6 @@ class Command extends Controller
      */
     public function actionRun()
     {
-        $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
         $this->driver->run();
     }
 
@@ -35,7 +33,6 @@ class Command extends Controller
      */
     public function actionListen($delay = 3)
     {
-        $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
         do {
             $this->driver->run();
         } while (!$delay || sleep($delay) === 0);
