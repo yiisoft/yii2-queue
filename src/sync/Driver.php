@@ -32,7 +32,8 @@ class Driver extends BaseDriver
             Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
                 ob_start();
                 while (($message = array_shift($this->_messages)) !== null) {
-                    $this->getQueue()->run($this->unserialize($message));
+                    $job = $this->unserialize($message);
+                    $this->getQueue()->run($job);
                 }
                 ob_clean();
             });

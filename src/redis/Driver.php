@@ -57,7 +57,8 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function run()
     {
         while (($message = $this->pop()) !== null) {
-            $this->getQueue()->run($this->unserialize($message));
+            $job = $this->unserialize($message);
+            $this->getQueue()->run($job);
         }
     }
 

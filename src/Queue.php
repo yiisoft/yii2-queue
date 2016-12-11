@@ -80,6 +80,7 @@ class Queue extends Component implements BootstrapInterface
 
     /**
      * @param Job $job
+     * @return boolean
      */
     public function run(Job $job)
     {
@@ -93,5 +94,7 @@ class Queue extends Component implements BootstrapInterface
         if (!$error) {
             $this->trigger(self::EVENT_AFTER_WORK, new JobEvent(['job' => $job]));
         }
+
+        return !$error;
     }
 }

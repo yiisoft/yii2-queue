@@ -71,8 +71,10 @@ class Driver extends BaseDriver implements BootstrapInterface
     {
         $this->open();
         $callback = function(AMQPMessage $message) {
-            $this->getQueue()->run($this->unserialize($message->body));
-            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            $job = $this->unserialize($message->body);
+            if ($this->getQueue()->run($job)) {
+                $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            }
         };
         $this->_channel->basic_qos(null, 1, null);
         $this->_channel->basic_consume($this->queueName, '', false, false, false, false, $callback);
