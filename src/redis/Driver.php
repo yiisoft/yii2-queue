@@ -54,16 +54,26 @@ class Driver extends BaseDriver implements BootstrapInterface
         $this->redis->executeCommand('RPUSH', [$this->channel, $this->serialize($job)]);
     }
 
+    /**
+     * Runs all jobs from redis-queue.
+     */
     public function run()
     {
-        while (($message = $this->pop()) !== null) {
+        while (($message = $this->redis->executeCommand('LPOP', [$this->channel])) !== null) {
             $job = $this->unserialize($message);
             $this->getQueue()->run($job);
         }
     }
 
-    protected function pop()
+    /**
+     * Listens redis-queue and runs new jobs.
+     */
+    public function listen()
     {
-        return $this->redis->executeCommand('LPOP', [$this->channel]);
+        while (true) {
+            list(, $message) = $this->redis->executeCommand('BLPOP', [$this->channel, 0]);
+            $job = $this->unserialize($message);
+            $this->getQueue()->run($job);
+        }
     }
 }
