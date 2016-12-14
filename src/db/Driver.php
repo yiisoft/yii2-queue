@@ -38,6 +38,9 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public $deleteReleased = false;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -70,6 +73,9 @@ class Driver extends BaseDriver implements BootstrapInterface
         ])->execute();
     }
 
+    /**
+     * Runs all jobs from db-queue.
+     */
     public function run()
     {
         while ($message = $this->pop()) {
@@ -80,6 +86,21 @@ class Driver extends BaseDriver implements BootstrapInterface
         }
     }
 
+    /**
+     * Listens db-queue and runs new jobs.
+     *
+     * @param integer $delay number of seconds for waiting new job.
+     */
+    public function listen($delay)
+    {
+        do {
+            $this->run();
+        } while (!$delay || sleep($delay) === 0);
+    }
+
+    /**
+     * @return array|false
+     */
     protected function pop()
     {
         $this->mutex->acquire(__CLASS__ . $this->channel);
@@ -105,6 +126,9 @@ class Driver extends BaseDriver implements BootstrapInterface
         return $message;
     }
 
+    /**
+     * @param array $message
+     */
     protected function release($message)
     {
         if ($this->deleteReleased) {

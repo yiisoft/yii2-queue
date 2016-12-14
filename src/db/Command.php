@@ -33,8 +33,6 @@ class Command extends BaseCommand
      */
     public function actionListen($delay = 3)
     {
-        do {
-            $this->driver->run();
-        } while (!$delay || sleep($delay) === 0);
+        $this->driver->listen($delay);
     }
 }
