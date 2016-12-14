@@ -1,7 +1,7 @@
 {
     "name": "zhuravljov/yii2-queue",
     "description": "Yii2 Queue Extension",
-    "keywords": ["yii", "queue", "async"],
+    "keywords": ["yii", "queue", "async", "db", "redis", "rabbitmq", "gearman"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "authors": [
