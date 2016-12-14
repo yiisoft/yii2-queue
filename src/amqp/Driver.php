@@ -67,6 +67,9 @@ class Driver extends BaseDriver implements BootstrapInterface
         $this->_channel->basic_publish($message, '', $this->queueName);
     }
 
+    /**
+     * Listens amqp-queue and runs new jobs.
+     */
     public function listen()
     {
         $this->open();
@@ -83,6 +86,9 @@ class Driver extends BaseDriver implements BootstrapInterface
         }
     }
 
+    /**
+     * Opens connection and channel
+     */
     protected function open()
     {
         if ($this->_channel) return;
@@ -91,6 +97,9 @@ class Driver extends BaseDriver implements BootstrapInterface
         $this->_channel->queue_declare($this->queueName);
     }
 
+    /**
+     * Closes connection and channel
+     */
     protected function close()
     {
         if (!$this->_channel) return;
