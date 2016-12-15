@@ -57,6 +57,6 @@ Yii::$app->queue->push(new DownloadJob([
 
 Method of handling a queue depend on selected driver.
 
-Now the extension supported queues based on DB, Redis and RabbitMQ.
+Now the extension supported queues based on **DB**, **Redis** and **RabbitMQ**.
 
 For more details see [the guide](docs/guide/README.md).
