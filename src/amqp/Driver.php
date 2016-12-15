@@ -12,7 +12,7 @@ use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
- * Class Driver
+ * AMQP Driver
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

@@ -11,7 +11,7 @@ use yii\mutex\Mutex;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
- * Class DbDriver
+ * DB Driver
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

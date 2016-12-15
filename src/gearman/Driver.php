@@ -7,7 +7,7 @@ use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
- * Class Driver
+ * Gearman Driver
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

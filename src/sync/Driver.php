@@ -7,7 +7,7 @@ use yii\base\Application;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
- * Class SyncDriver
+ * Sync Driver
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
