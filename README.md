@@ -3,6 +3,8 @@ Queue Extension for Yii2
 
 Extension for async execution of jobs through a queue mechanism.
 
+It supported queues based on **DB**, **Redis**, **RabbitMQ** and **Gearman**.
+
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
 [![Latest Stable Version](https://poser.pugx.org/zhuravljov/yii2-queue/v/stable.svg)](https://packagist.org/packages/zhuravljov/yii2-queue)
@@ -56,7 +58,5 @@ Yii::$app->queue->push(new DownloadJob([
 ```
 
 Method of handling a queue depend on selected driver.
-
-Now the extension supported queues based on **DB**, **Redis**, **RabbitMQ** and **Gearman**.
 
 For more details see [the guide](docs/guide/README.md).
