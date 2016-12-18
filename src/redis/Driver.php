@@ -71,9 +71,10 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function listen()
     {
         while (true) {
-            list(, $message) = $this->redis->executeCommand('BLPOP', [$this->channel, 0]);
-            $job = $this->unserialize($message);
-            $this->getQueue()->run($job);
+            if ($result = $this->redis->executeCommand('BLPOP', [$this->channel, 10])) {
+                $job = $this->unserialize($result[1]);
+                $this->getQueue()->run($job);
+            }
         }
     }
 }
