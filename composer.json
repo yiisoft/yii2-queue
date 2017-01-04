@@ -1,8 +1,8 @@
 {
     "name": "zhuravljov/yii2-queue",
-    "description": "Yii2 Queue Extension",
-    "keywords": ["yii", "queue", "async", "db", "redis", "amqp", "rabbitmq", "gearman"],
+    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ and Gearman",
     "type": "yii2-extension",
+    "keywords": ["yii", "queue", "async", "db", "redis", "rabbitmq", "gearman"],
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -10,6 +10,11 @@
             "email": "zhuravljov@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/zhuravljov/yii2-queue/issues",
+        "source": "https://github.com/zhuravljov/yii2-queue",
+        "docs": "https://github.com/zhuravljov/yii2-queue/blob/master/docs/guide"
+    },
     "require": {
         "yiisoft/yii2": "*"
     },

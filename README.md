@@ -1,5 +1,5 @@
-Queue Extension for Yii2
-========================
+Yii2 Queue Extension
+====================
 
 Extension for async execution of jobs through a queue mechanism.
 
