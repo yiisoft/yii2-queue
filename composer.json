@@ -23,6 +23,9 @@
         "yiisoft/yii2-redis": "*",
         "php-amqplib/php-amqplib": "*"
     },
+    "suggest": {
+        "ext-pcntl": "Needed to support process signals."
+    },
     "autoload": {
         "psr-4": {
             "zhuravljov\\yii\\queue\\": "src"

@@ -7,6 +7,7 @@ use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\redis\Connection;
 use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Signal;
 
 /**
  * Redis Driver
@@ -76,7 +77,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function listen()
     {
         $this->openWorker();
-        while (true) {
+        while (!Signal::isTerm()) {
             if ($result = $this->redis->executeCommand('BLPOP', ["$this->channel.reserved", 10])) {
                 $job = $this->unserialize($result[1]);
                 $this->getQueue()->run($job);

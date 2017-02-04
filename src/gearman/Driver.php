@@ -5,6 +5,7 @@ namespace zhuravljov\yii\queue\gearman;
 use yii\base\BootstrapInterface;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Signal;
 
 /**
  * Gearman Driver
@@ -55,6 +56,6 @@ class Driver extends BaseDriver implements BootstrapInterface
 
         do {
             $worker->work();
-        } while ($worker->returnCode() === GEARMAN_SUCCESS);
+        } while (!Signal::isTerm() && $worker->returnCode() === GEARMAN_SUCCESS);
     }
 }

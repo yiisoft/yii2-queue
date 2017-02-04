@@ -9,6 +9,7 @@ use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\mutex\Mutex;
 use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Signal;
 
 /**
  * DB Driver
@@ -78,7 +79,7 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function run()
     {
-        while ($message = $this->pop()) {
+        while (!Signal::isTerm() && ($message = $this->pop())) {
             $job = $this->unserialize($message['job']);
             if ($this->getQueue()->run($job)) {
                 $this->release($message);
