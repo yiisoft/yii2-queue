@@ -20,7 +20,7 @@ return [
         ],
         'redis' => [
             'class' => \yii\redis\Connection::class,
-            'database' => 9,
+            'database' => 2,
         ],
         'dbQueue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
