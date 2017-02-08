@@ -25,7 +25,7 @@ class DriverTest extends DriverTestCase
     {
         $job = $this->createJob();
         Yii::$app->dbQueue->push($job);
-        Process::start('php tests/app/yii.php db-queue/run');
+        Process::run('php tests/app/yii.php db-queue/run');
         $this->assertJobDone($job);
     }
 

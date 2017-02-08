@@ -23,7 +23,7 @@ class DriverTest extends DriverTestCase
     {
         $job = $this->createJob();
         Yii::$app->redisQueue->push($job);
-        Process::start('php tests/app/yii.php redis-queue/run');
+        Process::run('php tests/app/yii.php redis-queue/run');
         $this->assertJobDone($job);
     }
 
