@@ -13,6 +13,12 @@ use tests\DriverTestCase;
  */
 class DriverTest extends DriverTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        Yii::$app->redis->executeCommand('FLUSHDB');
+    }
+
     public function testRun()
     {
         $job = $this->createJob();

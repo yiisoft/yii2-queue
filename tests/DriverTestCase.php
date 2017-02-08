@@ -15,9 +15,9 @@ class DriverTestCase extends TestCase
     /**
      * @inheritdoc
      */
-    public function tearDown()
+    public function setUp()
     {
-        parent::tearDown();
+        parent::setUp();
         foreach (glob(Yii::getAlias("@runtime/job-*.lock")) as $fileName) {
             unlink($fileName);
         }
