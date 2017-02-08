@@ -9,6 +9,7 @@ php:
 
 services:
   - redis-server
+  - rabbitmq
 
 # faster builds on new travis setup not using sudo
 sudo: false

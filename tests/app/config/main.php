@@ -6,6 +6,7 @@ return [
     'bootstrap' => [
         'dbQueue',
         'redisQueue',
+        'amqpQueue',
     ],
     'components' => [
         'db' => [
@@ -32,6 +33,10 @@ return [
         'redisQueue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
             'driver' => \zhuravljov\yii\queue\redis\Driver::class,
+        ],
+        'amqpQueue' => [
+            'class' => \zhuravljov\yii\queue\Queue::class,
+            'driver' => \zhuravljov\yii\queue\amqp\Driver::class,
         ],
     ],
 ];

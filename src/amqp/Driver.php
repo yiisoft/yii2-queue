@@ -8,6 +8,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
+use yii\base\Event;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 use zhuravljov\yii\queue\Signal;
@@ -40,7 +41,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function init()
     {
         parent::init();
-        Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
+        Event::on(Application::class, Application::EVENT_AFTER_REQUEST, function () {
             $this->close();
         });
     }
