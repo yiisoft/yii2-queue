@@ -9,6 +9,7 @@
 
 ```php
 return [
+    'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,

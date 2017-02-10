@@ -7,6 +7,7 @@ DB дравер для хранения очереди заданий испол
 
 ```php
 return [
+    'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
