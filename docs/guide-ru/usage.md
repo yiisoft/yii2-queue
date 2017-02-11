@@ -13,6 +13,7 @@ return [
     'components' => [
         'queue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
+            'as log' => \zhuravljov\yii\queue\LogBehavior::class,
             'driver' => [], // Конфигурация драйвера
         ],
     ],
