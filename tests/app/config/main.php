@@ -23,6 +23,10 @@ return [
             'class' => \yii\redis\Connection::class,
             'database' => 2,
         ],
+        'syncQueue' => [
+            'class' => \zhuravljov\yii\queue\Queue::class,
+            'driver' => \zhuravljov\yii\queue\sync\Driver::class,
+        ],
         'dbQueue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
             'driver' => [
