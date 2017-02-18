@@ -7,6 +7,7 @@ return [
         'dbQueue',
         'redisQueue',
         'amqpQueue',
+        'beanstalkQueue',
     ],
     'components' => [
         'db' => [
@@ -41,6 +42,10 @@ return [
         'amqpQueue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
             'driver' => \zhuravljov\yii\queue\amqp\Driver::class,
+        ],
+        'beanstalkQueue' => [
+            'class' => \zhuravljov\yii\queue\Queue::class,
+            'driver' => \zhuravljov\yii\queue\beanstalk\Driver::class,
         ],
     ],
 ];

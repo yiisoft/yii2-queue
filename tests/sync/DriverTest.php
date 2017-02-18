@@ -6,7 +6,7 @@ use Yii;
 use tests\DriverTestCase;
 
 /**
- * Db Driver Test
+ * Sync Driver Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

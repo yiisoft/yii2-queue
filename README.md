@@ -3,7 +3,7 @@ Yii2 Queue Extension
 
 Extension for async execution of jobs through a queue mechanism.
 
-It supported queues based on **DB**, **Redis**, **RabbitMQ** and **Gearman**.
+It supported queues based on **DB**, **Redis**, **RabbitMQ**, **Beanstalk** and **Gearman**.
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
