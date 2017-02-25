@@ -20,11 +20,17 @@ use zhuravljov\yii\queue\Signal;
  */
 class Driver extends BaseDriver implements BootstrapInterface
 {
+    const TYPE_EXCHANGE_DIRECT = 'direct';
+    const TYPE_EXCHANGE_TOPIC = 'topic';
+    const TYPE_EXCHANGE_FANOUT = 'fanout';
+
     public $host = 'localhost';
     public $port = 5672;
     public $user = 'guest';
     public $password = 'guest';
     public $queueName = 'queue';
+    public $exchangeName = 'exchange';
+    public $exchangeType = self::TYPE_EXCHANGE_DIRECT;
 
     /**
      * @var AMQPStreamConnection
@@ -66,7 +72,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     {
         $this->open();
         $message = new AMQPMessage($this->serialize($job));
-        $this->_channel->basic_publish($message, '', $this->queueName);
+        $this->_channel->basic_publish($message, $this->exchangeName, $this->queueName);
     }
 
     /**
@@ -97,6 +103,8 @@ class Driver extends BaseDriver implements BootstrapInterface
         $this->_connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password);
         $this->_channel = $this->_connection->channel();
         $this->_channel->queue_declare($this->queueName);
+        $this->_channel->exchange_declare($this->exchangeName, $this->exchangeType, false, true, false);
+        $this->_channel->queue_bind($this->queueName, $this->exchangeName);
     }
 
     /**
