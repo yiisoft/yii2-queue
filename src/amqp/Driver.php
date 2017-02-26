@@ -72,7 +72,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     {
         $this->open();
         $message = new AMQPMessage($this->serialize($job));
-        $this->_channel->basic_publish($message, $this->exchangeName, $this->queueName);
+        $this->_channel->basic_publish($message, $this->exchangeName);
     }
 
     /**
