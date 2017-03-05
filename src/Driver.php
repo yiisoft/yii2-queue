@@ -65,4 +65,12 @@ abstract class Driver extends Object
      * @param Job|mixed $job
      */
     abstract public function push($job);
+
+    /**
+     * Pushes job to the storage.
+     *
+     * @param Job|mixed $job
+     * @param integer $timeout
+     */
+    abstract public function later($job, $timeout);
 }

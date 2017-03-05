@@ -79,6 +79,16 @@ class Queue extends Component implements BootstrapInterface
     }
 
     /**
+     * @param Job|mixed $job
+     * @param integer $timeout
+     */
+    public function later($job, $timeout)
+    {
+        $this->driver->later($job, $timeout);
+        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
+    }
+
+    /**
      * @param Job $job
      * @return boolean
      */
