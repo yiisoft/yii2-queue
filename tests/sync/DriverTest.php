@@ -12,14 +12,6 @@ use tests\DriverTestCase;
  */
 class DriverTest extends DriverTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-        Yii::$app->db->createCommand()
-            ->delete(Yii::$app->dbQueue->driver->tableName)
-            ->execute();
-    }
-
     public function testRun()
     {
         $job = $this->createJob();
