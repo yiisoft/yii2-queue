@@ -4,6 +4,7 @@ namespace zhuravljov\yii\queue\sync;
 
 use Yii;
 use yii\base\Application;
+use yii\base\NotSupportedException;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
 /**
@@ -43,6 +44,14 @@ class Driver extends BaseDriver
     public function push($job)
     {
         $this->_messages[] = $this->serialize($job);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function later($job, $timeout)
+    {
+        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**

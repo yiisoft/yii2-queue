@@ -9,6 +9,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
 use yii\base\Event;
+use yii\base\NotSupportedException;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 
@@ -72,6 +73,14 @@ class Driver extends BaseDriver implements BootstrapInterface
         $this->open();
         $message = new AMQPMessage($this->serialize($job));
         $this->_channel->basic_publish($message, $this->exchangeName);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function later($job, $timeout)
+    {
+        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**

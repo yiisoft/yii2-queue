@@ -4,6 +4,7 @@ namespace zhuravljov\yii\queue\db;
 
 use yii\base\BootstrapInterface;
 use yii\base\Exception;
+use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -73,6 +74,14 @@ class Driver extends BaseDriver implements BootstrapInterface
             'job' => $this->serialize($job),
             'created_at' => time(),
         ])->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function later($job, $timeout)
+    {
+        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**

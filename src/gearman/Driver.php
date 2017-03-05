@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\queue\gearman;
 
 use yii\base\BootstrapInterface;
+use yii\base\NotSupportedException;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 use zhuravljov\yii\queue\Signal;
@@ -39,6 +40,14 @@ class Driver extends BaseDriver implements BootstrapInterface
         $client = new \GearmanClient();
         $client->addServer($this->host, $this->port);
         $client->doBackground($this->channel, $this->serialize($job));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function later($job, $timeout)
+    {
+        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\queue\redis;
 
 use yii\base\BootstrapInterface;
+use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\redis\Connection;
@@ -56,6 +57,14 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function push($job)
     {
         $this->redis->executeCommand('RPUSH', ["$this->channel.reserved", $this->serialize($job)]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function later($job, $timeout)
+    {
+        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**
