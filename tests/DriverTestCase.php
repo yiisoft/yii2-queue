@@ -29,23 +29,21 @@ class DriverTestCase extends TestCase
     protected function createJob()
     {
         $job = new TestJob();
-        $uid = uniqid();
-        $job->fileName = Yii::getAlias("@runtime/job-{$uid}.lock");
+        $job->uid = uniqid();
         return $job;
     }
 
     /**
      * @param TestJob $job
-     * @param string $massage
      */
-    protected function assertJobDone(TestJob $job, $massage = '')
+    protected function assertJobDone(TestJob $job)
     {
         $delay = 3000000;
-        while (!file_exists($job->fileName) && $delay > 0) {
+        while (!$job->getFilesCount() && $delay > 0) {
             usleep(50000);
             $delay -= 50000;
         }
-        $this->assertFileExists($job->fileName, $massage);
+        $this->assertEquals(1, $job->getFilesCount());
     }
 
 }

@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\queue\db;
 
 use yii\base\BootstrapInterface;
+use yii\base\Exception;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -101,10 +102,13 @@ class Driver extends BaseDriver implements BootstrapInterface
 
     /**
      * @return array|false
+     * @throws Exception in case it hasn't waited the lock
      */
     protected function pop()
     {
-        $this->mutex->acquire(__CLASS__ . $this->channel);
+        if (!$this->mutex->acquire(__CLASS__ . $this->channel, 3)) {
+            throw new Exception("Has not waited the lock.");
+        }
 
         $message = (new Query())
             ->from($this->tableName)

@@ -37,4 +37,15 @@ class DriverTest extends DriverTestCase
         $this->assertJobDone($job);
         Process::stop($pid);
     }
+
+    public function testMultiListen()
+    {
+        $pid1 = Process::start('php tests/app/yii.php db-queue/listen');
+        $pid2 = Process::start('php tests/app/yii.php db-queue/listen');
+        $job = $this->createJob();
+        Yii::$app->dbQueue->push($job);
+        $this->assertJobDone($job);
+        Process::stop($pid1);
+        Process::stop($pid2);
+    }
 }
