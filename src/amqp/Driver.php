@@ -11,7 +11,6 @@ use yii\base\BootstrapInterface;
 use yii\base\Event;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
-use zhuravljov\yii\queue\Signal;
 
 /**
  * AMQP Driver
@@ -89,7 +88,7 @@ class Driver extends BaseDriver implements BootstrapInterface
         };
         $this->_channel->basic_qos(null, 1, null);
         $this->_channel->basic_consume($this->queueName, '', false, false, false, false, $callback);
-        while(!Signal::isTerm() && count($this->_channel->callbacks)) {
+        while(count($this->_channel->callbacks)) {
             $this->_channel->wait();
         }
     }

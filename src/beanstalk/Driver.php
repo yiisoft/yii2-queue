@@ -7,6 +7,7 @@ use Pheanstalk\PheanstalkInterface;
 use yii\base\BootstrapInterface;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Signal;
 
 /**
  * Beanstalk Driver
@@ -81,7 +82,7 @@ class Driver extends BaseDriver implements BootstrapInterface
     {
         do {
             $this->run();
-        } while (!$delay || sleep($delay) === 0);
+        } while (!Signal::isExit() && (!$delay || sleep($delay) === 0));
     }
 
     /**

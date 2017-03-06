@@ -56,6 +56,6 @@ class Driver extends BaseDriver implements BootstrapInterface
 
         do {
             $worker->work();
-        } while (!Signal::isTerm() && $worker->returnCode() === GEARMAN_SUCCESS);
+        } while (!Signal::isExit() && $worker->returnCode() === GEARMAN_SUCCESS);
     }
 }
