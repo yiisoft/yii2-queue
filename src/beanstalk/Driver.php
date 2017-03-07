@@ -5,7 +5,6 @@ namespace zhuravljov\yii\queue\beanstalk;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\BootstrapInterface;
-use yii\base\NotSupportedException;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Driver as BaseDriver;
 use zhuravljov\yii\queue\Signal;
@@ -66,7 +65,13 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function later($job, $timeout)
     {
-        throw new NotSupportedException('Delayed work is not supported in the driver.');
+        $this->getPheanstalk()->putInTube(
+            $this->tube,
+            $this->serialize($job),
+            PheanstalkInterface::DEFAULT_PRIORITY,
+            $timeout,
+            $this->ttr
+        );
     }
 
     /**
