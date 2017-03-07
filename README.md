@@ -59,4 +59,15 @@ Yii::$app->queue->push(new DownloadJob([
 
 Method of handling a queue depend on selected driver.
 
+Pushes job into queue that run after 5 min:
+
+```php
+Yii::$app->queue->later(new DownloadJob([
+    'url' => 'http://example.com/image.jpg',
+    'file' => '/tmp/image.jpg',
+]), 5 * 60);
+```
+
+But only some drivers support delayed running.
+
 For more details see [the guide](docs/guide/README.md).

@@ -31,6 +31,7 @@ CREATE TABLE `queue` (
   `channel` varchar(255) NOT NULL,
   `job` blob NOT NULL,
   `created_at` int(11) NOT NULL,
+  `timeout` int(11) NOT NULL,
   `started_at` int(11) DEFAULT NULL,
   `finished_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),

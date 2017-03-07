@@ -4,7 +4,6 @@ namespace zhuravljov\yii\queue\db;
 
 use yii\base\BootstrapInterface;
 use yii\base\Exception;
-use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -73,6 +72,7 @@ class Driver extends BaseDriver implements BootstrapInterface
             'channel' => $this->channel,
             'job' => $this->serialize($job),
             'created_at' => time(),
+            'timeout' => 0,
         ])->execute();
     }
 
@@ -81,7 +81,12 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function later($job, $timeout)
     {
-        throw new NotSupportedException('Delayed work is not supported in the driver.');
+        $this->db->createCommand()->insert($this->tableName, [
+            'channel' => $this->channel,
+            'job' => $this->serialize($job),
+            'created_at' => time(),
+            'timeout' => $timeout,
+        ])->execute();
     }
 
     /**
@@ -121,7 +126,8 @@ class Driver extends BaseDriver implements BootstrapInterface
 
         $message = (new Query())
             ->from($this->tableName)
-            ->where(['channel' => $this->channel, 'started_at' => null])
+            ->andWhere(['channel' => $this->channel, 'started_at' => null])
+            ->andWhere('created_at <= :time - timeout', [':time' => time()])
             ->orderBy(['id' => SORT_ASC])
             ->limit(1)
             ->one($this->db);
