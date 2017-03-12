@@ -17,16 +17,11 @@ class TestJob extends Object implements Job
 
     public function run()
     {
-        file_put_contents($this->getFileName($this->getFilesCount() + 1), '');
+        file_put_contents($this->getFileName(), '');
     }
 
-    public function getFilesCount()
+    public function getFileName()
     {
-        return count(glob($this->getFileName('*')));
-    }
-
-    public function getFileName($number)
-    {
-        return Yii::getAlias("@runtime/job-{$this->uid}-{$number}.lock");
+        return Yii::getAlias("@runtime/job-{$this->uid}.lock");
     }
 }

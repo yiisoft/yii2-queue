@@ -39,11 +39,21 @@ class DriverTestCase extends TestCase
     protected function assertJobDone(TestJob $job)
     {
         $delay = 3000000;
-        while (!$job->getFilesCount() && $delay > 0) {
+        while (!file_exists($job->getFileName()) && $delay > 0) {
             usleep(50000);
             $delay -= 50000;
         }
-        $this->assertEquals(1, $job->getFilesCount());
+        $this->assertFileExists($job->getFileName());
     }
 
+    protected function assertJobLaterDone(TestJob $job, $time)
+    {
+        $delay = 3000000;
+        while (!file_exists($job->getFileName()) && $delay > 0) {
+            usleep(50000);
+            $delay -= 50000;
+        }
+        $this->assertFileExists($job->getFileName());
+        $this->assertGreaterThanOrEqual($time, filemtime($job->getFileName()));
+    }
 }
