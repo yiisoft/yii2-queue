@@ -34,7 +34,7 @@ class DriverTest extends DriverTestCase
     {
         $pid = Process::start('php tests/app/yii.php beanstalk-queue/listen');
         $job = $this->createJob();
-        Yii::$app->dbQueue->later($job, 2);
+        Yii::$app->beanstalkQueue->later($job, 2);
         sleep(2);
         $this->assertJobLaterDone($job, time());
         Process::stop($pid);
