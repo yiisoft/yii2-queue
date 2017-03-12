@@ -5,7 +5,6 @@ namespace tests\redis;
 use Yii;
 use tests\Process;
 use tests\DriverTestCase;
-use yii\base\NotSupportedException;
 
 /**
  * Redis Driver Test
@@ -35,11 +34,5 @@ class DriverTest extends DriverTestCase
         Yii::$app->redisQueue->push($job);
         $this->assertJobDone($job);
         Process::stop($pid);
-    }
-
-    public function testLater()
-    {
-        $this->expectException(NotSupportedException::class);
-        Yii::$app->amqpQueue->later($this->createJob(), 2);
     }
 }

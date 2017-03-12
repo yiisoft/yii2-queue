@@ -4,7 +4,6 @@ namespace tests\sync;
 
 use Yii;
 use tests\DriverTestCase;
-use yii\base\NotSupportedException;
 
 /**
  * Sync Driver Test
@@ -19,11 +18,5 @@ class DriverTest extends DriverTestCase
         Yii::$app->syncQueue->push($job);
         Yii::$app->syncQueue->driver->run();
         $this->assertJobDone($job);
-    }
-
-    public function testLater()
-    {
-        $this->expectException(NotSupportedException::class);
-        Yii::$app->amqpQueue->later($this->createJob(), 2);
     }
 }

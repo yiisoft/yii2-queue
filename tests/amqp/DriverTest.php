@@ -5,7 +5,6 @@ namespace tests\amqp;
 use Yii;
 use tests\Process;
 use tests\DriverTestCase;
-use yii\base\NotSupportedException;
 
 /**
  * AMQP Driver Test
@@ -26,11 +25,5 @@ class DriverTest extends DriverTestCase
         Yii::$app->amqpQueue->push($job);
         $this->assertJobDone($job);
         Process::stop($pid);
-    }
-
-    public function testLater()
-    {
-        $this->expectException(NotSupportedException::class);
-        Yii::$app->amqpQueue->later($this->createJob(), 2);
     }
 }

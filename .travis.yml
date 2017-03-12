@@ -32,4 +32,4 @@ before_script:
   - php tests/app/yii.php migrate --interactive=0
 
 script:
-  - phpunit --verbose
+  - vendor/bin/phpunit --verbose
