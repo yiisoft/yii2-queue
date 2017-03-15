@@ -20,10 +20,9 @@ class DriverTest extends DriverTestCase
 
     public function testListen()
     {
-        $pid = Process::start('php tests/app/yii.php amqp-queue/listen');
+        $this->startProcess('php tests/app/yii.php amqp-queue/listen');
         $job = $this->createJob();
         Yii::$app->amqpQueue->push($job);
         $this->assertJobDone($job);
-        Process::stop($pid);
     }
 }

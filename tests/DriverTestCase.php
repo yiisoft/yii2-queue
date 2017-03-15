@@ -13,14 +13,42 @@ use tests\app\TestJob;
 class DriverTestCase extends TestCase
 {
     /**
+     * @var int[] ids of started processes
+     */
+    private $pids = [];
+
+    /**
      * @inheritdoc
      */
-    public function setUp()
+    protected function tearDown()
     {
-        parent::setUp();
+        parent::tearDown();
+        // Kills started processes
+        foreach ($this->pids as $pid) {
+            exec("kill $pid");
+        }
+        // Removes temp job files
         foreach (glob(Yii::getAlias("@runtime/job-*.lock")) as $fileName) {
             unlink($fileName);
         }
+    }
+
+    /**
+     * @param string $cmd
+     */
+    protected function runProcess($cmd)
+    {
+        exec($cmd);
+    }
+
+    /**
+     * @param string $cmd
+     */
+    protected function startProcess($cmd)
+    {
+        $this->pids[] = (int) exec(strtr('nohup {cmd} >/dev/null 2>&1 & echo $!', [
+            '{cmd}' => $cmd,
+        ]));
     }
 
     /**
@@ -46,6 +74,10 @@ class DriverTestCase extends TestCase
         $this->assertFileExists($job->getFileName());
     }
 
+    /**
+     * @param TestJob $job
+     * @param int $time
+     */
     protected function assertJobLaterDone(TestJob $job, $time)
     {
         $delay = 3000000;
