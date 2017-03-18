@@ -9,7 +9,7 @@ use yii\db\Migration;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class m000000_000002_later extends Migration
+class M000000000002Later extends Migration
 {
     public $tableName = '{{%queue}}';
 
