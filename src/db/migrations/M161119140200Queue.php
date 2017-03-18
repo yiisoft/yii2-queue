@@ -9,7 +9,7 @@ use yii\db\Migration;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class M000000000001Queue extends Migration
+class M161119140200Queue extends Migration
 {
     public $tableName = '{{%queue}}';
     public $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
