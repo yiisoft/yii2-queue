@@ -3,6 +3,9 @@
 namespace zhuravljov\yii\queue;
 
 use yii\base\Object;
+use yii\di\Instance;
+use zhuravljov\yii\queue\serializers\PhpSerializer;
+use zhuravljov\yii\queue\serializers\Serializer;
 
 /**
  * Queue driver interface
@@ -14,9 +17,9 @@ use yii\base\Object;
 abstract class Driver extends Object
 {
     /**
-     * @var callable
+     * @var Serializer|array
      */
-    public $serializer = 'serialize';
+    public $serializer = PhpSerializer::class;
 
     /**
      * @var Queue
@@ -34,6 +37,15 @@ abstract class Driver extends Object
     }
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->serializer = Instance::ensure($this->serializer, Serializer::class);
+    }
+
+    /**
      * @return Queue
      */
     protected function getQueue()
@@ -47,7 +59,7 @@ abstract class Driver extends Object
      */
     protected function serialize($job)
     {
-        return call_user_func($this->serializer, $job);
+        return $this->serializer->serialize($job);
     }
 
     /**
@@ -56,7 +68,7 @@ abstract class Driver extends Object
      */
     protected function unserialize($serialized)
     {
-        return unserialize($serialized);
+        return $this->serializer->unserialize($serialized);
     }
 
     /**
