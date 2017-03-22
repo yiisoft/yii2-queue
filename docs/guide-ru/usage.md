@@ -90,7 +90,7 @@ return [
         'queue' => [
             'class' => \zhuravljov\yii\queue\Queue::class,
             'driver' => [
-                'serializer' => 'json_encode',
+                'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
             ],
         ],
     ],
@@ -114,7 +114,7 @@ return [
             'class' => \zhuravljov\yii\queue\Queue::class,
             'driver' => [
                 'class' => \zhuravljov\yii\queue\db\Driver::class,
-                'serializer' => 'json_encode',
+                'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
             ],
         ],
     ],
