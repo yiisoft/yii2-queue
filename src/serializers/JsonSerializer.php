@@ -54,16 +54,20 @@ class JsonSerializer extends Object implements Serializer
             foreach (get_object_vars($data) as $property => $value) {
                 $result[$property] = $this->toArray($value);
             }
+
             return $result;
-        } elseif (is_array($data)) {
+        }
+        
+        if (is_array($data)) {
             $result = [];
             foreach ($data as $key => $value) {
                 $result[$key] = $this->toArray($value);
             }
+
             return $result;
-        } else {
-            return $data;
         }
+        
+        return $data;
     }
 
     /**
@@ -74,19 +78,23 @@ class JsonSerializer extends Object implements Serializer
     {
         if (!is_array($data)) {
             return $data;
-        } elseif (!isset($data[$this->classKey])) {
+        }
+        
+        if (!isset($data[$this->classKey])) {
             $result = [];
             foreach ($data as $key => $value) {
                 $result[$key] = $this->fromArray($value);
             }
+            
             return $result;
-        } else {
-            $config = ['class' => $data[$this->classKey]];
-            unset($data[$this->classKey]);
-            foreach ($data as $property => $value) {
-                $config[$property] = $this->fromArray($value);
-            }
-            return Yii::createObject($config);
         }
+        
+        $config = ['class' => $data[$this->classKey]];
+        unset($data[$this->classKey]);
+        foreach ($data as $property => $value) {
+            $config[$property] = $this->fromArray($value);
+        }
+        
+        return Yii::createObject($config);
     }
 }
