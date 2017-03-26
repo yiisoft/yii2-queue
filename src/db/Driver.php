@@ -33,6 +33,10 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public $mutex = 'mutex';
     /**
+     * @var int timeout
+     */
+    public $mutexTimeout = 3;
+    /**
      * @var string table name
      */
     public $tableName = '{{%queue}}';
@@ -125,7 +129,7 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     protected function pop()
     {
-        if (!$this->mutex->acquire(__CLASS__ . $this->channel, 3)) {
+        if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
             throw new Exception("Has not waited the lock.");
         }
 
