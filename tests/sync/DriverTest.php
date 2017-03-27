@@ -17,11 +17,16 @@ use tests\DriverTestCase;
  */
 class DriverTest extends DriverTestCase
 {
+    protected function getQueue()
+    {
+        return Yii::$app->syncQueue;
+    }
+
     public function testRun()
     {
         $job = $this->createJob();
-        Yii::$app->syncQueue->push($job);
-        Yii::$app->syncQueue->driver->run();
+        $this->getQueue()->push($job);
+        $this->getQueue()->driver->run();
         $this->assertJobDone($job);
     }
 }

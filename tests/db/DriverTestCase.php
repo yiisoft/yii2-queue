@@ -8,8 +8,6 @@
 namespace tests\db;
 
 use yii\db\Connection;
-use yii\helpers\Inflector;
-use zhuravljov\yii\queue\Queue;
 
 /**
  * Db Driver Test Case
@@ -19,32 +17,12 @@ use zhuravljov\yii\queue\Queue;
 abstract class DriverTestCase extends \tests\DriverTestCase
 {
     /**
-     * @return Queue
-     */
-    abstract protected function getQueue();
-
-    /**
      * @return Connection
      */
     protected function getDb()
     {
         return $this->getQueue()->driver->db;
     }
-
-    protected function runProcess($cmd)
-    {
-        parent::runProcess(strtr($cmd, [
-            'queue' => Inflector::camel2id($this->getQueue()->id),
-        ]));
-    }
-
-    protected function startProcess($cmd)
-    {
-        parent::startProcess(strtr($cmd, [
-            'queue' => Inflector::camel2id($this->getQueue()->id),
-        ]));
-    }
-
 
     public function setUp()
     {
@@ -58,13 +36,13 @@ abstract class DriverTestCase extends \tests\DriverTestCase
     {
         $job = $this->createJob();
         $this->getQueue()->push($job);
-        $this->runProcess('php tests/app/yii.php queue/run');
+        $this->runProcess('yii queue/run');
         $this->assertJobDone($job);
     }
 
     public function testListen()
     {
-        $this->startProcess('php tests/app/yii.php queue/listen');
+        $this->startProcess('yii queue/listen');
         $job = $this->createJob();
         $this->getQueue()->push($job);
         $this->assertJobDone($job);
@@ -72,7 +50,7 @@ abstract class DriverTestCase extends \tests\DriverTestCase
 
     public function testLater()
     {
-        $this->startProcess('php tests/app/yii.php queue/listen');
+        $this->startProcess('yii queue/listen');
         $job = $this->createJob();
         $this->getQueue()->later($job, 2);
         sleep(2);

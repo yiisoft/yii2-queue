@@ -17,27 +17,32 @@ use tests\DriverTestCase;
  */
 class DriverTest extends DriverTestCase
 {
+    protected function getQueue()
+    {
+        return Yii::$app->beanstalkQueue;
+    }
+
     public function testRun()
     {
         $job = $this->createJob();
-        Yii::$app->beanstalkQueue->push($job);
-        $this->runProcess('php tests/app/yii.php beanstalk-queue/run');
+        $this->getQueue()->push($job);
+        $this->runProcess('yii queue/run');
         $this->assertJobDone($job);
     }
 
     public function testListen()
     {
-        $this->startProcess('php tests/app/yii.php beanstalk-queue/listen');
+        $this->startProcess('yii queue/listen');
         $job = $this->createJob();
-        Yii::$app->beanstalkQueue->push($job);
+        $this->getQueue()->push($job);
         $this->assertJobDone($job);
     }
 
     public function testLater()
     {
-        $this->startProcess('php tests/app/yii.php beanstalk-queue/listen');
+        $this->startProcess('yii queue/listen');
         $job = $this->createJob();
-        Yii::$app->beanstalkQueue->later($job, 2);
+        $this->getQueue()->later($job, 2);
         sleep(2);
         $this->assertJobLaterDone($job, time());
     }

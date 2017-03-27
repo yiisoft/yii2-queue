@@ -17,25 +17,30 @@ use tests\DriverTestCase;
  */
 class DriverTest extends DriverTestCase
 {
+    protected function getQueue()
+    {
+        return Yii::$app->redisQueue;
+    }
+
     public function setUp()
     {
         parent::setUp();
-        Yii::$app->redis->executeCommand('FLUSHDB');
+        $this->getQueue()->driver->redis->executeCommand('FLUSHDB');
     }
 
     public function testRun()
     {
         $job = $this->createJob();
-        Yii::$app->redisQueue->push($job);
-        $this->runProcess('php tests/app/yii.php redis-queue/run');
+        $this->getQueue()->push($job);
+        $this->runProcess('yii queue/run');
         $this->assertJobDone($job);
     }
 
     public function testListen()
     {
-        $this->startProcess('php tests/app/yii.php redis-queue/listen');
+        $this->startProcess('yii queue/listen');
         $job = $this->createJob();
-        Yii::$app->redisQueue->push($job);
+        $this->getQueue()->push($job);
         $this->assertJobDone($job);
     }
 }

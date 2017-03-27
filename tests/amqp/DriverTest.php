@@ -17,16 +17,16 @@ use tests\DriverTestCase;
  */
 class DriverTest extends DriverTestCase
 {
-    public function setUp()
+    protected function getQueue()
     {
-        parent::setUp();
+        return Yii::$app->amqpQueue;
     }
 
     public function testListen()
     {
-        $this->startProcess('php tests/app/yii.php amqp-queue/listen');
+        $this->startProcess('yii queue/listen');
         $job = $this->createJob();
-        Yii::$app->amqpQueue->push($job);
+        $this->getQueue()->push($job);
         $this->assertJobDone($job);
     }
 }
