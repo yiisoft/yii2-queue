@@ -17,7 +17,7 @@ use yii\db\Migration;
 class M161119140200Queue extends Migration
 {
     public $tableName = '{{%queue}}';
-    public $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+    public $tableOptions;
 
     public function up()
     {

@@ -9,5 +9,13 @@ return [
                 'zhuravljov\yii\queue\db\migrations',
             ],
         ],
+        'sqlite-migrate' => [
+            'class' => \yii\console\controllers\MigrateController::class,
+            'db' => 'sqlite',
+            'migrationPath' => null,
+            'migrationNamespaces' => [
+                'zhuravljov\yii\queue\db\migrations',
+            ],
+        ],
     ],
 ];

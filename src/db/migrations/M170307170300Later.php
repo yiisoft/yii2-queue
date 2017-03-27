@@ -20,7 +20,7 @@ class M170307170300Later extends Migration
 
     public function up()
     {
-        $this->addColumn($this->tableName, 'timeout', $this->integer()->notNull()->after('created_at'));
+        $this->addColumn($this->tableName, 'timeout', $this->integer()->defaultValue(0)->notNull()->after('created_at'));
     }
 
     public function down()

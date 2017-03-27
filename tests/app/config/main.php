@@ -5,6 +5,7 @@ return [
     'vendorPath' => dirname(dirname(dirname(__DIR__))) . '/vendor',
     'bootstrap' => [
         'mysqlQueue',
+        'sqliteQueue',
         'redisQueue',
         'amqpQueue',
         'beanstalkQueue',
@@ -29,6 +30,18 @@ return [
                     'class' => \yii\mutex\MysqlMutex::class,
                     'db' => 'mysql',
                 ],
+            ],
+        ],
+        'sqlite' => [
+            'class' => \yii\db\Connection::class,
+            'dsn' => 'sqlite:@runtime/yii2_queue_test.db',
+        ],
+        'sqliteQueue' => [
+            'class' => \zhuravljov\yii\queue\Queue::class,
+            'driver' => [
+                'class' => \zhuravljov\yii\queue\db\Driver::class,
+                'db' => 'sqlite',
+                'mutex' => \yii\mutex\FileMutex::class,
             ],
         ],
         'redis' => [

@@ -30,6 +30,7 @@ install:
 before_script:
   - mysql -e 'CREATE DATABASE yii2_queue_test;'
   - php tests/app/yii.php mysql-migrate --interactive=0
+  - php tests/app/yii.php sqlite-migrate --interactive=0
 
 script:
   - vendor/bin/phpunit --verbose
