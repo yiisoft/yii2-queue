@@ -15,7 +15,7 @@ use tests\app\TestJob;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class DriverTestCase extends TestCase
+abstract class DriverTestCase extends TestCase
 {
     /**
      * @var int[] ids of started processes
