@@ -36,13 +36,13 @@ abstract class DriverTestCase extends \tests\DriverTestCase
     {
         $job = $this->createJob();
         $this->getQueue()->push($job);
-        $this->runProcess('yii queue/run');
+        $this->runProcess('php tests/yii queue/run');
         $this->assertJobDone($job);
     }
 
     public function testListen()
     {
-        $this->startProcess('yii queue/listen');
+        $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
         $this->getQueue()->push($job);
         $this->assertJobDone($job);
@@ -50,7 +50,7 @@ abstract class DriverTestCase extends \tests\DriverTestCase
 
     public function testLater()
     {
-        $this->startProcess('yii queue/listen');
+        $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
         $this->getQueue()->later($job, 2);
         sleep(2);

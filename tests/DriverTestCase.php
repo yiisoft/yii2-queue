@@ -36,7 +36,6 @@ abstract class DriverTestCase extends TestCase
     private function prepareCmd($cmd)
     {
         return strtr($cmd, [
-            'yii' => 'php tests/app/yii.php',
             'queue' => Inflector::camel2id($this->getQueue()->id)
         ]);
     }

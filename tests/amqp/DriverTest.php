@@ -24,7 +24,7 @@ class DriverTest extends DriverTestCase
 
     public function testListen()
     {
-        $this->startProcess('yii queue/listen');
+        $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
         $this->getQueue()->push($job);
         $this->assertJobDone($job);
