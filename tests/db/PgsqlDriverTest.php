@@ -20,4 +20,11 @@ class PgsqlDriverTest extends DriverTestCase
     {
         return Yii::$app->pgsqlQueue;
     }
+
+    public function setUp()
+    {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped();
+        }
+    }
 }
