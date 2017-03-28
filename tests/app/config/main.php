@@ -6,6 +6,7 @@ return [
     'bootstrap' => [
         'mysqlQueue',
         'sqliteQueue',
+        'pgsqlQueue',
         'redisQueue',
         'amqpQueue',
         'beanstalkQueue',
@@ -42,6 +43,25 @@ return [
                 'class' => \zhuravljov\yii\queue\db\Driver::class,
                 'db' => 'sqlite',
                 'mutex' => \yii\mutex\FileMutex::class,
+            ],
+        ],
+        'pgsql' => [
+            'class' => \yii\db\Connection::class,
+            'dsn' => 'pgsql:host=localhost;dbname=yii2_queue_test',
+            'username' => 'postgres',
+            'password' => '',
+            'charset' => 'utf8',
+        ],
+        'pgsqlQueue' => [
+            'class' => \zhuravljov\yii\queue\Queue::class,
+            'driver' => [
+                'class' => \zhuravljov\yii\queue\db\Driver::class,
+                'db' => 'pgsql',
+                'mutex' => [
+                    'class' => \yii\mutex\PgsqlMutex::class,
+                    'db' => 'pgsql',
+                ],
+                'mutexTimeout' => 0,
             ],
         ],
         'redis' => [

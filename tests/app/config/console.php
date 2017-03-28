@@ -17,5 +17,13 @@ return [
                 'zhuravljov\yii\queue\db\migrations',
             ],
         ],
+        'pgsql-migrate' => [
+            'class' => \yii\console\controllers\MigrateController::class,
+            'db' => 'pgsql',
+            'migrationPath' => null,
+            'migrationNamespaces' => [
+                'zhuravljov\yii\queue\db\migrations',
+            ],
+        ],
     ],
 ];

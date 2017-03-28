@@ -152,6 +152,13 @@ class Driver extends BaseDriver implements BootstrapInterface
 
         $this->mutex->release(__CLASS__ . $this->channel);
 
+        // pgsql
+        if (is_resource($message['job'])) {
+            $handle = $message['job'];
+            $message['job'] = '';
+            while (!feof($handle)) $message['job'] .= fread($handle, 1024);
+        }
+
         return $message;
     }
 

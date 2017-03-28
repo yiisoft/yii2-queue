@@ -8,6 +8,8 @@ php:
   - hhvm
 
 services:
+  - mysql
+  - postgresql
   - redis-server
   - rabbitmq
 
@@ -31,6 +33,8 @@ before_script:
   - mysql -e 'CREATE DATABASE yii2_queue_test;'
   - php tests/yii mysql-migrate --interactive=0
   - php tests/yii sqlite-migrate --interactive=0
+  - psql -c  'create database yii2_queue_test;' -U postgres
+  - php tests/yii pgsql-migrate --interactive=0
 
 script:
   - vendor/bin/phpunit --verbose
