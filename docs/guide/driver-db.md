@@ -10,14 +10,11 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\db\Driver::class,
-                'db' => 'db', // connection ID
-                'tableName' => '{{%queue}}', // table
-                'channel' => 'default', // queue channel
-                'mutex' => \yii\mutex\MysqlMutex::class, // Mutex used to sync queries
-            ],
+            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'db' => 'db', // connection ID
+            'tableName' => '{{%queue}}', // table
+            'channel' => 'default', // queue channel
+            'mutex' => \yii\mutex\MysqlMutex::class, // Mutex used to sync queries
         ],
     ],
 ];

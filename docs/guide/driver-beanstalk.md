@@ -10,13 +10,10 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\beanstalk\Driver::class,
-                'host' => 'localhost',
-                'port' => 11300,
-                'tube' => 'queue',
-            ],
+            'class' => \zhuravljov\yii\queue\beanstalk\Queue::class,
+            'host' => 'localhost',
+            'port' => 11300,
+            'tube' => 'queue',
         ],
     ],
 ];

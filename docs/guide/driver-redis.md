@@ -12,12 +12,9 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\redis\Driver::class,
-                'redis' => 'redis', // connection ID
-                'channel' => 'queue', // queue channel
-            ],
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'redis' => 'redis', // connection ID
+            'channel' => 'queue', // queue channel
         ],
     ],
 ];
@@ -40,8 +37,8 @@ obtained and executed. This method is most effificient when command is properly 
 `supervisord`.
 
 ```bash
-yii queue/stats
+yii queue/stat
 ```
 
-`stats` command prints out statistics.
+`stat` command prints out statistics.
 
