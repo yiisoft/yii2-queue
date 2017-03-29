@@ -39,7 +39,7 @@ class StatAction extends Action
     }
 
     /**
-     * Returns statistic
+     * Returns redis-queue statistic.
      */
     public function run()
     {

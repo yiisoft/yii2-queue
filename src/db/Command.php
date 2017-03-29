@@ -22,6 +22,24 @@ class Command extends BaseCommand
     public $queue;
 
     /**
+     * @var string
+     */
+    public $defaultAction = 'stat';
+
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            'stat' => [
+                'class' => StatAction::class,
+                'queue' => $this->queue,
+            ],
+        ];
+    }
+
+    /**
      * Runs all jobs from db-queue.
      * It can be used as cron job.
      */

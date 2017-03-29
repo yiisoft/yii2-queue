@@ -61,3 +61,9 @@ yii queue/listen [delay]
 obtained and executed. `delay` is time in seconds to wait between querying a queue next time.
 This method is most effificient when command is properly daemonized via supervisor such as
 `supervisord`.
+
+```bash
+yii queue/stat
+```
+
+`stat` command prints out statistics.
