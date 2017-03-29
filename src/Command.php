@@ -17,9 +17,9 @@ use yii\console\Controller;
 abstract class Command extends Controller
 {
     /**
-     * @var Driver
+     * @var Queue
      */
-    public $driver;
+    public $queue;
     /**
      * @var boolean
      */
@@ -51,7 +51,7 @@ abstract class Command extends Controller
     public function beforeAction($action)
     {
         if ($this->verbose) {
-            $this->driver->queue->attachBehavior('verbose', VerboseBehavior::class);
+            $this->queue->attachBehavior('verbose', VerboseBehavior::class);
         }
 
         return parent::beforeAction($action);

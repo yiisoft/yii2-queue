@@ -9,16 +9,16 @@ namespace zhuravljov\yii\queue\gearman;
 
 use yii\base\BootstrapInterface;
 use yii\base\NotSupportedException;
-use yii\helpers\Inflector;
-use zhuravljov\yii\queue\Driver as BaseDriver;
+use yii\console\Application as ConsoleApp;
+use zhuravljov\yii\queue\Queue as BaseQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
- * Gearman Driver
+ * Gearman Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Driver extends BaseDriver implements BootstrapInterface
+class Queue extends BaseQueue implements BootstrapInterface
 {
     public $host = 'localhost';
     public $port = 4730;
@@ -29,30 +29,12 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[Inflector::camel2id($this->queue->id)] = [
+        if ($app instanceof ConsoleApp) {
+            $app->controllerMap[$this->getId()] = [
                 'class' => Command::class,
-                'driver' => $this,
+                'queue' => $this,
             ];
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function push($job)
-    {
-        $client = new \GearmanClient();
-        $client->addServer($this->host, $this->port);
-        $client->doBackground($this->channel, $this->serialize($job));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function later($job, $timeout)
-    {
-        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**
@@ -64,12 +46,26 @@ class Driver extends BaseDriver implements BootstrapInterface
         $worker->addServer($this->host, $this->port);
         $worker->setTimeout(-1);
         $worker->addFunction($this->channel, function (\GearmanJob $message) {
-            $job = $this->unserialize($message->workload());
-            $this->getQueue()->run($job);
+            $job = $this->serializer->unserialize($message->workload());
+            $this->execute($job);
         });
 
         do {
             $worker->work();
         } while (!Signal::isExit() && $worker->returnCode() === GEARMAN_SUCCESS);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushPayload($payload, $timeout)
+    {
+        if ($timeout) {
+            throw new NotSupportedException('Delayed work is not supported in the driver.');
+        }
+
+        $client = new \GearmanClient();
+        $client->addServer($this->host, $this->port);
+        $client->doBackground($this->channel, $payload);
     }
 }

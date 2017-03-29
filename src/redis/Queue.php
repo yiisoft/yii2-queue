@@ -9,21 +9,18 @@ namespace zhuravljov\yii\queue\redis;
 
 use yii\base\BootstrapInterface;
 use yii\base\NotSupportedException;
+use yii\console\Application as ConsoleApp;
 use yii\di\Instance;
-use yii\helpers\Inflector;
 use yii\redis\Connection;
-use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Queue as BaseQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
- * Redis Driver
- *
- * @property integer $reservedCount
- * @property array $workersInfo
+ * Redis Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Driver extends BaseDriver implements BootstrapInterface
+class Queue extends BaseQueue implements BootstrapInterface
 {
     /**
      * @var Connection|array|string
@@ -48,28 +45,12 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[Inflector::camel2id($this->queue->id)] = [
+        if ($app instanceof ConsoleApp) {
+            $app->controllerMap[$this->getId()] = [
                 'class' => Command::class,
-                'driver' => $this,
+                'queue' => $this,
             ];
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function push($job)
-    {
-        $this->redis->executeCommand('RPUSH', ["$this->channel.reserved", $this->serialize($job)]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function later($job, $timeout)
-    {
-        throw new NotSupportedException('Delayed work is not supported in the driver.');
     }
 
     /**
@@ -79,8 +60,8 @@ class Driver extends BaseDriver implements BootstrapInterface
     {
         $this->openWorker();
         while (($result = $this->redis->executeCommand('LPOP', ["$this->channel.reserved"])) !== null) {
-            $job = $this->unserialize($result);
-            $this->getQueue()->run($job);
+            $job = $this->serializer->unserialize($result);
+            $this->execute($job);
         }
         $this->closeWorker();
     }
@@ -93,40 +74,23 @@ class Driver extends BaseDriver implements BootstrapInterface
         $this->openWorker();
         while (!Signal::isExit()) {
             if ($result = $this->redis->executeCommand('BLPOP', ["$this->channel.reserved", 3])) {
-                $job = $this->unserialize($result[1]);
-                $this->getQueue()->run($job);
+                $job = $this->serializer->unserialize($result[1]);
+                $this->execute($job);
             }
         }
         $this->closeWorker();
     }
 
     /**
-     * @return integer
+     * @inheritdoc
      */
-    public function getReservedCount()
+    protected function pushPayload($payload, $timeout)
     {
-        return $this->redis->executeCommand('LLEN', ["$this->channel.reserved"]);
-    }
-
-    /**
-     * @return array
-     */
-    public function getWorkersInfo()
-    {
-        $workers = [];
-        $data = $this->redis->executeCommand('CLIENT', ['LIST']);
-        foreach (explode("\n", trim($data)) as $line) {
-            $client = [];
-            foreach (explode(' ', trim($line)) as $pair) {
-                list($key, $value) = explode('=', $pair, 2);
-                $client[$key] = $value;
-            }
-            if (isset($client['name']) && strpos($client['name'], "$this->channel.worker")  === 0) {
-                $workers[$client['name']] = $client;
-            }
+        if ($timeout) {
+            throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        return $workers;
+        $this->redis->executeCommand('RPUSH', ["$this->channel.reserved", $payload]);
     }
 
     protected function openWorker()

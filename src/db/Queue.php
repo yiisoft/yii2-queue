@@ -9,20 +9,20 @@ namespace zhuravljov\yii\queue\db;
 
 use yii\base\BootstrapInterface;
 use yii\base\Exception;
+use yii\console\Application as ConsoleApp;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
-use yii\helpers\Inflector;
 use yii\mutex\Mutex;
-use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Queue as BaseQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
- * DB Driver
+ * Db Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Driver extends BaseDriver implements BootstrapInterface
+class Queue extends BaseQueue implements BootstrapInterface
 {
     /**
      * @var Connection|array|string
@@ -64,38 +64,12 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[Inflector::camel2id($this->queue->id)] = [
+        if ($app instanceof ConsoleApp) {
+            $app->controllerMap[$this->getId()] = [
                 'class' => Command::class,
-                'driver' => $this,
+                'queue' => $this,
             ];
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function push($job)
-    {
-        $this->db->createCommand()->insert($this->tableName, [
-            'channel' => $this->channel,
-            'job' => $this->serialize($job),
-            'created_at' => time(),
-            'timeout' => 0,
-        ])->execute();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function later($job, $timeout)
-    {
-        $this->db->createCommand()->insert($this->tableName, [
-            'channel' => $this->channel,
-            'job' => $this->serialize($job),
-            'created_at' => time(),
-            'timeout' => $timeout,
-        ])->execute();
     }
 
     /**
@@ -104,8 +78,8 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function run()
     {
         while (!Signal::isExit() && ($message = $this->pop())) {
-            $job = $this->unserialize($message['job']);
-            if ($this->getQueue()->run($job)) {
+            $job = $this->serializer->unserialize($message['job']);
+            if ($this->execute($job)) {
                 $this->release($message);
             }
         }
@@ -121,6 +95,19 @@ class Driver extends BaseDriver implements BootstrapInterface
         do {
             $this->run();
         } while (!$delay || sleep($delay) === 0);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushPayload($payload, $timeout)
+    {
+        $this->db->createCommand()->insert($this->tableName, [
+            'channel' => $this->channel,
+            'job' => $payload,
+            'created_at' => time(),
+            'timeout' => $timeout,
+        ])->execute();
     }
 
     /**

@@ -7,7 +7,6 @@
 
 namespace zhuravljov\yii\queue\redis;
 
-use yii\helpers\Console;
 use zhuravljov\yii\queue\Command as BaseCommand;
 
 /**
@@ -18,13 +17,27 @@ use zhuravljov\yii\queue\Command as BaseCommand;
 class Command extends BaseCommand
 {
     /**
+     * @var Queue
+     */
+    public $queue;
+
+    /**
      * @var string
      */
-    public $defaultAction = 'stats';
+    public $defaultAction = 'stat';
+
     /**
-     * @var Driver
+     * @inheritdoc
      */
-    public $driver;
+    public function actions()
+    {
+        return [
+            'stat' => [
+                'class' => StatAction::class,
+                'queue' => $this->queue,
+            ],
+        ];
+    }
 
     /**
      * Runs all jobs from redis-queue.
@@ -32,7 +45,7 @@ class Command extends BaseCommand
      */
     public function actionRun()
     {
-        $this->driver->run();
+        $this->queue->run();
     }
 
     /**
@@ -41,28 +54,6 @@ class Command extends BaseCommand
      */
     public function actionListen()
     {
-        $this->driver->listen();
-    }
-
-    /**
-     * Returns statistics
-     */
-    public function actionStats()
-    {
-        echo Console::ansiFormat('Jobs', [Console::FG_GREEN]);
-        echo PHP_EOL;
-        echo Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]);
-        echo $this->driver->getReservedCount();
-        echo PHP_EOL;
-
-        if ($workersInfo = $this->driver->getWorkersInfo()) {
-            echo Console::ansiFormat('Workers ', [Console::FG_GREEN]);
-            echo PHP_EOL;
-            foreach ($workersInfo as $name => $info) {
-                echo Console::ansiFormat("- $name: ", [Console::FG_YELLOW]);
-                echo $info['addr'];
-                echo PHP_EOL;
-            }
-        }
+        $this->queue->listen();
     }
 }

@@ -10,16 +10,16 @@ namespace zhuravljov\yii\queue\beanstalk;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\BootstrapInterface;
-use yii\helpers\Inflector;
-use zhuravljov\yii\queue\Driver as BaseDriver;
+use yii\console\Application as ConsoleApp;
+use zhuravljov\yii\queue\Queue as BaseQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
- * Beanstalk Driver
+ * Beanstalk Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Driver extends BaseDriver implements BootstrapInterface
+class Queue extends BaseQueue implements BootstrapInterface
 {
     /**
      * @var string connection host
@@ -38,45 +38,17 @@ class Driver extends BaseDriver implements BootstrapInterface
      */
     public $ttr = PheanstalkInterface::DEFAULT_TTR;
 
-        /**
+    /**
      * @inheritdoc
      */
     public function bootstrap($app)
     {
-        if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[Inflector::camel2id($this->queue->id)] = [
+        if ($app instanceof ConsoleApp) {
+            $app->controllerMap[$this->getId()] = [
                 'class' => Command::class,
-                'driver' => $this,
+                'queue' => $this,
             ];
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function push($job)
-    {
-        $this->getPheanstalk()->putInTube(
-            $this->tube,
-            $this->serialize($job),
-            PheanstalkInterface::DEFAULT_PRIORITY,
-            0,
-            $this->ttr
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function later($job, $timeout)
-    {
-        $this->getPheanstalk()->putInTube(
-            $this->tube,
-            $this->serialize($job),
-            PheanstalkInterface::DEFAULT_PRIORITY,
-            $timeout,
-            $this->ttr
-        );
     }
 
     /**
@@ -85,8 +57,8 @@ class Driver extends BaseDriver implements BootstrapInterface
     public function run()
     {
         while ($message = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
-            $job = $this->unserialize($message->getData());
-            if ($this->getQueue()->run($job)) {
+            $job = $this->serializer->unserialize($message->getData());
+            if ($this->execute($job)) {
                 $this->getPheanstalk()->delete($message);
             }
         }
@@ -102,6 +74,20 @@ class Driver extends BaseDriver implements BootstrapInterface
         do {
             $this->run();
         } while (!Signal::isExit() && (!$delay || sleep($delay) === 0));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushPayload($payload, $timeout)
+    {
+        $this->getPheanstalk()->putInTube(
+            $this->tube,
+            $payload,
+            PheanstalkInterface::DEFAULT_PRIORITY,
+            $timeout,
+            $this->ttr
+        );
     }
 
     /**

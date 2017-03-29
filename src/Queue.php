@@ -8,17 +8,18 @@
 namespace zhuravljov\yii\queue;
 
 use Yii;
-use yii\base\BootstrapInterface;
 use yii\base\Component;
+use yii\di\Instance;
+use yii\helpers\Inflector;
+use zhuravljov\yii\queue\serializers\Serializer;
+use zhuravljov\yii\queue\serializers\PhpSerializer;
 
 /**
- * Class Queue
- *
- * @property string $id of component
+ * Base Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends Component implements BootstrapInterface
+abstract class Queue extends Component
 {
     /**
      * @event JobEvent
@@ -38,9 +39,9 @@ class Queue extends Component implements BootstrapInterface
     const EVENT_AFTER_ERROR = 'afterError';
 
     /**
-     * @var Driver|array|string
+     * @var Serializer|array
      */
-    public $driver = [];
+    public $serializer = PhpSerializer::class;
 
     /**
      * @inheritdoc
@@ -48,38 +49,21 @@ class Queue extends Component implements BootstrapInterface
     public function init()
     {
         parent::init();
-        $this->driver = Yii::createObject($this->driver, [$this]);
+        $this->serializer = Instance::ensure($this->serializer, Serializer::class);
     }
 
     /**
-     * @inheritdoc
+     * @param string $payload
+     * @param int $timeout
      */
-    public function bootstrap($app)
-    {
-        if ($this->driver instanceof BootstrapInterface) {
-            $this->driver->bootstrap($app);
-        }
-    }
-
-    /**
-     * @return string component id
-     */
-    public function getId()
-    {
-        foreach (Yii::$app->getComponents(false) as $id => $component) {
-            if ($component === $this) {
-                return $id;
-            }
-        }
-        return null;
-    }
+    abstract protected function pushPayload($payload, $timeout);
 
     /**
      * @param Job|mixed $job
      */
     public function push($job)
     {
-        $this->driver->push($job);
+        $this->pushPayload($this->serializer->serialize($job), 0);
         $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
     }
 
@@ -89,7 +73,7 @@ class Queue extends Component implements BootstrapInterface
      */
     public function later($job, $timeout)
     {
-        $this->driver->later($job, $timeout);
+        $this->pushPayload($this->serializer->serialize($job), $timeout);
         $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
     }
 
@@ -97,7 +81,7 @@ class Queue extends Component implements BootstrapInterface
      * @param Job $job
      * @return boolean
      */
-    public function run(Job $job)
+    protected function execute(Job $job)
     {
         $error = null;
         $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent(['job' => $job]));
@@ -111,5 +95,18 @@ class Queue extends Component implements BootstrapInterface
         }
 
         return !$error;
+    }
+
+    /**
+     * @return string component id
+     */
+    protected function getId()
+    {
+        foreach (Yii::$app->getComponents(false) as $id => $component) {
+            if ($component === $this) {
+                return Inflector::camel2id($id);
+            }
+        }
+        return null;
     }
 }

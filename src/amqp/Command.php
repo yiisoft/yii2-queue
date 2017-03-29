@@ -17,9 +17,9 @@ use zhuravljov\yii\queue\Command as BaseCommand;
 class Command extends BaseCommand
 {
     /**
-     * @var Driver
+     * @var Queue
      */
-    public $driver;
+    public $queue;
 
     /**
      * Listens amqp-queue and runs new jobs.
@@ -27,6 +27,6 @@ class Command extends BaseCommand
      */
     public function actionListen()
     {
-        $this->driver->listen();
+        $this->queue->listen();
     }
 }

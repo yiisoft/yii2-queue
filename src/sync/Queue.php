@@ -10,14 +10,14 @@ namespace zhuravljov\yii\queue\sync;
 use Yii;
 use yii\base\Application;
 use yii\base\NotSupportedException;
-use zhuravljov\yii\queue\Driver as BaseDriver;
+use zhuravljov\yii\queue\Queue as BaseQueue;
 
 /**
- * Sync Driver
+ * Sync Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Driver extends BaseDriver
+class Queue extends BaseQueue
 {
     /**
      * @var boolean
@@ -26,7 +26,7 @@ class Driver extends BaseDriver
     /**
      * @var array
      */
-    private $_messages = [];
+    private $messages = [];
 
     /**
      * @inheritdoc
@@ -44,29 +44,25 @@ class Driver extends BaseDriver
     }
 
     /**
-     * @inheritdoc
-     */
-    public function push($job)
-    {
-        $this->_messages[] = $this->serialize($job);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function later($job, $timeout)
-    {
-        throw new NotSupportedException('Delayed work is not supported in the driver.');
-    }
-
-    /**
      * Runs all jobs from queue.
      */
     public function run()
     {
-        while (($message = array_shift($this->_messages)) !== null) {
-            $job = $this->unserialize($message);
-            $this->getQueue()->run($job);
+        while (($message = array_shift($this->messages)) !== null) {
+            $job = $this->serializer->unserialize($message);
+            $this->execute($job);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushPayload($payload, $timeout)
+    {
+        if ($timeout) {
+            throw new NotSupportedException('Delayed work is not supported in the driver.');
+        }
+
+        $this->messages[] = $payload;
     }
 }
