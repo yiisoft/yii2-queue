@@ -23,14 +23,11 @@ return [
             ],
         ],
         'mysqlQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\db\Driver::class,
+            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'db' => 'mysql',
+            'mutex' => [
+                'class' => \yii\mutex\MysqlMutex::class,
                 'db' => 'mysql',
-                'mutex' => [
-                    'class' => \yii\mutex\MysqlMutex::class,
-                    'db' => 'mysql',
-                ],
             ],
         ],
         'sqlite' => [
@@ -38,12 +35,9 @@ return [
             'dsn' => 'sqlite:@runtime/yii2_queue_test.db',
         ],
         'sqliteQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\db\Driver::class,
-                'db' => 'sqlite',
-                'mutex' => \yii\mutex\FileMutex::class,
-            ],
+            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'db' => 'sqlite',
+            'mutex' => \yii\mutex\FileMutex::class,
         ],
         'pgsql' => [
             'class' => \yii\db\Connection::class,
@@ -53,36 +47,29 @@ return [
             'charset' => 'utf8',
         ],
         'pgsqlQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\db\Driver::class,
+            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'db' => 'pgsql',
+            'mutex' => [
+                'class' => \yii\mutex\PgsqlMutex::class,
                 'db' => 'pgsql',
-                'mutex' => [
-                    'class' => \yii\mutex\PgsqlMutex::class,
-                    'db' => 'pgsql',
-                ],
-                'mutexTimeout' => 0,
             ],
+            'mutexTimeout' => 0,
         ],
         'redis' => [
             'class' => \yii\redis\Connection::class,
             'database' => 2,
         ],
         'redisQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => \zhuravljov\yii\queue\redis\Driver::class,
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
         ],
         'amqpQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => \zhuravljov\yii\queue\amqp\Driver::class,
+            'class' => \zhuravljov\yii\queue\amqp\Queue::class,
         ],
         'beanstalkQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => \zhuravljov\yii\queue\beanstalk\Driver::class,
+            'class' => \zhuravljov\yii\queue\beanstalk\Queue::class,
         ],
         'syncQueue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => \zhuravljov\yii\queue\sync\Driver::class,
+            'class' => \zhuravljov\yii\queue\sync\Queue::class,
         ],
     ],
 ];

@@ -8,16 +8,20 @@
 namespace tests\db;
 
 use Yii;
+use zhuravljov\yii\queue\db\Queue;
 
 /**
- * MySQL Driver Test
+ * Sqlite Queue Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class MysqlDriverTest extends DriverTestCase
+class SqliteQueueTest extends QueueTestCase
 {
+    /**
+     * @return Queue
+     */
     protected function getQueue()
     {
-        return Yii::$app->mysqlQueue;
+        return Yii::$app->sqliteQueue;
     }
 }

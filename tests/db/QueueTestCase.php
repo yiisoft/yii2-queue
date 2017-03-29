@@ -7,28 +7,20 @@
 
 namespace tests\db;
 
-use yii\db\Connection;
+use tests\QueueTestCase as BaseQueueTestCase;
 
 /**
  * Db Driver Test Case
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class DriverTestCase extends \tests\DriverTestCase
+abstract class QueueTestCase extends BaseQueueTestCase
 {
-    /**
-     * @return Connection
-     */
-    protected function getDb()
-    {
-        return $this->getQueue()->driver->db;
-    }
-
     public function setUp()
     {
         parent::setUp();
-        $this->getDb()->createCommand()
-            ->delete($this->getQueue()->driver->tableName)
+        $this->getQueue()->db->createCommand()
+            ->delete($this->getQueue()->tableName)
             ->execute();
     }
 

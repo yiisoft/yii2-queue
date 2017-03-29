@@ -8,14 +8,18 @@
 namespace tests\db;
 
 use Yii;
+use zhuravljov\yii\queue\db\Queue;
 
 /**
- * PostgreSQL Driver Test
+ * Postgres Queue Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class PgsqlDriverTest extends DriverTestCase
+class PgsqlQueueTest extends QueueTestCase
 {
+    /**
+     * @return Queue
+     */
     protected function getQueue()
     {
         return Yii::$app->pgsqlQueue;
@@ -23,6 +27,7 @@ class PgsqlDriverTest extends DriverTestCase
 
     public function setUp()
     {
+        parent::setUp();
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped();
         }

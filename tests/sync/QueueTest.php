@@ -5,28 +5,32 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace tests\amqp;
+namespace tests\sync;
 
 use Yii;
-use tests\DriverTestCase;
+use tests\QueueTestCase;
+use zhuravljov\yii\queue\sync\Queue;
 
 /**
- * AMQP Driver Test
+ * Sync Queue Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class DriverTest extends DriverTestCase
+class QueueTest extends QueueTestCase
 {
+    /**
+     * @return Queue
+     */
     protected function getQueue()
     {
-        return Yii::$app->amqpQueue;
+        return Yii::$app->syncQueue;
     }
 
-    public function testListen()
+    public function testRun()
     {
-        $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
         $this->getQueue()->push($job);
+        $this->getQueue()->run();
         $this->assertJobDone($job);
     }
 }

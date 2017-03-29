@@ -8,15 +8,19 @@
 namespace tests\redis;
 
 use Yii;
-use tests\DriverTestCase;
+use tests\QueueTestCase;
+use zhuravljov\yii\queue\redis\Queue;
 
 /**
- * Redis Driver Test
+ * Redis Queue Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class DriverTest extends DriverTestCase
+class QueueTest extends QueueTestCase
 {
+    /**
+     * @return Queue
+     */
     protected function getQueue()
     {
         return Yii::$app->redisQueue;
@@ -25,7 +29,7 @@ class DriverTest extends DriverTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->getQueue()->driver->redis->executeCommand('FLUSHDB');
+        $this->getQueue()->redis->executeCommand('FLUSHDB');
     }
 
     public function testRun()

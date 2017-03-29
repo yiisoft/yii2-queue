@@ -8,15 +8,19 @@
 namespace tests\beanstalk;
 
 use Yii;
-use tests\DriverTestCase;
+use tests\QueueTestCase;
+use zhuravljov\yii\queue\beanstalk\Queue;
 
 /**
- * Beanstalk Driver Test
+ * Beanstalk Queue Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class DriverTest extends DriverTestCase
+class QueueTest extends QueueTestCase
 {
+    /**
+     * @return Queue
+     */
     protected function getQueue()
     {
         return Yii::$app->beanstalkQueue;

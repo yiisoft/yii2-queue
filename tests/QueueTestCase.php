@@ -9,15 +9,14 @@ namespace tests;
 
 use Yii;
 use tests\app\TestJob;
-use yii\helpers\Inflector;
 use zhuravljov\yii\queue\Queue;
 
 /**
- * Driver Test Case
+ * Queue Test Case
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class DriverTestCase extends TestCase
+abstract class QueueTestCase extends TestCase
 {
     /**
      * @var int[] ids of started processes
@@ -35,8 +34,12 @@ abstract class DriverTestCase extends TestCase
      */
     private function prepareCmd($cmd)
     {
+        $class = new \ReflectionClass($this->getQueue());
+        $method = $class->getMethod('getId');
+        $method->setAccessible(true);
+
         return strtr($cmd, [
-            'queue' => Inflector::camel2id($this->getQueue()->id)
+            'queue' => $method->invoke($this->getQueue()),
         ]);
     }
 
