@@ -12,12 +12,9 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\redis\Driver::class,
-                'redis' => 'redis', // ID подключения
-                'channel' => 'queue', // Ключ канала очереди
-            ],
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'redis' => 'redis', // ID подключения
+            'channel' => 'queue', // Ключ канала очереди
         ],
     ],
 ];
@@ -41,8 +38,8 @@ yii queue/listen
 если запускать команду через демон-супервизор, например `supervisord`.
 
 ```bash
-yii queue/stats
+yii queue/stat
 ```
 
-Команда `stats` выводит статистику очереди.
+Команда `stat` выводит статистику очереди.
 

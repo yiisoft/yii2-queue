@@ -9,12 +9,11 @@
 
 ```php
 return [
-    'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
+            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
             'as log' => \zhuravljov\yii\queue\LogBehavior::class,
-            'driver' => [], // Конфигурация драйвера
+            // Индивидуальные настройки драйвера
         ],
     ],
 ];
@@ -88,10 +87,8 @@ Yii::$app->queue->push([
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
-            ],
+            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
+            'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
         ],
     ],
 ];
@@ -107,15 +104,11 @@ return [
 return [
     'components' => [
         'queue1' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => \zhuravljov\yii\queue\redis\Driver::class,
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
         ],
         'queue2' => [
-            'class' => \zhuravljov\yii\queue\Queue::class,
-            'driver' => [
-                'class' => \zhuravljov\yii\queue\db\Driver::class,
-                'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
-            ],
+            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
         ],
     ],
 ];
