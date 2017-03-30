@@ -27,9 +27,10 @@ class PgsqlQueueTest extends QueueTestCase
 
     public function setUp()
     {
-        parent::setUp();
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped();
+        } else {
+            parent::setUp();
         }
     }
 }
