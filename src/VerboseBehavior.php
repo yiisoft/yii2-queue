@@ -8,6 +8,7 @@
 namespace zhuravljov\yii\queue;
 
 use yii\base\Behavior;
+use yii\helpers\Console;
 
 /**
  * Class VerboseBehavior
@@ -28,16 +29,17 @@ class VerboseBehavior extends Behavior
     {
         return [
             Queue::EVENT_BEFORE_WORK => function (JobEvent $event) {
-                echo strtr('{time}: {class} has been started ... ', [
+                Console::stdout(strtr('{time}: {class} has been started ... ', [
                     '{time}' => date('Y-m-d H:i:s'),
                     '{class}' => get_class($event->job),
-                ]);
+                ]));
             },
             Queue::EVENT_AFTER_WORK => function (JobEvent $event) {
-                echo "OK\n";
+                Console::output('OK');
             },
             Queue::EVENT_AFTER_ERROR => function (ErrorEvent $event) {
-                echo "Error\n{$event->error}\n";
+                Console::output('Error');
+                Console::error($event->error);
             },
         ];
     }

@@ -48,5 +48,4 @@ abstract class QueueTestCase extends BaseQueueTestCase
         sleep(2);
         $this->assertJobLaterDone($job, time());
     }
-
 }

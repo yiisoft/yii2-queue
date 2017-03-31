@@ -7,6 +7,7 @@
 
 namespace tests;
 
+use Symfony\Component\Process\Process;
 use Yii;
 use tests\app\TestJob;
 use zhuravljov\yii\queue\Queue;
@@ -19,9 +20,9 @@ use zhuravljov\yii\queue\Queue;
 abstract class QueueTestCase extends TestCase
 {
     /**
-     * @var int[] ids of started processes
+     * @var Process[] ids of started processes
      */
-    private $pids = [];
+    private $processes = [];
 
     /**
      * @return Queue
@@ -48,7 +49,12 @@ abstract class QueueTestCase extends TestCase
      */
     protected function runProcess($cmd)
     {
-        exec($this->prepareCmd($cmd));
+        $cmd = $this->prepareCmd($cmd);
+        $process = new Process($cmd);
+        $process->run();
+
+        $error = $process->getErrorOutput();
+        $this->assertEmpty($error, "Can not execute '$cmd' command:\n$error");
     }
 
     /**
@@ -56,9 +62,9 @@ abstract class QueueTestCase extends TestCase
      */
     protected function startProcess($cmd)
     {
-        $this->pids[] = (int) exec(strtr('nohup {cmd} >/dev/null 2>&1 & echo $!', [
-            '{cmd}' => $this->prepareCmd($cmd),
-        ]));
+        $process = new Process('exec ' . $this->prepareCmd($cmd));
+        $process->start();
+        $this->processes[] = $process;
     }
 
     /**
@@ -104,14 +110,17 @@ abstract class QueueTestCase extends TestCase
      */
     protected function tearDown()
     {
-        parent::tearDown();
         // Kills started processes
-        foreach ($this->pids as $pid) {
-            exec("kill $pid");
+        foreach ($this->processes as $process) {
+            $process->stop();
         }
+        $this->processes = [];
+
         // Removes temp job files
         foreach (glob(Yii::getAlias("@runtime/job-*.lock")) as $fileName) {
             unlink($fileName);
         }
+
+        parent::tearDown();
     }
 }

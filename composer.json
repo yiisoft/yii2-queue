@@ -19,11 +19,12 @@
         "yiisoft/yii2": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.4",
-        "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-redis": "*",
         "php-amqplib/php-amqplib": "*",
-        "pda/pheanstalk": "*"
+        "pda/pheanstalk": "*",
+        "yiisoft/yii2-debug": "*",
+        "phpunit/phpunit": "~4.4",
+        "symfony/process": "*"
     },
     "suggest": {
         "ext-pcntl": "Needed to support process signals."
