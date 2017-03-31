@@ -141,9 +141,7 @@ class Queue extends BaseQueue implements BootstrapInterface
 
         // pgsql
         if (is_resource($message['job'])) {
-            $handle = $message['job'];
-            $message['job'] = '';
-            while (!feof($handle)) $message['job'] .= fread($handle, 1024);
+            $message['job'] = stream_get_contents($message['job']);
         }
 
         return $message;
