@@ -43,19 +43,16 @@ class StatAction extends Action
      */
     public function run()
     {
-        echo Console::ansiFormat('Jobs', [Console::FG_GREEN]);
-        echo PHP_EOL;
-        echo Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]);
-        echo $this->getReservedCount();
-        echo PHP_EOL;
+        Console::output(Console::ansiFormat('Jobs', [Console::FG_GREEN]));
+
+        Console::stdout(Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]));
+        Console::output($this->getReservedCount());
 
         if ($workersInfo = $this->getWorkersInfo()) {
-            echo Console::ansiFormat('Workers ', [Console::FG_GREEN]);
-            echo PHP_EOL;
+            Console::output(Console::ansiFormat('Workers ', [Console::FG_GREEN]));
             foreach ($workersInfo as $name => $info) {
-                echo Console::ansiFormat("- $name: ", [Console::FG_YELLOW]);
-                echo $info['addr'];
-                echo PHP_EOL;
+                Console::stdout(Console::ansiFormat("- $name: ", [Console::FG_YELLOW]));
+                Console::output($info['addr']);
             }
         }
     }
