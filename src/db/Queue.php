@@ -78,8 +78,7 @@ class Queue extends BaseQueue implements BootstrapInterface
     public function run()
     {
         while (!Signal::isExit() && ($message = $this->pop())) {
-            $job = $this->serializer->unserialize($message['job']);
-            if ($this->execute($job)) {
+            if ($this->handleMessage($message['job'])) {
                 $this->release($message);
             }
         }
@@ -100,11 +99,11 @@ class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function pushPayload($payload, $timeout)
+    protected function sendMessage($message, $timeout)
     {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
-            'job' => $payload,
+            'job' => $message,
             'created_at' => time(),
             'timeout' => $timeout,
         ])->execute();

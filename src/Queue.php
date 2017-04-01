@@ -9,6 +9,7 @@ namespace zhuravljov\yii\queue;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidParamException;
 use yii\di\Instance;
 use yii\helpers\Inflector;
 use zhuravljov\yii\queue\serializers\Serializer;
@@ -53,17 +54,11 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string $payload
-     * @param int $timeout
-     */
-    abstract protected function pushPayload($payload, $timeout);
-
-    /**
      * @param Job|mixed $job
      */
     public function push($job)
     {
-        $this->pushPayload($this->serializer->serialize($job), 0);
+        $this->sendMessage($this->serializer->serialize($job), 0);
         $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
     }
 
@@ -73,16 +68,27 @@ abstract class Queue extends Component
      */
     public function later($job, $timeout)
     {
-        $this->pushPayload($this->serializer->serialize($job), $timeout);
+        $this->sendMessage($this->serializer->serialize($job), $timeout);
         $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
     }
 
     /**
-     * @param Job $job
+     * @param string $message
+     * @param int $timeout
+     */
+    abstract protected function sendMessage($message, $timeout);
+
+    /**
+     * @param string $message
      * @return boolean
      */
-    protected function execute(Job $job)
+    protected function handleMessage($message)
     {
+        $job = $this->serializer->unserialize($message);
+        if (!($job instanceof Job)) {
+            throw new InvalidParamException('Message must be ' . Job::class . ' object.');
+        }
+
         $error = null;
         $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent(['job' => $job]));
         try {

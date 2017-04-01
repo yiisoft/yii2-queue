@@ -76,8 +76,7 @@ class Queue extends BaseQueue implements BootstrapInterface
     {
         $this->open();
         $callback = function(AMQPMessage $message) {
-            $job = $this->serializer->unserialize($message->body);
-            if ($this->execute($job)) {
+            if ($this->handleMessage($message->body)) {
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             }
         };
@@ -91,15 +90,14 @@ class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function pushPayload($payload, $timeout)
+    protected function sendMessage($message, $timeout)
     {
         if ($timeout) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
         $this->open();
-        $message = new AMQPMessage($payload);
-        $this->channel->basic_publish($message, $this->exchangeName);
+        $this->channel->basic_publish(new AMQPMessage($message), $this->exchangeName);
     }
 
     /**

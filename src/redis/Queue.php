@@ -60,8 +60,7 @@ class Queue extends BaseQueue implements BootstrapInterface
     {
         $this->openWorker();
         while (($result = $this->redis->executeCommand('LPOP', ["$this->channel.reserved"])) !== null) {
-            $job = $this->serializer->unserialize($result);
-            $this->execute($job);
+            $this->handleMessage($result);
         }
         $this->closeWorker();
     }
@@ -74,8 +73,7 @@ class Queue extends BaseQueue implements BootstrapInterface
         $this->openWorker();
         while (!Signal::isExit()) {
             if ($result = $this->redis->executeCommand('BLPOP', ["$this->channel.reserved", 3])) {
-                $job = $this->serializer->unserialize($result[1]);
-                $this->execute($job);
+                $this->handleMessage($result[1]);
             }
         }
         $this->closeWorker();
@@ -84,13 +82,13 @@ class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function pushPayload($payload, $timeout)
+    protected function sendMessage($message, $timeout)
     {
         if ($timeout) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        $this->redis->executeCommand('RPUSH', ["$this->channel.reserved", $payload]);
+        $this->redis->executeCommand('RPUSH', ["$this->channel.reserved", $message]);
     }
 
     protected function openWorker()

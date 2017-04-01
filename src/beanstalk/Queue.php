@@ -57,8 +57,7 @@ class Queue extends BaseQueue implements BootstrapInterface
     public function run()
     {
         while ($message = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
-            $job = $this->serializer->unserialize($message->getData());
-            if ($this->execute($job)) {
+            if ($this->handleMessage($message->getData())) {
                 $this->getPheanstalk()->delete($message);
             }
         }
@@ -79,11 +78,11 @@ class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function pushPayload($payload, $timeout)
+    protected function sendMessage($message, $timeout)
     {
         $this->getPheanstalk()->putInTube(
             $this->tube,
-            $payload,
+            $message,
             PheanstalkInterface::DEFAULT_PRIORITY,
             $timeout,
             $this->ttr

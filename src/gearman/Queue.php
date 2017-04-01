@@ -46,8 +46,7 @@ class Queue extends BaseQueue implements BootstrapInterface
         $worker->addServer($this->host, $this->port);
         $worker->setTimeout(-1);
         $worker->addFunction($this->channel, function (\GearmanJob $message) {
-            $job = $this->serializer->unserialize($message->workload());
-            $this->execute($job);
+            $this->handleMessage($message->workload());
         });
 
         do {
@@ -58,7 +57,7 @@ class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function pushPayload($payload, $timeout)
+    protected function sendMessage($message, $timeout)
     {
         if ($timeout) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
@@ -66,6 +65,6 @@ class Queue extends BaseQueue implements BootstrapInterface
 
         $client = new \GearmanClient();
         $client->addServer($this->host, $this->port);
-        $client->doBackground($this->channel, $payload);
+        $client->doBackground($this->channel, $message);
     }
 }

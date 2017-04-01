@@ -49,20 +49,19 @@ class Queue extends BaseQueue
     public function run()
     {
         while (($message = array_shift($this->messages)) !== null) {
-            $job = $this->serializer->unserialize($message);
-            $this->execute($job);
+            $this->handleMessage($message);
         }
     }
 
     /**
      * @inheritdoc
      */
-    protected function pushPayload($payload, $timeout)
+    protected function sendMessage($message, $timeout)
     {
         if ($timeout) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        $this->messages[] = $payload;
+        $this->messages[] = $message;
     }
 }
