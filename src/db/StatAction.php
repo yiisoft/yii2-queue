@@ -45,53 +45,65 @@ class StatAction extends Action
      */
     public function run()
     {
-        echo Console::ansiFormat('Jobs', [Console::FG_GREEN]);
-        echo PHP_EOL;
-        echo Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]);
-        echo $this->getReservedCount();
-        echo PHP_EOL;
-        echo Console::ansiFormat('- started: ', [Console::FG_YELLOW]);
-        echo $this->getStartedCount();
-        echo PHP_EOL;
-        echo Console::ansiFormat('- finished: ', [Console::FG_YELLOW]);
-        echo $this->getFinishedCount();
-        echo PHP_EOL;
+        Console::output(Console::ansiFormat('Jobs', [Console::FG_GREEN]));
+
+        Console::stdout(Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]));
+        Console::output($this->getReserved()->count('*', $this->queue->db));
+
+        Console::stdout(Console::ansiFormat('- delayed: ', [Console::FG_YELLOW]));
+        Console::output($this->getDelayed()->count('*', $this->queue->db));
+
+        Console::stdout(Console::ansiFormat('- started: ', [Console::FG_YELLOW]));
+        Console::output($this->getStarted()->count('*', $this->queue->db));
+
+        Console::stdout(Console::ansiFormat('- finished: ', [Console::FG_YELLOW]));
+        Console::output($this->getFinished()->count('*', $this->queue->db));
     }
 
     /**
-     * @return int
+     * @return Query
      */
-    protected function getReservedCount()
+    protected function getReserved()
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['started_at' => null])
-            ->count('*', $this->queue->db);
+            ->andWhere(['timeout' => 0]);
     }
 
     /**
-     * @return int
+     * @return Query
      */
-    protected function getStartedCount()
+    protected function getDelayed()
+    {
+        return (new Query())
+            ->from($this->queue->tableName)
+            ->andWhere(['channel' => $this->queue->channel])
+            ->andWhere(['started_at' => null])
+            ->andWhere(['>', 'timeout', 0]);
+    }
+
+    /**
+     * @return Query
+     */
+    protected function getStarted()
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere('[[started_at]] is not null')
-            ->andWhere(['finished_at' => null])
-            ->count('*', $this->queue->db);
+            ->andWhere(['finished_at' => null]);
     }
 
     /**
-     * @return int
+     * @return Query
      */
-    protected function getFinishedCount()
+    protected function getFinished()
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
-            ->andWhere('[[finished_at]] is not null')
-            ->count('*', $this->queue->db);
+            ->andWhere('[[finished_at]] is not null');
     }
 }
