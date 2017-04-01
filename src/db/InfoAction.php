@@ -15,11 +15,11 @@ use yii\helpers\Console;
 
 
 /**
- * Statistic Action
+ * Info about queue status.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class StatAction extends Action
+class InfoAction extends Action
 {
     /**
      * @var Queue
@@ -32,7 +32,11 @@ class StatAction extends Action
     public function init()
     {
         parent::init();
-        if (!$this->controller instanceof ConsoleController) {
+
+        if (!$this->queue && ($this->controller instanceof Command)) {
+            $this->queue = $this->controller->queue;
+        }
+        if (!($this->controller instanceof ConsoleController)) {
             throw new InvalidConfigException('The controller must be console controller.');
         }
         if (!($this->queue instanceof Queue)) {
@@ -41,7 +45,7 @@ class StatAction extends Action
     }
 
     /**
-     * Returns db-queue statistic.
+     * Info about queue status.
      */
     public function run()
     {

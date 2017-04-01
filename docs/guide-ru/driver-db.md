@@ -61,7 +61,7 @@ yii queue/listen [delay]
 демон-супервизор, например `supervisord`.
 
 ```bash
-yii queue/stat
+yii queue/info
 ```
 
-Команда `stat` выводит статистику очереди.
+Команда `info` выводит инофрмацию о состоянии очереди.

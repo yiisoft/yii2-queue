@@ -37,8 +37,8 @@ obtained and executed. This method is most effificient when command is properly 
 `supervisord`.
 
 ```bash
-yii queue/stat
+yii queue/info
 ```
 
-`stat` command prints out statistics.
+`info` command prints out information about queue status.
 

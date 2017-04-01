@@ -13,11 +13,11 @@ use yii\console\Controller as ConsoleController;
 use yii\helpers\Console;
 
 /**
- * Statistic Action
+ * Info about queue status.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class StatAction extends Action
+class InfoAction extends Action
 {
     /**
      * @var Queue
@@ -30,6 +30,10 @@ class StatAction extends Action
     public function init()
     {
         parent::init();
+
+        if (!$this->queue && ($this->controller instanceof Command)) {
+            $this->queue = $this->controller->queue;
+        }
         if (!$this->controller instanceof ConsoleController) {
             throw new InvalidConfigException('The controller must be console controller.');
         }
@@ -39,7 +43,7 @@ class StatAction extends Action
     }
 
     /**
-     * Returns redis-queue statistic.
+     * Info about queue status.
      */
     public function run()
     {

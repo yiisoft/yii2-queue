@@ -24,7 +24,7 @@ class Command extends BaseCommand
     /**
      * @var string
      */
-    public $defaultAction = 'stat';
+    public $defaultAction = 'info';
 
     /**
      * @inheritdoc
@@ -32,10 +32,7 @@ class Command extends BaseCommand
     public function actions()
     {
         return [
-            'stat' => [
-                'class' => StatAction::class,
-                'queue' => $this->queue,
-            ],
+            'info' => InfoAction::class,
         ];
     }
 
