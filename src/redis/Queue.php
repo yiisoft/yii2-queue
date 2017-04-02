@@ -8,7 +8,6 @@
 namespace zhuravljov\yii\queue\redis;
 
 use yii\base\BootstrapInterface;
-use yii\base\NotSupportedException;
 use yii\console\Application as ConsoleApp;
 use yii\di\Instance;
 use yii\redis\Connection;
@@ -59,8 +58,9 @@ class Queue extends BaseQueue implements BootstrapInterface
     public function run()
     {
         $this->openWorker();
-        while (($result = $this->redis->executeCommand('LPOP', ["$this->channel.reserved"])) !== null) {
-            $this->handleMessage($result);
+        while (($payload = $this->pop(0)) !== null) {
+            list($id, $message) = explode(':', $payload, 2);
+            $this->handleMessage($message);
         }
         $this->closeWorker();
     }
@@ -72,28 +72,60 @@ class Queue extends BaseQueue implements BootstrapInterface
     {
         $this->openWorker();
         while (!Signal::isExit()) {
-            if ($result = $this->redis->executeCommand('BLPOP', ["$this->channel.reserved", 3])) {
-                $this->handleMessage($result[1]);
+            if (($payload = $this->pop(3)) !== null) {
+                list($id, $message) = explode(':', $payload, 2);
+                $this->handleMessage($message);
             }
         }
         $this->closeWorker();
     }
 
     /**
+     * @param int $wait timeout
+     * @return string|null payload
+     */
+    protected function pop($wait)
+    {
+        // Move delayed messages into reserved
+        if ($this->now < time()) {
+            $this->now = time();
+            if ($delayed = $this->redis->zrevrangebyscore("$this->channel.delayed", $this->now, '-inf')) {
+                $this->redis->zremrangebyscore("$this->channel.delayed", '-inf', $this->now);
+                foreach ($delayed as $payload) {
+                    $this->redis->rpush("$this->channel.reserved", $payload);
+                }
+            }
+        }
+
+        // Find a new reserved message
+        if (!$wait) {
+            return $this->redis->rpop("$this->channel.reserved");
+        } elseif ($result = $this->redis->brpop("$this->channel.reserved", $wait)) {
+            return $result[1];
+        } else {
+            return null;
+        }
+    }
+
+    private $now = 0;
+
+    /**
      * @inheritdoc
      */
     protected function sendMessage($message, $timeout)
     {
-        if ($timeout) {
-            throw new NotSupportedException('Delayed work is not supported in the driver.');
+        $id = $this->redis->incr("$this->channel.message_id");
+        $payload = "$id:$message";
+        if (!$timeout) {
+            $this->redis->lpush("$this->channel.reserved", $payload);
+        } else {
+            $this->redis->zadd("$this->channel.delayed", time() + $timeout, $payload);
         }
-
-        $this->redis->executeCommand('RPUSH', ["$this->channel.reserved", $message]);
     }
 
     protected function openWorker()
     {
-        $id = $this->redis->executeCommand('INCR', ["$this->channel.last_worker_id"]);
+        $id = $this->redis->incr("$this->channel.worker_id");
         $this->redis->executeCommand('CLIENT', ['SETNAME', "$this->channel.worker.$id"]);
     }
 

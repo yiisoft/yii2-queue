@@ -47,4 +47,13 @@ class QueueTest extends QueueTestCase
         $this->getQueue()->push($job);
         $this->assertJobDone($job);
     }
+
+    public function testLater()
+    {
+        $this->startProcess('php tests/yii queue/listen');
+        $job = $this->createJob();
+        $this->getQueue()->later($job, 2);
+        sleep(2);
+        $this->assertJobLaterDone($job, time());
+    }
 }

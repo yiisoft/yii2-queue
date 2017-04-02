@@ -52,6 +52,9 @@ class InfoAction extends Action
         Console::stdout(Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]));
         Console::output($this->getReservedCount());
 
+        Console::stdout(Console::ansiFormat('- delayed: ', [Console::FG_YELLOW]));
+        Console::output($this->getDelayedCount());
+
         if ($workersInfo = $this->getWorkersInfo()) {
             Console::output(Console::ansiFormat('Workers ', [Console::FG_GREEN]));
             foreach ($workersInfo as $name => $info) {
@@ -66,7 +69,15 @@ class InfoAction extends Action
      */
     protected function getReservedCount()
     {
-        return $this->queue->redis->executeCommand('LLEN', [$this->queue->channel . '.reserved']);
+        return $this->queue->redis->llen($this->queue->channel . '.reserved');
+    }
+
+    /**
+     * @return integer
+     */
+    protected function getDelayedCount()
+    {
+        return $this->queue->redis->zcount($this->queue->channel . '.delayed', '-inf', '+inf');
     }
 
     /**

@@ -77,9 +77,9 @@ class Queue extends BaseQueue implements BootstrapInterface
      */
     public function run()
     {
-        while (!Signal::isExit() && ($message = $this->pop())) {
-            if ($this->handleMessage($message['job'])) {
-                $this->release($message);
+        while (!Signal::isExit() && ($payload = $this->pop())) {
+            if ($this->handleMessage($payload['job'])) {
+                $this->release($payload);
             }
         }
     }
@@ -110,7 +110,7 @@ class Queue extends BaseQueue implements BootstrapInterface
     }
 
     /**
-     * @return array|false
+     * @return array|false payload
      * @throws Exception in case it hasn't waited the lock
      */
     protected function pop()
@@ -119,7 +119,7 @@ class Queue extends BaseQueue implements BootstrapInterface
             throw new Exception("Has not waited the lock.");
         }
 
-        $message = (new Query())
+        $payload = (new Query())
             ->from($this->tableName)
             ->andWhere(['channel' => $this->channel, 'started_at' => null])
             ->andWhere('created_at <= :time - timeout', [':time' => time()])
@@ -127,40 +127,40 @@ class Queue extends BaseQueue implements BootstrapInterface
             ->limit(1)
             ->one($this->db);
 
-        if (is_array($message)) {
-            $message['started_at'] = time();
+        if (is_array($payload)) {
+            $payload['started_at'] = time();
             $this->db->createCommand()->update(
                 $this->tableName,
-                ['started_at' => $message['started_at']],
-                ['id' => $message['id']]
+                ['started_at' => $payload['started_at']],
+                ['id' => $payload['id']]
             )->execute();
         }
 
         $this->mutex->release(__CLASS__ . $this->channel);
 
         // pgsql
-        if (is_resource($message['job'])) {
-            $message['job'] = stream_get_contents($message['job']);
+        if (is_resource($payload['job'])) {
+            $payload['job'] = stream_get_contents($payload['job']);
         }
 
-        return $message;
+        return $payload;
     }
 
     /**
-     * @param array $message
+     * @param array $payload
      */
-    protected function release($message)
+    protected function release($payload)
     {
         if ($this->deleteReleased) {
             $this->db->createCommand()->delete(
                 $this->tableName,
-                ['id' => $message['id']]
+                ['id' => $payload['id']]
             )->execute();
         } else {
             $this->db->createCommand()->update(
                 $this->tableName,
                 ['finished_at' => time()],
-                ['id' => $message['id']]
+                ['id' => $payload['id']]
             )->execute();
         }
     }
