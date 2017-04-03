@@ -16,6 +16,7 @@
         "docs": "https://github.com/zhuravljov/yii2-queue/blob/master/docs/guide"
     },
     "require": {
+        "php": ">=5.5.0",
         "yiisoft/yii2": "*"
     },
     "require-dev": {
@@ -32,6 +33,11 @@
     "autoload": {
         "psr-4": {
             "zhuravljov\\yii\\queue\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
         }
     }
 }
