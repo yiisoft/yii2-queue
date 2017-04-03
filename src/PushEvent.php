@@ -7,17 +7,15 @@
 
 namespace zhuravljov\yii\queue;
 
-use yii\base\Event;
-
 /**
- * Class JobEvent
+ * Class PushEvent
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class JobEvent extends Event
+class PushEvent extends JobEvent
 {
     /**
-     * @var Job
+     * @var int
      */
-    public $job;
+    public $timeout;
 }

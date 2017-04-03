@@ -23,7 +23,7 @@ use zhuravljov\yii\queue\serializers\PhpSerializer;
 abstract class Queue extends Component
 {
     /**
-     * @event JobEvent
+     * @event PushEvent
      */
     const EVENT_AFTER_PUSH = 'afterPush';
     /**
@@ -59,7 +59,7 @@ abstract class Queue extends Component
     public function push($job)
     {
         $this->sendMessage($this->serializer->serialize($job), 0);
-        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
+        $this->trigger(self::EVENT_AFTER_PUSH, new PushEvent(['job' => $job, 'timeout' => 0]));
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class Queue extends Component
     public function later($job, $timeout)
     {
         $this->sendMessage($this->serializer->serialize($job), $timeout);
-        $this->trigger(self::EVENT_AFTER_PUSH, new JobEvent(['job' => $job]));
+        $this->trigger(self::EVENT_AFTER_PUSH, new PushEvent(['job' => $job, 'timeout' => $timeout]));
     }
 
     /**
