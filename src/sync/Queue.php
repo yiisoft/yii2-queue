@@ -38,7 +38,7 @@ class Queue extends BaseQueue
             Yii::$app->on(Application::EVENT_AFTER_REQUEST, function () {
                 ob_start();
                 $this->run();
-                ob_clean();
+                ob_end_clean();
             });
         }
     }
