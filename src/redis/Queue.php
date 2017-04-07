@@ -126,11 +126,11 @@ class Queue extends BaseQueue implements BootstrapInterface
     protected function openWorker()
     {
         $id = $this->redis->incr("$this->channel.worker_id");
-        $this->redis->executeCommand('CLIENT', ['SETNAME', "$this->channel.worker.$id"]);
+        $this->redis->clientSetname("$this->channel.worker.$id");
     }
 
     protected function closeWorker()
     {
-        $this->redis->executeCommand('CLIENT', ['SETNAME', '']);
+        $this->redis->clientSetname('');
     }
 }

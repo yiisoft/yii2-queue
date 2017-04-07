@@ -86,7 +86,7 @@ class InfoAction extends Action
     protected function getWorkersInfo()
     {
         $workers = [];
-        $data = $this->queue->redis->executeCommand('CLIENT', ['LIST']);
+        $data = $this->queue->redis->clientList();
         foreach (explode("\n", trim($data)) as $line) {
             $client = [];
             foreach (explode(' ', trim($line)) as $pair) {
