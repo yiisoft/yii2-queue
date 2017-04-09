@@ -7,10 +7,8 @@
 
 namespace zhuravljov\yii\queue\gearman;
 
-use yii\base\BootstrapInterface;
 use yii\base\NotSupportedException;
-use yii\console\Application as ConsoleApp;
-use zhuravljov\yii\queue\Queue as BaseQueue;
+use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
@@ -18,24 +16,16 @@ use zhuravljov\yii\queue\Signal;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends BaseQueue implements BootstrapInterface
+class Queue extends CliQueue
 {
     public $host = 'localhost';
     public $port = 4730;
     public $channel = 'queue';
 
     /**
-     * @inheritdoc
+     * @var string command class name
      */
-    public function bootstrap($app)
-    {
-        if ($app instanceof ConsoleApp) {
-            $app->controllerMap[$this->getId()] = [
-                'class' => Command::class,
-                'queue' => $this,
-            ];
-        }
-    }
+    public $commandClass = Command::class;
 
     /**
      * Listens gearman-queue and runs new jobs.

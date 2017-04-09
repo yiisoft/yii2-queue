@@ -9,9 +9,7 @@ namespace zhuravljov\yii\queue\beanstalk;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
-use yii\base\BootstrapInterface;
-use yii\console\Application as ConsoleApp;
-use zhuravljov\yii\queue\Queue as BaseQueue;
+use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
@@ -19,7 +17,7 @@ use zhuravljov\yii\queue\Signal;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends BaseQueue implements BootstrapInterface
+class Queue extends CliQueue
 {
     /**
      * @var string connection host
@@ -39,17 +37,9 @@ class Queue extends BaseQueue implements BootstrapInterface
     public $ttr = PheanstalkInterface::DEFAULT_TTR;
 
     /**
-     * @inheritdoc
+     * @var string command class name
      */
-    public function bootstrap($app)
-    {
-        if ($app instanceof ConsoleApp) {
-            $app->controllerMap[$this->getId()] = [
-                'class' => Command::class,
-                'queue' => $this,
-            ];
-        }
-    }
+    public $commandClass = Command::class;
 
     /**
      * Runs all jobs from queue.

@@ -36,7 +36,7 @@ abstract class QueueTestCase extends TestCase
     private function prepareCmd($cmd)
     {
         $class = new \ReflectionClass($this->getQueue());
-        $method = $class->getMethod('getId');
+        $method = $class->getMethod('getCommandId');
         $method->setAccessible(true);
 
         return strtr($cmd, [

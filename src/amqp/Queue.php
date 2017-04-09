@@ -11,18 +11,16 @@ use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use yii\base\Application as BaseApp;
-use yii\base\BootstrapInterface;
 use yii\base\Event;
 use yii\base\NotSupportedException;
-use yii\console\Application as ConsoleApp;
-use zhuravljov\yii\queue\Queue as BaseQueue;
+use zhuravljov\yii\queue\CliQueue;
 
 /**
  * Amqp Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends BaseQueue implements BootstrapInterface
+class Queue extends CliQueue
 {
     const EXCHANGE_DIRECT = 'direct';
     const EXCHANGE_TOPIC = 'topic';
@@ -35,6 +33,11 @@ class Queue extends BaseQueue implements BootstrapInterface
     public $queueName = 'queue';
     public $exchangeName = 'exchange';
     public $exchangeType = self::EXCHANGE_DIRECT;
+
+    /**
+     * @var string command class name
+     */
+    public $commandClass = Command::class;
 
     /**
      * @var AMQPStreamConnection
@@ -54,19 +57,6 @@ class Queue extends BaseQueue implements BootstrapInterface
         Event::on(BaseApp::class, BaseApp::EVENT_AFTER_REQUEST, function () {
             $this->close();
         });
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bootstrap($app)
-    {
-        if ($app instanceof ConsoleApp) {
-            $app->controllerMap[$this->getId()] = [
-                'class' => Command::class,
-                'queue' => $this,
-            ];
-        }
     }
 
     /**

@@ -11,7 +11,6 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
-use yii\helpers\Inflector;
 use zhuravljov\yii\queue\serializers\Serializer;
 use zhuravljov\yii\queue\serializers\PhpSerializer;
 
@@ -101,18 +100,5 @@ abstract class Queue extends Component
         }
 
         return !$error;
-    }
-
-    /**
-     * @return string component id
-     */
-    protected function getId()
-    {
-        foreach (Yii::$app->getComponents(false) as $id => $component) {
-            if ($component === $this) {
-                return Inflector::camel2id($id);
-            }
-        }
-        return null;
     }
 }

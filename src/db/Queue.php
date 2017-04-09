@@ -7,14 +7,12 @@
 
 namespace zhuravljov\yii\queue\db;
 
-use yii\base\BootstrapInterface;
 use yii\base\Exception;
-use yii\console\Application as ConsoleApp;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
-use zhuravljov\yii\queue\Queue as BaseQueue;
+use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
@@ -22,7 +20,7 @@ use zhuravljov\yii\queue\Signal;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends BaseQueue implements BootstrapInterface
+class Queue extends CliQueue
 {
     /**
      * @var Connection|array|string
@@ -50,6 +48,11 @@ class Queue extends BaseQueue implements BootstrapInterface
     public $deleteReleased = false;
 
     /**
+     * @var string command class name
+     */
+    public $commandClass = Command::class;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -57,19 +60,6 @@ class Queue extends BaseQueue implements BootstrapInterface
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::class);
         $this->mutex = Instance::ensure($this->mutex, Mutex::class);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bootstrap($app)
-    {
-        if ($app instanceof ConsoleApp) {
-            $app->controllerMap[$this->getId()] = [
-                'class' => Command::class,
-                'queue' => $this,
-            ];
-        }
     }
 
     /**

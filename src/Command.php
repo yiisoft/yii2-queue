@@ -17,7 +17,7 @@ use yii\console\Controller;
 abstract class Command extends Controller
 {
     /**
-     * @var Queue
+     * @var CliQueue
      */
     public $queue;
     /**

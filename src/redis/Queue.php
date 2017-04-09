@@ -7,11 +7,9 @@
 
 namespace zhuravljov\yii\queue\redis;
 
-use yii\base\BootstrapInterface;
-use yii\console\Application as ConsoleApp;
 use yii\di\Instance;
 use yii\redis\Connection;
-use zhuravljov\yii\queue\Queue as BaseQueue;
+use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
 
 /**
@@ -19,7 +17,7 @@ use zhuravljov\yii\queue\Signal;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends BaseQueue implements BootstrapInterface
+class Queue extends CliQueue
 {
     /**
      * @var Connection|array|string
@@ -31,25 +29,17 @@ class Queue extends BaseQueue implements BootstrapInterface
     public $channel = 'queue';
 
     /**
+     * @var string command class name
+     */
+    public $commandClass = Command::class;
+
+    /**
      * @inheritdoc
      */
     public function init()
     {
         parent::init();
         $this->redis = Instance::ensure($this->redis, Connection::class);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bootstrap($app)
-    {
-        if ($app instanceof ConsoleApp) {
-            $app->controllerMap[$this->getId()] = [
-                'class' => Command::class,
-                'queue' => $this,
-            ];
-        }
     }
 
     /**
