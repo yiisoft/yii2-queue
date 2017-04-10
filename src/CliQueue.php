@@ -28,6 +28,11 @@ abstract class CliQueue extends Queue implements BootstrapInterface
      * @var array of additional options of command
      */
     public $commandOptions = [];
+    /**
+     * @var callable|null
+     * @internal only for command
+     */
+    public $messageHandler;
 
     /**
      * @return string command id
@@ -54,5 +59,27 @@ abstract class CliQueue extends Queue implements BootstrapInterface
                 'queue' => $this,
             ] + $this->commandOptions;
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function handleMessage($message)
+    {
+        if ($this->messageHandler) {
+            return call_user_func($this->messageHandler, $message);
+        } else {
+            return parent::handleMessage($message);
+        }
+    }
+
+    /**
+     * @param string $message
+     * @return bool
+     * @internal only for command
+     */
+    public function execute($message)
+    {
+        return parent::handleMessage($message);
     }
 }
