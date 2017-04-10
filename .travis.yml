@@ -7,6 +7,11 @@ php:
   - 7.1
   - hhvm
 
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: hhvm
+
 services:
   - mysql
   - postgresql
