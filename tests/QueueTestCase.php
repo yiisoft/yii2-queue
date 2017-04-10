@@ -40,6 +40,7 @@ abstract class QueueTestCase extends TestCase
         $method->setAccessible(true);
 
         return strtr($cmd, [
+            'php' => PHP_BINARY,
             'queue' => $method->invoke($this->getQueue()),
         ]);
     }

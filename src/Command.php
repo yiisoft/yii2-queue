@@ -86,7 +86,8 @@ abstract class Command extends Controller
     private function handleMessage($message)
     {
         // Executes child process
-        $cmd = strtr('php {yii} {queue}/exec --verbose={verbose}', [
+        $cmd = strtr('{php} {yii} {queue}/exec --verbose={verbose}', [
+            '{php}' => PHP_BINARY,
             '{yii}' => $_SERVER['SCRIPT_FILENAME'],
             '{queue}' => $this->id,
             '{verbose}' => (int) $this->verbose,
