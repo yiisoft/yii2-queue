@@ -82,7 +82,7 @@ abstract class QueueTestCase extends TestCase
      */
     protected function assertJobDone(TestJob $job)
     {
-        $delay = 3000000;
+        $delay = 5000000; // 5 sec
         while (!file_exists($job->getFileName()) && $delay > 0) {
             usleep(50000);
             $delay -= 50000;
@@ -96,7 +96,7 @@ abstract class QueueTestCase extends TestCase
      */
     protected function assertJobLaterDone(TestJob $job, $time)
     {
-        $delay = 3000000;
+        $delay = 5000000; // 5 sec
         while (!file_exists($job->getFileName()) && $delay > 0) {
             usleep(50000);
             $delay -= 50000;
