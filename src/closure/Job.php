@@ -25,8 +25,9 @@ class Job extends Object implements BaseJob
 
     /**
      * Unserializes and executes a closure
+     * @inheritdoc
      */
-    public function execute()
+    public function execute($queue)
     {
         $serializer = new Serializer();
         $closure = $serializer->unserialize($this->serialized);

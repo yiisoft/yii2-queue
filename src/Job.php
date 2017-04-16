@@ -14,5 +14,8 @@ namespace zhuravljov\yii\queue;
  */
 interface Job
 {
-    public function execute();
+    /**
+     * @param Queue $queue which was pushed the job
+     */
+    public function execute($queue);
 }

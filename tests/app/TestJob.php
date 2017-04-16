@@ -20,7 +20,7 @@ class TestJob extends Object implements Job
 {
     public $uid;
 
-    public function execute()
+    public function execute($queue)
     {
         file_put_contents($this->getFileName(), '');
     }

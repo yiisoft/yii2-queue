@@ -7,9 +7,10 @@ application when you upgrade the package from one version to another.
 Upgrade from 0.x to 1.0
 -----------------------
 
-* Some methods and constants was renamed.
+* Some methods and constants was modified.
   
   - Method `Job::run()` renamed to `Job::execute()`.
+  - Param `$queue` added to `Job::execute()` method. 
   - Const `Queue::EVENT_BEFORE_WORK` renamed to `Queue::EVENT_BEFORE_EXEC`.
   - Const `Queue::EVENT_AFTER_WORK` renamed to `Queue::EVENT_AFTER_EXEC`.
   - Const `Queue::EVENT_AFTER_ERROR` renamed to `Queue::EVENT_AFTER_EXEC_ERROR`.
