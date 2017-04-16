@@ -23,6 +23,7 @@
         "yiisoft/yii2-redis": "*",
         "php-amqplib/php-amqplib": "*",
         "pda/pheanstalk": "*",
+        "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "phpunit/phpunit": "~4.4",
         "symfony/process": "*"
