@@ -32,15 +32,15 @@ abstract class Queue extends Component
     /**
      * @event JobEvent
      */
-    const EVENT_BEFORE_WORK = 'beforeWork';
+    const EVENT_BEFORE_EXEC = 'beforeExec';
     /**
      * @event JobEvent
      */
-    const EVENT_AFTER_WORK = 'afterWork';
+    const EVENT_AFTER_EXEC = 'afterExec';
     /**
      * @event ErrorEvent
      */
-    const EVENT_AFTER_ERROR = 'afterError';
+    const EVENT_AFTER_EXEC_ERROR = 'afterExecError';
 
     /**
      * @var Serializer|array
@@ -97,14 +97,14 @@ abstract class Queue extends Component
         }
 
         $error = null;
-        $this->trigger(self::EVENT_BEFORE_WORK, new JobEvent(['job' => $job]));
+        $this->trigger(self::EVENT_BEFORE_EXEC, new JobEvent(['job' => $job]));
         try {
-            $job->run();
+            $job->execute();
         } catch (\Exception $error) {
-            $this->trigger(self::EVENT_AFTER_ERROR, new ErrorEvent(['job' => $job, 'error' => $error]));
+            $this->trigger(self::EVENT_AFTER_EXEC_ERROR, new ErrorEvent(['job' => $job, 'error' => $error]));
         }
         if (!$error) {
-            $this->trigger(self::EVENT_AFTER_WORK, new JobEvent(['job' => $job]));
+            $this->trigger(self::EVENT_AFTER_EXEC, new JobEvent(['job' => $job]));
         }
 
         return !$error;

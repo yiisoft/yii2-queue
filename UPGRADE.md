@@ -7,6 +7,13 @@ application when you upgrade the package from one version to another.
 Upgrade from 0.x to 1.0
 -----------------------
 
+* Some methods and constants was renamed.
+  
+  - Method `Job::run()` renamed to `Job::execute()`.
+  - Const `Queue::EVENT_BEFORE_WORK` renamed to `Queue::EVENT_BEFORE_EXEC`.
+  - Const `Queue::EVENT_AFTER_WORK` renamed to `Queue::EVENT_AFTER_EXEC`.
+  - Const `Queue::EVENT_AFTER_ERROR` renamed to `Queue::EVENT_AFTER_EXEC_ERROR`.
+
 * All drivers moved from `queue` to `queue\drivers` namespace.
   
   - Class `\zhuravljov\yii\queue\amqp\Queue` moved to `\zhuravljov\yii\queue\drivers\amqp\Queue`.

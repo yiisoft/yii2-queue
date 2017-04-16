@@ -26,7 +26,7 @@ class Job extends Object implements BaseJob
     /**
      * Unserializes and executes a closure
      */
-    public function run()
+    public function execute()
     {
         $serializer = new Serializer();
         $closure = $serializer->unserialize($this->serialized);

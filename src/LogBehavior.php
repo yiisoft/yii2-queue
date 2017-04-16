@@ -35,14 +35,14 @@ class LogBehavior extends Behavior
                     Yii::info('Mixed data pushed.', Queue::class);
                 }
             },
-            Queue::EVENT_BEFORE_WORK => function (JobEvent $event) {
+            Queue::EVENT_BEFORE_EXEC => function (JobEvent $event) {
                 Yii::info(get_class($event->job) . ' started.', Queue::class);
             },
-            Queue::EVENT_AFTER_WORK => function (JobEvent $event) {
+            Queue::EVENT_AFTER_EXEC => function (JobEvent $event) {
                 Yii::info(get_class($event->job) . ' finished.', Queue::class);
                 Yii::getLogger()->flush(true);
             },
-            Queue::EVENT_AFTER_ERROR => function (ErrorEvent $event) {
+            Queue::EVENT_AFTER_EXEC_ERROR => function (ErrorEvent $event) {
                 Yii::error(get_class($event->job) . ' error ' . $event->error, Queue::class);
                 Yii::getLogger()->flush(true);
             },

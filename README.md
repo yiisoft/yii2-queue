@@ -41,7 +41,7 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     public $url;
     public $file;
     
-    public function run()
+    public function execute()
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }

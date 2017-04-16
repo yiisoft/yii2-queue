@@ -28,16 +28,16 @@ class VerboseBehavior extends Behavior
     public function events()
     {
         return [
-            Queue::EVENT_BEFORE_WORK => function (JobEvent $event) {
+            Queue::EVENT_BEFORE_EXEC => function (JobEvent $event) {
                 Console::stdout(strtr('{time}: {class} has been started ... ', [
                     '{time}' => date('Y-m-d H:i:s'),
                     '{class}' => get_class($event->job),
                 ]));
             },
-            Queue::EVENT_AFTER_WORK => function (JobEvent $event) {
+            Queue::EVENT_AFTER_EXEC => function (JobEvent $event) {
                 Console::output('OK');
             },
-            Queue::EVENT_AFTER_ERROR => function (ErrorEvent $event) {
+            Queue::EVENT_AFTER_EXEC_ERROR => function (ErrorEvent $event) {
                 Console::output('Error');
                 Console::error($event->error);
             },

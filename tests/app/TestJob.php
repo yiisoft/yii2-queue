@@ -20,7 +20,7 @@ class TestJob extends Object implements Job
 {
     public $uid;
 
-    public function run()
+    public function execute()
     {
         file_put_contents($this->getFileName(), '');
     }
