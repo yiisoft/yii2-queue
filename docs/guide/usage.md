@@ -12,7 +12,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\<driver>\Queue::class,
             'as log' => \zhuravljov\yii\queue\LogBehavior::class,
             // driver config
         ],
@@ -87,7 +87,7 @@ to JSON:
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\<driver>\Queue::class,
             'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
         ],
     ],
@@ -104,10 +104,10 @@ Configuration example:
 return [
     'components' => [
         'queue1' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\redis\Queue::class,
         ],
         'queue2' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\db\Queue::class,
             'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
         ],
     ],

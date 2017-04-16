@@ -12,7 +12,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\amqp\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\amqp\Queue::class,
             'host' => 'localhost',
             'port' => 5672,
             'user' => 'guest',

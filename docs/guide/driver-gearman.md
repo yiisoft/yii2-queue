@@ -10,7 +10,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\gearman\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\gearman\Queue::class,
             'host' => 'localhost',
             'port' => 4730,
             'channel' => 'my_queue',

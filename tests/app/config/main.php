@@ -23,7 +23,7 @@ return [
             ],
         ],
         'mysqlQueue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\db\Queue::class,
             'db' => 'mysql',
             'mutex' => [
                 'class' => \yii\mutex\MysqlMutex::class,
@@ -35,7 +35,7 @@ return [
             'dsn' => 'sqlite:@runtime/yii2_queue_test.db',
         ],
         'sqliteQueue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\db\Queue::class,
             'db' => 'sqlite',
             'mutex' => \yii\mutex\FileMutex::class,
         ],
@@ -47,7 +47,7 @@ return [
             'charset' => 'utf8',
         ],
         'pgsqlQueue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\db\Queue::class,
             'db' => 'pgsql',
             'mutex' => [
                 'class' => \yii\mutex\PgsqlMutex::class,
@@ -60,16 +60,16 @@ return [
             'database' => 2,
         ],
         'redisQueue' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\redis\Queue::class,
         ],
         'amqpQueue' => [
-            'class' => \zhuravljov\yii\queue\amqp\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\amqp\Queue::class,
         ],
         'beanstalkQueue' => [
-            'class' => \zhuravljov\yii\queue\beanstalk\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\beanstalk\Queue::class,
         ],
         'syncQueue' => [
-            'class' => \zhuravljov\yii\queue\sync\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\sync\Queue::class,
         ],
     ],
 ];

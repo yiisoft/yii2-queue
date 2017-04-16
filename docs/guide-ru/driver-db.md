@@ -10,7 +10,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \zhuravljov\yii\queue\drivers\db\Queue::class,
             'db' => 'db', // ID подключения
             'tableName' => '{{%queue}}', // таблица
             'channel' => 'default', // выбранный для очереди канал
@@ -37,7 +37,7 @@ CREATE TABLE `queue` (
 ) ENGINE=InnoDB
 ```
 
-Миграции смотрите в [src/db/migrations](../../src/db/migrations).
+Миграции смотрите в [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
 Консоль
 -------
