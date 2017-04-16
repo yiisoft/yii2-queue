@@ -24,6 +24,10 @@ abstract class Queue extends Component
     /**
      * @event PushEvent
      */
+    const EVENT_BEFORE_PUSH = 'beforePush';
+    /**
+     * @event PushEvent
+     */
     const EVENT_AFTER_PUSH = 'afterPush';
     /**
      * @event JobEvent
@@ -57,8 +61,10 @@ abstract class Queue extends Component
      */
     public function push($job)
     {
-        $this->sendMessage($this->serializer->serialize($job), 0);
-        $this->trigger(self::EVENT_AFTER_PUSH, new PushEvent(['job' => $job, 'timeout' => 0]));
+        $event = new PushEvent(['job' => $job, 'timeout' => 0]);
+        $this->trigger(self::EVENT_BEFORE_PUSH, $event);
+        $this->sendMessage($this->serializer->serialize($event->job), $event->timeout);
+        $this->trigger(self::EVENT_AFTER_PUSH, $event);
     }
 
     /**
@@ -67,8 +73,10 @@ abstract class Queue extends Component
      */
     public function later($job, $timeout)
     {
-        $this->sendMessage($this->serializer->serialize($job), $timeout);
-        $this->trigger(self::EVENT_AFTER_PUSH, new PushEvent(['job' => $job, 'timeout' => $timeout]));
+        $event = new PushEvent(['job' => $job, 'timeout' => $timeout]);
+        $this->trigger(self::EVENT_BEFORE_PUSH, $event);
+        $this->sendMessage($this->serializer->serialize($event->job), $event->timeout);
+        $this->trigger(self::EVENT_AFTER_PUSH, $event);
     }
 
     /**
