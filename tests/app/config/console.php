@@ -6,7 +6,7 @@ return [
             'db' => 'mysql',
             'migrationPath' => null,
             'migrationNamespaces' => [
-                'zhuravljov\yii\queue\db\migrations',
+                'zhuravljov\yii\queue\drivers\db\migrations',
             ],
         ],
         'sqlite-migrate' => [
@@ -14,7 +14,7 @@ return [
             'db' => 'sqlite',
             'migrationPath' => null,
             'migrationNamespaces' => [
-                'zhuravljov\yii\queue\db\migrations',
+                'zhuravljov\yii\queue\drivers\db\migrations',
             ],
         ],
         'pgsql-migrate' => [
@@ -22,7 +22,7 @@ return [
             'db' => 'pgsql',
             'migrationPath' => null,
             'migrationNamespaces' => [
-                'zhuravljov\yii\queue\db\migrations',
+                'zhuravljov\yii\queue\drivers\db\migrations',
             ],
         ],
     ],
