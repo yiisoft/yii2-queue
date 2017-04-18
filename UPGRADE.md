@@ -7,6 +7,9 @@ application when you upgrade the package from one version to another.
 Upgrade from 0.x to 1.0
 -----------------------
 
+* Method `Queue::sendMessage` renamed to `Queue::pushMessage`. Check it if you use it for yourself
+  drivers.
+
 * Some methods and constants was modified.
   
   - Method `Job::run()` renamed to `Job::execute()`.

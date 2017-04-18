@@ -68,7 +68,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function sendMessage($message, $timeout)
+    protected function pushMessage($message, $timeout)
     {
         $this->getPheanstalk()->putInTube(
             $this->tube,

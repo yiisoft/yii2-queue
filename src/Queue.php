@@ -63,7 +63,7 @@ abstract class Queue extends Component
     {
         $event = new PushEvent(['job' => $job, 'timeout' => 0]);
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $this->sendMessage($this->serializer->serialize($event->job), $event->timeout);
+        $this->pushMessage($this->serializer->serialize($event->job), $event->timeout);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
     }
 
@@ -75,7 +75,7 @@ abstract class Queue extends Component
     {
         $event = new PushEvent(['job' => $job, 'timeout' => $timeout]);
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $this->sendMessage($this->serializer->serialize($event->job), $event->timeout);
+        $this->pushMessage($this->serializer->serialize($event->job), $event->timeout);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
     }
 
@@ -83,7 +83,7 @@ abstract class Queue extends Component
      * @param string $message
      * @param int $timeout
      */
-    abstract protected function sendMessage($message, $timeout);
+    abstract protected function pushMessage($message, $timeout);
 
     /**
      * @param string $message

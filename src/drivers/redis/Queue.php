@@ -102,7 +102,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function sendMessage($message, $timeout)
+    protected function pushMessage($message, $timeout)
     {
         $id = $this->redis->incr("$this->channel.message_id");
         $payload = "$id:$message";
