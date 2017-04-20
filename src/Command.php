@@ -93,8 +93,7 @@ abstract class Command extends Controller
             '{verbose}' => (int) $this->verbose,
         ]);
         $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
-        $cwd = $_SERVER['PWD'];
-        $process = proc_open($cmd, $descriptors, $pipes, $cwd);
+        $process = proc_open($cmd, $descriptors, $pipes);
         if (is_resource($process)) {
             // Writes message to stdIn of process
             fwrite($pipes[0], $message);
