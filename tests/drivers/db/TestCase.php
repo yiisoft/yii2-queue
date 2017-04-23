@@ -17,26 +17,26 @@ abstract class TestCase extends \tests\drivers\TestCase
     public function testRun()
     {
         $job = $this->createJob();
-        $this->getQueue()->push($job);
+        $id = $this->getQueue()->push($job);
         $this->runProcess('php tests/yii queue/run');
-        $this->assertJobDone($job);
+        $this->assertJobDone($job, $id);
     }
 
     public function testListen()
     {
         $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
-        $this->getQueue()->push($job);
-        $this->assertJobDone($job);
+        $id = $this->getQueue()->push($job);
+        $this->assertJobDone($job, $id);
     }
 
     public function testLater()
     {
         $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
-        $this->getQueue()->later($job, 2);
+        $id = $this->getQueue()->later($job, 2);
         sleep(2);
-        $this->assertJobLaterDone($job, time());
+        $this->assertJobLaterDone($job, $id, time());
     }
 
     protected function tearDown()

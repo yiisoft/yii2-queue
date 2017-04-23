@@ -64,22 +64,23 @@ abstract class CliQueue extends Queue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function handleMessage($message)
+    protected function handleMessage($id, $message)
     {
         if ($this->messageHandler) {
-            return call_user_func($this->messageHandler, $message);
+            return call_user_func($this->messageHandler, $id, $message);
         } else {
-            return parent::handleMessage($message);
+            return parent::handleMessage($id, $message);
         }
     }
 
     /**
+     * @param string|null $id of a message
      * @param string $message
      * @return bool
      * @internal only for command
      */
-    public function execute($message)
+    public function execute($id, $message)
     {
-        return parent::handleMessage($message);
+        return parent::handleMessage($id, $message);
     }
 }

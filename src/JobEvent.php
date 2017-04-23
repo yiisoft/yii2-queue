@@ -17,6 +17,10 @@ use yii\base\Event;
 class JobEvent extends Event
 {
     /**
+     * @var string|null unique id of a job
+     */
+    public $id;
+    /**
      * @var Job
      */
     public $job;

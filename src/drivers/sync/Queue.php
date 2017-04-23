@@ -48,8 +48,9 @@ class Queue extends BaseQueue
      */
     public function run()
     {
+        $id = 0;
         while (($message = array_shift($this->messages)) !== null) {
-            $this->handleMessage($message);
+            $this->handleMessage(++$id, $message);
         }
     }
 
@@ -62,6 +63,6 @@ class Queue extends BaseQueue
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        $this->messages[] = $message;
+        return array_push($this->messages, $message);
     }
 }

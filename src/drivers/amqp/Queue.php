@@ -66,7 +66,7 @@ class Queue extends CliQueue
     {
         $this->open();
         $callback = function(AMQPMessage $message) {
-            if ($this->handleMessage($message->body)) {
+            if ($this->handleMessage(null, $message->body)) {
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             }
         };
@@ -88,6 +88,8 @@ class Queue extends CliQueue
 
         $this->open();
         $this->channel->basic_publish(new AMQPMessage($message), $this->exchangeName);
+
+        return null;
     }
 
     /**

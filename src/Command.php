@@ -30,8 +30,8 @@ abstract class Command extends Controller
     public function init()
     {
         parent::init();
-        $this->queue->messageHandler = function ($message) {
-            return $this->handleMessage($message);
+        $this->queue->messageHandler = function ($id, $message) {
+            return $this->handleMessage($id, $message);
         };
     }
 
@@ -69,28 +69,33 @@ abstract class Command extends Controller
 
     /**
      * Executes a job.
+     *
+     * @param string|null $id of a message
+     * @return int
      */
-    public function actionExec()
+    public function actionExec($id = null)
     {
-        return $this->queue->execute(file_get_contents('php://stdin')) ? 0 : 1;
+        return $this->queue->execute($id, file_get_contents('php://stdin')) ? 0 : 1;
     }
 
     /**
      * Handles message using child process.
      *
+     * @param string|null $id of a message
      * @param string $message
      * @return bool
      * @throws
      * @see actionExec()
      */
-    private function handleMessage($message)
+    private function handleMessage($id, $message)
     {
         // Executes child process
-        $cmd = strtr('{php} {yii} {queue}/exec --verbose={verbose}', [
+        $cmd = strtr('{php} {yii} {queue}/exec --verbose={verbose} {id}', [
             '{php}' => PHP_BINARY,
             '{yii}' => $_SERVER['SCRIPT_FILENAME'],
             '{queue}' => $this->id,
             '{verbose}' => (int) $this->verbose,
+            '{id}' => $id,
         ]);
         $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
         $cwd = $_SERVER['PWD'];

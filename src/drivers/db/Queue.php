@@ -68,7 +68,7 @@ class Queue extends CliQueue
     public function run()
     {
         while (!Signal::isExit() && ($payload = $this->pop())) {
-            if ($this->handleMessage($payload['job'])) {
+            if ($this->handleMessage($payload['id'], $payload['job'])) {
                 $this->release($payload);
             }
         }
@@ -97,6 +97,10 @@ class Queue extends CliQueue
             'created_at' => time(),
             'timeout' => $timeout,
         ])->execute();
+        $tableSchema = $this->db->getTableSchema($this->tableName);
+        $id = $this->db->getLastInsertID($tableSchema->sequenceName);
+
+        return $id;
     }
 
     /**

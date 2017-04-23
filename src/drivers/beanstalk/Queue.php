@@ -47,7 +47,7 @@ class Queue extends CliQueue
     public function run()
     {
         while ($message = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
-            if ($this->handleMessage($message->getData())) {
+            if ($this->handleMessage($message->getId(), $message->getData())) {
                 $this->getPheanstalk()->delete($message);
             }
         }
@@ -70,7 +70,7 @@ class Queue extends CliQueue
      */
     protected function pushMessage($message, $timeout)
     {
-        $this->getPheanstalk()->putInTube(
+        return $this->getPheanstalk()->putInTube(
             $this->tube,
             $message,
             PheanstalkInterface::DEFAULT_PRIORITY,

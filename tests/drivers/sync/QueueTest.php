@@ -29,8 +29,8 @@ class QueueTest extends TestCase
     public function testRun()
     {
         $job = $this->createJob();
-        $this->getQueue()->push($job);
+        $id = $this->getQueue()->push($job);
         $this->getQueue()->run();
-        $this->assertJobDone($job);
+        $this->assertJobDone($job, $id);
     }
 }

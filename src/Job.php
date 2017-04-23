@@ -16,6 +16,7 @@ interface Job
 {
     /**
      * @param Queue $queue which was pushed the job
+     * @param string|null $id of a job message
      */
-    public function execute($queue);
+    public function execute($queue, $id);
 }

@@ -20,13 +20,13 @@ class TestJob extends Object implements Job
 {
     public $uid;
 
-    public function execute($queue)
+    public function execute($queue, $id)
     {
-        file_put_contents($this->getFileName(), '');
+        file_put_contents($this->getFileName($id), '');
     }
 
-    public function getFileName()
+    public function getFileName($id)
     {
-        return Yii::getAlias("@runtime/job-{$this->uid}.lock");
+        return Yii::getAlias("@runtime/job-{$this->uid}-{$id}.lock");
     }
 }

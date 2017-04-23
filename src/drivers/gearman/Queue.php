@@ -36,7 +36,7 @@ class Queue extends CliQueue
         $worker->addServer($this->host, $this->port);
         $worker->setTimeout(-1);
         $worker->addFunction($this->channel, function (\GearmanJob $message) {
-            $this->handleMessage($message->workload());
+            $this->handleMessage($message->unique(), $message->workload());
         });
 
         do {
@@ -55,6 +55,10 @@ class Queue extends CliQueue
 
         $client = new \GearmanClient();
         $client->addServer($this->host, $this->port);
-        $client->doBackground($this->channel, $message);
+
+        $unique = uniqid();
+        $client->doBackground($this->channel, $message, $unique);
+
+        return $unique;
     }
 }

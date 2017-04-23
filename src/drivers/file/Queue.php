@@ -39,8 +39,9 @@ class Queue extends CliQueue
      */
     public function run()
     {
-        while (!Signal::isExit() && ($message = $this->pop()) !== null) {
-            $this->handleMessage($message);
+        while (!Signal::isExit() && ($payload = $this->pop()) !== null) {
+            list($id, $message) = $payload;
+            $this->handleMessage($id, $message);
         }
     }
 
@@ -61,9 +62,9 @@ class Queue extends CliQueue
      */
     protected function pop()
     {
+        $id = null;
         $message = null;
-        $this->touchIndex("$this->path/index.data", function ($data) use (&$message) {
-            $id = null;
+        $this->touchIndex("$this->path/index.data", function ($data) use (&$message, &$id) {
             if (!empty($data['delayed']) && $data['delayed'][0][1] <= time()) {
                 list($id, $time) = array_shift($data['delayed']);
             } elseif (!empty($data['reserved'])) {
@@ -76,7 +77,11 @@ class Queue extends CliQueue
             return $data;
         });
 
-        return $message;
+        if ($id) {
+            return [$id, $message];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -84,7 +89,7 @@ class Queue extends CliQueue
      */
     protected function pushMessage($message, $timeout)
     {
-        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $timeout) {
+        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $timeout, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
@@ -104,6 +109,8 @@ class Queue extends CliQueue
             }
             return $data;
         });
+
+        return $id;
     }
 
     /**

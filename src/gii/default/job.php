@@ -33,7 +33,7 @@ class <?= $jobClass ?> extends <?= $baseClass ?> <?= $implements ?>
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute($queue, $id)
     {
     }
 }

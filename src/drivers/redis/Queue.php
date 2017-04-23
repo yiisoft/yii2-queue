@@ -50,7 +50,7 @@ class Queue extends CliQueue
         $this->openWorker();
         while (($payload = $this->pop(0)) !== null) {
             list($id, $message) = explode(':', $payload, 2);
-            $this->handleMessage($message);
+            $this->handleMessage($id, $message);
         }
         $this->closeWorker();
     }
@@ -64,7 +64,7 @@ class Queue extends CliQueue
         while (!Signal::isExit()) {
             if (($payload = $this->pop(3)) !== null) {
                 list($id, $message) = explode(':', $payload, 2);
-                $this->handleMessage($message);
+                $this->handleMessage($id, $message);
             }
         }
         $this->closeWorker();
@@ -111,6 +111,8 @@ class Queue extends CliQueue
         } else {
             $this->redis->zadd("$this->channel.delayed", time() + $timeout, $payload);
         }
+
+        return $id;
     }
 
     protected function openWorker()
