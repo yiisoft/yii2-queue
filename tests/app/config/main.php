@@ -4,6 +4,7 @@ return [
     'basePath' => dirname(__DIR__),
     'vendorPath' => dirname(dirname(dirname(__DIR__))) . '/vendor',
     'bootstrap' => [
+        'fileQueue',
         'mysqlQueue',
         'sqliteQueue',
         'pgsqlQueue',
@@ -12,6 +13,12 @@ return [
         'beanstalkQueue',
     ],
     'components' => [
+        'syncQueue' => [
+            'class' => \zhuravljov\yii\queue\drivers\sync\Queue::class,
+        ],
+        'fileQueue' => [
+            'class' => \zhuravljov\yii\queue\drivers\file\Queue::class,
+        ],
         'mysql' => [
             'class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=yii2_queue_test',
@@ -67,9 +74,6 @@ return [
         ],
         'beanstalkQueue' => [
             'class' => \zhuravljov\yii\queue\drivers\beanstalk\Queue::class,
-        ],
-        'syncQueue' => [
-            'class' => \zhuravljov\yii\queue\drivers\sync\Queue::class,
         ],
     ],
 ];

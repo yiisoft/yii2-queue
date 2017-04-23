@@ -14,14 +14,6 @@ namespace tests\drivers\db;
  */
 abstract class TestCase extends \tests\drivers\TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-        $this->getQueue()->db->createCommand()
-            ->delete($this->getQueue()->tableName)
-            ->execute();
-    }
-
     public function testRun()
     {
         $job = $this->createJob();
@@ -45,5 +37,13 @@ abstract class TestCase extends \tests\drivers\TestCase
         $this->getQueue()->later($job, 2);
         sleep(2);
         $this->assertJobLaterDone($job, time());
+    }
+
+    protected function tearDown()
+    {
+        $this->getQueue()->db->createCommand()
+            ->delete($this->getQueue()->tableName)
+            ->execute();
+        parent::tearDown();
     }
 }

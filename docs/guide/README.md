@@ -13,6 +13,7 @@ Queue Drivers
 -------------
 
 * [Syncronous](driver-sync.md)
+* [File](driver-file.md)
 * [Db](driver-db.md)
 * [Redis](driver-redis.md)
 * [RabbitMQ](driver-amqp.md)

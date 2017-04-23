@@ -5,14 +5,14 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace tests\drivers\redis;
+namespace tests\drivers\file;
 
 use Yii;
 use tests\drivers\TestCase;
-use zhuravljov\yii\queue\drivers\redis\Queue;
+use zhuravljov\yii\queue\drivers\file\Queue;
 
 /**
- * Redis Queue Test
+ * File Queue Test
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -23,7 +23,7 @@ class QueueTest extends TestCase
      */
     protected function getQueue()
     {
-        return Yii::$app->redisQueue;
+        return Yii::$app->fileQueue;
     }
 
     public function testRun()
@@ -42,6 +42,7 @@ class QueueTest extends TestCase
         $this->assertJobDone($job);
     }
 
+
     public function testLater()
     {
         $this->startProcess('php tests/yii queue/listen');
@@ -53,7 +54,9 @@ class QueueTest extends TestCase
 
     protected function tearDown()
     {
-        $this->getQueue()->redis->executeCommand('FLUSHDB');
+        foreach (glob(Yii::getAlias("@runtime/queue/*")) as $fileName) {
+            unlink($fileName);
+        }
         parent::tearDown();
     }
 }

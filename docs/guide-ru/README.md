@@ -13,6 +13,7 @@
 -----------------
 
 * [Синхронный драйвер](driver-sync.md)
+* [Файловый драйвер](driver-file.md)
 * [Db драйвер](driver-db.md)
 * [Redis драйвер](driver-redis.md)
 * [RabbitMQ драйвер](driver-amqp.md)
