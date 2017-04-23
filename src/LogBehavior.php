@@ -28,24 +28,43 @@ class LogBehavior extends Behavior
     public function events()
     {
         return [
-            Queue::EVENT_AFTER_PUSH => function (PushEvent $event) {
-                if ($event->job instanceof Job) {
-                    Yii::info(get_class($event->job) . ' pushed.', Queue::class);
-                } else {
-                    Yii::info('Mixed data pushed.', Queue::class);
-                }
-            },
-            Queue::EVENT_BEFORE_EXEC => function (JobEvent $event) {
-                Yii::info(get_class($event->job) . ' started.', Queue::class);
-            },
-            Queue::EVENT_AFTER_EXEC => function (JobEvent $event) {
-                Yii::info(get_class($event->job) . ' finished.', Queue::class);
-                Yii::getLogger()->flush(true);
-            },
-            Queue::EVENT_AFTER_EXEC_ERROR => function (ErrorEvent $event) {
-                Yii::error(get_class($event->job) . ' error ' . $event->error, Queue::class);
-                Yii::getLogger()->flush(true);
-            },
+            Queue::EVENT_AFTER_PUSH => 'afterPush',
+            Queue::EVENT_BEFORE_EXEC => 'beforeExec',
+            Queue::EVENT_AFTER_EXEC => 'afterExec',
+            Queue::EVENT_AFTER_EXEC_ERROR => 'afterExecError',
         ];
+    }
+
+    public function afterPush(PushEvent $event)
+    {
+        Yii::info($this->getEventTitle($event) . ' pushed.', Queue::class);
+    }
+
+    public function beforeExec(JobEvent $event)
+    {
+        Yii::info($this->getEventTitle($event) . ' started.', Queue::class);
+        Yii::beginProfile($this->getEventTitle($event), Queue::class);
+    }
+
+    public function afterExec(JobEvent $event)
+    {
+        Yii::endProfile($this->getEventTitle($event), Queue::class);
+        Yii::info($this->getEventTitle($event) . ' finished.', Queue::class);
+        Yii::getLogger()->flush(true);
+    }
+
+    public function afterExecError(ErrorEvent $event)
+    {
+        Yii::endProfile($this->getEventTitle($event), Queue::class);
+        Yii::info($this->getEventTitle($event) . ' error ' . $event->error, Queue::class);
+        Yii::getLogger()->flush(true);
+    }
+
+    protected function getEventTitle(JobEvent $event)
+    {
+        return strtr('[id] name', [
+            'id' => $event->id,
+            'name' => $event->job instanceof Job ? get_class($event->job) : 'mixed data',
+        ]);
     }
 }

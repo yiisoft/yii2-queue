@@ -22,26 +22,42 @@ class VerboseBehavior extends Behavior
      */
     public $owner;
 
+    private $start;
+
     /**
      * @inheritdoc
      */
     public function events()
     {
         return [
-            Queue::EVENT_BEFORE_EXEC => function (JobEvent $event) {
-                Console::stdout(strtr('{time}: {class} has been started ... ', [
-                    '{time}' => date('Y-m-d H:i:s'),
-                    '{class}' => get_class($event->job),
-                ]));
-            },
-            Queue::EVENT_AFTER_EXEC => function (JobEvent $event) {
-                Console::output('OK');
-            },
-            Queue::EVENT_AFTER_EXEC_ERROR => function (ErrorEvent $event) {
-                Console::output('Error');
-                Console::error($event->error);
-            },
+            Queue::EVENT_BEFORE_EXEC => 'beforeExec',
+            Queue::EVENT_AFTER_EXEC => 'afterExec',
+            Queue::EVENT_AFTER_EXEC_ERROR => 'afterExecError',
         ];
     }
 
+    public function beforeExec(JobEvent $event)
+    {
+        $this->start = microtime(true);
+        Console::stdout(strtr('{time}: [{id}] {class} has been started ... ', [
+            '{time}' => date('Y-m-d H:i:s'),
+            '{id}' => $event->id,
+            '{class}' => get_class($event->job),
+        ]));
+    }
+
+    public function afterExec(JobEvent $event)
+    {
+        Console::output(strtr('Done ({time} s)', [
+            '{time}' => round(microtime(true) - $this->start, 3),
+        ]));
+    }
+
+    public function afterExecError(ErrorEvent $event)
+    {
+        Console::output(strtr('Error ({time} s)', [
+            '{time}' => round(microtime(true) - $this->start, 3),
+        ]));
+        Console::error($event->error);
+    }
 }
