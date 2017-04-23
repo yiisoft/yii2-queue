@@ -109,7 +109,19 @@ class Queue extends CliQueue
      */
     public function status($id)
     {
-        throw new NotSupportedException('Status is not supported in the driver.');
+        $payload = (new Query())
+            ->from($this->tableName)
+            ->where(['id' => $id])
+            ->one($this->db);
+        if (!$payload) {
+            return Queue::STATUS_UNKNOWN;
+        } elseif (!$payload['started_at']) {
+            return Queue::STATUS_WAITING;
+        } elseif (!$payload['finished_at']) {
+            return Queue::STATUS_STARTED;
+        } else {
+            return Queue::STATUS_FINISHED;
+        }
     }
 
     /**
