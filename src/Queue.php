@@ -42,6 +42,11 @@ abstract class Queue extends Component
      */
     const EVENT_AFTER_EXEC_ERROR = 'afterExecError';
 
+    const STATUS_UNKNOWN = 0;
+    const STATUS_WAITING = 1;
+    const STATUS_STARTED = 2;
+    const STATUS_FINISHED = 3;
+
     /**
      * @var Serializer|array
      */
@@ -91,6 +96,12 @@ abstract class Queue extends Component
      * @return string|null id of a job message
      */
     abstract protected function pushMessage($message, $timeout);
+
+    /**
+     * @param string $id of a job message
+     * @return int status code
+     */
+    abstract public function status($id);
 
     /**
      * @param string|null $id of a job message

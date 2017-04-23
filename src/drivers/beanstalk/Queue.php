@@ -9,6 +9,7 @@ namespace zhuravljov\yii\queue\drivers\beanstalk;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
+use yii\base\NotSupportedException;
 use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
 
@@ -77,6 +78,14 @@ class Queue extends CliQueue
             $timeout,
             $this->ttr
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        throw new NotSupportedException('Status is not supported in the driver.');
     }
 
     /**

@@ -9,6 +9,7 @@ namespace zhuravljov\yii\queue\drivers\file;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
@@ -111,6 +112,14 @@ class Queue extends CliQueue
         });
 
         return $id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        throw new NotSupportedException('Status is not supported in the driver.');
     }
 
     /**

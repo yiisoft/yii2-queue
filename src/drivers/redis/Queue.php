@@ -7,6 +7,7 @@
 
 namespace zhuravljov\yii\queue\drivers\redis;
 
+use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\redis\Connection;
 use zhuravljov\yii\queue\CliQueue;
@@ -124,5 +125,13 @@ class Queue extends CliQueue
     protected function closeWorker()
     {
         $this->redis->clientSetname('');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        throw new NotSupportedException('Status is not supported in the driver.');
     }
 }

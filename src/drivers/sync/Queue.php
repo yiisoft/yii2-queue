@@ -65,4 +65,12 @@ class Queue extends BaseQueue
 
         return array_push($this->messages, $message);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        throw new NotSupportedException('Status is not supported in the driver.');
+    }
 }

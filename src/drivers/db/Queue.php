@@ -8,6 +8,7 @@
 namespace zhuravljov\yii\queue\drivers\db;
 
 use yii\base\Exception;
+use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -101,6 +102,14 @@ class Queue extends CliQueue
         $id = $this->db->getLastInsertID($tableSchema->sequenceName);
 
         return $id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        throw new NotSupportedException('Status is not supported in the driver.');
     }
 
     /**
