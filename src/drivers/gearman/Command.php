@@ -22,6 +22,15 @@ class Command extends BaseCommand
     public $queue;
 
     /**
+     * Runs all jobs from gearman-queue.
+     * It can be used as cron job.
+     */
+    public function actionRun()
+    {
+        $this->queue->run();
+    }
+
+    /**
      * Listens gearman-queue and runs new jobs.
      * It can be used as demon process.
      */

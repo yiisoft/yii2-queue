@@ -28,20 +28,40 @@ class Queue extends CliQueue
     public $commandClass = Command::class;
 
     /**
+     * Runs all jobs from gearman-queue.
+     */
+    public function run()
+    {
+        $worker = new \GearmanWorker();
+        $worker->addServer($this->host, $this->port);
+        $worker->addFunction($this->channel, function (\GearmanJob $message) {
+            $this->handleMessage($message->handle(), $message->workload());
+        });
+        $worker->setTimeout(1);
+        do {
+            $worker->work();
+        } while (!Signal::isExit() && $worker->returnCode() === GEARMAN_SUCCESS);
+
+    }
+
+    /**
      * Listens gearman-queue and runs new jobs.
      */
     public function listen()
     {
         $worker = new \GearmanWorker();
         $worker->addServer($this->host, $this->port);
-        $worker->setTimeout(-1);
         $worker->addFunction($this->channel, function (\GearmanJob $message) {
-            $this->handleMessage($message->unique(), $message->workload());
+            $this->handleMessage($message->handle(), $message->workload());
         });
 
+        $worker->setTimeout(1000);
         do {
             $worker->work();
-        } while (!Signal::isExit() && $worker->returnCode() === GEARMAN_SUCCESS);
+        } while (
+            !Signal::isExit() &&
+            in_array($worker->returnCode(), [GEARMAN_TIMEOUT, GEARMAN_SUCCESS])
+        );
     }
 
     /**
@@ -53,13 +73,7 @@ class Queue extends CliQueue
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        $client = new \GearmanClient();
-        $client->addServer($this->host, $this->port);
-
-        $unique = uniqid();
-        $client->doBackground($this->channel, $message, $unique);
-
-        return $unique;
+        return $this->getClient()->doBackground($this->channel, $message);
     }
 
     /**
@@ -67,6 +81,27 @@ class Queue extends CliQueue
      */
     public function status($id)
     {
-        throw new NotSupportedException('Status is not supported in the driver.');
+        $status = $this->getClient()->jobStatus($id);
+        if ($status[0] && !$status[1]) {
+            return Queue::STATUS_WAITING;
+        } elseif ($status[0] && $status[1]) {
+            return Queue::STATUS_STARTED;
+        } else {
+            return Queue::STATUS_UNKNOWN;
+        }
     }
+
+    /**
+     * @return \GearmanClient
+     */
+    protected function getClient()
+    {
+        if (!$this->_client) {
+            $this->_client = new \GearmanClient();
+            $this->_client->addServer($this->host, $this->port);
+        }
+        return $this->_client;
+    }
+
+    private $_client;
 }

@@ -1,5 +1,5 @@
 <?php
-return [
+$config = [
     'id' => 'yii2-queue-app',
     'basePath' => dirname(__DIR__),
     'vendorPath' => dirname(dirname(dirname(__DIR__))) . '/vendor',
@@ -77,3 +77,12 @@ return [
         ],
     ],
 ];
+
+if (defined('GEARMAN_SUCCESS')) {
+    $config['bootstrap'][] = 'gearmanQueue';
+    $config['components']['gearmanQueue'] = [
+        'class' => \zhuravljov\yii\queue\drivers\gearman\Queue::class,
+    ];
+}
+
+return $config;

@@ -25,6 +25,12 @@ Console
 Console is used to process queued tasks.
 
 ```bash
+yii queue/run
+```
+
+`run` command obtains and executes tasks in a loop until queue is empty. Works well with cron.
+
+```bash
 yii queue/listen
 ```
 
