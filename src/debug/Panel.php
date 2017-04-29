@@ -8,8 +8,11 @@
 namespace zhuravljov\yii\queue\debug;
 
 use Yii;
+use yii\base\NotSupportedException;
 use yii\base\ViewContextInterface;
-use zhuravljov\yii\queue\JobEvent;
+use yii\helpers\VarDumper;
+use zhuravljov\yii\queue\Job;
+use zhuravljov\yii\queue\PushEvent;
 use zhuravljov\yii\queue\Queue;
 
 /**
@@ -24,20 +27,56 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function getName()
     {
-        parent::init();
-        JobEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (JobEvent $event) {
-            $this->_jobs[] = serialize($event->job);
-        });
+        return 'Queue';
     }
 
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function init()
     {
-        return 'Queue';
+        parent::init();
+        PushEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (PushEvent $event) {
+            $this->_jobs[] = $this->getPushData($event);
+        });
+    }
+
+    /**
+     * @param PushEvent $event
+     * @return array
+     */
+    protected function getPushData(PushEvent $event)
+    {
+        $data = [];
+        foreach (Yii::$app->getComponents(false) as $id => $component) {
+            if ($component === $event->sender) {
+                $data['sender'] = $id;
+                break;
+            }
+        }
+        $data['id'] = $event->id;
+        $data['timeout'] = $event->timeout;
+        if ($event->job instanceof Job) {
+            $data['class'] = get_class($event->job);
+            $data['properties'] = [];
+            foreach (get_object_vars($event->job) as $property => $value) {
+                $data['properties'][$property] = VarDumper::dumpAsString($value);
+            }
+        } else {
+            $data['data'] = VarDumper::dumpAsString($event->job);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save()
+    {
+        return ['jobs' => $this->_jobs];
     }
 
     /**
@@ -64,18 +103,27 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function getDetail()
     {
-        return Yii::$app->view->render('detail', [
-            'jobs' => array_map(function ($serialized) {
-                return unserialize($serialized);
-            }, $this->data['jobs']),
-        ], $this);
-    }
+        $jobs = $this->data['jobs'];
+        foreach ($jobs as &$job) {
+            $job['status'] = 'unknown';
+            /** @var Queue $queue */
+            if ($queue = Yii::$app->get($job['sender'], false)) {
+                try {
+                    if ($queue->isWaiting($job['id'])) {
+                        $job['status'] = 'waiting';
+                    } elseif ($queue->isStarted($job['id'])) {
+                        $job['status'] = 'started';
+                    } elseif ($queue->isFinished($job['id'])) {
+                        $job['status'] = 'finished';
+                    }
+                } catch (NotSupportedException $e) {
+                } catch (\Exception $e) {
+                    $job['status'] = $e->getMessage();
+                }
+            }
+        }
+        unset($job);
 
-    /**
-     * @inheritdoc
-     */
-    public function save()
-    {
-        return ['jobs' => $this->_jobs];
+        return Yii::$app->view->render('detail', compact('jobs'), $this);
     }
 }
