@@ -28,10 +28,9 @@ yii queue/run
 `run` command obtains and executes tasks in a loop until queue is empty. Works well with cron.
 
 ```bash
-yii queue/listen [delay]
+yii queue/listen
 ```
 
 `listen` command launches a daemon which infinitely queries the queue. If there are new tasks they're immediately
-obtained and executed. `delay` is time in seconds to wait between querying a queue next time.
-This method is most effificient when command is properly daemonized via supervisor such as
+obtained and executed. This method is most effificient when command is properly daemonized via supervisor such as
 `supervisord`.

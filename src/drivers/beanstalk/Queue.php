@@ -7,9 +7,10 @@
 
 namespace zhuravljov\yii\queue\drivers\beanstalk;
 
+use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
-use yii\base\NotSupportedException;
+use yii\base\InvalidParamException;
 use zhuravljov\yii\queue\CliQueue;
 use zhuravljov\yii\queue\Signal;
 
@@ -56,14 +57,16 @@ class Queue extends CliQueue
 
     /**
      * Listens queue and runs new jobs.
-     *
-     * @param integer $delay number of seconds for waiting new job.
      */
-    public function listen($delay)
+    public function listen()
     {
-        do {
-            $this->run();
-        } while (!Signal::isExit() && (!$delay || sleep($delay) === 0));
+        while (!Signal::isExit()) {
+            if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 3)) {
+                if ($this->handleMessage($payload->getId(), $payload->getData())) {
+                    $this->getPheanstalk()->delete($payload);
+                }
+            }
+        }
     }
 
     /**
@@ -85,13 +88,30 @@ class Queue extends CliQueue
      */
     protected function status($id)
     {
-        throw new NotSupportedException('Status is not supported in the driver.');
+        if (!is_numeric($id) || $id <= 0) {
+            throw new InvalidParamException("Unknown messages ID: $id.");
+        }
+
+        try {
+            $stats = $this->getPheanstalk()->statsJob($id);
+            if ($stats['state'] === 'reserved') {
+                return self::STATUS_STARTED;
+            } else {
+                return self::STATUS_WAITING;
+            }
+        } catch (ServerException $e) {
+            if ($e->getMessage() === 'Server reported NOT_FOUND') {
+                return self::STATUS_FINISHED;
+            } else {
+                throw $e;
+            }
+        }
     }
 
     /**
      * @return Pheanstalk
      */
-    protected function getPheanstalk()
+    public function getPheanstalk()
     {
         if (!$this->_pheanstalk) {
             $this->_pheanstalk = new Pheanstalk($this->host, $this->port);

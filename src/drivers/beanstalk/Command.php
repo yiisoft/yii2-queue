@@ -33,11 +33,9 @@ class Command extends BaseCommand
     /**
      * Listens beanstalk-queue and runs new jobs.
      * It can be used as demon process.
-     *
-     * @param integer $delay Number of seconds for waiting new job.
      */
-    public function actionListen($delay = 3)
+    public function actionListen()
     {
-        $this->queue->listen($delay);
+        $this->queue->listen();
     }
 }
