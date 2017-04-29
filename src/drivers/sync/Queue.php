@@ -69,7 +69,7 @@ class Queue extends BaseQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    protected function status($id)
     {
         throw new NotSupportedException('Status is not supported in the driver.');
     }

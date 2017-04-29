@@ -8,7 +8,7 @@
 namespace zhuravljov\yii\queue\drivers\db;
 
 use yii\base\Exception;
-use yii\base\NotSupportedException;
+use yii\base\InvalidParamException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -107,15 +107,22 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    protected function status($id)
     {
         $payload = (new Query())
             ->from($this->tableName)
             ->where(['id' => $id])
             ->one($this->db);
+
         if (!$payload) {
-            return Queue::STATUS_UNKNOWN;
-        } elseif (!$payload['started_at']) {
+            if ($this->deleteReleased) {
+                return Queue::STATUS_FINISHED;
+            } else {
+                throw new InvalidParamException("Unknown messages ID: $id.");
+            }
+        }
+
+        if (!$payload['started_at']) {
             return Queue::STATUS_WAITING;
         } elseif (!$payload['finished_at']) {
             return Queue::STATUS_STARTED;

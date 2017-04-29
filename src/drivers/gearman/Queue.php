@@ -79,7 +79,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    protected function status($id)
     {
         $status = $this->getClient()->jobStatus($id);
         if ($status[0] && !$status[1]) {
@@ -87,7 +87,7 @@ class Queue extends CliQueue
         } elseif ($status[0] && $status[1]) {
             return Queue::STATUS_STARTED;
         } else {
-            return Queue::STATUS_UNKNOWN;
+            return Queue::STATUS_FINISHED;
         }
     }
 

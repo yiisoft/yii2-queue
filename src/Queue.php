@@ -41,10 +41,17 @@ abstract class Queue extends Component
      * @event ErrorEvent
      */
     const EVENT_AFTER_EXEC_ERROR = 'afterExecError';
-
-    const STATUS_UNKNOWN = 0;
+    /**
+     * @see Queue::isWaiting()
+     */
     const STATUS_WAITING = 1;
+    /**
+     * @see Queue::isStarted()
+     */
     const STATUS_STARTED = 2;
+    /**
+     * @see Queue::isFinished()
+     */
     const STATUS_FINISHED = 3;
 
     /**
@@ -98,12 +105,6 @@ abstract class Queue extends Component
     abstract protected function pushMessage($message, $timeout);
 
     /**
-     * @param string $id of a job message
-     * @return int status code
-     */
-    abstract public function status($id);
-
-    /**
      * @param string|null $id of a job message
      * @param string $message
      * @return boolean
@@ -128,4 +129,37 @@ abstract class Queue extends Component
 
         return !$error;
     }
+
+    /**
+     * @param string $id of a job message
+     * @return bool
+     */
+    public function isWaiting($id)
+    {
+        return $this->status($id) === Queue::STATUS_WAITING;
+    }
+
+    /**
+     * @param string $id of a job message
+     * @return bool
+     */
+    public function isStarted($id)
+    {
+        return $this->status($id) === Queue::STATUS_STARTED;
+    }
+
+    /**
+     * @param string $id of a job message
+     * @return bool
+     */
+    public function isFinished($id)
+    {
+        return $this->status($id) === Queue::STATUS_FINISHED;
+    }
+
+    /**
+     * @param string $id of a job message
+     * @return int status code
+     */
+    abstract protected function status($id);
 }

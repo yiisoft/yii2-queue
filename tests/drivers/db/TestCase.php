@@ -22,6 +22,15 @@ abstract class TestCase extends \tests\drivers\TestCase
         $this->assertJobDone($job, $id);
     }
 
+    public function testStatus()
+    {
+        $job = $this->createJob();
+        $id = $this->getQueue()->push($job);
+        $this->assertTrue($this->getQueue()->isWaiting($id));
+        $this->runProcess('php tests/yii queue/run');
+        $this->assertTrue($this->getQueue()->isFinished($id));
+    }
+
     public function testListen()
     {
         $this->startProcess('php tests/yii queue/listen');
