@@ -23,26 +23,29 @@ abstract class Command extends Controller
      */
     public $queue;
     /**
-     * @var boolean
+     * @var bool verbose mode of a job execute. If enabled, execute result of each job
+     * will be printed.
      */
     public $verbose = false;
-
-    public function init()
-    {
-        parent::init();
-        $this->queue->messageHandler = function ($id, $message) {
-            return $this->handleMessage($id, $message);
-        };
-    }
+    /**
+     * @var bool isolate mode. It executes a job in a child process.
+     */
+    public $isolate = true;
 
     /**
      * @inheritdoc
      */
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), [
-            'verbose',
-        ]);
+        $options = parent::options($actionID);
+        if ($this->useVerboseOption($actionID)) {
+            $options[] = 'verbose';
+        }
+        if ($this->useIsolateOption($actionID)) {
+            $options[] = 'isolate';
+        }
+
+        return $options;
     }
 
     /**
@@ -56,12 +59,38 @@ abstract class Command extends Controller
     }
 
     /**
+     * @param string $actionID
+     * @return bool
+     */
+    protected function useVerboseOption($actionID)
+    {
+        return in_array($actionID, ['exec', 'run', 'listen']);
+    }
+
+    /**
+     * @param string $actionID
+     * @return bool
+     */
+    protected function useIsolateOption($actionID)
+    {
+        return in_array($actionID, ['run', 'listen']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function beforeAction($action)
     {
-        if ($this->verbose) {
+        if ($this->useVerboseOption($action->id) && $this->verbose) {
             $this->queue->attachBehavior('verbose', Verbose::class);
+        }
+
+        if ($this->useIsolateOption($action->id) && $this->isolate) {
+            $this->queue->messageHandler = function ($id, $message) {
+                return $this->handleMessage($id, $message);
+            };
+        } else {
+            $this->queue->messageHandler = null;
         }
 
         return parent::beforeAction($action);
@@ -71,7 +100,7 @@ abstract class Command extends Controller
      * Executes a job.
      *
      * @param string|null $id of a message
-     * @return int
+     * @return int exit code
      */
     public function actionExec($id = null)
     {
@@ -90,16 +119,20 @@ abstract class Command extends Controller
     private function handleMessage($id, $message)
     {
         // Executes child process
-        $cmd = strtr('{php} {yii} {queue}/exec --verbose={verbose} {id}', [
+        $cmd = strtr('{php} {yii} {queue}/exec {id}', [
             '{php}' => PHP_BINARY,
             '{yii}' => $_SERVER['SCRIPT_FILENAME'],
             '{queue}' => $this->id,
-            '{verbose}' => (int) $this->verbose,
             '{id}' => $id,
         ]);
+        foreach ($this->getPassedOptions() as $name) {
+            if (in_array($name, $this->options('exec'))) {
+                $cmd .= ' --' . $name . '=' . $this->$name;
+            }
+        }
+
         $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
-        $cwd = $_SERVER['PWD'];
-        $process = proc_open($cmd, $descriptors, $pipes, $cwd);
+        $process = proc_open($cmd, $descriptors, $pipes);
         if (is_resource($process)) {
             // Writes message to stdIn of process
             fwrite($pipes[0], $message);
