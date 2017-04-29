@@ -9,7 +9,7 @@ namespace zhuravljov\yii\queue\drivers\sync;
 
 use Yii;
 use yii\base\Application;
-use yii\base\NotSupportedException;
+use yii\base\InvalidParamException;
 use zhuravljov\yii\queue\Queue as BaseQueue;
 
 /**
@@ -20,13 +20,25 @@ use zhuravljov\yii\queue\Queue as BaseQueue;
 class Queue extends BaseQueue
 {
     /**
-     * @var boolean
+     * @var bool
      */
     public $handle = false;
     /**
-     * @var array
+     * @var array of massages
      */
     private $messages = [];
+    /**
+     * @var int last pushed ID
+     */
+    private $pushedId = 0;
+    /**
+     * @var int started ID
+     */
+    private $startedId = 0;
+    /**
+     * @var int last finished ID
+     */
+    private $finishedId = 0;
 
     /**
      * @inheritdoc
@@ -48,9 +60,11 @@ class Queue extends BaseQueue
      */
     public function run()
     {
-        $id = 0;
         while (($message = array_shift($this->messages)) !== null) {
-            $this->handleMessage(++$id, $message);
+            $this->startedId = $this->finishedId + 1;
+            $this->handleMessage($this->startedId, $message);
+            $this->finishedId = $this->startedId;
+            $this->startedId = 0;
         }
     }
 
@@ -59,11 +73,8 @@ class Queue extends BaseQueue
      */
     protected function pushMessage($message, $timeout)
     {
-        if ($timeout) {
-            throw new NotSupportedException('Delayed work is not supported in the driver.');
-        }
-
-        return array_push($this->messages, $message);
+        array_push($this->messages, $message);
+        return ++$this->pushedId;
     }
 
     /**
@@ -71,6 +82,14 @@ class Queue extends BaseQueue
      */
     protected function status($id)
     {
-        throw new NotSupportedException('Status is not supported in the driver.');
+        if (!is_int($id) || $id <= 0 || $id > $this->pushedId) {
+            throw new InvalidParamException("Unknown messages ID: $id.");
+        } elseif ($id <= $this->finishedId) {
+            return Queue::STATUS_FINISHED;
+        } elseif ($id === $this->startedId) {
+            return Queue::STATUS_STARTED;
+        } else {
+            return Queue::STATUS_WAITING;
+        }
     }
 }

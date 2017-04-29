@@ -33,4 +33,23 @@ class QueueTest extends TestCase
         $this->getQueue()->run();
         $this->assertJobDone($job, $id);
     }
+
+    public function testStatus()
+    {
+        $job = $this->createJob();
+        $id = $this->getQueue()->push($job);
+        $isWaiting = $this->getQueue()->isWaiting($id);
+        $isStarted = false;
+        $beforeExec = function () use ($id, &$isStarted) {
+            $isStarted = $this->getQueue()->isStarted($id);
+        };
+        $this->getQueue()->on(Queue::EVENT_BEFORE_EXEC, $beforeExec);
+        $this->getQueue()->run();
+        $this->getQueue()->off(Queue::EVENT_BEFORE_EXEC, $beforeExec);
+        $isFinished = $this->getQueue()->isFinished($id);
+
+        $this->assertTrue($isWaiting);
+        $this->assertTrue($isStarted);
+        $this->assertTrue($isFinished);
+    }
 }
