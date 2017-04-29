@@ -7,10 +7,8 @@
 
 namespace zhuravljov\yii\queue\drivers\redis;
 
-use yii\base\Action;
-use yii\base\InvalidConfigException;
-use yii\console\Controller as ConsoleController;
 use yii\helpers\Console;
+use zhuravljov\yii\queue\cli\Action;
 
 /**
  * Info about queue status.
@@ -23,24 +21,6 @@ class InfoAction extends Action
      * @var Queue
      */
     public $queue;
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        if (!$this->queue && ($this->controller instanceof Command)) {
-            $this->queue = $this->controller->queue;
-        }
-        if (!$this->controller instanceof ConsoleController) {
-            throw new InvalidConfigException('The controller must be console controller.');
-        }
-        if (!($this->queue instanceof Queue)) {
-            throw new InvalidConfigException('The queue must be redis queue.');
-        }
-    }
 
     /**
      * Info about queue status.

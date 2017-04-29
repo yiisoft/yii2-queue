@@ -7,14 +7,14 @@
 
 namespace zhuravljov\yii\queue\drivers\file;
 
-use zhuravljov\yii\queue\Command as BaseCommand;
+use zhuravljov\yii\queue\cli\Command as CliCommand;
 
 /**
  * Manages application file-queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Command extends BaseCommand
+class Command extends CliCommand
 {
     /**
      * @var Queue

@@ -5,17 +5,19 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue;
+namespace zhuravljov\yii\queue\cli;
 
 use yii\base\Behavior;
 use yii\helpers\Console;
+use zhuravljov\yii\queue\ErrorEvent;
+use zhuravljov\yii\queue\JobEvent;
 
 /**
- * Class VerboseBehavior
+ * Verbose Behavior
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class VerboseBehavior extends Behavior
+class Verbose extends Behavior
 {
     /**
      * @var Queue

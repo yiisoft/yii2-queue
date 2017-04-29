@@ -11,8 +11,8 @@ use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\InvalidParamException;
-use zhuravljov\yii\queue\CliQueue;
-use zhuravljov\yii\queue\Signal;
+use zhuravljov\yii\queue\cli\Queue as CliQueue;
+use zhuravljov\yii\queue\cli\Signal;
 
 /**
  * Beanstalk Queue

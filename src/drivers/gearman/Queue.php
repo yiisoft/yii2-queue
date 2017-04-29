@@ -8,8 +8,8 @@
 namespace zhuravljov\yii\queue\drivers\gearman;
 
 use yii\base\NotSupportedException;
-use zhuravljov\yii\queue\CliQueue;
-use zhuravljov\yii\queue\Signal;
+use zhuravljov\yii\queue\cli\Queue as CliQueue;
+use zhuravljov\yii\queue\cli\Signal;
 
 /**
  * Gearman Queue
@@ -83,11 +83,11 @@ class Queue extends CliQueue
     {
         $status = $this->getClient()->jobStatus($id);
         if ($status[0] && !$status[1]) {
-            return Queue::STATUS_WAITING;
+            return self::STATUS_WAITING;
         } elseif ($status[0] && $status[1]) {
-            return Queue::STATUS_STARTED;
+            return self::STATUS_STARTED;
         } else {
-            return Queue::STATUS_FINISHED;
+            return self::STATUS_FINISHED;
         }
     }
 

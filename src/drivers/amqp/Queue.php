@@ -13,7 +13,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
-use zhuravljov\yii\queue\CliQueue;
+use zhuravljov\yii\queue\cli\Queue as CliQueue;
 
 /**
  * Amqp Queue

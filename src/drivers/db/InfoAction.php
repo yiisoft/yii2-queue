@@ -7,11 +7,9 @@
 
 namespace zhuravljov\yii\queue\drivers\db;
 
-use yii\base\Action;
-use yii\base\InvalidConfigException;
-use yii\console\Controller as ConsoleController;
 use yii\db\Query;
 use yii\helpers\Console;
+use zhuravljov\yii\queue\cli\Action;
 
 
 /**
@@ -25,24 +23,6 @@ class InfoAction extends Action
      * @var Queue
      */
     public $queue;
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        if (!$this->queue && ($this->controller instanceof Command)) {
-            $this->queue = $this->controller->queue;
-        }
-        if (!($this->controller instanceof ConsoleController)) {
-            throw new InvalidConfigException('The controller must be console controller.');
-        }
-        if (!($this->queue instanceof Queue)) {
-            throw new InvalidConfigException('The queue must be db queue.');
-        }
-    }
 
     /**
      * Info about queue status.

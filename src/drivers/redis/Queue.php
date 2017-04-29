@@ -10,8 +10,8 @@ namespace zhuravljov\yii\queue\drivers\redis;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\redis\Connection;
-use zhuravljov\yii\queue\CliQueue;
-use zhuravljov\yii\queue\Signal;
+use zhuravljov\yii\queue\cli\Queue as CliQueue;
+use zhuravljov\yii\queue\cli\Signal;
 
 /**
  * Redis Queue

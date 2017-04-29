@@ -5,20 +5,21 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue;
+namespace zhuravljov\yii\queue\cli;
 
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
 use yii\console\Application as ConsoleApp;
 use yii\helpers\Inflector;
+use zhuravljov\yii\queue\Queue as BaseQueue;
 
 /**
  * Queue with CLI
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class CliQueue extends Queue implements BootstrapInterface
+abstract class Queue extends BaseQueue implements BootstrapInterface
 {
     /**
      * @var string command class name

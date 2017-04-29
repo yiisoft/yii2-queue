@@ -13,8 +13,8 @@ use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
-use zhuravljov\yii\queue\CliQueue;
-use zhuravljov\yii\queue\Signal;
+use zhuravljov\yii\queue\cli\Queue as CliQueue;
+use zhuravljov\yii\queue\cli\Signal;
 
 /**
  * Db Queue
@@ -116,18 +116,18 @@ class Queue extends CliQueue
 
         if (!$payload) {
             if ($this->deleteReleased) {
-                return Queue::STATUS_FINISHED;
+                return self::STATUS_FINISHED;
             } else {
                 throw new InvalidParamException("Unknown messages ID: $id.");
             }
         }
 
         if (!$payload['started_at']) {
-            return Queue::STATUS_WAITING;
+            return self::STATUS_WAITING;
         } elseif (!$payload['finished_at']) {
-            return Queue::STATUS_STARTED;
+            return self::STATUS_STARTED;
         } else {
-            return Queue::STATUS_FINISHED;
+            return self::STATUS_FINISHED;
         }
     }
 

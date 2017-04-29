@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue;
+namespace zhuravljov\yii\queue\cli;
 
 /**
  * Process Signal Helper

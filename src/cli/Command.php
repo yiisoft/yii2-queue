@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue;
+namespace zhuravljov\yii\queue\cli;
 
 use yii\base\Exception;
 use yii\console\Controller;
@@ -19,7 +19,7 @@ use yii\helpers\Console;
 abstract class Command extends Controller
 {
     /**
-     * @var CliQueue
+     * @var Queue
      */
     public $queue;
     /**
@@ -61,7 +61,7 @@ abstract class Command extends Controller
     public function beforeAction($action)
     {
         if ($this->verbose) {
-            $this->queue->attachBehavior('verbose', VerboseBehavior::class);
+            $this->queue->attachBehavior('verbose', Verbose::class);
         }
 
         return parent::beforeAction($action);

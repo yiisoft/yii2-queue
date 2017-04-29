@@ -7,14 +7,14 @@
 
 namespace zhuravljov\yii\queue\drivers\amqp;
 
-use zhuravljov\yii\queue\Command as BaseCommand;
+use zhuravljov\yii\queue\cli\Command as CliCommand;
 
 /**
  * Manages application amqp-queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Command extends BaseCommand
+class Command extends CliCommand
 {
     /**
      * @var Queue
