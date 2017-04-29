@@ -30,7 +30,11 @@
         "symfony/process": "*"
     },
     "suggest": {
-        "ext-pcntl": "Needed to support process signals."
+        "ext-pcntl": "Need for process signals.",
+        "yiisoft/yii2-redis": "Need for Redis queue.",
+        "pda/pheanstalk": "Need for Beanstalk queue.",
+        "php-amqplib/php-amqplib": "Need for AMQP queue.",
+        "ext-gearman": "Need for Gearman queue."
     },
     "autoload": {
         "psr-4": {
