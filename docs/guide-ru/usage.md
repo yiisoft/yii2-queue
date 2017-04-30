@@ -129,6 +129,10 @@ return [
 
 ```php
 return [
+    'bootstrap' => [
+        'queue1',
+        'queue2',
+    ],
     'components' => [
         'queue1' => [
             'class' => \zhuravljov\yii\queue\drivers\redis\Queue::class,
