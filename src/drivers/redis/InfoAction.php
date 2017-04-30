@@ -27,18 +27,18 @@ class InfoAction extends Action
      */
     public function run()
     {
-        Console::output(Console::ansiFormat('Jobs', [Console::FG_GREEN]));
+        Console::output($this->format('Jobs', Console::FG_GREEN));
 
-        Console::stdout(Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]));
+        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
         Console::output($this->getReservedCount());
 
-        Console::stdout(Console::ansiFormat('- delayed: ', [Console::FG_YELLOW]));
+        Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
         Console::output($this->getDelayedCount());
 
         if ($workersInfo = $this->getWorkersInfo()) {
-            Console::output(Console::ansiFormat('Workers ', [Console::FG_GREEN]));
+            Console::output($this->format('Workers ', Console::FG_GREEN));
             foreach ($workersInfo as $name => $info) {
-                Console::stdout(Console::ansiFormat("- $name: ", [Console::FG_YELLOW]));
+                Console::stdout($this->format("- $name: ", Console::FG_YELLOW));
                 Console::output($info['addr']);
             }
         }

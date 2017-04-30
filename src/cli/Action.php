@@ -37,11 +37,20 @@ abstract class Action extends BaseAction
         if (!$this->queue && ($this->controller instanceof Command)) {
             $this->queue = $this->controller->queue;
         }
-        if (!$this->controller instanceof ConsoleController) {
+        if (!($this->controller instanceof ConsoleController)) {
             throw new InvalidConfigException('The controller must be console controller.');
         }
         if (!($this->queue instanceof Queue)) {
             throw new InvalidConfigException('The queue must be cli queue.');
         }
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    protected function format($string)
+    {
+        return call_user_func_array([$this->controller, 'ansiFormat'], func_get_args());
     }
 }

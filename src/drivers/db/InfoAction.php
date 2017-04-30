@@ -29,18 +29,18 @@ class InfoAction extends Action
      */
     public function run()
     {
-        Console::output(Console::ansiFormat('Jobs', [Console::FG_GREEN]));
+        Console::output($this->format('Jobs', Console::FG_GREEN));
 
-        Console::stdout(Console::ansiFormat('- reserved: ', [Console::FG_YELLOW]));
+        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
         Console::output($this->getReserved()->count('*', $this->queue->db));
 
-        Console::stdout(Console::ansiFormat('- delayed: ', [Console::FG_YELLOW]));
+        Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
         Console::output($this->getDelayed()->count('*', $this->queue->db));
 
-        Console::stdout(Console::ansiFormat('- started: ', [Console::FG_YELLOW]));
+        Console::stdout($this->format('- started: ', Console::FG_YELLOW));
         Console::output($this->getStarted()->count('*', $this->queue->db));
 
-        Console::stdout(Console::ansiFormat('- finished: ', [Console::FG_YELLOW]));
+        Console::stdout($this->format('- finished: ', Console::FG_YELLOW));
         Console::output($this->getFinished()->count('*', $this->queue->db));
     }
 
