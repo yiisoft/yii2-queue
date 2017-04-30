@@ -7,7 +7,7 @@
 
 namespace zhuravljov\yii\queue\drivers\redis;
 
-use yii\base\NotSupportedException;
+use yii\base\InvalidParamException;
 use yii\di\Instance;
 use yii\redis\Connection;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;
@@ -50,7 +50,7 @@ class Queue extends CliQueue
     {
         $this->openWorker();
         while (($payload = $this->pop(0)) !== null) {
-            list($id, $message) = explode(':', $payload, 2);
+            list($id, $message) = $payload;
             $this->handleMessage($id, $message);
         }
         $this->closeWorker();
@@ -64,7 +64,7 @@ class Queue extends CliQueue
         $this->openWorker();
         while (!Signal::isExit()) {
             if (($payload = $this->pop(3)) !== null) {
-                list($id, $message) = explode(':', $payload, 2);
+                list($id, $message) = $payload;
                 $this->handleMessage($id, $message);
             }
         }
@@ -73,7 +73,7 @@ class Queue extends CliQueue
 
     /**
      * @param int $wait timeout
-     * @return string|null payload
+     * @return array|null payload
      */
     protected function pop($wait)
     {
@@ -82,20 +82,31 @@ class Queue extends CliQueue
             $this->now = time();
             if ($delayed = $this->redis->zrevrangebyscore("$this->channel.delayed", $this->now, '-inf')) {
                 $this->redis->zremrangebyscore("$this->channel.delayed", '-inf', $this->now);
-                foreach ($delayed as $payload) {
-                    $this->redis->rpush("$this->channel.reserved", $payload);
+                foreach ($delayed as $id) {
+                    $this->redis->rpush("$this->channel.reserved", $id);
                 }
             }
         }
 
         // Find a new reserved message
         if (!$wait) {
-            return $this->redis->rpop("$this->channel.reserved");
-        } elseif ($result = $this->redis->brpop("$this->channel.reserved", $wait)) {
-            return $result[1];
+            if ($id = $this->redis->rpop("$this->channel.reserved")) {
+                $message = $this->redis->hget("$this->channel.messages", $id);
+                $this->redis->hdel("$this->channel.messages", $id);
+
+                return [$id, $message];
+            }
         } else {
-            return null;
+            if ($result = $this->redis->brpop("$this->channel.reserved", $wait)) {
+                $id = $result[1];
+                $message = $this->redis->hget("$this->channel.messages", $id);
+                $this->redis->hdel("$this->channel.messages", $id);
+
+                return [$id, $message];
+            }
         }
+
+        return null;
     }
 
     private $now = 0;
@@ -106,11 +117,12 @@ class Queue extends CliQueue
     protected function pushMessage($message, $timeout)
     {
         $id = $this->redis->incr("$this->channel.message_id");
-        $payload = "$id:$message";
         if (!$timeout) {
-            $this->redis->lpush("$this->channel.reserved", $payload);
+            $this->redis->hset("$this->channel.messages", $id, $message);
+            $this->redis->lpush("$this->channel.reserved", $id);
         } else {
-            $this->redis->zadd("$this->channel.delayed", time() + $timeout, $payload);
+            $this->redis->hset("$this->channel.messages", $id, $message);
+            $this->redis->zadd("$this->channel.delayed", time() + $timeout, $id);
         }
 
         return $id;
@@ -132,6 +144,14 @@ class Queue extends CliQueue
      */
     protected function status($id)
     {
-        throw new NotSupportedException('Status is not supported in the driver.');
+        if (!is_numeric($id) || $id <= 0) {
+            throw new InvalidParamException("Unknown messages ID: $id.");
+        }
+
+        if ($this->redis->hexists("$this->channel.messages", $id)) {
+            return self::STATUS_WAITING;
+        } else {
+            return self::STATUS_FINISHED;
+        }
     }
 }
