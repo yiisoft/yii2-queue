@@ -16,7 +16,7 @@ use yii\console\Controller as ConsoleController;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Action extends BaseAction
+abstract class Action extends BaseAction
 {
     /**
      * @var Queue
@@ -27,6 +27,9 @@ class Action extends BaseAction
      */
     public $controller;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
