@@ -7,7 +7,7 @@
 
 namespace tests\drivers\amqp;
 
-use tests\drivers\TestCase;
+use tests\drivers\CliTestCase;
 use Yii;
 use zhuravljov\yii\queue\drivers\amqp\Queue;
 
@@ -16,7 +16,7 @@ use zhuravljov\yii\queue\drivers\amqp\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends TestCase
+class QueueTest extends CliTestCase
 {
     /**
      * @return Queue
@@ -26,11 +26,18 @@ class QueueTest extends TestCase
         return Yii::$app->amqpQueue;
     }
 
-    public function testListen()
+    public function testRun()
     {
-        $this->startProcess('php tests/yii queue/listen');
-        $job = $this->createJob();
-        $this->getQueue()->push($job);
-        $this->assertJobDone($job, null);
+        // Not supported
+    }
+
+    public function testStatus()
+    {
+        // Not supported
+    }
+
+    public function testLater()
+    {
+        // Not supported
     }
 }

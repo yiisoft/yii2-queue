@@ -7,8 +7,8 @@
 
 namespace tests\drivers\gearman;
 
+use tests\drivers\CliTestCase;
 use Yii;
-use tests\drivers\TestCase;
 use zhuravljov\yii\queue\drivers\gearman\Queue;
 
 /**
@@ -16,7 +16,7 @@ use zhuravljov\yii\queue\drivers\gearman\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends TestCase
+class QueueTest extends CliTestCase
 {
     /**
      * @return Queue
@@ -26,29 +26,9 @@ class QueueTest extends TestCase
         return Yii::$app->gearmanQueue;
     }
 
-    public function testRun()
+    public function testLater()
     {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->runProcess('php tests/yii queue/run');
-        $this->assertJobDone($job, $id);
-    }
-
-    public function testStatus()
-    {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertTrue($this->getQueue()->isWaiting($id));
-        $this->runProcess('php tests/yii queue/run');
-        $this->assertTrue($this->getQueue()->isFinished($id));
-    }
-
-    public function testListen()
-    {
-        $this->startProcess('php tests/yii queue/listen');
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertJobDone($job, $id);
+        // Not supported
     }
 
     public function setUp()

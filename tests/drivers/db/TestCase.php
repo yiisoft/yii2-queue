@@ -7,52 +7,22 @@
 
 namespace tests\drivers\db;
 
+use tests\drivers\CliTestCase;
+
 /**
  * Db Queue Test Case
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class TestCase extends \tests\drivers\TestCase
+abstract class TestCase extends CliTestCase
 {
-    public function testRun()
-    {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->runProcess('php tests/yii queue/run');
-        $this->assertJobDone($job, $id);
-    }
-
-    public function testStatus()
-    {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertTrue($this->getQueue()->isWaiting($id));
-        $this->runProcess('php tests/yii queue/run');
-        $this->assertTrue($this->getQueue()->isFinished($id));
-    }
-
-    public function testListen()
-    {
-        $this->startProcess('php tests/yii queue/listen');
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertJobDone($job, $id);
-    }
-
-    public function testLater()
-    {
-        $this->startProcess('php tests/yii queue/listen');
-        $job = $this->createJob();
-        $id = $this->getQueue()->later($job, 2);
-        sleep(2);
-        $this->assertJobLaterDone($job, $id, time());
-    }
 
     protected function tearDown()
     {
         $this->getQueue()->db->createCommand()
             ->delete($this->getQueue()->tableName)
             ->execute();
+
         parent::tearDown();
     }
 }

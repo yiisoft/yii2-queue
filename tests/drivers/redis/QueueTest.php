@@ -7,8 +7,8 @@
 
 namespace tests\drivers\redis;
 
+use tests\drivers\CliTestCase;
 use Yii;
-use tests\drivers\TestCase;
 use zhuravljov\yii\queue\drivers\redis\Queue;
 
 /**
@@ -16,7 +16,7 @@ use zhuravljov\yii\queue\drivers\redis\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends TestCase
+class QueueTest extends CliTestCase
 {
     /**
      * @return Queue
@@ -26,43 +26,10 @@ class QueueTest extends TestCase
         return Yii::$app->redisQueue;
     }
 
-    public function testRun()
-    {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->runProcess('php tests/yii queue/run');
-        $this->assertJobDone($job, $id);
-    }
-
-    public function testStatus()
-    {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertTrue($this->getQueue()->isWaiting($id));
-        $this->runProcess('php tests/yii queue/run');
-        $this->assertTrue($this->getQueue()->isFinished($id));
-    }
-
-    public function testListen()
-    {
-        $this->startProcess('php tests/yii queue/listen');
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertJobDone($job, $id);
-    }
-
-    public function testLater()
-    {
-        $this->startProcess('php tests/yii queue/listen');
-        $job = $this->createJob();
-        $id = $this->getQueue()->later($job, 2);
-        sleep(2);
-        $this->assertJobLaterDone($job, $id, time());
-    }
-
     protected function tearDown()
     {
         $this->getQueue()->redis->executeCommand('FLUSHDB');
+
         parent::tearDown();
     }
 }
