@@ -41,7 +41,11 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     public $url;
     public $file;
     
-    public function execute($queue)
+    /**
+     * @param Queue $queue which handled the job
+     * @param string|null $id of a job message
+     */
+    public function execute($queue, $id)
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }

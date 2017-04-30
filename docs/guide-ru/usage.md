@@ -34,7 +34,11 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     public $url;
     public $file;
     
-    public function execute($queue)
+    /**
+     * @param Queue $queue очередь, которая обрабатывает задание
+     * @param string|null $id задания
+     */
+    public function execute($queue, $id)
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }
@@ -61,7 +65,30 @@ Yii::$app->queue->later(new DownloadJob([
 ]), 5 * 60);
 ```
 
-**Внимание:** не все драйверы поддерживают отложенное выполнение заданий.
+**Внимание:** Драйвера AMQP и Gearman не поддреживают отложенные задания. И синхронный драйвер,
+в отладочных целях, обрабатывает `later()` как обычный `push()`.
+
+
+Статус заданий
+--------------
+
+Компонент дает возможность отслеживать состояние поставленных в очередь заданий.
+
+```php
+// Отправляем занание в очередь, и получаем его ID.
+$id = Yii::$app->queue->push(new SomeJob());
+
+// Задание еще находится в очереди. 
+Yii::$app->queue->isWaiting($id);
+
+// Воркер взял задание из очереди, и выполняет его. 
+Yii::$app->queue->isStarted($id);
+
+// Воркер уже выполнил задание. 
+Yii::$app->queue->isFinished($id);
+ ```
+
+**Внимание:** Драйвера AMQP не поддерживает статусы.
 
 
 Сообщения для сторонних воркеров
@@ -164,7 +191,7 @@ class SomeJob extends Object implements \zhuravljov\yii\queue\Job
     public $bookId;
     public $someUrl;
     
-    public function execute($queue)
+    public function execute($queue, $id)
     {
         $user = User::findOne($this->userId);
         $book = Book::findOne($this->bookId);

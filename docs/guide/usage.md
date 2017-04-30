@@ -35,7 +35,11 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     public $url;
     public $file;
     
-    public function execute($queue)
+    /**
+     * @param Queue $queue which handled the job
+     * @param string|null $id of a job message
+     */
+    public function execute($queue, $id)
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }
@@ -63,6 +67,28 @@ Yii::$app->queue->later(new DownloadJob([
 ```
 
 **Important:** only some drivers support delayed running.
+
+
+Job status
+----------
+
+The component has ability to track status jobs which is pushed into queue.
+
+```php
+// Push a job into queue and get massage ID.
+$id = Yii::$app->queue->push(new SomeJob());
+
+// The job is waiting for execute. 
+Yii::$app->queue->isWaiting($id);
+
+// Worker gets the job from queue, end executing it.
+Yii::$app->queue->isStarted($id);
+
+// Worker has executed the job. 
+Yii::$app->queue->isFinished($id);
+ ```
+
+**Important:** AMQP driver doesn't support job statuses.
 
 
 Messaging third party workers
@@ -163,7 +189,7 @@ class SomeJob extends Object implements \zhuravljov\yii\queue\Job
     public $bookId;
     public $someUrl;
     
-    public function execute($queue)
+    public function execute($queue, $id)
     {
         $user = User::findOne($this->userId);
         $book = Book::findOne($this->bookId);
