@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\file;
+namespace zhuravljov\yii\queue\file;
 
 use zhuravljov\yii\queue\cli\Command as CliCommand;
 

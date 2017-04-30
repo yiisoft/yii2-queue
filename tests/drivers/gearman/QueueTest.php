@@ -9,7 +9,7 @@ namespace tests\drivers\gearman;
 
 use tests\drivers\CliTestCase;
 use Yii;
-use zhuravljov\yii\queue\drivers\gearman\Queue;
+use zhuravljov\yii\queue\gearman\Queue;
 
 /**
  * Gearman Queue Test

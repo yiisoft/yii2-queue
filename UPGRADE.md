@@ -17,15 +17,6 @@ Upgrade from 0.x to 1.0
   - Const `Queue::EVENT_AFTER_WORK` renamed to `Queue::EVENT_AFTER_EXEC`.
   - Const `Queue::EVENT_AFTER_ERROR` renamed to `Queue::EVENT_AFTER_EXEC_ERROR`.
 
-* All drivers moved from `queue` to `queue\drivers` namespace.
-  
-  - Class `\zhuravljov\yii\queue\amqp\Queue` moved to `\zhuravljov\yii\queue\drivers\amqp\Queue`.
-  - Class `\zhuravljov\yii\queue\beanstalk\Queue` moved to `\zhuravljov\yii\queue\drivers\beanstalk\Queue`.
-  - Class `\zhuravljov\yii\queue\db\Queue` moved to `\zhuravljov\yii\queue\drivers\db\Queue`.
-  - Class `\zhuravljov\yii\queue\gearman\Queue` moved to `\zhuravljov\yii\queue\drivers\gearman\Queue`.
-  - Class `\zhuravljov\yii\queue\redis\Queue` moved to `\zhuravljov\yii\queue\drivers\redis\Queue`.
-  - Class `\zhuravljov\yii\queue\sync\Queue` moved to `\zhuravljov\yii\queue\drivers\sync\Queue`.
-
 
 Upgrade from 0.10.1
 -------------------

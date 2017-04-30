@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\amqp;
+namespace zhuravljov\yii\queue\amqp;
 
 use zhuravljov\yii\queue\cli\Command as CliCommand;
 

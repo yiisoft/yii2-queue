@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\gearman;
+namespace zhuravljov\yii\queue\gearman;
 
 use yii\base\NotSupportedException;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;

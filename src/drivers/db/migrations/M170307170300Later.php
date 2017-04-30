@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\db\migrations;
+namespace zhuravljov\yii\queue\db\migrations;
 
 use yii\db\Migration;
 

@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\sync;
+namespace zhuravljov\yii\queue\sync;
 
 use Yii;
 use yii\base\Application;

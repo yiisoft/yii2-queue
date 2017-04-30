@@ -12,7 +12,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\drivers\redis\Queue::class,
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
             'redis' => 'redis', // ID подключения
             'channel' => 'queue', // Ключ канала очереди
         ],

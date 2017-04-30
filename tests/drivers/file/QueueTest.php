@@ -9,7 +9,7 @@ namespace tests\drivers\file;
 
 use tests\drivers\CliTestCase;
 use Yii;
-use zhuravljov\yii\queue\drivers\file\Queue;
+use zhuravljov\yii\queue\file\Queue;
 
 /**
  * File Queue Test

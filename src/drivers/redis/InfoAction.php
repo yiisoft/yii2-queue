@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\redis;
+namespace zhuravljov\yii\queue\redis;
 
 use yii\helpers\Console;
 use zhuravljov\yii\queue\cli\Action;

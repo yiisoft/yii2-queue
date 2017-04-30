@@ -9,7 +9,7 @@ namespace tests\drivers\beanstalk;
 
 use tests\drivers\CliTestCase;
 use Yii;
-use zhuravljov\yii\queue\drivers\beanstalk\Queue;
+use zhuravljov\yii\queue\beanstalk\Queue;
 
 /**
  * Beanstalk Queue Test

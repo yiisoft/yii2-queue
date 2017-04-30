@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\db;
+namespace zhuravljov\yii\queue\db;
 
 use yii\base\Exception;
 use yii\base\InvalidParamException;

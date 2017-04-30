@@ -10,7 +10,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\drivers\file\Queue::class,
+            'class' => \zhuravljov\yii\queue\file\Queue::class,
             'path' => '@runtime/queue',
         ],
     ],

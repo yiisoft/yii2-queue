@@ -9,7 +9,7 @@ namespace tests\drivers\redis;
 
 use tests\drivers\CliTestCase;
 use Yii;
-use zhuravljov\yii\queue\drivers\redis\Queue;
+use zhuravljov\yii\queue\redis\Queue;
 
 /**
  * Redis Queue Test

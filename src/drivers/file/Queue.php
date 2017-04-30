@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\drivers\file;
+namespace zhuravljov\yii\queue\file;
 
 use Yii;
 use yii\base\InvalidConfigException;

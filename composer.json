@@ -17,7 +17,7 @@
     },
     "require": {
         "php": ">=5.5.0",
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "~2.0.10"
     },
     "require-dev": {
         "yiisoft/yii2-redis": "*",
@@ -38,12 +38,19 @@
     },
     "autoload": {
         "psr-4": {
-            "zhuravljov\\yii\\queue\\": "src"
+            "zhuravljov\\yii\\queue\\": "src",
+            "zhuravljov\\yii\\queue\\amqp\\": "src/drivers/amqp",
+            "zhuravljov\\yii\\queue\\beanstalk\\": "src/drivers/beanstalk",
+            "zhuravljov\\yii\\queue\\db\\": "src/drivers/db",
+            "zhuravljov\\yii\\queue\\file\\": "src/drivers/file",
+            "zhuravljov\\yii\\queue\\gearman\\": "src/drivers/gearman",
+            "zhuravljov\\yii\\queue\\redis\\": "src/drivers/redis",
+            "zhuravljov\\yii\\queue\\sync\\": "src/drivers/sync"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.x-dev"
+            "dev-master": "1.x-dev"
         }
     }
 }

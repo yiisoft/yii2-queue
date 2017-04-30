@@ -10,7 +10,7 @@ return [
     'bootstrap' => ['queue'],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\drivers\db\Queue::class,
+            'class' => \zhuravljov\yii\queue\db\Queue::class,
             'db' => 'db', // ID подключения
             'tableName' => '{{%queue}}', // таблица
             'channel' => 'default', // выбранный для очереди канал

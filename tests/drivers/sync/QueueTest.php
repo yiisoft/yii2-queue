@@ -9,7 +9,7 @@ namespace tests\drivers\sync;
 
 use Yii;
 use tests\drivers\TestCase;
-use zhuravljov\yii\queue\drivers\sync\Queue;
+use zhuravljov\yii\queue\sync\Queue;
 
 /**
  * Sync Queue Test

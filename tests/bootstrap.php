@@ -8,6 +8,13 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
 Yii::setAlias('@zhuravljov/yii/queue', dirname(__DIR__) . '/src');
+Yii::setAlias('@zhuravljov/yii/queue/amqp', dirname(__DIR__) . '/src/drivers/amqp');
+Yii::setAlias('@zhuravljov/yii/queue/beanstalk', dirname(__DIR__) . '/src/drivers/beanstalk');
+Yii::setAlias('@zhuravljov/yii/queue/db', dirname(__DIR__) . '/src/drivers/db');
+Yii::setAlias('@zhuravljov/yii/queue/file', dirname(__DIR__) . '/src/drivers/file');
+Yii::setAlias('@zhuravljov/yii/queue/gearman', dirname(__DIR__) . '/src/drivers/gearman');
+Yii::setAlias('@zhuravljov/yii/queue/redis', dirname(__DIR__) . '/src/drivers/redis');
+Yii::setAlias('@zhuravljov/yii/queue/sync', dirname(__DIR__) . '/src/drivers/sync');
 Yii::setAlias('@tests', __DIR__);
 
 $config = require(__DIR__ . '/app/config/main.php');
