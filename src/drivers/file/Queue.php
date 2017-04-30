@@ -9,7 +9,7 @@ namespace zhuravljov\yii\queue\drivers\file;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\NotSupportedException;
+use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;
 use zhuravljov\yii\queue\cli\Signal;
@@ -119,7 +119,15 @@ class Queue extends CliQueue
      */
     protected function status($id)
     {
-        throw new NotSupportedException('Status is not supported in the driver.');
+        if (!is_numeric($id) || $id <= 0) {
+            throw new InvalidParamException("Unknown messages ID: $id.");
+        }
+
+        if (file_exists("$this->path/job$id.data")) {
+            return self::STATUS_WAITING;
+        } else {
+            return self::STATUS_FINISHED;
+        }
     }
 
     /**
