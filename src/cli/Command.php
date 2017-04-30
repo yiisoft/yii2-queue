@@ -9,7 +9,6 @@ namespace zhuravljov\yii\queue\cli;
 
 use yii\base\Exception;
 use yii\console\Controller;
-use yii\helpers\Console;
 
 /**
  * Class Command
@@ -82,7 +81,10 @@ abstract class Command extends Controller
     public function beforeAction($action)
     {
         if ($this->useVerboseOption($action->id) && $this->verbose) {
-            $this->queue->attachBehavior('verbose', Verbose::class);
+            $this->queue->attachBehavior('verbose', [
+                'class' => Verbose::class,
+                'command' => $this,
+            ]);
         }
 
         if ($this->useIsolateOption($action->id) && $this->isolate) {
@@ -104,7 +106,11 @@ abstract class Command extends Controller
      */
     public function actionExec($id = null)
     {
-        return $this->queue->execute($id, file_get_contents('php://stdin')) ? 0 : 1;
+        if ($this->queue->execute($id, file_get_contents('php://stdin'))) {
+            return self::EXIT_CODE_NORMAL;
+        } else {
+            return self::EXIT_CODE_ERROR;
+        }
     }
 
     /**
@@ -130,6 +136,9 @@ abstract class Command extends Controller
                 $cmd .= ' --' . $name . '=' . $this->$name;
             }
         }
+        if (!in_array('color', $this->getPassedOptions())) {
+            $cmd .= ' --color=' . $this->isColorEnabled();
+        }
 
         $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
         $process = proc_open($cmd, $descriptors, $pipes);
@@ -138,15 +147,15 @@ abstract class Command extends Controller
             fwrite($pipes[0], $message);
             fclose($pipes[0]);
             // Reads stdOut
-            Console::stdout(stream_get_contents($pipes[1]));
+            $this->stdout(stream_get_contents($pipes[1]));
             fclose($pipes[1]);
             // Reads stdErr
-            Console::stderr(stream_get_contents($pipes[2]));
+            $this->stderr(stream_get_contents($pipes[2]));
             fclose($pipes[2]);
             // Closes process
             $exitCode = proc_close($process);
 
-            return $exitCode == 0;
+            return $exitCode == self::EXIT_CODE_NORMAL;
         } else {
             throw new Exception("Cannot execute command: $cmd");
         }

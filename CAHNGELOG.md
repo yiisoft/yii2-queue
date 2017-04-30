@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 1.0.0 under development
 
+- Enh: Colorized verbose mode
 - Enh: Improvements of debug panel
 - Enh: Queue job message statuses
 - Enh: Gii job generator
