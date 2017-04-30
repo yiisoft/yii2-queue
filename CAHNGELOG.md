@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 1.0.0 under development
 
+- Enh: Beanstalk stat info
 - Enh: Colorized driver info actions
 - Enh: Colorized verbose mode
 - Enh: Improvements of debug panel

@@ -34,3 +34,9 @@ yii queue/listen
 `listen` command launches a daemon which infinitely queries the queue. If there are new tasks they're immediately
 obtained and executed. This method is most effificient when command is properly daemonized via supervisor such as
 `supervisord`.
+
+```bash
+yii queue/info
+```
+
+`info` command prints out information about queue status.

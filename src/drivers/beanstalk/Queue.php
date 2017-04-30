@@ -111,7 +111,7 @@ class Queue extends CliQueue
     /**
      * @return Pheanstalk
      */
-    protected function getPheanstalk()
+    public function getPheanstalk()
     {
         if (!$this->_pheanstalk) {
             $this->_pheanstalk = new Pheanstalk($this->host, $this->port);
