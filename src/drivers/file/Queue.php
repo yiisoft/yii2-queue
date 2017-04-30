@@ -68,8 +68,8 @@ class Queue extends CliQueue
         $this->touchIndex("$this->path/index.data", function ($data) use (&$message, &$id) {
             if (!empty($data['delayed']) && $data['delayed'][0][1] <= time()) {
                 list($id, $time) = array_shift($data['delayed']);
-            } elseif (!empty($data['reserved'])) {
-                $id = array_shift($data['reserved']);
+            } elseif (!empty($data['ready'])) {
+                $id = array_shift($data['ready']);
             }
             if ($id) {
                 $message = file_get_contents("$this->path/job$id.data");
@@ -97,7 +97,7 @@ class Queue extends CliQueue
             $id = ++$data['lastId'];
             file_put_contents("$this->path/job$id.data", $message);
             if (!$timeout) {
-                $data['reserved'][] = $id;
+                $data['ready'][] = $id;
             } else {
                 $data['delayed'][] = [$id, time() + $timeout];
                 usort($data['delayed'], function ($a, $b) {
@@ -126,7 +126,7 @@ class Queue extends CliQueue
         if (file_exists("$this->path/job$id.data")) {
             return self::STATUS_WAITING;
         } else {
-            return self::STATUS_FINISHED;
+            return self::STATUS_DONE;
         }
     }
 

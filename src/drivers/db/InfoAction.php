@@ -31,23 +31,23 @@ class InfoAction extends Action
     {
         Console::output($this->format('Jobs', Console::FG_GREEN));
 
-        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
-        Console::output($this->getReserved()->count('*', $this->queue->db));
+        Console::stdout($this->format('- ready: ', Console::FG_YELLOW));
+        Console::output($this->getReady()->count('*', $this->queue->db));
 
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
         Console::output($this->getDelayed()->count('*', $this->queue->db));
 
-        Console::stdout($this->format('- started: ', Console::FG_YELLOW));
-        Console::output($this->getStarted()->count('*', $this->queue->db));
+        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
+        Console::output($this->getReserved()->count('*', $this->queue->db));
 
-        Console::stdout($this->format('- finished: ', Console::FG_YELLOW));
-        Console::output($this->getFinished()->count('*', $this->queue->db));
+        Console::stdout($this->format('- done: ', Console::FG_YELLOW));
+        Console::output($this->getDone()->count('*', $this->queue->db));
     }
 
     /**
      * @return Query
      */
-    protected function getReserved()
+    protected function getReady()
     {
         return (new Query())
             ->from($this->queue->tableName)
@@ -71,7 +71,7 @@ class InfoAction extends Action
     /**
      * @return Query
      */
-    protected function getStarted()
+    protected function getReserved()
     {
         return (new Query())
             ->from($this->queue->tableName)
@@ -83,7 +83,7 @@ class InfoAction extends Action
     /**
      * @return Query
      */
-    protected function getFinished()
+    protected function getDone()
     {
         return (new Query())
             ->from($this->queue->tableName)

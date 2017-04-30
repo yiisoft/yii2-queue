@@ -39,17 +39,17 @@ class QueueTest extends TestCase
         $job = $this->createJob();
         $id = $this->getQueue()->push($job);
         $isWaiting = $this->getQueue()->isWaiting($id);
-        $isStarted = false;
-        $beforeExec = function () use ($id, &$isStarted) {
-            $isStarted = $this->getQueue()->isStarted($id);
+        $isReserved = false;
+        $beforeExec = function () use ($id, &$isReserved) {
+            $isReserved = $this->getQueue()->isReserved($id);
         };
         $this->getQueue()->on(Queue::EVENT_BEFORE_EXEC, $beforeExec);
         $this->getQueue()->run();
         $this->getQueue()->off(Queue::EVENT_BEFORE_EXEC, $beforeExec);
-        $isFinished = $this->getQueue()->isFinished($id);
+        $isDone = $this->getQueue()->isDone($id);
 
         $this->assertTrue($isWaiting);
-        $this->assertTrue($isStarted);
-        $this->assertTrue($isFinished);
+        $this->assertTrue($isReserved);
+        $this->assertTrue($isDone);
     }
 }

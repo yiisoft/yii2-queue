@@ -31,7 +31,7 @@ abstract class CliTestCase extends TestCase
         $id = $this->getQueue()->push($job);
         $this->assertTrue($this->getQueue()->isWaiting($id));
         $this->runProcess('php tests/yii queue/run');
-        $this->assertTrue($this->getQueue()->isFinished($id));
+        $this->assertTrue($this->getQueue()->isDone($id));
     }
 
     public function testListen()

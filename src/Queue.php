@@ -46,13 +46,13 @@ abstract class Queue extends Component
      */
     const STATUS_WAITING = 1;
     /**
-     * @see Queue::isStarted()
+     * @see Queue::isReserved()
      */
-    const STATUS_STARTED = 2;
+    const STATUS_RESERVED = 2;
     /**
-     * @see Queue::isFinished()
+     * @see Queue::isDone()
      */
-    const STATUS_FINISHED = 3;
+    const STATUS_DONE = 3;
 
     /**
      * @var Serializer|array
@@ -143,18 +143,18 @@ abstract class Queue extends Component
      * @param string $id of a job message
      * @return bool
      */
-    public function isStarted($id)
+    public function isReserved($id)
     {
-        return $this->status($id) === Queue::STATUS_STARTED;
+        return $this->status($id) === Queue::STATUS_RESERVED;
     }
 
     /**
      * @param string $id of a job message
      * @return bool
      */
-    public function isFinished($id)
+    public function isDone($id)
     {
-        return $this->status($id) === Queue::STATUS_FINISHED;
+        return $this->status($id) === Queue::STATUS_DONE;
     }
 
     /**

@@ -77,27 +77,27 @@ class Queue extends CliQueue
      */
     protected function pop($wait)
     {
-        // Move delayed messages into reserved
+        // Move delayed messages into ready
         if ($this->now < time()) {
             $this->now = time();
             if ($delayed = $this->redis->zrevrangebyscore("$this->channel.delayed", $this->now, '-inf')) {
                 $this->redis->zremrangebyscore("$this->channel.delayed", '-inf', $this->now);
                 foreach ($delayed as $id) {
-                    $this->redis->rpush("$this->channel.reserved", $id);
+                    $this->redis->rpush("$this->channel.ready", $id);
                 }
             }
         }
 
-        // Find a new reserved message
+        // Find a new ready message
         if (!$wait) {
-            if ($id = $this->redis->rpop("$this->channel.reserved")) {
+            if ($id = $this->redis->rpop("$this->channel.ready")) {
                 $message = $this->redis->hget("$this->channel.messages", $id);
                 $this->redis->hdel("$this->channel.messages", $id);
 
                 return [$id, $message];
             }
         } else {
-            if ($result = $this->redis->brpop("$this->channel.reserved", $wait)) {
+            if ($result = $this->redis->brpop("$this->channel.ready", $wait)) {
                 $id = $result[1];
                 $message = $this->redis->hget("$this->channel.messages", $id);
                 $this->redis->hdel("$this->channel.messages", $id);
@@ -119,7 +119,7 @@ class Queue extends CliQueue
         $id = $this->redis->incr("$this->channel.message_id");
         if (!$timeout) {
             $this->redis->hset("$this->channel.messages", $id, $message);
-            $this->redis->lpush("$this->channel.reserved", $id);
+            $this->redis->lpush("$this->channel.ready", $id);
         } else {
             $this->redis->hset("$this->channel.messages", $id, $message);
             $this->redis->zadd("$this->channel.delayed", time() + $timeout, $id);
@@ -151,7 +151,7 @@ class Queue extends CliQueue
         if ($this->redis->hexists("$this->channel.messages", $id)) {
             return self::STATUS_WAITING;
         } else {
-            return self::STATUS_FINISHED;
+            return self::STATUS_DONE;
         }
     }
 }

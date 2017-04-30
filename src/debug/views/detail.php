@@ -9,8 +9,8 @@ use yii\helpers\Html;
 $styles = [
     'unknown' => 'default',
     'waiting' => 'info',
-    'started' => 'warning',
-    'finished' => 'success',
+    'reserved' => 'warning',
+    'done' => 'success',
 ];
 ?>
 <h1>Pushed <?= count($jobs) ?> jobs</h1>

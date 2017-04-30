@@ -116,7 +116,7 @@ class Queue extends CliQueue
 
         if (!$payload) {
             if ($this->deleteReleased) {
-                return self::STATUS_FINISHED;
+                return self::STATUS_DONE;
             } else {
                 throw new InvalidParamException("Unknown messages ID: $id.");
             }
@@ -125,9 +125,9 @@ class Queue extends CliQueue
         if (!$payload['started_at']) {
             return self::STATUS_WAITING;
         } elseif (!$payload['finished_at']) {
-            return self::STATUS_STARTED;
+            return self::STATUS_RESERVED;
         } else {
-            return self::STATUS_FINISHED;
+            return self::STATUS_DONE;
         }
     }
 

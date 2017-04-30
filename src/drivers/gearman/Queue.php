@@ -85,9 +85,9 @@ class Queue extends CliQueue
         if ($status[0] && !$status[1]) {
             return self::STATUS_WAITING;
         } elseif ($status[0] && $status[1]) {
-            return self::STATUS_STARTED;
+            return self::STATUS_RESERVED;
         } else {
-            return self::STATUS_FINISHED;
+            return self::STATUS_DONE;
         }
     }
 

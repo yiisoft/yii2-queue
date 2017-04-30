@@ -111,10 +111,10 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
                 try {
                     if ($queue->isWaiting($job['id'])) {
                         $job['status'] = 'waiting';
-                    } elseif ($queue->isStarted($job['id'])) {
-                        $job['status'] = 'started';
-                    } elseif ($queue->isFinished($job['id'])) {
-                        $job['status'] = 'finished';
+                    } elseif ($queue->isReserved($job['id'])) {
+                        $job['status'] = 'reserved';
+                    } elseif ($queue->isDone($job['id'])) {
+                        $job['status'] = 'done';
                     }
                 } catch (NotSupportedException $e) {
                 } catch (\Exception $e) {

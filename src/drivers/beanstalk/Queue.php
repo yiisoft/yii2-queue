@@ -95,13 +95,13 @@ class Queue extends CliQueue
         try {
             $stats = $this->getPheanstalk()->statsJob($id);
             if ($stats['state'] === 'reserved') {
-                return self::STATUS_STARTED;
+                return self::STATUS_RESERVED;
             } else {
                 return self::STATUS_WAITING;
             }
         } catch (ServerException $e) {
             if ($e->getMessage() === 'Server reported NOT_FOUND') {
-                return self::STATUS_FINISHED;
+                return self::STATUS_DONE;
             } else {
                 throw $e;
             }
