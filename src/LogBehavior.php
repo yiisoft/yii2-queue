@@ -21,6 +21,10 @@ class LogBehavior extends Behavior
      * @var Queue
      */
     public $owner;
+    /**
+     * @var bool
+     */
+    public $autoFlush = true;
 
     /**
      * @inheritdoc
@@ -50,14 +54,18 @@ class LogBehavior extends Behavior
     {
         Yii::endProfile($this->getEventTitle($event), Queue::class);
         Yii::info($this->getEventTitle($event) . ' finished.', Queue::class);
-        Yii::getLogger()->flush(true);
+        if ($this->autoFlush) {
+            Yii::getLogger()->flush(true);
+        }
     }
 
     public function afterExecError(ErrorEvent $event)
     {
         Yii::endProfile($this->getEventTitle($event), Queue::class);
-        Yii::info($this->getEventTitle($event) . ' error ' . $event->error, Queue::class);
-        Yii::getLogger()->flush(true);
+        Yii::error($this->getEventTitle($event) . ' error ' . $event->error, Queue::class);
+        if ($this->autoFlush) {
+            Yii::getLogger()->flush(true);
+        }
     }
 
     protected function getEventTitle(JobEvent $event)
