@@ -29,8 +29,8 @@ class InfoAction extends Action
     {
         Console::output($this->format('Jobs', Console::FG_GREEN));
 
-        Console::stdout($this->format('- ready: ', Console::FG_YELLOW));
-        Console::output($this->getReadyCount());
+        Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
+        Console::output($this->getWaitingCount());
 
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
         Console::output($this->getDelayedCount());
@@ -47,9 +47,9 @@ class InfoAction extends Action
     /**
      * @return integer
      */
-    protected function getReadyCount()
+    protected function getWaitingCount()
     {
-        return $this->queue->redis->llen($this->queue->channel . '.ready');
+        return $this->queue->redis->llen($this->queue->channel . '.waiting');
     }
 
     /**

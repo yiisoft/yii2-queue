@@ -36,9 +36,9 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     
     /**
      * @param Queue $queue очередь, которая обрабатывает задание
-     * @param string|null $id задания
+     * @param string|null $jobId задания
      */
-    public function execute($queue, $id)
+    public function execute($queue, $jobId)
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }
@@ -195,7 +195,7 @@ class SomeJob extends Object implements \zhuravljov\yii\queue\Job
     public $bookId;
     public $someUrl;
     
-    public function execute($queue, $id)
+    public function execute($queue, $jobId)
     {
         $user = User::findOne($this->userId);
         $book = Book::findOne($this->bookId);

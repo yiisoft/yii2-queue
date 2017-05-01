@@ -31,8 +31,8 @@ class InfoAction extends Action
     {
         Console::output($this->format('Jobs', Console::FG_GREEN));
 
-        Console::stdout($this->format('- ready: ', Console::FG_YELLOW));
-        Console::output($this->getReady()->count('*', $this->queue->db));
+        Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
+        Console::output($this->getWaiting()->count('*', $this->queue->db));
 
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
         Console::output($this->getDelayed()->count('*', $this->queue->db));
@@ -47,7 +47,7 @@ class InfoAction extends Action
     /**
      * @return Query
      */
-    protected function getReady()
+    protected function getWaiting()
     {
         return (new Query())
             ->from($this->queue->tableName)

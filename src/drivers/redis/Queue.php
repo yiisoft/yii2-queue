@@ -77,27 +77,27 @@ class Queue extends CliQueue
      */
     protected function pop($wait)
     {
-        // Move delayed messages into ready
+        // Move delayed messages into waiting
         if ($this->now < time()) {
             $this->now = time();
             if ($delayed = $this->redis->zrevrangebyscore("$this->channel.delayed", $this->now, '-inf')) {
                 $this->redis->zremrangebyscore("$this->channel.delayed", '-inf', $this->now);
                 foreach ($delayed as $id) {
-                    $this->redis->rpush("$this->channel.ready", $id);
+                    $this->redis->rpush("$this->channel.waiting", $id);
                 }
             }
         }
 
-        // Find a new ready message
+        // Find a new waiting message
         if (!$wait) {
-            if ($id = $this->redis->rpop("$this->channel.ready")) {
+            if ($id = $this->redis->rpop("$this->channel.waiting")) {
                 $message = $this->redis->hget("$this->channel.messages", $id);
                 $this->redis->hdel("$this->channel.messages", $id);
 
                 return [$id, $message];
             }
         } else {
-            if ($result = $this->redis->brpop("$this->channel.ready", $wait)) {
+            if ($result = $this->redis->brpop("$this->channel.waiting", $wait)) {
                 $id = $result[1];
                 $message = $this->redis->hget("$this->channel.messages", $id);
                 $this->redis->hdel("$this->channel.messages", $id);
@@ -119,7 +119,7 @@ class Queue extends CliQueue
         $id = $this->redis->incr("$this->channel.message_id");
         if (!$timeout) {
             $this->redis->hset("$this->channel.messages", $id, $message);
-            $this->redis->lpush("$this->channel.ready", $id);
+            $this->redis->lpush("$this->channel.waiting", $id);
         } else {
             $this->redis->hset("$this->channel.messages", $id, $message);
             $this->redis->zadd("$this->channel.delayed", time() + $timeout, $id);

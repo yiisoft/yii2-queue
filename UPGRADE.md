@@ -12,7 +12,7 @@ Upgrade from 0.x to 1.0
 
 * Some methods and constants was modified.
   
-  - Method `Job::run()` modified to `Job::execute($queue, $id)`.
+  - Method `Job::run()` modified to `Job::execute($queue, $jobId)`.
   - Const `Queue::EVENT_BEFORE_WORK` renamed to `Queue::EVENT_BEFORE_EXEC`.
   - Const `Queue::EVENT_AFTER_WORK` renamed to `Queue::EVENT_AFTER_EXEC`.
   - Const `Queue::EVENT_AFTER_ERROR` renamed to `Queue::EVENT_AFTER_EXEC_ERROR`.
