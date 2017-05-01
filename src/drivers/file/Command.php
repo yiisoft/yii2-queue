@@ -22,6 +22,21 @@ class Command extends CliCommand
     public $queue;
 
     /**
+     * @var string
+     */
+    public $defaultAction = 'info';
+
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            'info' => InfoAction::class,
+        ];
+    }
+
+    /**
      * Runs all jobs from file-queue.
      * It can be used as cron job.
      */

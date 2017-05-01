@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\redis;
+namespace zhuravljov\yii\queue\file;
 
 use yii\helpers\Console;
 use zhuravljov\yii\queue\cli\Action;
@@ -37,14 +37,6 @@ class InfoAction extends Action
 
         Console::stdout($this->format('- done: ', Console::FG_YELLOW));
         Console::output($this->getDoneCount());
-
-        if ($workersInfo = $this->getWorkersInfo()) {
-            Console::output($this->format('Workers ', Console::FG_GREEN));
-            foreach ($workersInfo as $name => $info) {
-                Console::stdout($this->format("- $name: ", Console::FG_YELLOW));
-                Console::output($info['addr']);
-            }
-        }
     }
 
     /**
@@ -52,7 +44,10 @@ class InfoAction extends Action
      */
     protected function getWaitingCount()
     {
-        return $this->queue->redis->llen($this->queue->channel . '.waiting');
+        $data = $this->getIndexData();
+        $count = !empty($data['waiting']) ? count($data['waiting']) : 0;
+
+        return $count;
     }
 
     /**
@@ -60,7 +55,10 @@ class InfoAction extends Action
      */
     protected function getDelayedCount()
     {
-        return $this->queue->redis->zcount($this->queue->channel . '.delayed', '-inf', '+inf');
+        $data = $this->getIndexData();
+        $count = !empty($data['delayed']) ? count($data['delayed']) : 0;
+
+        return $count;
     }
 
     /**
@@ -68,30 +66,25 @@ class InfoAction extends Action
      */
     protected function getDoneCount()
     {
-        $total = $this->queue->redis->get($this->queue->channel . '.message_id');
+        $data = $this->getIndexData();
+        $total = isset($data['lastId']) ? $data['lastId'] : 0;
         $done = $total - $this->getDelayedCount() - $this->getWaitingCount();
 
         return $done;
     }
 
-    /**
-     * @return array
-     */
-    protected function getWorkersInfo()
+    protected function getIndexData()
     {
-        $workers = [];
-        $data = $this->queue->redis->clientList();
-        foreach (explode("\n", trim($data)) as $line) {
-            $client = [];
-            foreach (explode(' ', trim($line)) as $pair) {
-                list($key, $value) = explode('=', $pair, 2);
-                $client[$key] = $value;
-            }
-            if (isset($client['name']) && strpos($client['name'], $this->queue->channel . '.worker') === 0) {
-                $workers[$client['name']] = $client;
+        static $data;
+        if ($data === null) {
+            $fileName = $this->queue->path . '/index.data';
+            if (file_exists($fileName)) {
+                $data = unserialize(file_get_contents($fileName));
+            } else {
+                $data = [];
             }
         }
 
-        return $workers;
+        return $data;
     }
 }
