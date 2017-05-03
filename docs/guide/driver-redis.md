@@ -41,4 +41,3 @@ yii queue/info
 ```
 
 `info` command prints out information about queue status.
-

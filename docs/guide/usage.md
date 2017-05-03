@@ -82,13 +82,13 @@ $id = Yii::$app->queue->push(new SomeJob());
 Yii::$app->queue->isWaiting($id);
 
 // Worker gets the job from queue, end executing it.
-Yii::$app->queue->isStarted($id);
+Yii::$app->queue->isReserved($id);
 
 // Worker has executed the job. 
-Yii::$app->queue->isFinished($id);
- ```
+Yii::$app->queue->isDone($id);
+```
 
-**Important:** AMQP driver doesn't support job statuses.
+**Important:** RebbitMQ driver doesn't support job statuses.
 
 
 Messaging third party workers
