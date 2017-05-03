@@ -15,8 +15,7 @@ namespace zhuravljov\yii\queue;
 interface Job
 {
     /**
-     * @param Queue $queue which was pushed the job
-     * @param string|null $jobId job message ID
+     * @param Queue $queue which pushed and is handling the job
      */
-    public function execute($queue, $jobId);
+    public function execute($queue);
 }

@@ -33,7 +33,8 @@ to the require section of your `composer.json` file.
 Basic Usage
 -----------
 
-Job class example:
+Each task which is sent to queue should be defined as a separate class.
+For example, if you need to download and save a file the class may look like the following:
 
 ```php
 class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
@@ -41,18 +42,14 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     public $url;
     public $file;
     
-    /**
-     * @param Queue $queue which handled the job
-     * @param string|null $jobId job message ID
-     */
-    public function execute($queue, $jobId)
+    public function execute($queue)
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }
 }
 ```
 
-Pushes job into queue:
+Here's how to send a task into queue:
 
 ```php
 Yii::$app->queue->push(new DownloadJob([
@@ -60,9 +57,6 @@ Yii::$app->queue->push(new DownloadJob([
     'file' => '/tmp/image.jpg',
 ]));
 ```
-
-Method of handling a queue depend on selected driver.
-
 Pushes job into queue that run after 5 min:
 
 ```php
@@ -72,6 +66,24 @@ Yii::$app->queue->later(new DownloadJob([
 ]), 5 * 60);
 ```
 
-But only some drivers support delayed running.
+The exact way task is executed depends on the driver used. The most part of drivers can be run using
+console commands, which the component registers in your application. For more details see documentation
+of a driver.
+
+The component has ability to track status jobs which was pushed into queue.
+
+```php
+// Push a job into queue and get massage ID.
+$id = Yii::$app->queue->push(new SomeJob());
+
+// The job is waiting for execute. 
+Yii::$app->queue->isWaiting($id);
+
+// Worker gets the job from queue, end executing it.
+Yii::$app->queue->isReserved($id);
+
+// Worker has executed the job. 
+Yii::$app->queue->isDone($id);
+```
 
 For more details see [the guide](docs/guide/README.md).

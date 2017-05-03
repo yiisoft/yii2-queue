@@ -37,11 +37,7 @@ class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
     public $url;
     public $file;
     
-    /**
-     * @param Queue $queue which handled the job
-     * @param string|null $jobId job message ID
-     */
-    public function execute($queue, $jobId)
+    public function execute($queue)
     {
         file_put_contents($this->file, file_get_contents($this->url));
     }
@@ -79,7 +75,7 @@ of a driver.
 Job status
 ----------
 
-The component has ability to track status jobs which is pushed into queue.
+The component has ability to track status jobs which was pushed into queue.
 
 ```php
 // Push a job into queue and get massage ID.
@@ -200,7 +196,7 @@ class SomeJob extends Object implements \zhuravljov\yii\queue\Job
     public $bookId;
     public $someUrl;
     
-    public function execute($queue, $jobId)
+    public function execute($queue)
     {
         $user = User::findOne($this->userId);
         $book = Book::findOne($this->bookId);

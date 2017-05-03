@@ -119,7 +119,7 @@ abstract class Queue extends Component
         $error = null;
         $this->trigger(self::EVENT_BEFORE_EXEC, new JobEvent(['id' => $id, 'job' => $job]));
         try {
-            $job->execute($this, $id);
+            $job->execute($this);
         } catch (\Exception $error) {
             $this->trigger(self::EVENT_AFTER_EXEC_ERROR, new ErrorEvent(['id' => $id, 'job' => $job, 'error' => $error]));
         }

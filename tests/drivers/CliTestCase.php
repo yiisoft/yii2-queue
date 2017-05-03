@@ -20,9 +20,9 @@ abstract class CliTestCase extends TestCase
     public function testRun()
     {
         $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
+        $this->getQueue()->push($job);
         $this->runProcess('php tests/yii queue/run');
-        $this->assertJobDone($job, $id);
+        $this->assertJobDone($job);
     }
 
     public function testStatus()
@@ -38,17 +38,17 @@ abstract class CliTestCase extends TestCase
     {
         $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
-        $this->assertJobDone($job, $id);
+        $this->getQueue()->push($job);
+        $this->assertJobDone($job);
     }
 
     public function testLater()
     {
         $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
-        $id = $this->getQueue()->later($job, 2);
+        $this->getQueue()->later($job, 2);
         sleep(2);
-        $this->assertJobLaterDone($job, $id, time());
+        $this->assertJobLaterDone($job, time());
     }
 
     /**

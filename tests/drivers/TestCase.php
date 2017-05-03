@@ -35,32 +35,30 @@ abstract class TestCase extends \tests\TestCase
 
     /**
      * @param TestJob $job
-     * @param string|null $id of a job message
      */
-    protected function assertJobDone(TestJob $job, $id)
+    protected function assertJobDone(TestJob $job)
     {
         $delay = 5000000; // 5 sec
-        while (!file_exists($job->getFileName($id)) && $delay > 0) {
+        while (!file_exists($job->getFileName()) && $delay > 0) {
             usleep(50000);
             $delay -= 50000;
         }
-        $this->assertFileExists($job->getFileName($id));
+        $this->assertFileExists($job->getFileName());
     }
 
     /**
      * @param TestJob $job
-     * @param string|null $id of a job message
      * @param int $time
      */
-    protected function assertJobLaterDone(TestJob $job, $id, $time)
+    protected function assertJobLaterDone(TestJob $job, $time)
     {
         $delay = 5000000; // 5 sec
-        while (!file_exists($job->getFileName($id)) && $delay > 0) {
+        while (!file_exists($job->getFileName()) && $delay > 0) {
             usleep(50000);
             $delay -= 50000;
         }
-        $this->assertFileExists($job->getFileName($id));
-        $this->assertGreaterThanOrEqual($time, filemtime($job->getFileName($id)));
+        $this->assertFileExists($job->getFileName());
+        $this->assertGreaterThanOrEqual($time, filemtime($job->getFileName()));
     }
 
     /**
