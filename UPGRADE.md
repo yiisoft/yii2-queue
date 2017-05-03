@@ -4,11 +4,8 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
-Upgrade from 0.x to 1.0
------------------------
-
-* Method `Queue::sendMessage` renamed to `Queue::pushMessage`. Check it if you use it for yourself
-  drivers.
+Upgrade from 0.x to 1.0.0
+-------------------------
 
 * Some methods and constants was modified.
   
@@ -16,6 +13,9 @@ Upgrade from 0.x to 1.0
   - Const `Queue::EVENT_BEFORE_WORK` renamed to `Queue::EVENT_BEFORE_EXEC`.
   - Const `Queue::EVENT_AFTER_WORK` renamed to `Queue::EVENT_AFTER_EXEC`.
   - Const `Queue::EVENT_AFTER_ERROR` renamed to `Queue::EVENT_AFTER_EXEC_ERROR`.
+
+* Method `Queue::sendMessage` renamed to `Queue::pushMessage`. Check it if you use it for yourself
+  drivers.
 
 
 Upgrade from 0.10.1

@@ -76,13 +76,13 @@ The component has ability to track status of a job which was pushed into queue.
 // Push a job into queue and get massage ID.
 $id = Yii::$app->queue->push(new SomeJob());
 
-// The job is waiting for execute. 
+// The job is waiting for execute.
 Yii::$app->queue->isWaiting($id);
 
 // Worker gets the job from queue, and executing it.
 Yii::$app->queue->isReserved($id);
 
-// Worker has executed the job. 
+// Worker has executed the job.
 Yii::$app->queue->isDone($id);
 ```
 
