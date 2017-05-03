@@ -70,7 +70,7 @@ The exact way task is executed depends on the driver used. The most part of driv
 console commands, which the component registers in your application. For more details see documentation
 of a driver.
 
-The component has ability to track status jobs which was pushed into queue.
+The component has ability to track status of a job which was pushed into queue.
 
 ```php
 // Push a job into queue and get massage ID.
@@ -79,7 +79,7 @@ $id = Yii::$app->queue->push(new SomeJob());
 // The job is waiting for execute. 
 Yii::$app->queue->isWaiting($id);
 
-// Worker gets the job from queue, end executing it.
+// Worker gets the job from queue, and executing it.
 Yii::$app->queue->isReserved($id);
 
 // Worker has executed the job. 
