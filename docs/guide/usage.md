@@ -9,12 +9,14 @@ In order to use extension you have to configure it like the following:
 
 ```php
 return [
-    'bootstrap' => ['queue'],
+    'bootstrap' => [
+        'queue', // The component registers own console commands
+    ],
     'components' => [
         'queue' => [
             'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
             'as log' => \zhuravljov\yii\queue\LogBehavior::class,
-            // driver config
+            // Other driver options
         ],
     ],
 ];
@@ -54,9 +56,6 @@ Yii::$app->queue->push(new DownloadJob([
     'file' => '/tmp/image.jpg',
 ]));
 ```
-
-The exact way task is executed depends on the driver used.
-
 Pushes job into queue that run after 5 min:
 
 ```php
@@ -67,6 +66,14 @@ Yii::$app->queue->later(new DownloadJob([
 ```
 
 **Important:** only some drivers support delayed running.
+
+
+Queue handling
+--------------
+
+The exact way task is executed depends on the driver used. The most part of drivers can be run using
+console commands, which the component registers in your application. For more details see documentation
+of a driver.
 
 
 Job status
@@ -129,8 +136,8 @@ Configuration example:
 ```php
 return [
     'bootstrap' => [
-        'queue1',
-        'queue2',
+        'queue1', // First component registers own console commands
+        'queue2', // Second component registers own console commands
     ],
     'components' => [
         'queue1' => [

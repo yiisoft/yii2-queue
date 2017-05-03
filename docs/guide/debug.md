@@ -10,7 +10,6 @@ Configure your application like the following:
 
 ```php
 return [
-    'bootstrap' => ['debug', 'queue'],
     'modules' => [
         'debug' => [
             'class' => \yii\debug\Module::class,
