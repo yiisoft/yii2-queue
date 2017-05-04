@@ -126,6 +126,58 @@ return [
 ];
 ```
 
+Обработка событий
+-----------------
+
+Очередь триггерит следующие события:
+
+| Событие                         | Класс события | Когда триггерится                                             |
+|---------------------------------|---------------|---------------------------------------------------------------|
+| [Queue::EVENT_BEFORE_PUSH]      | [PushEvent]   | Добавление задания в очередь используя метод `Queue::push()`  |
+| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]   | Добавление задания в очередь используя метод `Queue::later()` |
+| [Queue::EVENT_BEFORE_EXEC]      | [JobEvent]    | Перед каждым выполнением задания                              |
+| [Queue::EVENT_AFTER_EXEC]       | [JobEvent]    | После каждого успешного выполнения задания                    |
+| [Queue::EVENT_AFTER_EXEC_ERROR] | [ErrorEvent]  | Если при выполнение задания случилось непойманное исключение  |
+
+[Queue::EVENT_BEFORE_PUSH]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L27
+[Queue::EVENT_AFTER_PUSH]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L31
+[Queue::EVENT_BEFORE_EXEC]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L35
+[Queue::EVENT_AFTER_EXEC]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L39
+[Queue::EVENT_AFTER_EXEC_ERROR]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L43
+[PushEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/PushEvent.php
+[JobEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/JobEvent.php
+[ErrorEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/ErrorEvent.php
+
+Вы с лёгкостью можете подключить свой собственный слушатель на любое из этих событий.
+Например, давайте отложим выполнение задания, которое выбросило специальное исключение:
+
+```php
+Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
+    if ($event->error instanceof TemporaryUnprocessableJobException) {
+        $queue = $event->sender;
+        $queue->later($event->job, 7200);    
+    }
+});
+```
+
+Логирование событий
+-------------------
+
+Этот компонент предоставляет [LogBehavior](https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/LogBehavior.php)
+для логирования событий, используя [встроенный в Yii логгер](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html). 
+
+Чтобы использовать его, просто подключите это поведение в конфигурации компонента, как показано в примере:
+
+```php
+return [
+    'components' => [
+        'queue' => [
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'as log' => \zhuravljov\yii\queue\LogBehavior::class
+        ],
+    ],
+];
+```
 
 Несколько очередей
 ------------------

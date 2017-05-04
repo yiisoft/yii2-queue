@@ -1,0 +1,15 @@
+# IDE & OS files
+.*.swp
+.DS_Store
+.buildpath
+.idea
+.project
+.settings
+Thumbs.db
+nbproject
+
+# vendor dirs
+vendor
+
+# composer lock files
+composer.lock

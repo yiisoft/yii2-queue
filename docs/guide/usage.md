@@ -123,6 +123,59 @@ return [
 ];
 ```
 
+Handling events
+---------------
+
+Queue triggers the following events:
+
+| Event name                      | Event class  | Triggered on                                              |
+|---------------------------------|--------------|-----------------------------------------------------------|
+| [Queue::EVENT_BEFORE_PUSH]      | [PushEvent]  | Adding job to queue using `Queue::push()` method          |
+| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]  | Adding job to queue using `Queue::later()` method         |
+| [Queue::EVENT_BEFORE_EXEC]      | [JobEvent]   | Before each job execution                                 |
+| [Queue::EVENT_AFTER_EXEC]       | [JobEvent]   | After each success job execution                          |
+| [Queue::EVENT_AFTER_EXEC_ERROR] | [ErrorEvent] | When uncaught exception occurred during the job execution |
+
+[Queue::EVENT_BEFORE_PUSH]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L27
+[Queue::EVENT_AFTER_PUSH]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L31
+[Queue::EVENT_BEFORE_EXEC]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L35
+[Queue::EVENT_AFTER_EXEC]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L39
+[Queue::EVENT_AFTER_EXEC_ERROR]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L43
+[PushEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/PushEvent.php
+[JobEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/JobEvent.php
+[ErrorEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/ErrorEvent.php
+
+You can easily attach your own handler to any of these events.
+For example, let's delay the job, if its execution failed with a special exception: 
+
+```php
+Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
+    if ($event->error instanceof TemporaryUnprocessableJobException) {
+        $queue = $event->sender;
+        $queue->later($event->job, 7200);    
+    }
+});
+```
+
+Logging events
+--------------
+
+This component provides the [LogBehavior](https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/LogBehavior.php) 
+to log Queue events using [Yii built-in Logger](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html).
+
+To use it, simply configure the Queue component as follows:
+
+```php
+return [
+    'components' => [
+        'queue' => [
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'as log' => \zhuravljov\yii\queue\LogBehavior::class
+        ],
+    ],
+];
+```
+
 
 Multiple queues
 ---------------
