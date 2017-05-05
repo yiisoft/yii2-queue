@@ -14,7 +14,7 @@ use zhuravljov\yii\queue\Queue;
 /**
  * Closure Behavior
  *
- * If you use the behavior, you will can to push closures into queue. For example:
+ * If you use the behavior, you can push closures into queue. For example:
  *
  * ```php
  * $url = 'http://example.com/name.jpg';
