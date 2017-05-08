@@ -82,9 +82,11 @@ abstract class Queue extends Component
      */
     public function push($job)
     {
-        $event = new PushEvent(['job' => $job, 'delay' => 0]);
+        $ttr = $job instanceof RetryableJob ? $job->getTtr() : $this->ttr;
+        $event = new PushEvent(['job' => $job, 'ttr' => $ttr, 'delay' => 0]);
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $event->id = $this->pushMessage($this->serializer->serialize($event->job), $event->delay);
+        $message = $this->serializer->serialize($event->job);
+        $event->id = $this->pushMessage($message, $event->ttr, $event->delay);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
         return $event->id;
@@ -97,9 +99,11 @@ abstract class Queue extends Component
      */
     public function later($job, $delay)
     {
-        $event = new PushEvent(['job' => $job, 'delay' => $delay]);
+        $ttr = $job instanceof RetryableJob ? $job->getTtr() : $this->ttr;
+        $event = new PushEvent(['job' => $job, 'ttr' => $ttr, 'delay' => $delay]);
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $event->id = $this->pushMessage($this->serializer->serialize($event->job), $event->delay);
+        $message = $this->serializer->serialize($event->job);
+        $event->id = $this->pushMessage($message, $event->ttr, $event->delay);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
         return $event->id;
@@ -107,10 +111,11 @@ abstract class Queue extends Component
 
     /**
      * @param string $message
+     * @param int $ttr time to run in seconds
      * @param int $delay
      * @return string|null id of a job message
      */
-    abstract protected function pushMessage($message, $delay);
+    abstract protected function pushMessage($message, $ttr, $delay);
 
     /**
      * @param string|null $id of a job message

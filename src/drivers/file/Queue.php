@@ -88,7 +88,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $delay)
+    protected function pushMessage($message, $ttr, $delay)
     {
         $this->touchIndex("$this->path/index.data", function ($data) use ($message, $delay, &$id) {
             if (!isset($data['lastId'])) {

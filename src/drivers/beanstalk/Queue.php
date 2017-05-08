@@ -35,6 +35,7 @@ class Queue extends CliQueue
     public $tube = 'queue';
     /**
      * @var int time to run: seconds a job can be reserved for.
+     * @deprecated
      */
     public $ttr = PheanstalkInterface::DEFAULT_TTR;
 
@@ -72,7 +73,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $delay)
+    protected function pushMessage($message, $ttr, $delay)
     {
         return $this->getPheanstalk()->putInTube(
             $this->tube,

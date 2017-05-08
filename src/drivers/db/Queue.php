@@ -90,7 +90,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $delay)
+    protected function pushMessage($message, $ttr, $delay)
     {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,

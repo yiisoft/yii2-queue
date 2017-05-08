@@ -67,7 +67,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $delay)
+    protected function pushMessage($message, $ttr, $delay)
     {
         if ($delay) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
