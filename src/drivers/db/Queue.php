@@ -90,13 +90,13 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    protected function pushMessage($message, $delay)
     {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
             'job' => $message,
             'created_at' => time(),
-            'timeout' => $timeout,
+            'timeout' => $delay,
         ])->execute();
         $tableSchema = $this->db->getTableSchema($this->tableName);
         $id = $this->db->getLastInsertID($tableSchema->sequenceName);

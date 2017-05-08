@@ -36,10 +36,10 @@ $styles = [
                     <td><?= Html::encode($job['id']) ?></td>
                 </tr>
             <?php endif; ?>
-            <?php if ($job['timeout']): ?>
+            <?php if ($job['delay']): ?>
                 <tr>
-                    <th>Timeout</th>
-                    <td><?= Html::encode($job['timeout']) ?></td>
+                    <th>Delay</th>
+                    <td><?= Html::encode($job['delay']) ?></td>
                 </tr>
             <?php endif; ?>
             <tr>

@@ -88,18 +88,18 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    protected function pushMessage($message, $delay)
     {
-        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $timeout, &$id) {
+        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $delay, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
             file_put_contents("$this->path/job$id.data", $message);
-            if (!$timeout) {
+            if (!$delay) {
                 $data['waiting'][] = $id;
             } else {
-                $data['delayed'][] = [$id, time() + $timeout];
+                $data['delayed'][] = [$id, time() + $delay];
                 usort($data['delayed'], function ($a, $b) {
                     if ($a[1] < $b[1]) return -1;
                     if ($a[1] > $b[1]) return 1;

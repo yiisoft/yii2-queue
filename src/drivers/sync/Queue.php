@@ -71,7 +71,7 @@ class Queue extends BaseQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    protected function pushMessage($message, $delay)
     {
         array_push($this->messages, $message);
         return ++$this->pushedId;

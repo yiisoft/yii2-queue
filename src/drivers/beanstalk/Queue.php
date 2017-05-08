@@ -72,13 +72,13 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    protected function pushMessage($message, $delay)
     {
         return $this->getPheanstalk()->putInTube(
             $this->tube,
             $message,
             PheanstalkInterface::DEFAULT_PRIORITY,
-            $timeout,
+            $delay,
             $this->ttr
         );
     }

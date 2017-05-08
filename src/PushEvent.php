@@ -17,5 +17,5 @@ class PushEvent extends JobEvent
     /**
      * @var int
      */
-    public $timeout;
+    public $delay;
 }
