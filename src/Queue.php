@@ -58,6 +58,14 @@ abstract class Queue extends Component
      * @var Serializer|array
      */
     public $serializer = PhpSerializer::class;
+    /**
+     * @var int default time to run a job
+     */
+    public $ttr = 60;
+    /**
+     * @var int default attempt count
+     */
+    public $attempts = 1;
 
     /**
      * @inheritdoc
