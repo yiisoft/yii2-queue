@@ -33,11 +33,6 @@ class Queue extends CliQueue
      * @var string beanstalk tube
      */
     public $tube = 'queue';
-    /**
-     * @var int time to run: seconds a job can be reserved for.
-     * @deprecated
-     */
-    public $ttr = PheanstalkInterface::DEFAULT_TTR;
 
     /**
      * @var string command class name
@@ -49,10 +44,10 @@ class Queue extends CliQueue
      */
     public function run()
     {
-        while ($message = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
-            // TODO Attempt number
-            if ($this->handleMessage($message->getId(), 1, $message->getData())) {
-                $this->getPheanstalk()->delete($message);
+        while ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
+            $info = $this->getPheanstalk()->statsJob($payload);
+            if ($this->handleMessage($payload->getId(), $info->reserves, $payload->getData())) {
+                $this->getPheanstalk()->delete($payload);
             }
         }
     }
@@ -64,8 +59,8 @@ class Queue extends CliQueue
     {
         while (!Signal::isExit()) {
             if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 3)) {
-                // TODO Attempt number
-                if ($this->handleMessage($payload->getId(), 1, $payload->getData())) {
+                $info = $this->getPheanstalk()->statsJob($payload);
+                if ($this->handleMessage($payload->getId(), $info->reserves, $payload->getData())) {
                     $this->getPheanstalk()->delete($payload);
                 }
             }
@@ -82,7 +77,7 @@ class Queue extends CliQueue
             $message,
             PheanstalkInterface::DEFAULT_PRIORITY,
             $delay,
-            $this->ttr
+            $ttr
         );
     }
 
