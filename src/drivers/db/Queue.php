@@ -69,7 +69,8 @@ class Queue extends CliQueue
     public function run()
     {
         while (!Signal::isExit() && ($payload = $this->pop())) {
-            if ($this->handleMessage($payload['id'], $payload['job'])) {
+            // TODO Attempt number
+            if ($this->handleMessage($payload['id'], 1, $payload['job'])) {
                 $this->release($payload);
             }
         }

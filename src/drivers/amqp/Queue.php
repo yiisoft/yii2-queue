@@ -66,7 +66,8 @@ class Queue extends CliQueue
     {
         $this->open();
         $callback = function(AMQPMessage $message) {
-            if ($this->handleMessage(null, $message->body)) {
+            // TODO Attempt number
+            if ($this->handleMessage(null, 1, $message->body)) {
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             }
         };

@@ -8,18 +8,14 @@
 namespace zhuravljov\yii\queue;
 
 /**
- * Class ErrorEvent
+ * Class ExecEvent
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class ErrorEvent extends ExecEvent
+class ExecEvent extends JobEvent
 {
     /**
-     * @var \Exception
+     * @var int attempt number
      */
-    public $error;
-    /**
-     * @var bool
-     */
-    public $retry;
+    public $attempt;
 }

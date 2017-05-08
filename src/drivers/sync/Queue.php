@@ -62,7 +62,8 @@ class Queue extends BaseQueue
     {
         while (($message = array_shift($this->messages)) !== null) {
             $this->startedId = $this->finishedId + 1;
-            $this->handleMessage($this->startedId, $message);
+            // TODO Attempt number
+            $this->handleMessage($this->startedId, 1, $message);
             $this->finishedId = $this->startedId;
             $this->startedId = 0;
         }

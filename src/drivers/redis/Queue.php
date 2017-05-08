@@ -51,7 +51,8 @@ class Queue extends CliQueue
         $this->openWorker();
         while (($payload = $this->pop(0)) !== null) {
             list($id, $message) = $payload;
-            $this->handleMessage($id, $message);
+            // TODO Attempt number
+            $this->handleMessage($id, 1, $message);
         }
         $this->closeWorker();
     }
@@ -65,7 +66,8 @@ class Queue extends CliQueue
         while (!Signal::isExit()) {
             if (($payload = $this->pop(3)) !== null) {
                 list($id, $message) = $payload;
-                $this->handleMessage($id, $message);
+                // TODO Attempt number
+                $this->handleMessage($id, 1, $message);
             }
         }
         $this->closeWorker();

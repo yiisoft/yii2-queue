@@ -42,7 +42,8 @@ class Queue extends CliQueue
     {
         while (!Signal::isExit() && ($payload = $this->pop()) !== null) {
             list($id, $message) = $payload;
-            $this->handleMessage($id, $message);
+            // TODO Attempt number
+            $this->handleMessage($id, 1, $message);
         }
     }
 

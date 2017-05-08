@@ -65,23 +65,24 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function handleMessage($id, $message)
+    protected function handleMessage($id, $attempt, $message)
     {
         if ($this->messageHandler) {
-            return call_user_func($this->messageHandler, $id, $message);
+            return call_user_func($this->messageHandler, $id, $attempt, $message);
         } else {
-            return parent::handleMessage($id, $message);
+            return parent::handleMessage($id, $attempt, $message);
         }
     }
 
     /**
      * @param string|null $id of a message
+     * @param int $attempt number
      * @param string $message
      * @return bool
      * @internal only for command
      */
-    public function execute($id, $message)
+    public function execute($id, $attempt, $message)
     {
-        return parent::handleMessage($id, $message);
+        return parent::handleMessage($id, $attempt, $message);
     }
 }

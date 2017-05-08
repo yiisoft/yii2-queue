@@ -30,15 +30,15 @@ abstract class Queue extends Component
      */
     const EVENT_AFTER_PUSH = 'afterPush';
     /**
-     * @event JobEvent
+     * @event ExecEvent
      */
     const EVENT_BEFORE_EXEC = 'beforeExec';
     /**
-     * @event JobEvent
+     * @event ExecEvent
      */
     const EVENT_AFTER_EXEC = 'afterExec';
     /**
-     * @event ErrorEvent
+     * @event ExecEvent
      */
     const EVENT_AFTER_EXEC_ERROR = 'afterExecError';
     /**
@@ -119,28 +119,46 @@ abstract class Queue extends Component
 
     /**
      * @param string|null $id of a job message
+     * @param int $attempt number
      * @param string $message
      * @return boolean
      */
-    protected function handleMessage($id, $message)
+    protected function handleMessage($id, $attempt, $message)
     {
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof Job)) {
             throw new InvalidParamException('Message must be ' . Job::class . ' object.');
         }
 
-        $error = null;
-        $this->trigger(self::EVENT_BEFORE_EXEC, new JobEvent(['id' => $id, 'job' => $job]));
+        $execEvent = new ExecEvent([
+            'id' => $id,
+            'job' => $job,
+            'attempt' => $attempt,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_EXEC, $execEvent);
+        $errorEvent = null;
         try {
-            $job->execute($this);
+            $execEvent->job->execute($this);
         } catch (\Exception $error) {
-            $this->trigger(self::EVENT_AFTER_EXEC_ERROR, new ErrorEvent(['id' => $id, 'job' => $job, 'error' => $error]));
+            if ($execEvent->job instanceof RetryableJob) {
+                $retry = $execEvent->job->canRetry($execEvent->attempt, $error);
+            } else {
+                $retry = $execEvent->attempt < $this->attempts;
+            }
+            $errorEvent = new ErrorEvent([
+                'id' => $execEvent->id,
+                'job' => $execEvent->job,
+                'attempt' => $execEvent->attempt,
+                'error' => $error,
+                'retry' => $retry,
+            ]);
+            $this->trigger(self::EVENT_AFTER_EXEC_ERROR, $errorEvent);
         }
-        if (!$error) {
-            $this->trigger(self::EVENT_AFTER_EXEC, new JobEvent(['id' => $id, 'job' => $job]));
+        if (!$errorEvent) {
+            $this->trigger(self::EVENT_AFTER_EXEC, $execEvent);
         }
 
-        return !$error;
+        return !$errorEvent || !$errorEvent->retry;
     }
 
     /**
