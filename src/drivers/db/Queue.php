@@ -46,7 +46,7 @@ class Queue extends CliQueue
     /**
      * @var boolean ability to delete released messages from table
      */
-    public $deleteReleased = false;
+    public $deleteReleased = true;
 
     /**
      * @var string command class name
@@ -68,9 +68,8 @@ class Queue extends CliQueue
      */
     public function run()
     {
-        while (!Signal::isExit() && ($payload = $this->pop())) {
-            // TODO Attempt number
-            if ($this->handleMessage($payload['id'], 1, $payload['job'])) {
+        while (!Signal::isExit() && ($payload = $this->reserve())) {
+            if ($this->handleMessage($payload['id'], $payload['attempt'], $payload['job'])) {
                 $this->release($payload);
             }
         }
@@ -96,8 +95,9 @@ class Queue extends CliQueue
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
             'job' => $message,
-            'created_at' => time(),
-            'timeout' => $delay,
+            'pushed_at' => time(),
+            'ttr' => $ttr,
+            'delay' => $delay,
         ])->execute();
         $tableSchema = $this->db->getTableSchema($this->tableName);
         $id = $this->db->getLastInsertID($tableSchema->sequenceName);
@@ -123,9 +123,9 @@ class Queue extends CliQueue
             }
         }
 
-        if (!$payload['started_at']) {
+        if (!$payload['reserved_at']) {
             return self::STATUS_WAITING;
-        } elseif (!$payload['finished_at']) {
+        } elseif (!$payload['done_at']) {
             return self::STATUS_RESERVED;
         } else {
             return self::STATUS_DONE;
@@ -136,25 +136,39 @@ class Queue extends CliQueue
      * @return array|false payload
      * @throws Exception in case it hasn't waited the lock
      */
-    protected function pop()
+    protected function reserve()
     {
         if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
             throw new Exception("Has not waited the lock.");
         }
 
+        // Move reserved and not done messages into waiting list
+
+        if ($this->reserveTime !== time()) {
+            $this->reserveTime = time();
+            $this->db->createCommand()->update(
+                $this->tableName,
+                ['reserved_at' => null],
+                '[[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
+                [':time' => $this->reserveTime]
+            )->execute();
+        }
+
+        // Reserve one message
+
         $payload = (new Query())
             ->from($this->tableName)
-            ->andWhere(['channel' => $this->channel, 'started_at' => null])
-            ->andWhere('created_at <= :time - timeout', [':time' => time()])
+            ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
+            ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
             ->orderBy(['id' => SORT_ASC])
             ->limit(1)
             ->one($this->db);
 
         if (is_array($payload)) {
-            $payload['started_at'] = time();
-            $this->db->createCommand()->update(
-                $this->tableName,
-                ['started_at' => $payload['started_at']],
+            $payload['reserved_at'] = time();
+            $payload['attempt'] = (int)$payload['attempt'] + 1;
+            $this->db->createCommand()->update($this->tableName, [
+                'reserved_at' => $payload['reserved_at'], 'attempt' => $payload['attempt']],
                 ['id' => $payload['id']]
             )->execute();
         }
@@ -169,6 +183,8 @@ class Queue extends CliQueue
         return $payload;
     }
 
+    private $reserveTime;
+
     /**
      * @param array $payload
      */
@@ -182,7 +198,7 @@ class Queue extends CliQueue
         } else {
             $this->db->createCommand()->update(
                 $this->tableName,
-                ['finished_at' => time()],
+                ['done_at' => time()],
                 ['id' => $payload['id']]
             )->execute();
         }

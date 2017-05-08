@@ -29,13 +29,15 @@ CREATE TABLE `queue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `channel` varchar(255) NOT NULL,
   `job` blob NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `timeout` int(11) NOT NULL DEFAULT 0,
-  `started_at` int(11) DEFAULT NULL,
-  `finished_at` int(11) DEFAULT NULL,
+  `pushed_at` int(11) NOT NULL,
+  `ttr` int(11) NOT NULL,
+  `delay` int(11) NOT NULL DEFAULT 0,
+  `reserved_at` int(11) DEFAULT NULL,
+  `attempt` int(11) DEFAULT NULL,
+  `done_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `channel` (`channel`),
-  KEY `started_at` (`started_at`)
+  KEY `reserved_at` (`reserved_at`)
 ) ENGINE=InnoDB
 ```
 

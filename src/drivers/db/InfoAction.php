@@ -52,8 +52,8 @@ class InfoAction extends Action
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
-            ->andWhere(['started_at' => null])
-            ->andWhere(['timeout' => 0]);
+            ->andWhere(['reserved_at' => null])
+            ->andWhere(['delay' => 0]);
     }
 
     /**
@@ -64,8 +64,8 @@ class InfoAction extends Action
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
-            ->andWhere(['started_at' => null])
-            ->andWhere(['>', 'timeout', 0]);
+            ->andWhere(['reserved_at' => null])
+            ->andWhere(['>', 'delay', 0]);
     }
 
     /**
@@ -76,8 +76,8 @@ class InfoAction extends Action
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
-            ->andWhere('[[started_at]] is not null')
-            ->andWhere(['finished_at' => null]);
+            ->andWhere('[[reserved_at]] is not null')
+            ->andWhere(['done_at' => null]);
     }
 
     /**
@@ -88,6 +88,6 @@ class InfoAction extends Action
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
-            ->andWhere('[[finished_at]] is not null');
+            ->andWhere('[[done_at]] is not null');
     }
 }
