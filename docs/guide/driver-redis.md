@@ -14,7 +14,7 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\driver\redis\Queue::class,
+            'class' => \zhuravljov\yii\queue\redis\Queue::class,
             'redis' => 'redis', // connection ID
             'channel' => 'queue', // queue channel
         ],
