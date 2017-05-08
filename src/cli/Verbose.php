@@ -11,7 +11,7 @@ use yii\base\Behavior;
 use yii\console\Controller;
 use yii\helpers\Console;
 use zhuravljov\yii\queue\ErrorEvent;
-use zhuravljov\yii\queue\JobEvent;
+use zhuravljov\yii\queue\ExecEvent;
 
 /**
  * Verbose Behavior
@@ -43,7 +43,7 @@ class Verbose extends Behavior
         ];
     }
 
-    public function beforeExec(JobEvent $event)
+    public function beforeExec(ExecEvent $event)
     {
         $this->start = microtime(true);
 
@@ -53,7 +53,7 @@ class Verbose extends Behavior
         $this->command->stdout("$title - $status\n");
     }
 
-    public function afterExec(JobEvent $event)
+    public function afterExec(ExecEvent $event)
     {
         $title = $this->command->ansiFormat($this->formatTitle($event), Console::FG_YELLOW);
         $status = $this->command->ansiFormat('Done', Console::FG_GREEN);
@@ -78,15 +78,16 @@ class Verbose extends Behavior
     }
 
     /**
-     * @param JobEvent $event
+     * @param ExecEvent $event
      * @return string
      */
-    protected function formatTitle(JobEvent $event)
+    protected function formatTitle(ExecEvent $event)
     {
-        return strtr('{time}: [{id}] {class}', [
+        return strtr('{time}: [{id}] {class} (attempt: {attempt})', [
             '{time}' => date('Y-m-d H:i:s'),
             '{id}' => $event->id,
             '{class}' => get_class($event->job),
+            '{attempt}' => $event->attempt,
         ]);
     }
 
