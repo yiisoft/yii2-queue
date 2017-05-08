@@ -44,13 +44,13 @@ class LogBehavior extends Behavior
         Yii::info($this->getEventTitle($event) . ' pushed.', Queue::class);
     }
 
-    public function beforeExec(JobEvent $event)
+    public function beforeExec(ExecEvent $event)
     {
         Yii::info($this->getEventTitle($event) . ' started.', Queue::class);
         Yii::beginProfile($this->getEventTitle($event), Queue::class);
     }
 
-    public function afterExec(JobEvent $event)
+    public function afterExec(ExecEvent $event)
     {
         Yii::endProfile($this->getEventTitle($event), Queue::class);
         Yii::info($this->getEventTitle($event) . ' finished.', Queue::class);
@@ -59,7 +59,7 @@ class LogBehavior extends Behavior
         }
     }
 
-    public function afterExecError(ErrorEvent $event)
+    public function afterExecError(ExecEvent $event)
     {
         Yii::endProfile($this->getEventTitle($event), Queue::class);
         Yii::error($this->getEventTitle($event) . ' error ' . $event->error, Queue::class);
@@ -70,9 +70,14 @@ class LogBehavior extends Behavior
 
     protected function getEventTitle(JobEvent $event)
     {
-        return strtr('[id] name', [
+        $title = strtr('[id] name', [
             'id' => $event->id,
             'name' => $event->job instanceof Job ? get_class($event->job) : 'mixed data',
         ]);
+        if ($event instanceof ExecEvent) {
+            $title .= " (attempt: $event->attempt)";
+        }
+
+        return $title;
     }
 }
