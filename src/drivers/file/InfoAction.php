@@ -35,6 +35,9 @@ class InfoAction extends Action
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
         Console::output($this->getDelayedCount());
 
+        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
+        Console::output($this->getReservedCount());
+
         Console::stdout($this->format('- done: ', Console::FG_YELLOW));
         Console::output($this->getDoneCount());
     }
@@ -57,6 +60,17 @@ class InfoAction extends Action
     {
         $data = $this->getIndexData();
         $count = !empty($data['delayed']) ? count($data['delayed']) : 0;
+
+        return $count;
+    }
+
+    /**
+     * @return integer
+     */
+    protected function getReservedCount()
+    {
+        $data = $this->getIndexData();
+        $count = !empty($data['reserved']) ? count($data['reserved']) : 0;
 
         return $count;
     }

@@ -49,7 +49,7 @@ class Command extends CliCommand
      * Listens file-queue and runs new jobs.
      * It can be used as demon process.
      *
-     * @param integer $delay Number of seconds for waiting new job.
+     * @param integer $delay number of seconds for waiting new job.
      */
     public function actionListen($delay = 3)
     {

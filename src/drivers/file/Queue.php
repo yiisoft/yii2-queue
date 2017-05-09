@@ -40,10 +40,11 @@ class Queue extends CliQueue
      */
     public function run()
     {
-        while (!Signal::isExit() && ($payload = $this->pop()) !== null) {
-            list($id, $message) = $payload;
-            // TODO Attempt number
-            $this->handleMessage($id, 1, $message);
+        while (!Signal::isExit() && ($payload = $this->reserve()) !== null) {
+            list($id, $ttr, $attempt, $message) = $payload;
+            if ($this->handleMessage($id, $attempt, $message)) {
+                $this->delete($payload);
+            }
         }
     }
 
@@ -60,30 +61,62 @@ class Queue extends CliQueue
     }
 
     /**
-     * @return string|null message
+     * Reserves message for execute
+     *
+     * @return string|null payload
      */
-    protected function pop()
+    protected function reserve()
     {
         $id = null;
-        $message = null;
-        $this->touchIndex("$this->path/index.data", function ($data) use (&$message, &$id) {
-            if (!empty($data['delayed']) && $data['delayed'][0][1] <= time()) {
-                list($id, $time) = array_shift($data['delayed']);
+        $ttr = null;
+        $attempt = null;
+        $this->touchIndex(function (&$data) use (&$id, &$ttr, &$attempt) {
+            if (!empty($data['reserved'])) {
+                foreach ($data['reserved'] as $key => $payload) {
+                    if ($payload[1] + $payload[3] < time()) {
+                        list($id, $ttr, $attempt, $time) = $payload;
+                        $data['reserved'][$key][2] = ++$attempt;
+                        $data['reserved'][$key][3] = time();
+                        return;
+                    }
+                }
+            }
+
+            if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
+                list($id, $ttr,) = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
-                $id = array_shift($data['waiting']);
+                list($id, $ttr) = array_shift($data['waiting']);
             }
             if ($id) {
-                $message = file_get_contents("$this->path/job$id.data");
-                unlink("$this->path/job$id.data");
+                $attempt = 1;
+                $data['reserved']["job$id"] = [$id, $ttr, $attempt, time()];
             }
-            return $data;
         });
 
         if ($id) {
-            return [$id, $message];
+            return [$id, $ttr, $attempt, file_get_contents("$this->path/job$id.data")];
         } else {
             return null;
         }
+    }
+
+    /**
+     * Deletes reserved message
+     *
+     * @param array $payload
+     */
+    protected function delete($payload)
+    {
+        $id = $payload[0];
+        $this->touchIndex(function (&$data) use ($id) {
+            foreach ($data['reserved'] as $key => $payload) {
+                if ($payload[0] === $id) {
+                    unset($data['reserved'][$key]);
+                    break;
+                }
+            }
+        });
+        unlink("$this->path/job$id.data");
     }
 
     /**
@@ -91,25 +124,24 @@ class Queue extends CliQueue
      */
     protected function pushMessage($message, $ttr, $delay)
     {
-        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $delay, &$id) {
+        $this->touchIndex(function (&$data) use ($message, $ttr, $delay, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
             file_put_contents("$this->path/job$id.data", $message);
             if (!$delay) {
-                $data['waiting'][] = $id;
+                $data['waiting'][] = [$id, $ttr, 0];
             } else {
-                $data['delayed'][] = [$id, time() + $delay];
+                $data['delayed'][] = [$id, $ttr, time() + $delay];
                 usort($data['delayed'], function ($a, $b) {
-                    if ($a[1] < $b[1]) return -1;
-                    if ($a[1] > $b[1]) return 1;
+                    if ($a[2] < $b[2]) return -1;
+                    if ($a[2] > $b[2]) return 1;
                     if ($a[0] < $b[0]) return -1;
                     if ($a[0] > $b[0]) return 1;
                     return 0;
                 });
             }
-            return $data;
         });
 
         return $id;
@@ -132,12 +164,12 @@ class Queue extends CliQueue
     }
 
     /**
-     * @param string $fileName
      * @param callable $callback
      * @throws InvalidConfigException
      */
-    private function touchIndex($fileName, $callback)
+    private function touchIndex($callback)
     {
+        $fileName = "$this->path/index.data";
         touch($fileName);
         if (($file = fopen($fileName, 'r+')) === false) {
             throw new InvalidConfigException("Unable to open index file: $fileName");
@@ -146,8 +178,8 @@ class Queue extends CliQueue
         $content = stream_get_contents($file);
         $data = $content === '' ? [] : unserialize($content);
         try {
-            $result = call_user_func($callback, $data);
-            $newContent = serialize($result);
+            $callback($data);
+            $newContent = serialize($data);
             if ($newContent !== $content) {
                 ftruncate($file, 0);
                 rewind($file);
