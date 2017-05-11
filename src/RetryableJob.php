@@ -15,7 +15,7 @@ namespace zhuravljov\yii\queue;
 interface RetryableJob extends Job
 {
     /**
-     * @return int time to run in seconds
+     * @return int time to reserve in seconds
      */
     public function getTtr();
 

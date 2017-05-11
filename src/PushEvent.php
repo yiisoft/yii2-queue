@@ -15,7 +15,7 @@ namespace zhuravljov\yii\queue;
 class PushEvent extends JobEvent
 {
     /**
-     * @var int time to run in seconds of the job
+     * @var int time to reserve in seconds of the job
      */
     public $ttr;
     /**

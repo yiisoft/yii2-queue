@@ -59,7 +59,7 @@ abstract class Queue extends Component
      */
     public $serializer = PhpSerializer::class;
     /**
-     * @var int default time to run a job
+     * @var int default time to reserve a job
      */
     public $ttr = 60;
     /**
@@ -111,7 +111,7 @@ abstract class Queue extends Component
 
     /**
      * @param string $message
-     * @param int $ttr time to run in seconds
+     * @param int $ttr time to reserve in seconds
      * @param int $delay
      * @return string|null id of a job message
      */
