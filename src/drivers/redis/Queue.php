@@ -50,8 +50,8 @@ class Queue extends CliQueue
     {
         $this->openWorker();
         while (($payload = $this->reserve(0)) !== null) {
-            list($id,, $attempt, $message) = $payload;
-            if ($this->handleMessage($id, $attempt, $message)) {
+            list($id, $message,, $attempt) = $payload;
+            if ($this->handleMessage($id, $message, $attempt)) {
                 $this->delete($id);
             }
         }
@@ -66,8 +66,8 @@ class Queue extends CliQueue
         $this->openWorker();
         while (!Signal::isExit()) {
             if (($payload = $this->reserve(3)) !== null) {
-                list($id,, $attempt, $message) = $payload;
-                if ($this->handleMessage($id, $attempt, $message)) {
+                list($id, $message,, $attempt) = $payload;
+                if ($this->handleMessage($id, $message, $attempt)) {
                     $this->delete($id);
                 }
             }
@@ -105,7 +105,7 @@ class Queue extends CliQueue
         $this->redis->zadd("$this->channel.reserved", time() + $ttr, $id);
         $this->redis->hset("$this->channel.messages", $id, "$ttr;$attempt;$message");
 
-        return [$id, $ttr, $attempt, $message];
+        return [$id, $message, $ttr, $attempt];
     }
 
     private $now = 0;

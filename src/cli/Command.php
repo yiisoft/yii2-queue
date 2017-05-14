@@ -88,8 +88,8 @@ abstract class Command extends Controller
         }
 
         if ($this->useIsolateOption($action->id) && $this->isolate) {
-            $this->queue->messageHandler = function ($id, $attempt, $message) {
-                return $this->handleMessage($id, $attempt, $message);
+            $this->queue->messageHandler = function ($id, $message, $attempt) {
+                return $this->handleMessage($id, $message, $attempt);
             };
         } else {
             $this->queue->messageHandler = null;
@@ -107,7 +107,7 @@ abstract class Command extends Controller
      */
     public function actionExec($id, $attempt)
     {
-        if ($this->queue->execute($id, $attempt, file_get_contents('php://stdin'))) {
+        if ($this->queue->execute($id, file_get_contents('php://stdin'), $attempt)) {
             return self::EXIT_CODE_NORMAL;
         } else {
             return self::EXIT_CODE_ERROR;
@@ -118,13 +118,13 @@ abstract class Command extends Controller
      * Handles message using child process.
      *
      * @param string|null $id of a message
-     * @param int $attempt number
      * @param string $message
+     * @param int $attempt number
      * @return bool
      * @throws
      * @see actionExec()
      */
-    private function handleMessage($id, $attempt, $message)
+    private function handleMessage($id, $message, $attempt)
     {
         // Executes child process
         $cmd = strtr('{php} {yii} {queue}/exec "{id}" "{attempt}"', [

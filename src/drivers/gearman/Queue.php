@@ -36,7 +36,7 @@ class Queue extends CliQueue
         $worker->addServer($this->host, $this->port);
         $worker->addFunction($this->channel, function (\GearmanJob $message) {
             // TODO Attempt number
-            $this->handleMessage($message->handle(), 1, $message->workload());
+            $this->handleMessage($message->handle(), $message->workload(), 1);
         });
         $worker->setTimeout(1);
         do {
@@ -54,7 +54,7 @@ class Queue extends CliQueue
         $worker->addServer($this->host, $this->port);
         $worker->addFunction($this->channel, function (\GearmanJob $message) {
             // TODO Attempt number
-            $this->handleMessage($message->handle(), 1, $message->workload());
+            $this->handleMessage($message->handle(), $message->workload(), 1);
         });
 
         $worker->setTimeout(1000);

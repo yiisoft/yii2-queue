@@ -69,7 +69,7 @@ class Queue extends CliQueue
     public function run()
     {
         while (!Signal::isExit() && ($payload = $this->reserve())) {
-            if ($this->handleMessage($payload['id'], $payload['attempt'], $payload['job'])) {
+            if ($this->handleMessage($payload['id'], $payload['job'], $payload['attempt'])) {
                 $this->release($payload);
             }
         }

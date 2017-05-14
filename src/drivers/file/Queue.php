@@ -41,8 +41,8 @@ class Queue extends CliQueue
     public function run()
     {
         while (!Signal::isExit() && ($payload = $this->reserve()) !== null) {
-            list($id, $ttr, $attempt, $message) = $payload;
-            if ($this->handleMessage($id, $attempt, $message)) {
+            list($id, $message,, $attempt) = $payload;
+            if ($this->handleMessage($id, $message, $attempt)) {
                 $this->delete($payload);
             }
         }
@@ -94,7 +94,7 @@ class Queue extends CliQueue
         });
 
         if ($id) {
-            return [$id, $ttr, $attempt, file_get_contents("$this->path/job$id.data")];
+            return [$id, file_get_contents("$this->path/job$id.data"), $ttr, $attempt];
         } else {
             return null;
         }

@@ -119,11 +119,11 @@ abstract class Queue extends Component
 
     /**
      * @param string|null $id of a job message
-     * @param int $attempt number
      * @param string $message
+     * @param int $attempt number
      * @return boolean
      */
-    protected function handleMessage($id, $attempt, $message)
+    protected function handleMessage($id, $message, $attempt)
     {
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof Job)) {

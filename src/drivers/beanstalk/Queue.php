@@ -46,7 +46,7 @@ class Queue extends CliQueue
     {
         while ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
             $info = $this->getPheanstalk()->statsJob($payload);
-            if ($this->handleMessage($payload->getId(), $info->reserves, $payload->getData())) {
+            if ($this->handleMessage($payload->getId(), $payload->getData(), $info->reserves)) {
                 $this->getPheanstalk()->delete($payload);
             }
         }
@@ -60,7 +60,7 @@ class Queue extends CliQueue
         while (!Signal::isExit()) {
             if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 3)) {
                 $info = $this->getPheanstalk()->statsJob($payload);
-                if ($this->handleMessage($payload->getId(), $info->reserves, $payload->getData())) {
+                if ($this->handleMessage($payload->getId(), $payload->getData(), $info->reserves)) {
                     $this->getPheanstalk()->delete($payload);
                 }
             }
