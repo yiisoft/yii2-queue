@@ -35,7 +35,6 @@ class Queue extends CliQueue
         $worker = new \GearmanWorker();
         $worker->addServer($this->host, $this->port);
         $worker->addFunction($this->channel, function (\GearmanJob $payload) {
-            // TODO Attempt number
             list($ttr, $message) = explode(';', $payload->workload(), 2);
             $this->handleMessage($payload->handle(), $message, $ttr, 1);
         });
@@ -54,7 +53,6 @@ class Queue extends CliQueue
         $worker = new \GearmanWorker();
         $worker->addServer($this->host, $this->port);
         $worker->addFunction($this->channel, function (\GearmanJob $payload) {
-            // TODO Attempt number
             list($ttr, $message) = explode(';', $payload->workload(), 2);
             $this->handleMessage($payload->handle(), $message, $ttr, 1);
         });
