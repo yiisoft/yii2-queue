@@ -27,16 +27,26 @@ class InfoAction extends Action
      */
     public function run()
     {
+        $prefix = $this->queue->channel;
+        $waiting = $this->queue->redis->llen("$prefix.waiting");
+        $delayed = $this->queue->redis->zcount("$prefix.delayed", '-inf', '+inf');
+        $reserved = $this->queue->redis->zcount("$prefix.reserved", '-inf', '+inf');
+        $total = $this->queue->redis->get("$prefix.message_id");
+        $done = $total - $waiting - $delayed - $reserved;
+
         Console::output($this->format('Jobs', Console::FG_GREEN));
 
         Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
-        Console::output($this->getWaitingCount());
+        Console::output($waiting);
 
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
-        Console::output($this->getDelayedCount());
+        Console::output($delayed);
+
+        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
+        Console::output($reserved);
 
         Console::stdout($this->format('- done: ', Console::FG_YELLOW));
-        Console::output($this->getDoneCount());
+        Console::output($done);
 
         if ($workersInfo = $this->getWorkersInfo()) {
             Console::output($this->format('Workers ', Console::FG_GREEN));
@@ -46,34 +56,6 @@ class InfoAction extends Action
             }
         }
     }
-
-    /**
-     * @return integer
-     */
-    protected function getWaitingCount()
-    {
-        return $this->queue->redis->llen($this->queue->channel . '.waiting');
-    }
-
-    /**
-     * @return integer
-     */
-    protected function getDelayedCount()
-    {
-        return $this->queue->redis->zcount($this->queue->channel . '.delayed', '-inf', '+inf');
-    }
-
-    /**
-     * @return integer
-     */
-    protected function getDoneCount()
-    {
-        $total = $this->queue->redis->get($this->queue->channel . '.message_id');
-        $done = $total - $this->getDelayedCount() - $this->getWaitingCount();
-
-        return $done;
-    }
-
     /**
      * @return array
      */

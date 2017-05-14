@@ -100,10 +100,9 @@ class Queue extends CliQueue
         }
 
         $payload = $this->redis->hget("$this->channel.messages", $id);
-        list($ttr, $attempt, $message) = explode(';', $payload, 3);
-        $attempt++;
+        list($ttr, $message) = explode(';', $payload, 2);
         $this->redis->zadd("$this->channel.reserved", time() + $ttr, $id);
-        $this->redis->hset("$this->channel.messages", $id, "$ttr;$attempt;$message");
+        $attempt = $this->redis->hincrby("$this->channel.attempts", $id, 1);
 
         return [$id, $message, $ttr, $attempt];
     }
@@ -132,6 +131,7 @@ class Queue extends CliQueue
     protected function delete($id)
     {
         $this->redis->zrem("$this->channel.reserved", $id);
+        $this->redis->hdel("$this->channel.attempts", $id);
         $this->redis->hdel("$this->channel.messages", $id);
     }
 
@@ -141,7 +141,7 @@ class Queue extends CliQueue
     protected function pushMessage($message, $ttr, $delay)
     {
         $id = $this->redis->incr("$this->channel.message_id");
-        $this->redis->hset("$this->channel.messages", $id, "$ttr;0;$message");
+        $this->redis->hset("$this->channel.messages", $id, "$ttr;$message");
         if (!$delay) {
             $this->redis->lpush("$this->channel.waiting", $id);
         } else {
@@ -171,13 +171,10 @@ class Queue extends CliQueue
             throw new InvalidParamException("Unknown messages ID: $id.");
         }
 
-        if ($payload = $this->redis->hget("$this->channel.messages", $id)) {
-            list(, $attempt,) = explode(';', $payload, 3);
-            if ($attempt > 0) {
-                return self::STATUS_RESERVED;
-            } else {
-                return self::STATUS_WAITING;
-            }
+        if ($this->redis->hexists("$this->channel.attempts", $id)) {
+            return self::STATUS_RESERVED;
+        } elseif ($this->redis->hexists("$this->channel.messages", $id)) {
+            return self::STATUS_WAITING;
         } else {
             return self::STATUS_DONE;
         }
