@@ -36,6 +36,24 @@ class <?= $jobClass ?> extends <?= $baseClass ?> <?= $implements ?>
     public function execute($queue)
     {
     }
+<?php if ($generator->retryable): ?>
+
+    /**
+     * @inheritdoc
+     */
+    public function getTtr()
+    {
+        return 60;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canRetry($attempt, $error)
+    {
+        return $attempt < 3;
+    }
+<?php endif; ?>
 }
 
 

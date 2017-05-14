@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Object;
 use yii\gii\CodeFile;
 use zhuravljov\yii\queue\Job;
+use zhuravljov\yii\queue\RetryableJob;
 
 /**
  * This generator will generate a job.
@@ -21,6 +22,7 @@ class Generator extends \yii\gii\Generator
 {
     public $jobClass;
     public $properties;
+    public $retryable = false;
     public $ns = 'app\jobs';
     public $baseClass = Object::class;
 
@@ -51,6 +53,7 @@ class Generator extends \yii\gii\Generator
             ['jobClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
             ['jobClass', 'validateJobClass'],
             ['properties', 'match', 'pattern' => '/^[a-z_][a-z0-9_,\\s]*$/i', 'message' => 'Must be valid class properties.'],
+            ['retryable', 'boolean'],
             ['ns', 'validateNamespace'],
             ['baseClass', 'validateClass'],
         ]);
@@ -64,6 +67,7 @@ class Generator extends \yii\gii\Generator
         return array_merge(parent::attributeLabels(), [
             'jobClass' => 'Job Class',
             'properties' => 'Job Properties',
+            'retryable' => 'Retryable Job',
             'ns' => 'Namespace',
             'baseClass' => 'Base Class',
         ]);
@@ -77,6 +81,7 @@ class Generator extends \yii\gii\Generator
         return array_merge(parent::hints(), [
             'jobClass' => 'This is the name of the Job class to be generated, e.g., <code>SomeJob</code>.',
             'properties' => 'Job object property names. Separate multiple properties with commas or spaces, e.g., <code>prop1, prop2</code>.',
+            'retryable' => 'Job object will implement <code>RetryableJob</code> interface.',
             'ns' => 'This is the namespace of the Job class to be generated.',
             'baseClass' => 'This is the class that the new Job class will extend from.',
         ]);
@@ -108,8 +113,14 @@ class Generator extends \yii\gii\Generator
         $params['ns'] = $this->ns;
         $params['baseClass'] = '\\' . ltrim($this->baseClass, '\\');
         $params['interfaces'] = [];
-        if (!is_a($this->baseClass, Job::class, true)) {
-            $params['interfaces'][] = '\\' . Job::class;
+        if (!$this->retryable) {
+            if (!is_a($this->baseClass, Job::class, true)) {
+                $params['interfaces'][] = '\\' . Job::class;
+            }
+        } else {
+            if (!is_a($this->baseClass, RetryableJob::class, true)) {
+                $params['interfaces'][] = '\\' . RetryableJob::class;
+            }
         }
         $params['properties'] = array_unique(preg_split('/[\s,]+/', $this->properties, -1, PREG_SPLIT_NO_EMPTY));
 
