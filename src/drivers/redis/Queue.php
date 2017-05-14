@@ -49,10 +49,11 @@ class Queue extends CliQueue
     public function run()
     {
         $this->openWorker();
-        while (($payload = $this->pop(0)) !== null) {
-            list($id, $message) = $payload;
-            // TODO Attempt number
-            $this->handleMessage($id, 1, $message);
+        while (($payload = $this->reserve(0)) !== null) {
+            list($id,, $attempt, $message) = $payload;
+            if ($this->handleMessage($id, $attempt, $message)) {
+                $this->delete($id);
+            }
         }
         $this->closeWorker();
     }
@@ -64,10 +65,11 @@ class Queue extends CliQueue
     {
         $this->openWorker();
         while (!Signal::isExit()) {
-            if (($payload = $this->pop(3)) !== null) {
-                list($id, $message) = $payload;
-                // TODO Attempt number
-                $this->handleMessage($id, 1, $message);
+            if (($payload = $this->reserve(3)) !== null) {
+                list($id,, $attempt, $message) = $payload;
+                if ($this->handleMessage($id, $attempt, $message)) {
+                    $this->delete($id);
+                }
             }
         }
         $this->closeWorker();
@@ -77,41 +79,61 @@ class Queue extends CliQueue
      * @param int $wait timeout
      * @return array|null payload
      */
-    protected function pop($wait)
+    protected function reserve($wait)
     {
         // Move delayed messages into waiting
         if ($this->now < time()) {
             $this->now = time();
-            if ($delayed = $this->redis->zrevrangebyscore("$this->channel.delayed", $this->now, '-inf')) {
-                $this->redis->zremrangebyscore("$this->channel.delayed", '-inf', $this->now);
-                foreach ($delayed as $id) {
-                    $this->redis->rpush("$this->channel.waiting", $id);
-                }
-            }
+            $this->moveExpired("$this->channel.delayed", $this->now);
+            $this->moveExpired("$this->channel.reserved", $this->now);
         }
 
         // Find a new waiting message
+        $id = null;
         if (!$wait) {
-            if ($id = $this->redis->rpop("$this->channel.waiting")) {
-                $message = $this->redis->hget("$this->channel.messages", $id);
-                $this->redis->hdel("$this->channel.messages", $id);
-
-                return [$id, $message];
-            }
-        } else {
-            if ($result = $this->redis->brpop("$this->channel.waiting", $wait)) {
-                $id = $result[1];
-                $message = $this->redis->hget("$this->channel.messages", $id);
-                $this->redis->hdel("$this->channel.messages", $id);
-
-                return [$id, $message];
-            }
+            $id = $this->redis->rpop("$this->channel.waiting");
+        } elseif ($result = $this->redis->brpop("$this->channel.waiting", $wait)) {
+            $id = $result[1];
+        }
+        if (!$id) {
+            return null;
         }
 
-        return null;
+        $payload = $this->redis->hget("$this->channel.messages", $id);
+        list($ttr, $attempt, $message) = explode(';', $payload, 3);
+        $attempt++;
+        $this->redis->zadd("$this->channel.reserved", time() + $ttr, $id);
+        $this->redis->hset("$this->channel.messages", $id, "$ttr;$attempt;$message");
+
+        return [$id, $ttr, $attempt, $message];
     }
 
     private $now = 0;
+
+    /**
+     * @param string $from
+     * @param int $time
+     */
+    protected function moveExpired($from, $time)
+    {
+        if ($expired = $this->redis->zrevrangebyscore($from, $time, '-inf')) {
+            $this->redis->zremrangebyscore($from, '-inf', $time);
+            foreach ($expired as $id) {
+                $this->redis->rpush("$this->channel.waiting", $id);
+            }
+        }
+    }
+
+    /**
+     * Deletes message by ID
+     *
+     * @param int $id of a message
+     */
+    protected function delete($id)
+    {
+        $this->redis->zrem("$this->channel.reserved", $id);
+        $this->redis->hdel("$this->channel.messages", $id);
+    }
 
     /**
      * @inheritdoc
@@ -119,11 +141,10 @@ class Queue extends CliQueue
     protected function pushMessage($message, $ttr, $delay)
     {
         $id = $this->redis->incr("$this->channel.message_id");
+        $this->redis->hset("$this->channel.messages", $id, "$ttr;0;$message");
         if (!$delay) {
-            $this->redis->hset("$this->channel.messages", $id, $message);
             $this->redis->lpush("$this->channel.waiting", $id);
         } else {
-            $this->redis->hset("$this->channel.messages", $id, $message);
             $this->redis->zadd("$this->channel.delayed", time() + $delay, $id);
         }
 
@@ -150,8 +171,13 @@ class Queue extends CliQueue
             throw new InvalidParamException("Unknown messages ID: $id.");
         }
 
-        if ($this->redis->hexists("$this->channel.messages", $id)) {
-            return self::STATUS_WAITING;
+        if ($payload = $this->redis->hget("$this->channel.messages", $id)) {
+            list(, $attempt,) = explode(';', $payload, 3);
+            if ($attempt > 0) {
+                return self::STATUS_RESERVED;
+            } else {
+                return self::STATUS_WAITING;
+            }
         } else {
             return self::STATUS_DONE;
         }
