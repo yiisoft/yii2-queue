@@ -36,6 +36,10 @@ $styles = [
                     <td><?= Html::encode($job['id']) ?></td>
                 </tr>
             <?php endif; ?>
+            <tr>
+                <th>TTR</th>
+                <td><?= Html::encode($job['ttr']) ?></td>
+            </tr>
             <?php if ($job['delay']): ?>
                 <tr>
                     <th>Delay</th>
