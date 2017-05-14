@@ -1,6 +1,10 @@
 Yii2 Queue Extension Change Log
 ===============================
 
+## 1.1.0 under development
+
+- Enh #23: Retryable jobs
+
 ## 1.0.0
 
 - Enh: Improvements of log behavior
