@@ -41,8 +41,8 @@ class Queue extends CliQueue
     public function run()
     {
         while (!Signal::isExit() && ($payload = $this->reserve()) !== null) {
-            list($id, $message,, $attempt) = $payload;
-            if ($this->handleMessage($id, $message, $attempt)) {
+            list($id, $message, $ttr, $attempt) = $payload;
+            if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                 $this->delete($payload);
             }
         }

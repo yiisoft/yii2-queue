@@ -24,9 +24,9 @@ class Queue extends BaseQueue
      */
     public $handle = false;
     /**
-     * @var array of massages
+     * @var array of payloads
      */
-    private $messages = [];
+    private $payloads = [];
     /**
      * @var int last pushed ID
      */
@@ -60,10 +60,10 @@ class Queue extends BaseQueue
      */
     public function run()
     {
-        while (($message = array_shift($this->messages)) !== null) {
+        while (($payload = array_shift($this->payloads)) !== null) {
+            list($ttr, $message) = $payload;
             $this->startedId = $this->finishedId + 1;
-            // TODO Attempt number
-            $this->handleMessage($this->startedId, $message, 1);
+            $this->handleMessage($this->startedId, $message, $ttr, 1);
             $this->finishedId = $this->startedId;
             $this->startedId = 0;
         }
@@ -74,7 +74,7 @@ class Queue extends BaseQueue
      */
     protected function pushMessage($message, $ttr, $delay)
     {
-        array_push($this->messages, $message);
+        array_push($this->payloads, [$ttr, $message]);
         return ++$this->pushedId;
     }
 

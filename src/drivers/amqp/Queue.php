@@ -65,10 +65,11 @@ class Queue extends CliQueue
     public function listen()
     {
         $this->open();
-        $callback = function(AMQPMessage $message) {
+        $callback = function(AMQPMessage $payload) {
+            list($ttr, $message) = explode(';', $payload->body, 2);
             // TODO Attempt number
-            if ($this->handleMessage(null, $message->body, 1)) {
-                $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            if ($this->handleMessage(null, $message, $ttr, 1)) {
+                $payload->delivery_info['channel']->basic_ack($payload->delivery_info['delivery_tag']);
             }
         };
         $this->channel->basic_qos(null, 1, null);
@@ -88,7 +89,7 @@ class Queue extends CliQueue
         }
 
         $this->open();
-        $this->channel->basic_publish(new AMQPMessage($message), $this->exchangeName);
+        $this->channel->basic_publish(new AMQPMessage("$ttr;$message"), $this->exchangeName);
 
         return null;
     }

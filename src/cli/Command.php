@@ -88,8 +88,8 @@ abstract class Command extends Controller
         }
 
         if ($this->useIsolateOption($action->id) && $this->isolate) {
-            $this->queue->messageHandler = function ($id, $message, $attempt) {
-                return $this->handleMessage($id, $message, $attempt);
+            $this->queue->messageHandler = function ($id, $message, $ttr, $attempt) {
+                return $this->handleMessage($id, $message, $ttr, $attempt);
             };
         } else {
             $this->queue->messageHandler = null;
@@ -102,12 +102,13 @@ abstract class Command extends Controller
      * Executes a job.
      *
      * @param string|null $id of a message
+     * @param int $ttr time to reserve
      * @param int $attempt number
      * @return int exit code
      */
-    public function actionExec($id, $attempt)
+    public function actionExec($id, $ttr, $attempt)
     {
-        if ($this->queue->execute($id, file_get_contents('php://stdin'), $attempt)) {
+        if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt)) {
             return self::EXIT_CODE_NORMAL;
         } else {
             return self::EXIT_CODE_ERROR;
@@ -119,19 +120,21 @@ abstract class Command extends Controller
      *
      * @param string|null $id of a message
      * @param string $message
+     * @param int $ttr time to reserve
      * @param int $attempt number
      * @return bool
      * @throws
      * @see actionExec()
      */
-    private function handleMessage($id, $message, $attempt)
+    private function handleMessage($id, $message, $ttr, $attempt)
     {
         // Executes child process
-        $cmd = strtr('{php} {yii} {queue}/exec "{id}" "{attempt}"', [
+        $cmd = strtr('{php} {yii} {queue}/exec "{id}" "{ttr}" "{attempt}"', [
             '{php}' => PHP_BINARY,
             '{yii}' => $_SERVER['SCRIPT_FILENAME'],
             '{queue}' => $this->id,
             '{id}' => $id,
+            '{ttr}' => $ttr,
             '{attempt}' => $attempt,
         ]);
         foreach ($this->getPassedOptions() as $name) {

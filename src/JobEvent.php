@@ -24,4 +24,8 @@ class JobEvent extends Event
      * @var Job
      */
     public $job;
+    /**
+     * @var int time to reserve in seconds of the job
+     */
+    public $ttr;
 }

@@ -34,9 +34,10 @@ class Queue extends CliQueue
     {
         $worker = new \GearmanWorker();
         $worker->addServer($this->host, $this->port);
-        $worker->addFunction($this->channel, function (\GearmanJob $message) {
+        $worker->addFunction($this->channel, function (\GearmanJob $payload) {
             // TODO Attempt number
-            $this->handleMessage($message->handle(), $message->workload(), 1);
+            list($ttr, $message) = explode(';', $payload->workload(), 2);
+            $this->handleMessage($payload->handle(), $message, $ttr, 1);
         });
         $worker->setTimeout(1);
         do {
@@ -52,9 +53,10 @@ class Queue extends CliQueue
     {
         $worker = new \GearmanWorker();
         $worker->addServer($this->host, $this->port);
-        $worker->addFunction($this->channel, function (\GearmanJob $message) {
+        $worker->addFunction($this->channel, function (\GearmanJob $payload) {
             // TODO Attempt number
-            $this->handleMessage($message->handle(), $message->workload(), 1);
+            list($ttr, $message) = explode(';', $payload->workload(), 2);
+            $this->handleMessage($payload->handle(), $message, $ttr, 1);
         });
 
         $worker->setTimeout(1000);
@@ -75,7 +77,7 @@ class Queue extends CliQueue
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        return $this->getClient()->doBackground($this->channel, $message);
+        return $this->getClient()->doBackground($this->channel, "$ttr;$message");
     }
 
     /**

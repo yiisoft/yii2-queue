@@ -50,8 +50,8 @@ class Queue extends CliQueue
     {
         $this->openWorker();
         while (($payload = $this->reserve(0)) !== null) {
-            list($id, $message,, $attempt) = $payload;
-            if ($this->handleMessage($id, $message, $attempt)) {
+            list($id, $message, $ttr, $attempt) = $payload;
+            if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                 $this->delete($id);
             }
         }
@@ -66,8 +66,8 @@ class Queue extends CliQueue
         $this->openWorker();
         while (!Signal::isExit()) {
             if (($payload = $this->reserve(3)) !== null) {
-                list($id, $message,, $attempt) = $payload;
-                if ($this->handleMessage($id, $message, $attempt)) {
+                list($id, $message, $ttr, $attempt) = $payload;
+                if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                     $this->delete($id);
                 }
             }
