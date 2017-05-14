@@ -67,7 +67,6 @@ class Queue extends CliQueue
         $this->open();
         $callback = function(AMQPMessage $payload) {
             list($ttr, $message) = explode(';', $payload->body, 2);
-            // TODO Attempt number
             if ($this->handleMessage(null, $message, $ttr, 1)) {
                 $payload->delivery_info['channel']->basic_ack($payload->delivery_info['delivery_tag']);
             }
