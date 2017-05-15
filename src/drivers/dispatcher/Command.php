@@ -46,17 +46,18 @@ class Command extends CliCommand
      */
     public function actionInfo()
     {
-        $args = func_get_args();
         foreach ($this->queue->group as $key => $queue) {
             if ($queue->commandClass) {
                 /* @var $command \zhuravljov\yii\queue\cli\Command */
                 $command = \Yii::createObject([
                         'class' => $queue->commandClass,
                         'queue' => $queue,
-                    ] + $queue->commandOptions, ["$key/info", $this->module]);
+                    ] + $queue->commandOptions, ["queue-$key", $this->module]);
 
-                Console::output($command->ansiFormat("Queue Index:{$key}", Console::FG_BLUE));
-                $command->runAction('info', $args);
+                if ($action = $command->createAction('info')) {
+                    Console::output($command->ansiFormat("Queue Index{$key}", Console::FG_BLUE));
+                    $command->run('info');
+                }
             }
         }
     }
