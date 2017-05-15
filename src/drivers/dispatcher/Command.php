@@ -7,6 +7,7 @@
 
 namespace zhuravljov\yii\queue\drivers\dispatcher;
 
+use yii\helpers\Console;
 use zhuravljov\yii\queue\cli\Command as CliCommand;
 
 /**
@@ -38,5 +39,25 @@ class Command extends CliCommand
     {
         $args = func_get_args();
         call_user_func_array([$this->queue, 'listen'], $args);
+    }
+
+    /**
+     * Queues info
+     */
+    public function actionInfo()
+    {
+        $args = func_get_args();
+        foreach ($this->queue->group as $key => $queue) {
+            if ($queue->commandClass) {
+                /* @var $command \zhuravljov\yii\queue\cli\Command */
+                $command = \Yii::createObject([
+                        'class' => $queue->commandClass,
+                        'queue' => $queue,
+                    ] + $queue->commandOptions, ["$key/info", $this->module]);
+
+                Console::output($command->ansiFormat("Queue Index:{$key}", Console::FG_BLUE));
+                $command->runAction('info', $args);
+            }
+        }
     }
 }
