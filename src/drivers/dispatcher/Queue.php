@@ -83,7 +83,7 @@ class Queue extends CliQueue
         $idx = $this->getDispatcher();
         $queue = $this->group[$idx];
 
-        return "{$idx}:" . $queue->pushMessage($message, $timeout);
+        return "{$idx}%" . $queue->pushMessage($message, $timeout);
     }
 
     /**
@@ -92,7 +92,7 @@ class Queue extends CliQueue
      */
     protected function status($id)
     {
-        list($idx, $id) = explode(':', $id);
+        list($idx, $id) = explode('%', $id);
         $queue = $this->group[$idx];
 
         return $queue->status($id);
