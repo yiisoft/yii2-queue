@@ -60,12 +60,14 @@ class Queue extends CliQueue
 
     /**
      * Listens redis-queue and runs new jobs.
+     *
+     * @param int $wait timeout
      */
-    public function listen()
+    public function listen($wait)
     {
         $this->openWorker();
         while (!Signal::isExit()) {
-            if (($payload = $this->reserve(3)) !== null) {
+            if (($payload = $this->reserve($wait)) !== null) {
                 list($id, $message, $ttr, $attempt) = $payload;
                 if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                     $this->delete($id);
