@@ -17,7 +17,8 @@
     },
     "require": {
         "php": ">=5.5.0",
-        "yiisoft/yii2": "~2.0.10"
+        "yiisoft/yii2": "~2.0.10",
+        "symfony/process": "*"
     },
     "require-dev": {
         "yiisoft/yii2-redis": "*",
@@ -26,8 +27,7 @@
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "phpunit/phpunit": "~4.4",
-        "symfony/process": "*"
+        "phpunit/phpunit": "~4.4"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",

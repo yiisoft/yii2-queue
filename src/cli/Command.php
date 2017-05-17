@@ -7,7 +7,7 @@
 
 namespace zhuravljov\yii\queue\cli;
 
-use yii\base\Exception;
+use Symfony\Component\Process\Process;
 use yii\console\Controller;
 
 /**
@@ -146,24 +146,16 @@ abstract class Command extends Controller
             $cmd .= ' --color=' . $this->isColorEnabled();
         }
 
-        $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
-        $process = proc_open($cmd, $descriptors, $pipes);
-        if (is_resource($process)) {
-            // Writes message to stdIn of process
-            fwrite($pipes[0], $message);
-            fclose($pipes[0]);
-            // Reads stdOut
-            $this->stdout(stream_get_contents($pipes[1]));
-            fclose($pipes[1]);
-            // Reads stdErr
-            $this->stderr(stream_get_contents($pipes[2]));
-            fclose($pipes[2]);
-            // Closes process
-            $exitCode = proc_close($process);
+        $process = new Process($cmd);
+        $process->setInput($message);
+        $exitCode = $process->run(function ($type, $buffer) {
+            if ($type === Process::ERR) {
+                $this->stderr($buffer);
+            } else {
+                $this->stdout($buffer);
+            }
+        });
 
-            return $exitCode == self::EXIT_CODE_NORMAL;
-        } else {
-            throw new Exception("Cannot execute command: $cmd");
-        }
+        return $exitCode == self::EXIT_CODE_NORMAL;
     }
 }
