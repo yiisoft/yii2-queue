@@ -24,13 +24,4 @@ class PgsqlQueueTest extends TestCase
     {
         return Yii::$app->pgsqlQueue;
     }
-
-    public function setUp()
-    {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped();
-        } else {
-            parent::setUp();
-        }
-    }
 }

@@ -5,12 +5,9 @@ php:
   - 5.6
   - 7.0
   - 7.1
-  - hhvm
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: hhvm
 
 services:
   - mysql
@@ -38,7 +35,7 @@ before_script:
   - php tests/yii mysql-migrate --interactive=0
   - php tests/yii sqlite-migrate --interactive=0
   - psql -c  'create database yii2_queue_test;' -U postgres
-  - if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then php tests/yii pgsql-migrate --interactive=0; fi
+  - php tests/yii pgsql-migrate --interactive=0
 
 script:
   - vendor/bin/phpunit --verbose
