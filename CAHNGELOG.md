@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 1.1.0 under development
 
+- Enh: File mode options of file driver
 - Enh #47: Redis queue listen timeout
 - Enh #23: Retryable jobs
 

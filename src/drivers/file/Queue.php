@@ -23,6 +23,7 @@ class Queue extends CliQueue
 {
     public $path = '@runtime/queue';
     public $dirMode = 0755;
+    public $fileMode;
 
     public $commandClass = Command::class;
 
@@ -129,7 +130,11 @@ class Queue extends CliQueue
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
-            file_put_contents("$this->path/job$id.data", $message);
+            $fileName = "$this->path/job$id.data";
+            file_put_contents($fileName, $message);
+            if ($this->fileMode !== null) {
+                chmod($fileName, $this->fileMode);
+            }
             if (!$delay) {
                 $data['waiting'][] = [$id, $ttr, 0];
             } else {
@@ -170,7 +175,11 @@ class Queue extends CliQueue
     private function touchIndex($callback)
     {
         $fileName = "$this->path/index.data";
+        $isNew = !file_exists($fileName);
         touch($fileName);
+        if ($isNew && $this->fileMode !== null) {
+            chmod($fileName, $this->fileMode);
+        }
         if (($file = fopen($fileName, 'r+')) === false) {
             throw new InvalidConfigException("Unable to open index file: $fileName");
         }
