@@ -131,32 +131,42 @@ abstract class Queue extends Component
             throw new InvalidParamException('Message must be ' . Job::class . ' object.');
         }
 
-        $eventOptions = [
+        $eventOptions = ['id' => $id, 'job' => $job, 'ttr' => $ttr, 'attempt' => $attempt];
+        $this->trigger(self::EVENT_BEFORE_EXEC, new ExecEvent($eventOptions));
+        try {
+            $job->execute($this);
+        } catch (\Exception $error) {
+            return $this->handleError($id, $job, $ttr, $attempt, $error);
+        }
+        $this->trigger(self::EVENT_AFTER_EXEC, new ExecEvent($eventOptions));
+
+        return true;
+    }
+
+    /**
+     * @param string|null $id
+     * @param Job $job
+     * @param int $ttr
+     * @param int $attempt
+     * @param \Exception $error
+     * @return bool
+     * @internal
+     */
+    public function handleError($id, $job, $ttr, $attempt, $error)
+    {
+        $event = new ErrorEvent([
             'id' => $id,
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
-        ];
-        $this->trigger(self::EVENT_BEFORE_EXEC, new ExecEvent($eventOptions));
-        $errorEvent = null;
-        try {
-            $job->execute($this);
-        } catch (\Exception $error) {
-            $retry = $attempt < $this->attempts;
-            if ($job instanceof RetryableJob) {
-                $retry = $job->canRetry($attempt, $error);
-            }
-            $errorEvent = new ErrorEvent($eventOptions + [
-                'error' => $error,
-                'retry' => $retry,
-            ]);
-            $this->trigger(self::EVENT_AFTER_EXEC_ERROR, $errorEvent);
-        }
-        if (!$errorEvent) {
-            $this->trigger(self::EVENT_AFTER_EXEC, new ExecEvent($eventOptions));
-        }
+            'error' => $error,
+            'retry' => $job instanceof RetryableJob
+                ? $job->canRetry($attempt, $error)
+                : $attempt < $this->attempts,
+        ]);
+        $this->trigger(self::EVENT_AFTER_EXEC_ERROR, $event);
 
-        return !$errorEvent || !$errorEvent->retry;
+        return !$event->retry;
     }
 
     /**

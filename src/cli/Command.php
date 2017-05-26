@@ -7,6 +7,7 @@
 
 namespace zhuravljov\yii\queue\cli;
 
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use yii\console\Controller;
 
@@ -146,15 +147,19 @@ abstract class Command extends Controller
             $cmd .= ' --color=' . $this->isColorEnabled();
         }
 
-        $process = new Process($cmd);
-        $process->setInput($message);
-        $exitCode = $process->run(function ($type, $buffer) {
-            if ($type === Process::ERR) {
-                $this->stderr($buffer);
-            } else {
-                $this->stdout($buffer);
-            }
-        });
+        $process = new Process($cmd, null, null, $message, $ttr);
+        try {
+            $exitCode = $process->run(function ($type, $buffer) {
+                if ($type === Process::ERR) {
+                    $this->stderr($buffer);
+                } else {
+                    $this->stdout($buffer);
+                }
+            });
+        } catch (ProcessTimedOutException $error) {
+            $job = $this->serializer->unserialize($message);
+            return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
+        }
 
         return $exitCode == self::EXIT_CODE_NORMAL;
     }
