@@ -1,6 +1,10 @@
 Yii2 Queue Extension Change Log
 ===============================
 
+## 1.0.1 under development
+
+- Enh #55: Job priority
+
 ## 1.0.0
 
 - Enh: Improvements of log behavior

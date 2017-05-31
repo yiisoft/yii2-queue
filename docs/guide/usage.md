@@ -55,10 +55,10 @@ Yii::$app->queue->push(new DownloadJob([
 Pushes job into queue that run after 5 min:
 
 ```php
-Yii::$app->queue->later(new DownloadJob([
+Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
     'url' => 'http://example.com/image.jpg',
     'file' => '/tmp/image.jpg',
-]), 5 * 60);
+]));
 ```
 
 **Important:** only some drivers support delayed running.
@@ -131,7 +131,7 @@ Queue triggers the following events:
 | Event name                      | Event class  | Triggered on                                              |
 |---------------------------------|--------------|-----------------------------------------------------------|
 | [Queue::EVENT_BEFORE_PUSH]      | [PushEvent]  | Adding job to queue using `Queue::push()` method          |
-| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]  | Adding job to queue using `Queue::later()` method         |
+| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]  | Adding job to queue using `Queue::push()` method          |
 | [Queue::EVENT_BEFORE_EXEC]      | [JobEvent]   | Before each job execution                                 |
 | [Queue::EVENT_AFTER_EXEC]       | [JobEvent]   | After each success job execution                          |
 | [Queue::EVENT_AFTER_EXEC_ERROR] | [ErrorEvent] | When uncaught exception occurred during the job execution |
@@ -152,7 +152,7 @@ For example, let's delay the job, if its execution failed with a special excepti
 Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
     if ($event->error instanceof TemporaryUnprocessableJobException) {
         $queue = $event->sender;
-        $queue->later($event->job, 7200);    
+        $queue->delay(7200)->push($event->job);    
     }
 });
 ```

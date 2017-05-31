@@ -56,14 +56,13 @@ Yii::$app->queue->push(new DownloadJob([
 Отправить задание для выполнения с задержкой в 5 минут:
 
 ```php
-Yii::$app->queue->later(new DownloadJob([
+Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
     'url' => 'http://example.com/image.jpg',
     'file' => '/tmp/image.jpg',
-]), 5 * 60);
+]));
 ```
 
-**Внимание:** Драйвера RabbitMQ и Gearman не поддреживают отложенные задания. И синхронный драйвер,
-в отладочных целях, обрабатывает `later()` как обычный `push()`.
+**Внимание:** Драйвера RabbitMQ и Gearman не поддреживают отложенные задания.
 
 
 Обработка очереди
@@ -134,7 +133,7 @@ return [
 | Событие                         | Класс события | Когда триггерится                                             |
 |---------------------------------|---------------|---------------------------------------------------------------|
 | [Queue::EVENT_BEFORE_PUSH]      | [PushEvent]   | Добавление задания в очередь используя метод `Queue::push()`  |
-| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]   | Добавление задания в очередь используя метод `Queue::later()` |
+| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]   | Добавление задания в очередь используя метод `Queue::push()`  |
 | [Queue::EVENT_BEFORE_EXEC]      | [JobEvent]    | Перед каждым выполнением задания                              |
 | [Queue::EVENT_AFTER_EXEC]       | [JobEvent]    | После каждого успешного выполнения задания                    |
 | [Queue::EVENT_AFTER_EXEC_ERROR] | [ErrorEvent]  | Если при выполнение задания случилось непойманное исключение  |
@@ -155,7 +154,7 @@ return [
 Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
     if ($event->error instanceof TemporaryUnprocessableJobException) {
         $queue = $event->sender;
-        $queue->later($event->job, 7200);    
+        $queue->delay(7200)->push($event->job);    
     }
 });
 ```

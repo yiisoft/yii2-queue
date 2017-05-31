@@ -10,6 +10,7 @@ namespace zhuravljov\yii\queue\file;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;
 use zhuravljov\yii\queue\cli\Signal;
@@ -88,18 +89,26 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    public function priority($value)
     {
-        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $timeout, &$id) {
+        throw new NotSupportedException('Job priority is not supported in the driver.');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushMessage($message, $options)
+    {
+        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $options, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
             file_put_contents("$this->path/job$id.data", $message);
-            if (!$timeout) {
+            if (!isset($options['delay']) || $options['delay'] == 0) {
                 $data['waiting'][] = $id;
             } else {
-                $data['delayed'][] = [$id, time() + $timeout];
+                $data['delayed'][] = [$id, time() + $options['delay']];
                 usort($data['delayed'], function ($a, $b) {
                     if ($a[1] < $b[1]) return -1;
                     if ($a[1] > $b[1]) return 1;

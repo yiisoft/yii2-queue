@@ -46,7 +46,7 @@ abstract class CliTestCase extends TestCase
     {
         $this->startProcess('php tests/yii queue/listen');
         $job = $this->createJob();
-        $this->getQueue()->later($job, 2);
+        $this->getQueue()->delay(2)->push($job);
         sleep(2);
         $this->assertJobLaterDone($job, time());
     }

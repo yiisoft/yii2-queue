@@ -15,7 +15,7 @@ namespace zhuravljov\yii\queue;
 class PushEvent extends JobEvent
 {
     /**
-     * @var int
+     * @var array
      */
-    public $timeout;
+    public $options;
 }

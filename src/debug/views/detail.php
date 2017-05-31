@@ -36,11 +36,13 @@ $styles = [
                     <td><?= Html::encode($job['id']) ?></td>
                 </tr>
             <?php endif; ?>
-            <?php if ($job['timeout']): ?>
-                <tr>
-                    <th>Timeout</th>
-                    <td><?= Html::encode($job['timeout']) ?></td>
-                </tr>
+            <?php if ($job['options']): ?>
+                <?php foreach ($job['options'] as $key => $value): ?>
+                    <tr>
+                        <th><?= Html::encode($key) ?></th>
+                        <td><?= Html::encode($value) ?></td>
+                    </tr>
+                <?php endforeach; ?>
             <?php endif; ?>
             <tr>
                 <th>Status</th>

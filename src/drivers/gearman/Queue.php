@@ -7,6 +7,7 @@
 
 namespace zhuravljov\yii\queue\gearman;
 
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;
 use zhuravljov\yii\queue\cli\Signal;
@@ -67,13 +68,38 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    public function delay($value)
     {
-        if ($timeout) {
-            throw new NotSupportedException('Delayed work is not supported in the driver.');
+        throw new NotSupportedException('Delayed work is not supported in the driver.');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function priority($value)
+    {
+        if (in_array($value, [null, 'high', 'low'])) {
+            parent::priority($value);
+        } else {
+            throw new InvalidParamException('Invalid job priority.');
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushMessage($message, $options)
+    {
+        $priority = isset($options['priority']) ? $options['priority'] : null;
+        switch ($priority) {
+            case 'high':
+                return $this->getClient()->doHighBackground($this->channel, $message);
+            case 'low':
+                return $this->getClient()->doLowBackground($this->channel, $message);
+            default:
+                return $this->getClient()->doBackground($this->channel, $message);
         }
 
-        return $this->getClient()->doBackground($this->channel, $message);
     }
 
     /**

@@ -9,6 +9,7 @@ namespace zhuravljov\yii\queue\db;
 
 use yii\base\Exception;
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -90,13 +91,21 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    public function priority($value)
+    {
+        throw new NotSupportedException('Job priority is not supported in the driver.');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushMessage($message, $options)
     {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
             'job' => $message,
             'created_at' => time(),
-            'timeout' => $timeout,
+            'timeout' => isset($options['delay']) ? $options['delay'] : 0,
         ])->execute();
         $tableSchema = $this->db->getTableSchema($this->tableName);
         $id = $this->db->getLastInsertID($tableSchema->sequenceName);

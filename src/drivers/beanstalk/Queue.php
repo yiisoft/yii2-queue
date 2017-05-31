@@ -72,13 +72,25 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $timeout)
+    public function priority($value)
+    {
+        if ($value >= 0 && $value <= 4294967295) {
+            return parent::priority($value);
+        } else {
+            throw new InvalidParamException('Invalid job priority.');
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushMessage($message, $options)
     {
         return $this->getPheanstalk()->putInTube(
             $this->tube,
             $message,
-            PheanstalkInterface::DEFAULT_PRIORITY,
-            $timeout,
+            isset($options['priority']) ? $options['priority'] : PheanstalkInterface::DEFAULT_PRIORITY,
+            isset($options['delay']) ? $options['delay'] : 0,
             $this->ttr
         );
     }

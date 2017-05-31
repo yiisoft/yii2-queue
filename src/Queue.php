@@ -58,6 +58,10 @@ abstract class Queue extends Component
      * @var Serializer|array
      */
     public $serializer = PhpSerializer::class;
+    /**
+     * @var array
+     */
+    private $pushOptions = [];
 
     /**
      * @inheritdoc
@@ -69,14 +73,41 @@ abstract class Queue extends Component
     }
 
     /**
+     * Sets delay for later execute
+     *
+     * @param int|mixed $value
+     * @return $this
+     */
+    public function delay($value)
+    {
+        $this->pushOptions['delay'] = $value;
+        return $this;
+    }
+
+    /**
+     * Sets job priority
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function priority($value)
+    {
+        $this->pushOptions['priority'] = $value;
+        return $this;
+    }
+
+    /**
+     * Pushes job into queue
+     *
      * @param Job|mixed $job
      * @return string|null id of a job message
      */
     public function push($job)
     {
-        $event = new PushEvent(['job' => $job, 'timeout' => 0]);
+        $event = new PushEvent(['job' => $job, 'options' => $this->pushOptions]);
+        $this->pushOptions = [];
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $event->id = $this->pushMessage($this->serializer->serialize($event->job), $event->timeout);
+        $event->id = $this->pushMessage($this->serializer->serialize($event->job), $event->options);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
         return $event->id;
@@ -84,25 +115,21 @@ abstract class Queue extends Component
 
     /**
      * @param Job|mixed $job
-     * @param integer $timeout
+     * @param int|mixed $delay
      * @return string|null id of a job message
+     * @deprecated will be removed in 1.1
      */
-    public function later($job, $timeout)
+    public function later($job, $delay)
     {
-        $event = new PushEvent(['job' => $job, 'timeout' => $timeout]);
-        $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $event->id = $this->pushMessage($this->serializer->serialize($event->job), $event->timeout);
-        $this->trigger(self::EVENT_AFTER_PUSH, $event);
-
-        return $event->id;
+        return $this->delay($delay)->push($job);
     }
 
     /**
      * @param string $message
-     * @param int $timeout
+     * @param array $options
      * @return string|null id of a job message
      */
-    abstract protected function pushMessage($message, $timeout);
+    abstract protected function pushMessage($message, $options);
 
     /**
      * @param string|null $id of a job message
