@@ -91,21 +91,17 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function priority($value)
+    protected function pushMessage($message, $delay, $priority)
     {
-        throw new NotSupportedException('Job priority is not supported in the driver.');
-    }
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
+        }
 
-    /**
-     * @inheritdoc
-     */
-    protected function pushMessage($message, $options)
-    {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
             'job' => $message,
             'created_at' => time(),
-            'timeout' => isset($options['delay']) ? $options['delay'] : 0,
+            'timeout' => $delay,
         ])->execute();
         $tableSchema = $this->db->getTableSchema($this->tableName);
         $id = $this->db->getLastInsertID($tableSchema->sequenceName);

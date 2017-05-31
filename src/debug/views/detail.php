@@ -36,13 +36,17 @@ $styles = [
                     <td><?= Html::encode($job['id']) ?></td>
                 </tr>
             <?php endif; ?>
-            <?php if ($job['options']): ?>
-                <?php foreach ($job['options'] as $key => $value): ?>
-                    <tr>
-                        <th><?= Html::encode($key) ?></th>
-                        <td><?= Html::encode($value) ?></td>
-                    </tr>
-                <?php endforeach; ?>
+            <?php if ($job['delay']): ?>
+                <tr>
+                    <th>Delay</th>
+                    <td><?= Html::encode($job['delay']) ?></td>
+                </tr>
+            <?php endif; ?>
+            <?php if (isset($job['priority'])): ?>
+                <tr>
+                    <th>Priority</th>
+                    <td><?= Html::encode($job['priority']) ?></td>
+                </tr>
             <?php endif; ?>
             <tr>
                 <th>Status</th>

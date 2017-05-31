@@ -57,7 +57,8 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
             }
         }
         $data['id'] = $event->id;
-        $data['options'] = $event->options;
+        $data['delay'] = $event->delay;
+        $data['priority'] = $event->priority;
         if ($event->job instanceof Job) {
             $data['class'] = get_class($event->job);
             $data['properties'] = [];

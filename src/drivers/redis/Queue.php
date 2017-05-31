@@ -115,23 +115,19 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function priority($value)
+    protected function pushMessage($message, $delay, $priority)
     {
-        throw new NotSupportedException('Job priority is not supported in the driver.');
-    }
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
+        }
 
-    /**
-     * @inheritdoc
-     */
-    protected function pushMessage($message, $options)
-    {
         $id = $this->redis->incr("$this->channel.message_id");
-        if (!isset($options['delay']) || !$options['delay']) {
+        if (!$delay) {
             $this->redis->hset("$this->channel.messages", $id, $message);
             $this->redis->lpush("$this->channel.waiting", $id);
         } else {
             $this->redis->hset("$this->channel.messages", $id, $message);
-            $this->redis->zadd("$this->channel.delayed", time() + $options['delay'], $id);
+            $this->redis->zadd("$this->channel.delayed", time() + $delay, $id);
         }
 
         return $id;

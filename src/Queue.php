@@ -58,10 +58,9 @@ abstract class Queue extends Component
      * @var Serializer|array
      */
     public $serializer = PhpSerializer::class;
-    /**
-     * @var array
-     */
-    private $pushOptions = [];
+
+    private $pushDelay = 0;
+    private $pushPriority;
 
     /**
      * @inheritdoc
@@ -80,7 +79,7 @@ abstract class Queue extends Component
      */
     public function delay($value)
     {
-        $this->pushOptions['delay'] = $value;
+        $this->pushDelay = $value;
         return $this;
     }
 
@@ -92,7 +91,7 @@ abstract class Queue extends Component
      */
     public function priority($value)
     {
-        $this->pushOptions['priority'] = $value;
+        $this->pushPriority = $value;
         return $this;
     }
 
@@ -104,10 +103,20 @@ abstract class Queue extends Component
      */
     public function push($job)
     {
-        $event = new PushEvent(['job' => $job, 'options' => $this->pushOptions]);
-        $this->pushOptions = [];
+        $event = new PushEvent([
+            'job' => $job,
+            'delay' => $this->pushDelay,
+            'priority' => $this->pushPriority,
+        ]);
+        $this->pushDelay = 0;
+        $this->pushPriority = null;
+
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $event->id = $this->pushMessage($this->serializer->serialize($event->job), $event->options);
+        $event->id = $this->pushMessage(
+            $this->serializer->serialize($event->job),
+            $event->delay,
+            $event->priority
+        );
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
         return $event->id;
@@ -126,10 +135,11 @@ abstract class Queue extends Component
 
     /**
      * @param string $message
-     * @param array $options
+     * @param int $delay
+     * @param mixed $priority
      * @return string|null id of a job message
      */
-    abstract protected function pushMessage($message, $options);
+    abstract protected function pushMessage($message, $delay, $priority);
 
     /**
      * @param string|null $id of a job message

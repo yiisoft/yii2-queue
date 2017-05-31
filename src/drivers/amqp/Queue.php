@@ -80,24 +80,15 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function delay($value)
+    protected function pushMessage($message, $delay, $priority)
     {
-        throw new NotSupportedException('Delayed work is not supported in the driver.');
-    }
+        if ($delay) {
+            throw new NotSupportedException('Delayed work is not supported in the driver.');
+        }
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function priority($value)
-    {
-        throw new NotSupportedException('Job priority is not supported in the driver.');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function pushMessage($message, $options)
-    {
         $this->open();
         $this->channel->basic_publish(new AMQPMessage($message), $this->exchangeName);
 

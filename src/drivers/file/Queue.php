@@ -89,26 +89,22 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function priority($value)
+    protected function pushMessage($message, $delay, $priority)
     {
-        throw new NotSupportedException('Job priority is not supported in the driver.');
-    }
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
+        }
 
-    /**
-     * @inheritdoc
-     */
-    protected function pushMessage($message, $options)
-    {
-        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $options, &$id) {
+        $this->touchIndex("$this->path/index.data", function ($data) use ($message, $delay, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
             file_put_contents("$this->path/job$id.data", $message);
-            if (!isset($options['delay']) || $options['delay'] == 0) {
+            if (!$delay) {
                 $data['waiting'][] = $id;
             } else {
-                $data['delayed'][] = [$id, time() + $options['delay']];
+                $data['delayed'][] = [$id, time() + $delay];
                 usort($data['delayed'], function ($a, $b) {
                     if ($a[1] < $b[1]) return -1;
                     if ($a[1] > $b[1]) return 1;
