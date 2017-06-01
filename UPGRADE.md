@@ -4,6 +4,14 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
+Upgrade from 1.0.0
+------------------
+
+* Removed method `Queue::later()`. Use method chain `Yii::$app->queue->delay(60)->push()` instead.
+
+* Changed table schema for DB driver. Apply migration.
+
+
 Upgrade from 0.x to 1.0.0
 -------------------------
 
