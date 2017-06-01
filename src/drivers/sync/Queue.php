@@ -72,7 +72,7 @@ class Queue extends BaseQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay)
+    protected function pushMessage($message, $ttr, $delay, $priority)
     {
         array_push($this->payloads, [$ttr, $message]);
         return ++$this->pushedId;

@@ -81,10 +81,13 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay)
+    protected function pushMessage($message, $ttr, $delay, $priority)
     {
         if ($delay) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
+        }
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
         $this->open();

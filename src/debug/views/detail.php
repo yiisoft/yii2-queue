@@ -46,6 +46,12 @@ $styles = [
                     <td><?= Html::encode($job['delay']) ?></td>
                 </tr>
             <?php endif; ?>
+            <?php if (isset($job['priority'])): ?>
+                <tr>
+                    <th>Priority</th>
+                    <td><?= Html::encode($job['priority']) ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <th>Status</th>
                 <td><?= Html::encode($job['status']) ?></td>

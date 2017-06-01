@@ -67,6 +67,9 @@ abstract class Queue extends Component
      */
     public $attempts = 1;
 
+    private $pushDelay = 0;
+    private $pushPriority;
+
     /**
      * @inheritdoc
      */
@@ -77,33 +80,49 @@ abstract class Queue extends Component
     }
 
     /**
+     * Sets delay for later execute
+     *
+     * @param int|mixed $value
+     * @return $this
+     */
+    public function delay($value)
+    {
+        $this->pushDelay = $value;
+        return $this;
+    }
+
+    /**
+     * Sets job priority
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function priority($value)
+    {
+        $this->pushPriority = $value;
+        return $this;
+    }
+
+    /**
+     * Pushes job into queue
+     *
      * @param Job|mixed $job
      * @return string|null id of a job message
      */
     public function push($job)
     {
-        $ttr = $job instanceof RetryableJob ? $job->getTtr() : $this->ttr;
-        $event = new PushEvent(['job' => $job, 'ttr' => $ttr, 'delay' => 0]);
+        $event = new PushEvent([
+            'job' => $job,
+            'ttr' => $job instanceof RetryableJob ? $job->getTtr() : $this->ttr,
+            'delay' => $this->pushDelay,
+            'priority' => $this->pushPriority,
+        ]);
+        $this->pushDelay = 0;
+        $this->pushPriority = null;
+
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
         $message = $this->serializer->serialize($event->job);
-        $event->id = $this->pushMessage($message, $event->ttr, $event->delay);
-        $this->trigger(self::EVENT_AFTER_PUSH, $event);
-
-        return $event->id;
-    }
-
-    /**
-     * @param Job|mixed $job
-     * @param integer $delay
-     * @return string|null id of a job message
-     */
-    public function later($job, $delay)
-    {
-        $ttr = $job instanceof RetryableJob ? $job->getTtr() : $this->ttr;
-        $event = new PushEvent(['job' => $job, 'ttr' => $ttr, 'delay' => $delay]);
-        $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-        $message = $this->serializer->serialize($event->job);
-        $event->id = $this->pushMessage($message, $event->ttr, $event->delay);
+        $event->id = $this->pushMessage($message, $event->ttr, $event->delay, $event->priority);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
         return $event->id;
@@ -113,9 +132,10 @@ abstract class Queue extends Component
      * @param string $message
      * @param int $ttr time to reserve in seconds
      * @param int $delay
+     * @param mixed $priority
      * @return string|null id of a job message
      */
-    abstract protected function pushMessage($message, $ttr, $delay);
+    abstract protected function pushMessage($message, $ttr, $delay, $priority);
 
     /**
      * @param string|null $id of a job message

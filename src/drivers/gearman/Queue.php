@@ -69,13 +69,20 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay)
+    protected function pushMessage($message, $ttr, $delay, $priority)
     {
         if ($delay) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        return $this->getClient()->doBackground($this->channel, "$ttr;$message");
+        switch ($priority) {
+            case 'high':
+                return $this->getClient()->doHighBackground($this->channel, "$ttr;$message");
+            case 'low':
+                return $this->getClient()->doLowBackground($this->channel, "$ttr;$message");
+            default:
+                return $this->getClient()->doBackground($this->channel, "$ttr;$message");
+        }
     }
 
     /**

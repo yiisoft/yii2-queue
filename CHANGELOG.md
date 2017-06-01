@@ -7,6 +7,10 @@ Yii2 Queue Extension Change Log
 - Enh #47: Redis queue listen timeout
 - Enh #23: Retryable jobs
 
+## 1.0.1
+
+- Enh #55: Job priority
+
 ## 1.0.0
 
 - Enh: Improvements of log behavior

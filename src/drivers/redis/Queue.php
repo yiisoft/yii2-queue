@@ -8,6 +8,7 @@
 namespace zhuravljov\yii\queue\redis;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\redis\Connection;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;
@@ -140,8 +141,12 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay)
+    protected function pushMessage($message, $ttr, $delay, $priority)
     {
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
+        }
+
         $id = $this->redis->incr("$this->channel.message_id");
         $this->redis->hset("$this->channel.messages", $id, "$ttr;$message");
         if (!$delay) {

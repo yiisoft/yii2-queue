@@ -10,6 +10,7 @@ namespace zhuravljov\yii\queue\file;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use zhuravljov\yii\queue\cli\Queue as CliQueue;
 use zhuravljov\yii\queue\cli\Signal;
@@ -123,8 +124,12 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay)
+    protected function pushMessage($message, $ttr, $delay, $priority)
     {
+        if ($priority !== null) {
+            throw new NotSupportedException('Job priority is not supported in the driver.');
+        }
+
         $this->touchIndex(function (&$data) use ($message, $ttr, $delay, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
