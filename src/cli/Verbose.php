@@ -39,7 +39,7 @@ class Verbose extends Behavior
         return [
             Queue::EVENT_BEFORE_EXEC => 'beforeExec',
             Queue::EVENT_AFTER_EXEC => 'afterExec',
-            Queue::EVENT_AFTER_EXEC_ERROR => 'afterExecError',
+            Queue::EVENT_AFTER_ERROR => 'afterError',
         ];
     }
 
@@ -65,7 +65,7 @@ class Verbose extends Behavior
         $this->command->stdout("$title - $status $time\n");
     }
 
-    public function afterExecError(ErrorEvent $event)
+    public function afterError(ErrorEvent $event)
     {
         $title = $this->command->ansiFormat($this->formatTitle($event), Console::FG_YELLOW);
         $status = $this->command->ansiFormat('Error', Console::BG_RED);

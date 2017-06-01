@@ -128,19 +128,19 @@ Handling events
 
 Queue triggers the following events:
 
-| Event name                    | Event class | Triggered on                                              |
-|-------------------------------|-------------|-----------------------------------------------------------|
-| Queue::EVENT_BEFORE_PUSH      | PushEvent   | Adding job to queue using `Queue::push()` method          |
-| Queue::EVENT_AFTER_PUSH       | PushEvent   | Adding job to queue using `Queue::push()` method          |
-| Queue::EVENT_BEFORE_EXEC      | JobEvent    | Before each job execution                                 |
-| Queue::EVENT_AFTER_EXEC       | JobEvent    | After each success job execution                          |
-| Queue::EVENT_AFTER_EXEC_ERROR | ErrorEvent  | When uncaught exception occurred during the job execution |
+| Event name               | Event class | Triggered on                                              |
+|--------------------------|-------------|-----------------------------------------------------------|
+| Queue::EVENT_BEFORE_PUSH | PushEvent   | Adding job to queue using `Queue::push()` method          |
+| Queue::EVENT_AFTER_PUSH  | PushEvent   | Adding job to queue using `Queue::push()` method          |
+| Queue::EVENT_BEFORE_EXEC | ExecEvent   | Before each job execution                                 |
+| Queue::EVENT_AFTER_EXEC  | ExecEvent   | After each success job execution                          |
+| Queue::EVENT_AFTER_ERROR | ErrorEvent  | When uncaught exception occurred during the job execution |
 
 You can easily attach your own handler to any of these events.
 For example, let's delay the job, if its execution failed with a special exception: 
 
 ```php
-Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
+Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function ($event) {
     if ($event->error instanceof TemporaryUnprocessableJobException) {
         $queue = $event->sender;
         $queue->delay(7200)->push($event->job);    

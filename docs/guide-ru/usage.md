@@ -130,19 +130,19 @@ return [
 
 Очередь триггерит следующие события:
 
-| Событие                       | Класс события | Когда триггерится                                             |
-|-------------------------------|---------------|---------------------------------------------------------------|
-| Queue::EVENT_BEFORE_PUSH      | PushEvent     | Добавление задания в очередь используя метод `Queue::push()`  |
-| Queue::EVENT_AFTER_PUSH       | PushEvent     | Добавление задания в очередь используя метод `Queue::push()`  |
-| Queue::EVENT_BEFORE_EXEC      | JobEvent      | Перед каждым выполнением задания                              |
-| Queue::EVENT_AFTER_EXEC       | JobEvent      | После каждого успешного выполнения задания                    |
-| Queue::EVENT_AFTER_EXEC_ERROR | ErrorEvent    | Если при выполнение задания случилось непойманное исключение  |
+| Событие                  | Класс события | Когда триггерится                                             |
+|--------------------------|---------------|---------------------------------------------------------------|
+| Queue::EVENT_BEFORE_PUSH | PushEvent     | Добавление задания в очередь используя метод `Queue::push()`  |
+| Queue::EVENT_AFTER_PUSH  | PushEvent     | Добавление задания в очередь используя метод `Queue::push()`  |
+| Queue::EVENT_BEFORE_EXEC | ExecEvent     | Перед каждым выполнением задания                              |
+| Queue::EVENT_AFTER_EXEC  | ExecEvent     | После каждого успешного выполнения задания                    |
+| Queue::EVENT_AFTER_ERROR | ErrorEvent    | Если при выполнение задания случилось непойманное исключение  |
 
 Вы с лёгкостью можете подключить свой собственный слушатель на любое из этих событий.
 Например, давайте отложим выполнение задания, которое выбросило специальное исключение:
 
 ```php
-Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
+Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function ($event) {
     if ($event->error instanceof TemporaryUnprocessableJobException) {
         $queue = $event->sender;
         $queue->delay(7200)->push($event->job);    

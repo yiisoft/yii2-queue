@@ -7,6 +7,8 @@ application when you upgrade the package from one version to another.
 Upgrade from 1.0.0
 ------------------
 
+* Event `Queue::EVENT_AFTER_EXEC_ERROR` renamed to `Queue::EVENT_AFTER_ERROR`.
+
 * Removed method `Queue::later()`. Use method chain `Yii::$app->queue->delay(60)->push()` instead.
 
 * Changed table schema for DB driver. Apply migration.

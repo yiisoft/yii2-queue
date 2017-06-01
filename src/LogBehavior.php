@@ -35,7 +35,7 @@ class LogBehavior extends Behavior
             Queue::EVENT_AFTER_PUSH => 'afterPush',
             Queue::EVENT_BEFORE_EXEC => 'beforeExec',
             Queue::EVENT_AFTER_EXEC => 'afterExec',
-            Queue::EVENT_AFTER_EXEC_ERROR => 'afterExecError',
+            Queue::EVENT_AFTER_ERROR => 'afterError',
         ];
     }
 
@@ -59,7 +59,7 @@ class LogBehavior extends Behavior
         }
     }
 
-    public function afterExecError(ExecEvent $event)
+    public function afterError(ExecEvent $event)
     {
         Yii::endProfile($this->getEventTitle($event), Queue::class);
         Yii::error($this->getEventTitle($event) . ' error ' . $event->error, Queue::class);

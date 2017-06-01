@@ -40,7 +40,7 @@ abstract class Queue extends Component
     /**
      * @event ExecEvent
      */
-    const EVENT_AFTER_EXEC_ERROR = 'afterExecError';
+    const EVENT_AFTER_ERROR = 'afterError';
     /**
      * @see Queue::isWaiting()
      */
@@ -198,7 +198,7 @@ abstract class Queue extends Component
                 ? $job->canRetry($attempt, $error)
                 : $attempt < $this->attempts,
         ]);
-        $this->trigger(self::EVENT_AFTER_EXEC_ERROR, $event);
+        $this->trigger(self::EVENT_AFTER_ERROR, $event);
 
         return !$event->retry;
     }
