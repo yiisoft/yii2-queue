@@ -67,7 +67,8 @@ abstract class Queue extends Component
      */
     public $attempts = 1;
 
-    private $pushDelay = 0;
+    private $pushTtr;
+    private $pushDelay;
     private $pushPriority;
 
     /**
@@ -77,6 +78,18 @@ abstract class Queue extends Component
     {
         parent::init();
         $this->serializer = Instance::ensure($this->serializer, Serializer::class);
+    }
+
+    /**
+     * Sets TTR for job execute
+     *
+     * @param int|mixed $value
+     * @return $this
+     */
+    public function ttr($value)
+    {
+        $this->pushTtr = $value;
+        return $this;
     }
 
     /**
@@ -113,11 +126,12 @@ abstract class Queue extends Component
     {
         $event = new PushEvent([
             'job' => $job,
-            'ttr' => $job instanceof RetryableJob ? $job->getTtr() : $this->ttr,
-            'delay' => $this->pushDelay,
+            'ttr' => $job instanceof RetryableJob ? $job->getTtr() : ($this->pushTtr ?: $this->ttr),
+            'delay' => $this->pushDelay ?: 0,
             'priority' => $this->pushPriority,
         ]);
-        $this->pushDelay = 0;
+        $this->pushTtr = null;
+        $this->pushDelay = null;
         $this->pushPriority = null;
 
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
