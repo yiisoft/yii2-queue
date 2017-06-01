@@ -130,22 +130,13 @@ return [
 
 Очередь триггерит следующие события:
 
-| Событие                         | Класс события | Когда триггерится                                             |
-|---------------------------------|---------------|---------------------------------------------------------------|
-| [Queue::EVENT_BEFORE_PUSH]      | [PushEvent]   | Добавление задания в очередь используя метод `Queue::push()`  |
-| [Queue::EVENT_AFTER_PUSH]       | [PushEvent]   | Добавление задания в очередь используя метод `Queue::push()`  |
-| [Queue::EVENT_BEFORE_EXEC]      | [JobEvent]    | Перед каждым выполнением задания                              |
-| [Queue::EVENT_AFTER_EXEC]       | [JobEvent]    | После каждого успешного выполнения задания                    |
-| [Queue::EVENT_AFTER_EXEC_ERROR] | [ErrorEvent]  | Если при выполнение задания случилось непойманное исключение  |
-
-[Queue::EVENT_BEFORE_PUSH]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L27
-[Queue::EVENT_AFTER_PUSH]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L31
-[Queue::EVENT_BEFORE_EXEC]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L35
-[Queue::EVENT_AFTER_EXEC]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L39
-[Queue::EVENT_AFTER_EXEC_ERROR]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/Queue.php#L43
-[PushEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/PushEvent.php
-[JobEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/JobEvent.php
-[ErrorEvent]: https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/ErrorEvent.php
+| Событие                       | Класс события | Когда триггерится                                             |
+|-------------------------------|---------------|---------------------------------------------------------------|
+| Queue::EVENT_BEFORE_PUSH      | PushEvent     | Добавление задания в очередь используя метод `Queue::push()`  |
+| Queue::EVENT_AFTER_PUSH       | PushEvent     | Добавление задания в очередь используя метод `Queue::push()`  |
+| Queue::EVENT_BEFORE_EXEC      | JobEvent      | Перед каждым выполнением задания                              |
+| Queue::EVENT_AFTER_EXEC       | JobEvent      | После каждого успешного выполнения задания                    |
+| Queue::EVENT_AFTER_EXEC_ERROR | ErrorEvent    | Если при выполнение задания случилось непойманное исключение  |
 
 Вы с лёгкостью можете подключить свой собственный слушатель на любое из этих событий.
 Например, давайте отложим выполнение задания, которое выбросило специальное исключение:
@@ -162,10 +153,11 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function ($event) {
 Логирование событий
 -------------------
 
-Этот компонент предоставляет [LogBehavior](https://github.com/zhuravljov/yii2-queue/blob/1.0.0/src/LogBehavior.php)
-для логирования событий, используя [встроенный в Yii логгер](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html). 
+Этот компонент предоставляет `LogBehavior` для логирования событий, используя
+[встроенный в Yii логгер](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html). 
 
-Чтобы использовать его, просто подключите это поведение в конфигурации компонента, как показано в примере:
+Чтобы использовать его, просто подключите это поведение в конфигурации компонента, как показано в
+примере:
 
 ```php
 return [
