@@ -126,7 +126,9 @@ abstract class Queue extends Component
     {
         $event = new PushEvent([
             'job' => $job,
-            'ttr' => $job instanceof RetryableJob ? $job->getTtr() : ($this->pushTtr ?: $this->ttr),
+            'ttr' => $job instanceof RetryableJob
+                ? $job->getTtr()
+                : ($this->pushTtr ?: $this->ttr),
             'delay' => $this->pushDelay ?: 0,
             'priority' => $this->pushPriority,
         ]);
@@ -135,6 +137,10 @@ abstract class Queue extends Component
         $this->pushPriority = null;
 
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
+        if ($event->handled) {
+            return null;
+        }
+
         $message = $this->serializer->serialize($event->job);
         $event->id = $this->pushMessage($message, $event->ttr, $event->delay, $event->priority);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
@@ -165,14 +171,23 @@ abstract class Queue extends Component
             throw new InvalidParamException('Message must be ' . Job::class . ' object.');
         }
 
-        $eventOptions = ['id' => $id, 'job' => $job, 'ttr' => $ttr, 'attempt' => $attempt];
-        $this->trigger(self::EVENT_BEFORE_EXEC, new ExecEvent($eventOptions));
-        try {
-            $job->execute($this);
-        } catch (\Exception $error) {
-            return $this->handleError($id, $job, $ttr, $attempt, $error);
+        $event = new ExecEvent([
+            'id' => $id,
+            'job' => $job,
+            'ttr' => $ttr,
+            'attempt' => $attempt,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_EXEC, $event);
+        if ($event->handled) {
+            return true;
         }
-        $this->trigger(self::EVENT_AFTER_EXEC, new ExecEvent($eventOptions));
+
+        try {
+            $event->job->execute($this);
+        } catch (\Exception $error) {
+            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
+        }
+        $this->trigger(self::EVENT_AFTER_EXEC, $event);
 
         return true;
     }
