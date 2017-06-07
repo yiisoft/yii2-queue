@@ -1,8 +1,9 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-## 1.0.1 under development
+## 1.0.1
 
+- Enh #58: Deleting failed jobs from queue
 - Enh #55: Job priority
 
 ## 1.0.0
