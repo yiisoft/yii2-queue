@@ -7,6 +7,7 @@
 
 namespace tests\drivers\gearman;
 
+use tests\app\PriorityJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use zhuravljov\yii\queue\gearman\Queue;
@@ -29,6 +30,17 @@ class QueueTest extends CliTestCase
     public function testLater()
     {
         // Not supported
+    }
+
+    public function testPriority()
+    {
+        $this->getQueue()->priority('high')->push(new PriorityJob(['number' => 1]));
+        $this->getQueue()->priority('low')->push(new PriorityJob(['number' => 5]));
+        $this->getQueue()->priority('norm')->push(new PriorityJob(['number' => 3]));
+        $this->getQueue()->priority('norm')->push(new PriorityJob(['number' => 4]));
+        $this->getQueue()->priority('high')->push(new PriorityJob(['number' => 2]));
+        $this->runProcess('php tests/yii queue/run');
+        $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
     }
 
     public function setUp()

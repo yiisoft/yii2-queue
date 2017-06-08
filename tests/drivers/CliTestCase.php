@@ -8,6 +8,7 @@
 namespace tests\drivers;
 
 use Symfony\Component\Process\Process;
+use tests\app\PriorityJob;
 use Yii;
 
 /**
@@ -52,15 +53,14 @@ abstract class CliTestCase extends TestCase
     }
 
     /**
-     * @var Process[] ids of started processes
-     */
-    private $processes = [];
-
-    /**
      * @inheritdoc
      */
     protected function tearDown()
     {
+        if (file_exists(PriorityJob::getFileName())) {
+            unlink(PriorityJob::getFileName());
+        }
+
         // Kills started processes
         foreach ($this->processes as $process) {
             $process->stop();
@@ -108,5 +108,10 @@ abstract class CliTestCase extends TestCase
             'queue' => $method->invoke($this->getQueue()),
         ]);
     }
+
+    /**
+     * @var Process[] ids of started processes
+     */
+    private $processes = [];
 
 }
