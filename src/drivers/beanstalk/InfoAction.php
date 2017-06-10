@@ -29,8 +29,7 @@ class InfoAction extends Action
     {
         Console::output($this->format("Statistical information about the tube:", Console::FG_GREEN));
 
-        $stats = $this->queue->getPheanstalk()->statsTube($this->queue->tube);
-        foreach ($stats as $key => $value) {
+        foreach ($this->queue->getStatsTube() as $key => $value) {
             Console::stdout($this->format("- $key: ", Console::FG_YELLOW));
             Console::output($value);
         }

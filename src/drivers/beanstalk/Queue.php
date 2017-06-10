@@ -117,9 +117,17 @@ class Queue extends CliQueue
     }
 
     /**
+     * @return array tube statistics
+     */
+    public function getStatsTube()
+    {
+        return $this->getPheanstalk()->statsTube($this->tube);
+    }
+
+    /**
      * @return Pheanstalk
      */
-    public function getPheanstalk()
+    protected function getPheanstalk()
     {
         if (!$this->_pheanstalk) {
             $this->_pheanstalk = new Pheanstalk($this->host, $this->port);
