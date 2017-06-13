@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 1.1.0 under development
 
+- Enh: JsonSerializer as is base serializer for queue component
 - Enh #60: Enhanced event handling
 - Enh: Job priority for DB driver
 - Enh: File mode options of file driver
