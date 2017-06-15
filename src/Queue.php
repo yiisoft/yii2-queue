@@ -11,7 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
-use zhuravljov\yii\queue\serializers\JsonSerializer;
+use zhuravljov\yii\queue\serializers\PhpSerializer;
 use zhuravljov\yii\queue\serializers\Serializer;
 
 /**
@@ -57,7 +57,7 @@ abstract class Queue extends Component
     /**
      * @var Serializer|array
      */
-    public $serializer = JsonSerializer::class;
+    public $serializer = PhpSerializer::class;
     /**
      * @var int default time to reserve a job
      */
