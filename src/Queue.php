@@ -62,7 +62,7 @@ abstract class Queue extends Component
     /**
      * @var int default time to reserve a job
      */
-    public $ttr = 60;
+    public $ttr = 300;
     /**
      * @var int default attempt count
      */
