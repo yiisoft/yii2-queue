@@ -67,8 +67,21 @@ Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
 ```
 
 The exact way task is executed depends on the driver used. The most part of drivers can be run using
-console commands, which the component registers in your application. For more details see documentation
-of a driver.
+console commands, which the component registers in your application.
+
+Command that obtains and executes tasks in a loop until queue is empty:
+
+```sh
+yii queue/run
+```
+
+Command launches a daemon which infinitely queries the queue:
+
+```sh
+yii queue/listen
+```
+
+See documentation for more details about driver console commands and their options.
 
 The component has ability to track status of a job which was pushed into queue.
 
