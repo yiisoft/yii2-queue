@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
+use yii\helpers\VarDumper;
 use zhuravljov\yii\queue\serializers\PhpSerializer;
 use zhuravljov\yii\queue\serializers\Serializer;
 
@@ -168,7 +169,10 @@ abstract class Queue extends Component
     {
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof Job)) {
-            throw new InvalidParamException('Message must be ' . Job::class . ' object.');
+            throw new InvalidParamException(strtr('Job must be {class} object instead of {dump}.', [
+                '{class}' => Job::class,
+                '{dump}' => VarDumper::dumpAsString($job),
+            ]));
         }
 
         $event = new ExecEvent([
