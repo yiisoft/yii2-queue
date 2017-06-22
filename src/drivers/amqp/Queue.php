@@ -112,7 +112,7 @@ class Queue extends CliQueue
         if ($this->channel) return;
         $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password);
         $this->channel = $this->connection->channel();
-        $this->channel->queue_declare($this->queueName);
+        $this->channel->queue_declare($this->queueName, false, true, false, false);
         $this->channel->exchange_declare($this->exchangeName, $this->exchangeType, false, true, false);
         $this->channel->queue_bind($this->queueName, $this->exchangeName);
     }
