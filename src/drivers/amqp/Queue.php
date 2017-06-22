@@ -42,11 +42,11 @@ class Queue extends CliQueue
     /**
      * @var AMQPStreamConnection
      */
-    private $connection;
+    protected $connection;
     /**
      * @var AMQPChannel
      */
-    private $channel;
+    protected $channel;
 
     /**
      * @inheritdoc
