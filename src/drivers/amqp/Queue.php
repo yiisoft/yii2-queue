@@ -91,7 +91,12 @@ class Queue extends CliQueue
         }
 
         $this->open();
-        $this->channel->basic_publish(new AMQPMessage("$ttr;$message"), $this->exchangeName);
+        $this->channel->basic_publish(
+            new AMQPMessage("$ttr;$message", [
+                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+            ]),
+            $this->exchangeName
+        );
 
         return null;
     }
