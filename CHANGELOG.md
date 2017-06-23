@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 1.1.0 under development
 
+- Enh #70: Durability for rabbitmq queues (mkubenka)
 - Enh: Detailed error about job type in message handling
 - Enh #60: Enhanced event handling
 - Enh: Job priority for DB driver
