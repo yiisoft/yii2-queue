@@ -32,6 +32,11 @@ class QueueTest extends CliTestCase
         // Not supported
     }
 
+    public function testRetry()
+    {
+        // Not supported
+    }
+
     public function testPriority()
     {
         $this->getQueue()->priority('high')->push(new PriorityJob(['number' => 1]));

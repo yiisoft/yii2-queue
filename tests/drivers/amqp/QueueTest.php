@@ -40,4 +40,9 @@ class QueueTest extends CliTestCase
     {
         // Not supported
     }
+
+    public function testRetry()
+    {
+        // Limited support
+    }
 }

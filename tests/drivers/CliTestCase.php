@@ -9,6 +9,7 @@ namespace tests\drivers;
 
 use Symfony\Component\Process\Process;
 use tests\app\PriorityJob;
+use tests\app\RetryJob;
 use Yii;
 
 /**
@@ -49,6 +50,16 @@ abstract class CliTestCase extends TestCase
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(2)->push($job);
         $this->assertSimpleJobLaterDone($job, 2);
+    }
+
+    public function testRetry()
+    {
+        $this->startProcess('php tests/yii queue/listen');
+        $job = new RetryJob(['uid' => uniqid()]);
+        $this->getQueue()->push($job);
+        sleep(15);
+        $this->assertFileExists($job->getFileName());
+        $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
     /**
