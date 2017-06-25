@@ -7,7 +7,7 @@
 
 namespace tests\serializers;
 
-use tests\app\TestJob;
+use tests\app\SimpleJob;
 use yii\base\Object;
 use zhuravljov\yii\queue\serializers\Serializer;
 
@@ -42,7 +42,7 @@ abstract class TestCase extends \tests\TestCase
         return [
             // Job object
             [
-                new TestJob(['uid' => 123])
+                new SimpleJob(['uid' => 123])
             ],
             // Any object
             [

@@ -12,11 +12,11 @@ use yii\base\Object;
 use zhuravljov\yii\queue\Job;
 
 /**
- * Class Job
+ * Class SimpleJob
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class TestJob extends Object implements Job
+class SimpleJob extends Object implements Job
 {
     public $uid;
 

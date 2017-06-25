@@ -28,15 +28,15 @@ class QueueTest extends TestCase
 
     public function testRun()
     {
-        $job = $this->createJob();
-        $id = $this->getQueue()->push($job);
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
         $this->getQueue()->run();
-        $this->assertJobDone($job, $id);
+        $this->assertSimpleJobDone($job);
     }
 
     public function testStatus()
     {
-        $job = $this->createJob();
+        $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
         $isWaiting = $this->getQueue()->isWaiting($id);
         $isReserved = false;

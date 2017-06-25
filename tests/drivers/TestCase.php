@@ -8,7 +8,7 @@
 namespace tests\drivers;
 
 use Yii;
-use tests\app\TestJob;
+use tests\app\SimpleJob;
 use zhuravljov\yii\queue\Queue;
 
 /**
@@ -24,38 +24,42 @@ abstract class TestCase extends \tests\TestCase
     abstract protected function getQueue();
 
     /**
-     * @return TestJob
+     * @return SimpleJob
      */
-    protected function createJob()
+    protected function createSimpleJob()
     {
-        $job = new TestJob();
-        $job->uid = uniqid();
-        return $job;
+        return new SimpleJob([
+            'uid' => uniqid(),
+        ]);
     }
 
     /**
-     * @param TestJob $job
+     * @param SimpleJob $job
      */
-    protected function assertJobDone(TestJob $job)
+    protected function assertSimpleJobDone(SimpleJob $job)
     {
-        $delay = 5000000; // 5 sec
-        while (!file_exists($job->getFileName()) && $delay > 0) {
-            usleep(50000);
-            $delay -= 50000;
+        $timeout = 5000000; // 5 sec
+        $step = 50000;
+        while (!file_exists($job->getFileName()) && $timeout > 0) {
+            usleep($step);
+            $timeout -= $step;
         }
         $this->assertFileExists($job->getFileName());
     }
 
     /**
-     * @param TestJob $job
-     * @param int $time
+     * @param SimpleJob $job
+     * @param int $delay
      */
-    protected function assertJobLaterDone(TestJob $job, $time)
+    protected function assertSimpleJobLaterDone(SimpleJob $job, $delay)
     {
-        $delay = 5000000; // 5 sec
-        while (!file_exists($job->getFileName()) && $delay > 0) {
-            usleep(50000);
-            $delay -= 50000;
+        $time = time() + $delay;
+        sleep($delay);
+        $timeout = 5000000; // 5 sec
+        $step = 50000;
+        while (!file_exists($job->getFileName()) && $timeout > 0) {
+            usleep($step);
+            $timeout -= $step;
         }
         $this->assertFileExists($job->getFileName());
         $this->assertGreaterThanOrEqual($time, filemtime($job->getFileName()));
