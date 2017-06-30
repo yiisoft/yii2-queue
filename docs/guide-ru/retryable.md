@@ -65,7 +65,7 @@ class SomeJob extends Object implements RetryableJob
 -------------------
 
 Третий способ задать резервное время и необходимость повторного запуска невыполненной задачи
-предполагает использовать события `Queue::EVENT_BEFORE_PUSH` и `Queue::EVENT_AFTER_EXEC_ERROR`.
+предполагает использовать события `Queue::EVENT_BEFORE_PUSH` и `Queue::EVENT_AFTER_ERROR`.
 
 Событие `Queue::EVENT_BEFORE_PUSH` можно использовать, чтобы задать резервное время:
 
@@ -77,10 +77,10 @@ Yii::$app->queue->on(Queue::EVENT_BEFORE_PUSH, function (PushEvent $event) {
 });
 ```
 
-А событие `Queue::EVENT_AFTER_EXEC_ERROR` — чтобы определить задание на повторную попытку:
+А событие `Queue::EVENT_AFTER_ERROR` — чтобы определить задание на повторную попытку:
 
 ```php
-Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function (ErrorEvent $event) {
+Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
     if ($event->job instanceof SomeJob) {
         $event->retry = ($event->attempt < 5) && ($event->error instanceof TemporaryException);
     }

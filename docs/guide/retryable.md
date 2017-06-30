@@ -60,7 +60,7 @@ Event handlers
 --------------
 
 The third method to set TTR and the need to retry of failed job involves using
-`Queue::EVENT_BEFORE_PUSH` and `Queue::EVENT_AFTER_EXEC_ERROR` events.
+`Queue::EVENT_BEFORE_PUSH` and `Queue::EVENT_AFTER_ERROR` events.
 
 `Queue::EVENT_BEFORE_PUSH` event can be used to set TTR:
 
@@ -72,10 +72,10 @@ Yii::$app->queue->on(Queue::EVENT_BEFORE_PUSH, function (PushEvent $event) {
 });
 ```
 
-And `Queue::EVENT_AFTER_EXEC_ERROR` event can be used to set a new attempt:
+And `Queue::EVENT_AFTER_ERROR` event can be used to set a new attempt:
 
 ```php
-Yii::$app->queue->on(Queue::EVENT_AFTER_EXEC_ERROR, function (ErrorEvent $event) {
+Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
     if ($event->job instanceof SomeJob) {
         $event->retry = ($event->attempt < 5) && ($event->error instanceof TemporaryException);
     }
