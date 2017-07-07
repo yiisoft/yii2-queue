@@ -25,7 +25,7 @@ class Queue extends CliQueue
     public $path = '@runtime/queue';
     public $dirMode = 0755;
 
-    public $commandClass = Command::class;
+    public $commandClass = __NAMESPACE__ . "\\" . get_class(new Command());
 
     public function init()
     {

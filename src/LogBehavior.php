@@ -41,19 +41,21 @@ class LogBehavior extends Behavior
 
     public function afterPush(PushEvent $event)
     {
-        Yii::info($this->getEventTitle($event) . ' pushed.', Queue::class);
+        Yii::info($this->getEventTitle($event) . ' pushed.', __NAMESPACE__ . "\\" . get_class(new Queue()));
     }
 
     public function beforeExec(JobEvent $event)
     {
-        Yii::info($this->getEventTitle($event) . ' started.', Queue::class);
-        Yii::beginProfile($this->getEventTitle($event), Queue::class);
+        $class = __NAMESPACE__ . "\\" . get_class(new Queue());
+        Yii::info($this->getEventTitle($event) . ' started.', $class);
+        Yii::beginProfile($this->getEventTitle($event), $class);
     }
 
     public function afterExec(JobEvent $event)
     {
-        Yii::endProfile($this->getEventTitle($event), Queue::class);
-        Yii::info($this->getEventTitle($event) . ' finished.', Queue::class);
+        $class = __NAMESPACE__ . "\\" . get_class(new Queue());
+        Yii::endProfile($this->getEventTitle($event), $class);
+        Yii::info($this->getEventTitle($event) . ' finished.', $class);
         if ($this->autoFlush) {
             Yii::getLogger()->flush(true);
         }
@@ -61,8 +63,9 @@ class LogBehavior extends Behavior
 
     public function afterExecError(ErrorEvent $event)
     {
-        Yii::endProfile($this->getEventTitle($event), Queue::class);
-        Yii::error($this->getEventTitle($event) . ' error ' . $event->error, Queue::class);
+        $class = __NAMESPACE__ . "\\" . get_class(new Queue());
+        Yii::endProfile($this->getEventTitle($event), $class);
+        Yii::error($this->getEventTitle($event) . ' error ' . $event->error, $class);
         if ($this->autoFlush) {
             Yii::getLogger()->flush(true);
         }

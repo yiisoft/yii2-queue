@@ -32,7 +32,7 @@ class Command extends CliCommand
     public function actions()
     {
         return [
-            'info' => InfoAction::class,
+            'info' => __NAMESPACE__ . "\\" . get_class(new InfoAction()),
         ];
     }
 

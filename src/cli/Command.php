@@ -82,7 +82,7 @@ abstract class Command extends Controller
     {
         if ($this->useVerboseOption($action->id) && $this->verbose) {
             $this->queue->attachBehavior('verbose', [
-                'class' => Verbose::class,
+                'class' => __NAMESPACE__ . "\\" . get_class(new Verbose()),
                 'command' => $this,
             ]);
         }

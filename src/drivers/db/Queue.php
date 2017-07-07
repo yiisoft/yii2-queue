@@ -52,7 +52,7 @@ class Queue extends CliQueue
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public $commandClass = __NAMESPACE__ . "\\" . get_class(new Command());
 
     /**
      * @inheritdoc
@@ -60,8 +60,8 @@ class Queue extends CliQueue
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::class);
-        $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+        $this->db = Instance::ensure($this->db, __NAMESPACE__ . "\\" . get_class(new Conncection()));
+        $this->mutex = Instance::ensure($this->mutex, __NAMESPACE__ . "\\" . get_class(new Mutex));
     }
 
     /**
