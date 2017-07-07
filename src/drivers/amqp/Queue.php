@@ -37,7 +37,7 @@ class Queue extends CliQueue
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public $commandClass = __NAMESPACE__ . "\\" . get_class(new Command());
 
     /**
      * @var AMQPStreamConnection
@@ -54,7 +54,8 @@ class Queue extends CliQueue
     public function init()
     {
         parent::init();
-        Event::on(BaseApp::class, BaseApp::EVENT_AFTER_REQUEST, function () {
+        $class = __NAMESPACE__ . "\\" . get_class(new BaseApp());
+        Event::on($class, BaseApp::EVENT_AFTER_REQUEST, function () {
             $this->close();
         });
     }

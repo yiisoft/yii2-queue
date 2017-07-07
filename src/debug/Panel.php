@@ -38,7 +38,8 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     public function init()
     {
         parent::init();
-        PushEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (PushEvent $event) {
+        $class = __NAMESPACE__ . "\\" . get_class(new Queue());
+        PushEvent::on($class, Queue::EVENT_AFTER_PUSH, function (PushEvent $event) {
             $this->_jobs[] = $this->getPushData($event);
         });
     }
