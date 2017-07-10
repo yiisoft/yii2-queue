@@ -22,17 +22,12 @@ use zhuravljov\yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    const EXCHANGE_DIRECT = 'direct';
-    const EXCHANGE_TOPIC = 'topic';
-    const EXCHANGE_FANOUT = 'fanout';
-
     public $host = 'localhost';
     public $port = 5672;
     public $user = 'guest';
     public $password = 'guest';
     public $queueName = 'queue';
     public $exchangeName = 'exchange';
-    public $exchangeType = self::EXCHANGE_DIRECT;
 
     /**
      * @var string command class name
@@ -118,7 +113,7 @@ class Queue extends CliQueue
         $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password);
         $this->channel = $this->connection->channel();
         $this->channel->queue_declare($this->queueName, false, true, false, false);
-        $this->channel->exchange_declare($this->exchangeName, $this->exchangeType, false, true, false);
+        $this->channel->exchange_declare($this->exchangeName, 'direct', false, true, false);
         $this->channel->queue_bind($this->queueName, $this->exchangeName);
     }
 
