@@ -1,7 +1,7 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-## 1.1.0 under development
+## 1.1.0
 
 - Enh #50 Documentation about worker starting control
 - Enh #70: Durability for rabbitmq queues (mkubenka)
