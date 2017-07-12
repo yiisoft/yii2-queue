@@ -8,6 +8,7 @@ Introduction
 
 * [Usage basics](usage.md)
 * [Errors and retryable jobs](retryable.md)
+* [Worker starting control](worker.md)
 * [Debugging](debug.md)
 
 Queue Drivers
