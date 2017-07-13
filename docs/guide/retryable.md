@@ -87,6 +87,14 @@ Event handlers are executed after `RetryableJob` methods, and therefore have the
 Restrictions
 ------------
 
-Full support of retryable implements for Beanstalk, DB, File and Redis drivers. Sync driver will not
-retry failed jobs. Gearman driver doesn't support of retryable. RabbitMQ has only its basic
-retryable support, in which an attempt number can not be got.
+Full support of retryable implements for [Beanstalk], [DB], [File] and [Redis] drivers.
+[Sync] driver will not retry failed jobs. [Gearman] driver doesn't support of retryable.
+[RabbitMQ] has only its basic retryable support, in which an attempt number can not be got.
+
+[Beanstalk]: driver-beanstalk.md
+[DB]: driver-db.md
+[File]: driver-file.md
+[Redis]: driver-redis.md
+[Sync]: driver-sync.md
+[Gearman]: driver-gearman.md
+[RabbitMQ]: driver-amqp.md
