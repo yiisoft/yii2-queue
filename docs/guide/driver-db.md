@@ -11,12 +11,16 @@ return [
         'queue', // The component registers own console commands
     ],
     'components' => [
+        'db' => [
+            'class' => \yii\db\Connection::class, 
+            // ...
+        ],
         'queue' => [
             'class' => \zhuravljov\yii\queue\db\Queue::class,
-            'db' => 'db', // connection ID
-            'tableName' => '{{%queue}}', // table
-            'channel' => 'default', // queue channel
-            'mutex' => \yii\mutex\MysqlMutex::class, // Mutex used to sync queries
+            'db' => 'db', // DB connection component or its config 
+            'tableName' => '{{%queue}}', // Table name
+            'channel' => 'default', // Queue channel key
+            'mutex' => \yii\mutex\MysqlMutex::class, // Mutex that used to sync queries
         ],
     ],
 ];

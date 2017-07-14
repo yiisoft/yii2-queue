@@ -11,12 +11,16 @@ return [
         'queue', // Компонент регистрирует свои консольные команды 
     ],
     'components' => [
+        'db' => [
+            'class' => \yii\db\Connection::class, 
+            // ...
+        ],
         'queue' => [
             'class' => \zhuravljov\yii\queue\db\Queue::class,
-            'db' => 'db', // ID подключения
-            'tableName' => '{{%queue}}', // таблица
-            'channel' => 'default', // выбранный для очереди канал
-            'mutex' => \yii\mutex\MysqlMutex::class, // мьютекс для синхронизации запросов
+            'db' => 'db', // Компонент подключения к БД или его конфиг
+            'tableName' => '{{%queue}}', // Имя таблицы
+            'channel' => 'default', // Выбранный для очереди канал
+            'mutex' => \yii\mutex\MysqlMutex::class, // Мьютекс для синхронизации запросов
         ],
     ],
 ];

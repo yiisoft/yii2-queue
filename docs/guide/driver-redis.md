@@ -13,10 +13,14 @@ return [
         'queue', // The component registers own console commands
     ],
     'components' => [
+        'redis' => [
+            'class' => \yii\redis\Connection::class,
+            // ...
+        ],
         'queue' => [
             'class' => \zhuravljov\yii\queue\redis\Queue::class,
-            'redis' => 'redis', // connection ID
-            'channel' => 'queue', // queue channel
+            'redis' => 'redis', // Redis connection component or its config
+            'channel' => 'queue', // Queue channel key
         ],
     ],
 ];

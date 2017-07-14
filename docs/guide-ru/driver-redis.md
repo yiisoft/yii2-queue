@@ -13,9 +13,13 @@ return [
         'queue', // Компонент регистрирует свои консольные команды 
     ],
     'components' => [
+        'redis' => [
+            'class' => \yii\redis\Connection::class,
+            // ...
+        ],
         'queue' => [
             'class' => \zhuravljov\yii\queue\redis\Queue::class,
-            'redis' => 'redis', // ID подключения
+            'redis' => 'redis', // Компонент подключения к Redis или его конфиг
             'channel' => 'queue', // Ключ канала очереди
         ],
     ],
