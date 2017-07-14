@@ -20,7 +20,7 @@ use zhuravljov\yii\queue\Queue;
  * $url = 'http://example.com/name.jpg';
  * $file = '/tmp/name.jpg';
  * Yii::$app->push(function () use ($url, $file) {
- *     file_put_contents($file, file_get_contents($url));
+ *     copy($url, $file);
  * });
  * ```
  *
