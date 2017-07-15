@@ -7,9 +7,9 @@ It supported queues based on **DB**, **Redis**, **RabbitMQ**, **Beanstalk** and 
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
-[![Latest Stable Version](https://poser.pugx.org/zhuravljov/yii2-queue/v/stable.svg)](https://packagist.org/packages/zhuravljov/yii2-queue)
-[![Total Downloads](https://poser.pugx.org/zhuravljov/yii2-queue/downloads.svg)](https://packagist.org/packages/zhuravljov/yii2-queue)
-[![Build Status](https://travis-ci.org/zhuravljov/yii2-queue.svg?branch=master)](https://travis-ci.org/zhuravljov/yii2-queue)
+[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-queue/v/stable.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
+[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-queue/downloads.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
+[![Build Status](https://travis-ci.org/yiisoft/yii2-queue.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-queue)
 
 Installation
 ------------
@@ -19,13 +19,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist zhuravljov/yii2-queue
+php composer.phar require --prefer-dist yiisoft/yii2-queue
 ```
 
 or add
 
 ```
-"zhuravljov/yii2-queue": "*"
+"yiisoft/yii2-queue": "*"
 ```
 
 to the require section of your `composer.json` file.
