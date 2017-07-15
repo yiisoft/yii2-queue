@@ -12,7 +12,7 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\gearman\Queue::class,
+            'class' => \yii\queue\gearman\Queue::class,
             'host' => 'localhost',
             'port' => 4730,
             'channel' => 'my_queue',

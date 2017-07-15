@@ -16,7 +16,7 @@ return [
             // ...
         ],
         'queue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \yii\queue\db\Queue::class,
             'db' => 'db', // DB connection component or its config 
             'tableName' => '{{%queue}}', // Table name
             'channel' => 'default', // Queue channel key

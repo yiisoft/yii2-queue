@@ -38,14 +38,14 @@
     },
     "autoload": {
         "psr-4": {
-            "zhuravljov\\yii\\queue\\": "src",
-            "zhuravljov\\yii\\queue\\amqp\\": "src/drivers/amqp",
-            "zhuravljov\\yii\\queue\\beanstalk\\": "src/drivers/beanstalk",
-            "zhuravljov\\yii\\queue\\db\\": "src/drivers/db",
-            "zhuravljov\\yii\\queue\\file\\": "src/drivers/file",
-            "zhuravljov\\yii\\queue\\gearman\\": "src/drivers/gearman",
-            "zhuravljov\\yii\\queue\\redis\\": "src/drivers/redis",
-            "zhuravljov\\yii\\queue\\sync\\": "src/drivers/sync"
+            "yii\\queue\\": "src",
+            "yii\\queue\\amqp\\": "src/drivers/amqp",
+            "yii\\queue\\beanstalk\\": "src/drivers/beanstalk",
+            "yii\\queue\\db\\": "src/drivers/db",
+            "yii\\queue\\file\\": "src/drivers/file",
+            "yii\\queue\\gearman\\": "src/drivers/gearman",
+            "yii\\queue\\redis\\": "src/drivers/redis",
+            "yii\\queue\\sync\\": "src/drivers/sync"
         }
     },
     "extra": {

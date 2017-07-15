@@ -5,11 +5,11 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\closure;
+namespace yii\queue\closure;
 
 use SuperClosure\Serializer;
 use yii\base\Object;
-use zhuravljov\yii\queue\Job as BaseJob;
+use yii\queue\Job as BaseJob;
 
 /**
  * Closure Job

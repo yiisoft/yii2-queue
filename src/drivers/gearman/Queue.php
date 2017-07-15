@@ -5,11 +5,11 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\gearman;
+namespace yii\queue\gearman;
 
 use yii\base\NotSupportedException;
-use zhuravljov\yii\queue\cli\Queue as CliQueue;
-use zhuravljov\yii\queue\cli\Signal;
+use yii\queue\cli\Queue as CliQueue;
+use yii\queue\cli\Signal;
 
 /**
  * Gearman Queue

@@ -5,15 +5,15 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\file;
+namespace yii\queue\file;
 
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
-use zhuravljov\yii\queue\cli\Queue as CliQueue;
-use zhuravljov\yii\queue\cli\Signal;
+use yii\queue\cli\Queue as CliQueue;
+use yii\queue\cli\Signal;
 
 /**
  * File Queue

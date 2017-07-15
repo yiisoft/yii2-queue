@@ -10,7 +10,7 @@ namespace tests\drivers\gearman;
 use tests\app\PriorityJob;
 use tests\drivers\CliTestCase;
 use Yii;
-use zhuravljov\yii\queue\gearman\Queue;
+use yii\queue\gearman\Queue;
 
 /**
  * Gearman Queue Test

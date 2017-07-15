@@ -18,7 +18,7 @@ return [
             // ...
         ],
         'queue' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'class' => \yii\queue\redis\Queue::class,
             'redis' => 'redis', // Redis connection component or its config
             'channel' => 'queue', // Queue channel key
         ],

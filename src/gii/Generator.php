@@ -5,13 +5,13 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\gii;
+namespace yii\queue\gii;
 
 use Yii;
 use yii\base\Object;
 use yii\gii\CodeFile;
-use zhuravljov\yii\queue\Job;
-use zhuravljov\yii\queue\RetryableJob;
+use yii\queue\Job;
+use yii\queue\RetryableJob;
 
 /**
  * This generator will generate a job.

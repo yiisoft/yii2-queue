@@ -5,14 +5,14 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\beanstalk;
+namespace yii\queue\beanstalk;
 
 use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\InvalidParamException;
-use zhuravljov\yii\queue\cli\Queue as CliQueue;
-use zhuravljov\yii\queue\cli\Signal;
+use yii\queue\cli\Queue as CliQueue;
+use yii\queue\cli\Signal;
 
 /**
  * Beanstalk Queue

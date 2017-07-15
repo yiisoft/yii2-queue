@@ -5,11 +5,11 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\closure;
+namespace yii\queue\closure;
 
 use SuperClosure\Serializer;
-use zhuravljov\yii\queue\PushEvent;
-use zhuravljov\yii\queue\Queue;
+use yii\queue\PushEvent;
+use yii\queue\Queue;
 
 /**
  * Closure Behavior

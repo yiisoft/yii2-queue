@@ -5,14 +5,14 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\redis;
+namespace yii\queue\redis;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\redis\Connection;
-use zhuravljov\yii\queue\cli\Queue as CliQueue;
-use zhuravljov\yii\queue\cli\Signal;
+use yii\queue\cli\Queue as CliQueue;
+use yii\queue\cli\Signal;
 
 /**
  * Redis Queue

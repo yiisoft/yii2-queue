@@ -38,7 +38,7 @@ Upgrade from 0.10.1
   
   ```php
   'queue' => [
-      'class' => \zhuravljov\yii\queue\db\Queue::class,
+      'class' => \yii\queue\db\Queue::class,
       'db' => 'db',
       'tableName' => '{{%queue}}',
       'channel' => 'default',
@@ -50,9 +50,9 @@ Upgrade from 0.10.1
  
   ```php
   'queue' => [
-      'class' => \zhuravljov\yii\queue\Queue::class,
+      'class' => \yii\queue\Queue::class,
       'driver' => [
-          'class' => \zhuravljov\yii\queue\db\Driver::class,
+          'class' => \yii\queue\db\Driver::class,
           'db' => 'db',
           'tableName' => '{{%queue}}'
           'channel' => 'default',

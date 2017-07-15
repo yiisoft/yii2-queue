@@ -5,13 +5,13 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\cli;
+namespace yii\queue\cli;
 
 use yii\base\Behavior;
 use yii\console\Controller;
 use yii\helpers\Console;
-use zhuravljov\yii\queue\ErrorEvent;
-use zhuravljov\yii\queue\ExecEvent;
+use yii\queue\ErrorEvent;
+use yii\queue\ExecEvent;
 
 /**
  * Verbose Behavior

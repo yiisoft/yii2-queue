@@ -8,7 +8,7 @@
 namespace tests\drivers\db;
 
 use Yii;
-use zhuravljov\yii\queue\db\Queue;
+use yii\queue\db\Queue;
 
 /**
  * MySQL Queue Test

@@ -14,7 +14,7 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\amqp\Queue::class,
+            'class' => \yii\queue\amqp\Queue::class,
             'host' => 'localhost',
             'port' => 5672,
             'user' => 'guest',

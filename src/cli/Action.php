@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\cli;
+namespace yii\queue\cli;
 
 use yii\base\Action as BaseAction;
 use yii\base\InvalidConfigException;

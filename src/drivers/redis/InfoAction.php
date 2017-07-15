@@ -5,10 +5,10 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\redis;
+namespace yii\queue\redis;
 
 use yii\helpers\Console;
-use zhuravljov\yii\queue\cli\Action;
+use yii\queue\cli\Action;
 
 /**
  * Info about queue status.

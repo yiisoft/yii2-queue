@@ -14,10 +14,10 @@ $config = [
     ],
     'components' => [
         'syncQueue' => [
-            'class' => \zhuravljov\yii\queue\sync\Queue::class,
+            'class' => \yii\queue\sync\Queue::class,
         ],
         'fileQueue' => [
-            'class' => \zhuravljov\yii\queue\file\Queue::class,
+            'class' => \yii\queue\file\Queue::class,
         ],
         'mysql' => [
             'class' => \yii\db\Connection::class,
@@ -30,7 +30,7 @@ $config = [
             ],
         ],
         'mysqlQueue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \yii\queue\db\Queue::class,
             'db' => 'mysql',
             'mutex' => [
                 'class' => \yii\mutex\MysqlMutex::class,
@@ -42,7 +42,7 @@ $config = [
             'dsn' => 'sqlite:@runtime/yii2_queue_test.db',
         ],
         'sqliteQueue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \yii\queue\db\Queue::class,
             'db' => 'sqlite',
             'mutex' => \yii\mutex\FileMutex::class,
         ],
@@ -54,7 +54,7 @@ $config = [
             'charset' => 'utf8',
         ],
         'pgsqlQueue' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
+            'class' => \yii\queue\db\Queue::class,
             'db' => 'pgsql',
             'mutex' => [
                 'class' => \yii\mutex\PgsqlMutex::class,
@@ -67,13 +67,13 @@ $config = [
             'database' => 2,
         ],
         'redisQueue' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'class' => \yii\queue\redis\Queue::class,
         ],
         'amqpQueue' => [
-            'class' => \zhuravljov\yii\queue\amqp\Queue::class,
+            'class' => \yii\queue\amqp\Queue::class,
         ],
         'beanstalkQueue' => [
-            'class' => \zhuravljov\yii\queue\beanstalk\Queue::class,
+            'class' => \yii\queue\beanstalk\Queue::class,
         ],
     ],
 ];
@@ -81,7 +81,7 @@ $config = [
 if (defined('GEARMAN_SUCCESS')) {
     $config['bootstrap'][] = 'gearmanQueue';
     $config['components']['gearmanQueue'] = [
-        'class' => \zhuravljov\yii\queue\gearman\Queue::class,
+        'class' => \yii\queue\gearman\Queue::class,
     ];
 }
 

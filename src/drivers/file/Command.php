@@ -5,9 +5,9 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\file;
+namespace yii\queue\file;
 
-use zhuravljov\yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Command as CliCommand;
 
 /**
  * Manages application file-queue.

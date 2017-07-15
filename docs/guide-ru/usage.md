@@ -14,8 +14,8 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
-            'as log' => \zhuravljov\yii\queue\LogBehavior::class,
+            'class' => \yii\queue\<driver>\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class,
             // Индивидуальные настройки драйвера
         ],
     ],
@@ -32,7 +32,7 @@ return [
 Например, если нужно скачать и сохранить файл, класс может выглядеть так:
 
 ```php
-class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
+class DownloadJob extends Object implements \yii\queue\Job
 {
     public $url;
     public $file;
@@ -118,8 +118,8 @@ Yii::$app->queue->push([
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
-            'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
+            'class' => \yii\queue\<driver>\Queue::class,
+            'serializer' => \yii\queue\serializers\JsonSerializer::class,
         ],
     ],
 ];
@@ -163,8 +163,8 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function ($event) {
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
-            'as log' => \zhuravljov\yii\queue\LogBehavior::class
+            'class' => \yii\queue\redis\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class
         ],
     ],
 ];
@@ -183,11 +183,11 @@ return [
     ],
     'components' => [
         'queue1' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'class' => \yii\queue\redis\Queue::class,
         ],
         'queue2' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
-            'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
+            'class' => \yii\queue\db\Queue::class,
+            'serializer' => \yii\queue\serializers\JsonSerializer::class,
         ],
     ],
 ];
@@ -237,7 +237,7 @@ Yii::$app->queue->push(new SomeJob([
 Класс задания:
 
 ```php
-class SomeJob extends Object implements \zhuravljov\yii\queue\Job
+class SomeJob extends Object implements \yii\queue\Job
 {
     public $userId;
     public $bookId;

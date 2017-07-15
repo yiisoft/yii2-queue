@@ -5,15 +5,15 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue;
+namespace yii\queue;
 
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
-use zhuravljov\yii\queue\serializers\PhpSerializer;
-use zhuravljov\yii\queue\serializers\Serializer;
+use yii\queue\serializers\PhpSerializer;
+use yii\queue\serializers\Serializer;
 
 /**
  * Base Queue

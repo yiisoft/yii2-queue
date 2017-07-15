@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\serializers;
+namespace yii\queue\serializers;
 
 use yii\base\Object;
 

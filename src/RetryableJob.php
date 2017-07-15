@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue;
+namespace yii\queue;
 
 /**
  * Interface RetryableJob

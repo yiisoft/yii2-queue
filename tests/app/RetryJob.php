@@ -9,7 +9,7 @@ namespace tests\app;
 
 use Yii;
 use yii\base\Object;
-use zhuravljov\yii\queue\RetryableJob;
+use yii\queue\RetryableJob;
 
 /**
  * Class RetryJob

@@ -5,15 +5,15 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\debug;
+namespace yii\queue\debug;
 
 use Yii;
 use yii\base\NotSupportedException;
 use yii\base\ViewContextInterface;
 use yii\helpers\VarDumper;
-use zhuravljov\yii\queue\Job;
-use zhuravljov\yii\queue\PushEvent;
-use zhuravljov\yii\queue\Queue;
+use yii\queue\Job;
+use yii\queue\PushEvent;
+use yii\queue\Queue;
 
 /**
  * Class Panel

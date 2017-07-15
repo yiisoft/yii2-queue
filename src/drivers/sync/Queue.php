@@ -5,12 +5,12 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\sync;
+namespace yii\queue\sync;
 
 use Yii;
 use yii\base\Application;
 use yii\base\InvalidParamException;
-use zhuravljov\yii\queue\Queue as BaseQueue;
+use yii\queue\Queue as BaseQueue;
 
 /**
  * Sync Queue

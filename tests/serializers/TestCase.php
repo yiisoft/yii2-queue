@@ -9,7 +9,7 @@ namespace tests\serializers;
 
 use tests\app\SimpleJob;
 use yii\base\Object;
-use zhuravljov\yii\queue\serializers\Serializer;
+use yii\queue\serializers\Serializer;
 
 /**
  * Class TestCase

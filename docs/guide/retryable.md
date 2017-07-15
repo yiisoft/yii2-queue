@@ -15,7 +15,7 @@ The first method is implemented by the component options:
 ```php
 'components' => [
     'queue' => [
-        'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
+        'class' => \yii\queue\<driver>\Queue::class,
         'ttr' => 5 * 60, // Max time for anything job handling 
         'attempts' => 3, // Max number of attempts
     ],

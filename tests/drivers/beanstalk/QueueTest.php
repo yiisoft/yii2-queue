@@ -10,7 +10,7 @@ namespace tests\drivers\beanstalk;
 use tests\app\PriorityJob;
 use tests\drivers\CliTestCase;
 use Yii;
-use zhuravljov\yii\queue\beanstalk\Queue;
+use yii\queue\beanstalk\Queue;
 
 /**
  * Beanstalk Queue Test

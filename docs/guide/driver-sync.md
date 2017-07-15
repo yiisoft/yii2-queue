@@ -10,7 +10,7 @@ Configuration example:
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\sync\Queue::class,
+            'class' => \yii\queue\sync\Queue::class,
             'handle' => false, // if tasks should be executed immediately
         ],
     ],

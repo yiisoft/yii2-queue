@@ -14,8 +14,8 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
-            'as log' => \zhuravljov\yii\queue\LogBehavior::class,
+            'class' => \yii\queue\<driver>\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class,
             // Other driver options
         ],
     ],
@@ -32,7 +32,7 @@ Each task which is sent to queue should be defined as a separate class.
 For example, if you need to download and save a file the class may look like the following:
 
 ```php
-class DownloadJob extends Object implements \zhuravljov\yii\queue\Job
+class DownloadJob extends Object implements \yii\queue\Job
 {
     public $url;
     public $file;
@@ -116,8 +116,8 @@ to JSON:
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\<driver>\Queue::class,
-            'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
+            'class' => \yii\queue\<driver>\Queue::class,
+            'serializer' => \yii\queue\serializers\JsonSerializer::class,
         ],
     ],
 ];
@@ -160,8 +160,8 @@ To use it, simply configure the Queue component as follows:
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
-            'as log' => \zhuravljov\yii\queue\LogBehavior::class
+            'class' => \yii\queue\redis\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class
         ],
     ],
 ];
@@ -181,11 +181,11 @@ return [
     ],
     'components' => [
         'queue1' => [
-            'class' => \zhuravljov\yii\queue\redis\Queue::class,
+            'class' => \yii\queue\redis\Queue::class,
         ],
         'queue2' => [
-            'class' => \zhuravljov\yii\queue\db\Queue::class,
-            'serializer' => \zhuravljov\yii\queue\serializers\JsonSerializer::class,
+            'class' => \yii\queue\db\Queue::class,
+            'serializer' => \yii\queue\serializers\JsonSerializer::class,
         ],
     ],
 ];
@@ -234,7 +234,7 @@ Yii::$app->queue->push(new SomeJob([
 Task class:
 
 ```php
-class SomeJob extends Object implements \zhuravljov\yii\queue\Job
+class SomeJob extends Object implements \yii\queue\Job
 {
     public $userId;
     public $bookId;

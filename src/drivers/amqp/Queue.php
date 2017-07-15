@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-namespace zhuravljov\yii\queue\amqp;
+namespace yii\queue\amqp;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -13,7 +13,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
-use zhuravljov\yii\queue\cli\Queue as CliQueue;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Amqp Queue

@@ -7,7 +7,7 @@
 
 namespace tests\serializers;
 
-use zhuravljov\yii\queue\serializers\PhpSerializer;
+use yii\queue\serializers\PhpSerializer;
 
 /**
  * Class PhpSerializerTest

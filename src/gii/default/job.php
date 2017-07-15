@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \yii\web\View
- * @var \zhuravljov\yii\queue\gii\Generator $generator
+ * @var \yii\queue\gii\Generator $generator
  * @var string $jobClass
  * @var string $$ns
  * @var string $baseClass

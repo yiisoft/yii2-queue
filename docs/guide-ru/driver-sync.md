@@ -10,7 +10,7 @@
 return [
     'components' => [
         'queue' => [
-            'class' => \zhuravljov\yii\queue\sync\Queue::class,
+            'class' => \yii\queue\sync\Queue::class,
             'handle' => false, // Флаг необходимости выполнять поставленные в очередь задания
         ],
     ],
