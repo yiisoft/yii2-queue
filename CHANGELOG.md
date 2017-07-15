@@ -1,6 +1,10 @@
 Yii2 Queue Extension Change Log
 ===============================
 
+## 2.0.0
+
+- Enh: The package is moved to yiisoft/yii2-queue (zhuravljov)
+
 ## 1.1.0
 
 - Enh #50 Documentation about worker starting control (zhuravljov)

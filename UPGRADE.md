@@ -4,8 +4,14 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
-Upgrade from 1.0.0
-------------------
+Upgrade from 1.1.0 to 2.0.0
+---------------------------
+
+* Code has been moved to yii namespace. Check and replace `zhuravljov\yii` to `yii` namespace for
+  your project.
+
+Upgrade from 1.0.0 to 1.1.0
+---------------------------
 
 * Event `Queue::EVENT_AFTER_EXEC_ERROR` renamed to `Queue::EVENT_AFTER_ERROR`.
 
@@ -38,7 +44,7 @@ Upgrade from 0.10.1
   
   ```php
   'queue' => [
-      'class' => \yii\queue\db\Queue::class,
+      'class' => \zhuravljov\yii\queue\db\Queue::class,
       'db' => 'db',
       'tableName' => '{{%queue}}',
       'channel' => 'default',
@@ -50,7 +56,7 @@ Upgrade from 0.10.1
  
   ```php
   'queue' => [
-      'class' => \yii\queue\Queue::class,
+      'class' => \zhuravljov\yii\queue\Queue::class,
       'driver' => [
           'class' => \yii\queue\db\Driver::class,
           'db' => 'db',
