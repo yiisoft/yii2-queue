@@ -26,6 +26,7 @@ return [
 ];
 ```
 
+
 You have to add a table to the database. Example schema for MySQL:
 
 ```SQL
@@ -48,6 +49,11 @@ CREATE TABLE `queue` (
 ```
 
 Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
+
+```
+./yii migrate/up --migrationPath=@vendor/yiisoft/yii2-queue/src/drivers/db/migrations
+```
+
 
 Console
 -------
