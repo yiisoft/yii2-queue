@@ -50,7 +50,7 @@ CREATE TABLE `queue` (
 
 Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
-```
+```sh
 ./yii migrate/up --migrationPath=@vendor/yiisoft/yii2-queue/src/drivers/db/migrations
 ```
 
