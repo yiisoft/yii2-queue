@@ -14,8 +14,8 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \yii\queue\<driver>\Queue::class,
-            'as log' => \yii\queue\LogBehavior::class,
+            'class' => \yii\queue\<driver>\Queue::className(),
+            'as log' => \yii\queue\LogBehavior::className(),
             // Other driver options
         ],
     ],
@@ -116,8 +116,8 @@ to JSON:
 return [
     'components' => [
         'queue' => [
-            'class' => \yii\queue\<driver>\Queue::class,
-            'serializer' => \yii\queue\serializers\JsonSerializer::class,
+            'class' => \yii\queue\<driver>\Queue::className(),
+            'serializer' => \yii\queue\serializers\JsonSerializer::className(),
         ],
     ],
 ];
@@ -160,8 +160,8 @@ To use it, simply configure the Queue component as follows:
 return [
     'components' => [
         'queue' => [
-            'class' => \yii\queue\redis\Queue::class,
-            'as log' => \yii\queue\LogBehavior::class
+            'class' => \yii\queue\redis\Queue::className(),
+            'as log' => \yii\queue\LogBehavior::className()
         ],
     ],
 ];
@@ -181,11 +181,11 @@ return [
     ],
     'components' => [
         'queue1' => [
-            'class' => \yii\queue\redis\Queue::class,
+            'class' => \yii\queue\redis\Queue::className(),
         ],
         'queue2' => [
-            'class' => \yii\queue\db\Queue::class,
-            'serializer' => \yii\queue\serializers\JsonSerializer::class,
+            'class' => \yii\queue\db\Queue::className(),
+            'serializer' => \yii\queue\serializers\JsonSerializer::className(),
         ],
     ],
 ];
