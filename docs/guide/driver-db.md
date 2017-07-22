@@ -52,15 +52,14 @@ Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/m
 To add migrations to your application, edit console config file to configure the namespaced migration:
 
 ```php
-    'controllerMap' =>
-    [
-        ...
+    'controllerMap' => [
+        // ...
         'migrate' => [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationNamespaces' => [
+                // ...
                 'yii\queue\db\migrations',
             ],
-            //'migrationPath' => null, // allows to disable not namespaced migration completely
         ],
     ],
 ```
