@@ -49,7 +49,7 @@ CREATE TABLE `queue` (
 
 Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
-*Edit console config file to configure the namespaced migration* 
+To add migrations to your application, edit console config file to configure the namespaced migration:
 
 ```php
     'controllerMap' =>
@@ -65,7 +65,7 @@ Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/m
     ],
 ```
 
-*Then issue migration command(s):*
+Then issue migration command(s):
 
 ```
 ./yii migrate/up
