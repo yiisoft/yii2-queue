@@ -55,7 +55,7 @@ Config example:
 * * * * * /usr/bin/php /var/www/my_project/yii queue/run
 ```
 
-In this case cron will start the command every munute. 
+In this case cron will start the command every minute. 
 
 `queue/run` command is supported by [File], [Db], [Redis], [Beanstalk], [Gearman] drivers.
 For additional options see driver guide.
