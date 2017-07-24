@@ -97,7 +97,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     {
         return Yii::$app->view->render('summary', [
             'url' => $this->getUrl(),
-            'count' => count($this->data['jobs']),
+            'count' => isset($this->data['jobs']) ? count($this->data['jobs']) : 0,
         ], $this);
     }
 
@@ -106,7 +106,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function getDetail()
     {
-        $jobs = $this->data['jobs'];
+        $jobs = isset($this->data['jobs']) ? $this->data['jobs'] : [];
         foreach ($jobs as &$job) {
             $job['status'] = 'unknown';
             /** @var Queue $queue */
