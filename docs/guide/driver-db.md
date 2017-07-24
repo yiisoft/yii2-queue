@@ -49,33 +49,28 @@ CREATE TABLE `queue` (
 
 Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
-To add migrations to your application, edit console config file to configure the namespaced migration:
+To add migrations to your application, edit console config file to configure
+[the namespaced migration](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations):
 
 ```php
-    'controllerMap' => [
-        // ...
-        'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
-            'migrationNamespaces' => [
-                // ...
-                'yii\queue\db\migrations',
-            ],
+'controllerMap' => [
+    // ...
+    'migrate' => [
+        'class' => 'yii\console\controllers\MigrateController',
+        'migrationPath' => null,
+        'migrationNamespaces' => [
+            // ...
+            'yii\queue\db\migrations',
         ],
     ],
+],
 ```
 
-Then issue migration command(s):
+Then issue migration command:
 
+```sh
+yii migrate/up
 ```
-./yii migrate/up
-```
-
-or
-
-```
-./yii migrate/down
-```
-
 
 Console
 -------
