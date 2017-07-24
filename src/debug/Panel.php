@@ -106,23 +106,24 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     public function getDetail()
     {
         $jobs = $this->data['jobs'];
-        if (is_array($jobs)) {
-            foreach ($jobs as &$job) {
-                $job['status'] = 'unknown';
-                /** @var Queue $queue */
-                if ($queue = Yii::$app->get($job['sender'], false)) {
-                    try {
-                        if ($queue->isWaiting($job['id'])) {
-                            $job['status'] = 'waiting';
-                        } elseif ($queue->isReserved($job['id'])) {
-                            $job['status'] = 'reserved';
-                        } elseif ($queue->isDone($job['id'])) {
-                            $job['status'] = 'done';
-                        }
-                    } catch (NotSupportedException $e) {
-                    } catch (\Exception $e) {
-                        $job['status'] = $e->getMessage();
+        if (!is_array($jobs)) {
+            $jobs = [];
+        }
+        foreach ($jobs as &$job) {
+            $job['status'] = 'unknown';
+            /** @var Queue $queue */
+            if ($queue = Yii::$app->get($job['sender'], false)) {
+                try {
+                    if ($queue->isWaiting($job['id'])) {
+                        $job['status'] = 'waiting';
+                    } elseif ($queue->isReserved($job['id'])) {
+                        $job['status'] = 'reserved';
+                    } elseif ($queue->isDone($job['id'])) {
+                        $job['status'] = 'done';
                     }
+                } catch (NotSupportedException $e) {
+                } catch (\Exception $e) {
+                    $job['status'] = $e->getMessage();
                 }
             }
         }
