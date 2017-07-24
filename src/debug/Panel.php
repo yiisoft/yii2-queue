@@ -95,7 +95,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     public function getSummary()
     {
         return Yii::$app->view->render('summary', [
-            'url' => $this->getUrl(),
+            'url'   => $this->getUrl(),
             'count' => count($this->data['jobs']),
         ], $this);
     }
@@ -106,21 +106,23 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     public function getDetail()
     {
         $jobs = $this->data['jobs'];
-        foreach ($jobs as &$job) {
-            $job['status'] = 'unknown';
-            /** @var Queue $queue */
-            if ($queue = Yii::$app->get($job['sender'], false)) {
-                try {
-                    if ($queue->isWaiting($job['id'])) {
-                        $job['status'] = 'waiting';
-                    } elseif ($queue->isReserved($job['id'])) {
-                        $job['status'] = 'reserved';
-                    } elseif ($queue->isDone($job['id'])) {
-                        $job['status'] = 'done';
+        if (is_array($jobs)) {
+            foreach ($jobs as &$job) {
+                $job['status'] = 'unknown';
+                /** @var Queue $queue */
+                if ($queue = Yii::$app->get($job['sender'], false)) {
+                    try {
+                        if ($queue->isWaiting($job['id'])) {
+                            $job['status'] = 'waiting';
+                        } elseif ($queue->isReserved($job['id'])) {
+                            $job['status'] = 'reserved';
+                        } elseif ($queue->isDone($job['id'])) {
+                            $job['status'] = 'done';
+                        }
+                    } catch (NotSupportedException $e) {
+                    } catch (\Exception $e) {
+                        $job['status'] = $e->getMessage();
                     }
-                } catch (NotSupportedException $e) {
-                } catch (\Exception $e) {
-                    $job['status'] = $e->getMessage();
                 }
             }
         }
