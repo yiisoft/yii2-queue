@@ -33,7 +33,7 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 
 Подробнее о настройке и использовании Supervisor читайте в [документации](http://supervisord.org).
 
-Зупаск воркера в режиме демона командой `queue/listen` поддерживают драйвера [File], [Db], [Redis],
+Запуск воркера в режиме демона командой `queue/listen` поддерживают драйвера [File], [Db], [Redis],
 [RabbitMQ], [Beanstalk], [Gearman]. Дополнительные опции смотрите в описании нужных вам драйверов.
 
 [File]: driver-file.md
