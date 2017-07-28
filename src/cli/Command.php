@@ -157,7 +157,7 @@ abstract class Command extends Controller
                 }
             });
         } catch (ProcessTimedOutException $error) {
-            $job = $this->serializer->unserialize($message);
+            $job = $this->queue->serializer->unserialize($message);
             return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
         }
 
