@@ -253,5 +253,5 @@ abstract class Queue extends Component
      * @param string $id of a job message
      * @return int status code
      */
-    abstract protected function status($id);
+    abstract public function status($id);
 }

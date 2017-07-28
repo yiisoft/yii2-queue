@@ -94,7 +94,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function status($id)
+    public function status($id)
     {
         if (!is_numeric($id) || $id <= 0) {
             throw new InvalidParamException("Unknown messages ID: $id.");
