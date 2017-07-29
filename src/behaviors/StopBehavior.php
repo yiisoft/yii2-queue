@@ -16,8 +16,6 @@ use yii\queue\Queue;
 /**
  * Stoppable behavior
  *
- *
- *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class StopBehavior extends Behavior
@@ -57,7 +55,7 @@ class StopBehavior extends Behavior
     }
 
     /**
-     * Sets stop flag for a job which
+     * Sets stop flag.
      *
      * @param string $id of a job
      * @return bool
