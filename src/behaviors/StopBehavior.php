@@ -55,10 +55,16 @@ class StopBehavior extends Behavior
     public function events()
     {
         return [
-            Queue::EVENT_BEFORE_EXEC => function (ExecEvent $event) {
-                $event->handled = $this->isStopped($event->id);
-            },
+            Queue::EVENT_BEFORE_EXEC => 'beforeExec',
         ];
+    }
+
+    /**
+     * @param ExecEvent $event
+     */
+    public function beforeExec(ExecEvent $event)
+    {
+        $event->handled = $this->isStopped($event->id);
     }
 
     /**
@@ -70,7 +76,7 @@ class StopBehavior extends Behavior
     public function stop($id)
     {
         if (!$this->checkWaiting || $this->owner->isWaiting($id)) {
-            $this->setStopping($id);
+            $this->markAsStopped($id);
             return true;
         } else {
             return false;
@@ -81,7 +87,7 @@ class StopBehavior extends Behavior
      * @param string $id of a job
      * @return bool
      */
-    protected function setStopping($id)
+    protected function markAsStopped($id)
     {
         $this->cache->set(__CLASS__ . $id, true);
     }
