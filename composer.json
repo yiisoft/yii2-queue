@@ -28,8 +28,7 @@
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
         "phpunit/phpunit": "~4.4",
-        "queue-interop/queue-interop": "^0.5.0",
-        "queue-interop/amqp-interop": "^0.5.0"
+        "enqueue/amqp-lib": "0.7.x-dev"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
@@ -46,7 +45,7 @@
         "php-enqueue/fs": "Needs for support of filesystem queue with queue interop",
         "php-enqueue/gearman": "Needs for support of Gearman queue with queue interop",
         "php-enqueue/pheanstalk": "Needs for support of Beanstalk queue with queue interop",
-        "php-enqueue/stomp": "Needs for support of STOMP queue with queue interop",
+        "php-enqueue/stomp": "Needs for support of STOMP queue with queue interop"
     },
     "autoload": {
         "psr-4": {
