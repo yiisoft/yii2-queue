@@ -1,8 +1,8 @@
 {
     "name": "yiisoft/yii2-queue",
-    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk and Gearman",
+    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk, Gearman, Kafka, AWS SQS, STOMP, Filesystem",
     "type": "yii2-extension",
-    "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman"],
+    "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman", "amqp-interop", "queue-interop", "php-enqueue"],
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -27,14 +27,26 @@
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "phpunit/phpunit": "~4.4"
+        "phpunit/phpunit": "~4.4",
+        "queue-interop/queue-interop": "^0.5.0",
+        "queue-interop/amqp-interop": "^0.5.0"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
         "yiisoft/yii2-redis": "Need for Redis queue.",
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
-        "ext-gearman": "Need for Gearman queue."
+        "ext-gearman": "Need for Gearman queue.",
+        "php-enqueue/amqp-ext": "Needs for support of AMQP with queue interop",
+        "php-enqueue/amqp-lib": "Needs for support of AMQP with queue interop",
+        "php-enqueue/rdkafka": "Needs for support of Kafka with queue interop",
+        "php-enqueue/sqs": "Needs for support of AWS SQS with queue interop",
+        "php-enqueue/dbal": "Needs for support of Doctrine Dbal queue with queue interop",
+        "php-enqueue/redis": "Needs for support of Redis queue with queue interop",
+        "php-enqueue/fs": "Needs for support of filesystem queue with queue interop",
+        "php-enqueue/gearman": "Needs for support of Gearman queue with queue interop",
+        "php-enqueue/pheanstalk": "Needs for support of Beanstalk queue with queue interop",
+        "php-enqueue/stomp": "Needs for support of STOMP queue with queue interop",
     },
     "autoload": {
         "psr-4": {
@@ -45,7 +57,8 @@
             "yii\\queue\\file\\": "src/drivers/file",
             "yii\\queue\\gearman\\": "src/drivers/gearman",
             "yii\\queue\\redis\\": "src/drivers/redis",
-            "yii\\queue\\sync\\": "src/drivers/sync"
+            "yii\\queue\\sync\\": "src/drivers/sync",
+            "yii\\queue\\queue_interop\\": "src/drivers/queue_interop"
         }
     },
     "extra": {
