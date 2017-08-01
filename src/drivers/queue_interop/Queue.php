@@ -3,6 +3,7 @@
 namespace yii\queue\queue_interop;
 
 use Interop\Amqp\AmqpContext;
+use Interop\Amqp\AmqpQueue;
 use Interop\Queue\PsrConnectionFactory;
 use Interop\Queue\PsrContext;
 use Interop\Queue\PsrProducer;
@@ -118,7 +119,10 @@ class Queue extends CliQueue
             $this->context = $factory->createContext();
 
             if ($this->context instanceof AmqpContext) {
-                $this->context->declareQueue($this->context->createQueue($this->queueName));
+                $queue = $this->context->createQueue($this->queueName);
+                $queue->addFlag(AmqpQueue::FLAG_DURABLE);
+
+                $this->context->declareQueue($queue);
             }
         }
 
