@@ -56,6 +56,8 @@ class Queue extends CliQueue
                 list($ttr, $body) = explode(';', $message->getBody(), 2);
                 if ($this->handleMessage(null, $body, $ttr, 1)) {
                     $consumer->acknowledge($message);
+                } else {
+                    $consumer->reject($message, true);
                 }
             }
         }
@@ -108,8 +110,7 @@ class Queue extends CliQueue
                 throw new \LogicException(sprintf('The "factoryClass" option "%s" is not a class', $this->factoryClass));
             }
 
-            $rc = new \ReflectionClass($this->factoryClass);
-            if (false == $rc->implementsInterface(PsrConnectionFactory::class)) {
+            if (false == is_a($this->factoryClass, PsrConnectionFactory::class)) {
                 throw new \LogicException(sprintf('The "factoryClass" option must contain a class that implements "%s" but it is not', PsrConnectionFactory::class));
             }
 

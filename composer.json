@@ -36,16 +36,16 @@
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
         "ext-gearman": "Need for Gearman queue.",
-        "php-enqueue/amqp-ext": "Needs for support of AMQP with queue interop",
-        "php-enqueue/amqp-lib": "Needs for support of AMQP with queue interop",
-        "php-enqueue/rdkafka": "Needs for support of Kafka with queue interop",
-        "php-enqueue/sqs": "Needs for support of AWS SQS with queue interop",
-        "php-enqueue/dbal": "Needs for support of Doctrine Dbal queue with queue interop",
-        "php-enqueue/redis": "Needs for support of Redis queue with queue interop",
-        "php-enqueue/fs": "Needs for support of filesystem queue with queue interop",
-        "php-enqueue/gearman": "Needs for support of Gearman queue with queue interop",
-        "php-enqueue/pheanstalk": "Needs for support of Beanstalk queue with queue interop",
-        "php-enqueue/stomp": "Needs for support of STOMP queue with queue interop"
+        "php-enqueue/amqp-ext": "Required for support of AMQP with queue interop",
+        "php-enqueue/amqp-lib": "Required for support of AMQP with queue interop",
+        "php-enqueue/rdkafka": "Required for support of Kafka with queue interop",
+        "php-enqueue/sqs": "Required for support of AWS SQS with queue interop",
+        "php-enqueue/dbal": "Required for support of Doctrine Dbal queue with queue interop",
+        "php-enqueue/redis": "Required for support of Redis queue with queue interop",
+        "php-enqueue/fs": "Required for support of filesystem queue with queue interop",
+        "php-enqueue/gearman": "Required for support of Gearman queue with queue interop",
+        "php-enqueue/pheanstalk": "Required for support of Beanstalk queue with queue interop",
+        "php-enqueue/stomp": "Required for support of STOMP with queue interop"
     },
     "autoload": {
         "psr-4": {

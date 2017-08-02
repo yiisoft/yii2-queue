@@ -3,9 +3,9 @@ Queue Interop Driver (php-enqueue)
 
 The driver works with many queue brokers.
 
-Full list of supported brokers you can find on the [Queue Interop](https://github.com/queue-interop/queue-interop) page
+You can find full list of supported brokers on the [Queue Interop](https://github.com/queue-interop/queue-interop) page
 
-To get it works you have to install and setup one of the supported implementation.
+In order for it to work you need to install and configure one the implementations supported.
 
 Configuration example for the RabbitMQ AMQP:
 
@@ -46,6 +46,6 @@ daemonized via [supervisor](worker.md#supervisor).
 
 `listen` command has options:
 
-- `--verbose`, `-v`: print executing statuses into console.
-- `--isolate`: verbose mode of a job execute. If enabled, execute result of each job will be printed.
+- `--verbose`, `-v`: print execution status into console.
+- `--isolate`: verbose mode of a job execution. If enabled, execution result of each job will be printed.
 - `--color`: highlighting for verbose mode.
