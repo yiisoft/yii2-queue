@@ -36,16 +36,18 @@
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
         "ext-gearman": "Need for Gearman queue.",
-        "php-enqueue/amqp-ext": "Required for support of AMQP with queue interop",
-        "php-enqueue/amqp-lib": "Required for support of AMQP with queue interop",
-        "php-enqueue/rdkafka": "Required for support of Kafka with queue interop",
-        "php-enqueue/sqs": "Required for support of AWS SQS with queue interop",
-        "php-enqueue/dbal": "Required for support of Doctrine Dbal queue with queue interop",
-        "php-enqueue/redis": "Required for support of Redis queue with queue interop",
-        "php-enqueue/fs": "Required for support of filesystem queue with queue interop",
-        "php-enqueue/gearman": "Required for support of Gearman queue with queue interop",
-        "php-enqueue/pheanstalk": "Required for support of Beanstalk queue with queue interop",
-        "php-enqueue/stomp": "Required for support of STOMP with queue interop"
+        "enqueue/amqp-ext": "Required for support of AMQP with queue interop",
+        "enqueue/amqp-lib": "Required for support of AMQP with queue interop",
+        "enqueue/amqp-bunny": "Required for support of AMQP with queue interop",
+        "enqueue/amqp-tools": "Required for support of message delay with AMQP",
+        "enqueue/rdkafka": "Required for support of Kafka with queue interop",
+        "enqueue/sqs": "Required for support of AWS SQS with queue interop",
+        "enqueue/dbal": "Required for support of Doctrine Dbal queue with queue interop",
+        "enqueue/redis": "Required for support of Redis queue with queue interop",
+        "enqueue/fs": "Required for support of filesystem queue with queue interop",
+        "enqueue/gearman": "Required for support of Gearman queue with queue interop",
+        "enqueue/pheanstalk": "Required for support of Beanstalk queue with queue interop",
+        "enqueue/stomp": "Required for support of STOMP with queue interop"
     },
     "autoload": {
         "psr-4": {

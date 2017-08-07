@@ -2,6 +2,9 @@
 
 namespace yii\queue\queue_interop;
 
+use Enqueue\AmqpTools\DelayStrategyAware;
+use Enqueue\AmqpTools\RabbitMqDelayPluginDelayStrategy;
+use Enqueue\AmqpTools\RabbitMqDlxDelayStrategy;
 use Interop\Amqp\AmqpContext;
 use Interop\Amqp\AmqpQueue;
 use Interop\Queue\PsrConnectionFactory;
@@ -12,6 +15,9 @@ use yii\queue\cli\Queue as CliQueue;
 
 class Queue extends CliQueue
 {
+    const RABBITMQ_DELAY_DLX = 'dlx';
+    const RABBITMQ_DELAY_DELAYED_MESSAGE_PLUGIN = 'delayed_message_plugin';
+
     /**
      * {@inheritdoc}
      */
@@ -28,6 +34,13 @@ class Queue extends CliQueue
     public $factoryConfig = [];
 
     /**
+     * Supported strategies: "dlx", "delayed_message_plugin"
+     *
+     * @var string
+     */
+    public $rabbitmqDelayStrategy = self::RABBITMQ_DELAY_DLX;
+
+    /**
      * @var string
      */
     public $queueName = 'queue';
@@ -36,11 +49,6 @@ class Queue extends CliQueue
      * @var PsrContext
      */
     private $context;
-
-    /**
-     * @var PsrProducer
-     */
-    private $producer;
 
     /**
      * Listens queue and runs new jobs.
@@ -68,19 +76,17 @@ class Queue extends CliQueue
      */
     protected function pushMessage($message, $ttr, $delay, $priority)
     {
-        if ($delay) {
-            throw new NotSupportedException('Delayed work is not supported in the driver.');
+        $producer = $this->getContext()->createProducer();
+
+        if ($delay !== null) {
+            $producer->setDeliveryDelay($delay * 1000);
         }
 
-        if ($priority !== null) {
-            throw new NotSupportedException('Job priority is not supported in the driver.');
+        if  ($priority !== null) {
+            $producer->setPriority($priority);
         }
 
-        if (null === $this->producer) {
-            $this->producer = $this->getContext()->createProducer();
-        }
-
-        $this->producer->send(
+        $producer->send(
             $this->getContext()->createQueue($this->queueName),
             $this->getContext()->createMessage("$ttr;$message")
         );
@@ -116,6 +122,21 @@ class Queue extends CliQueue
 
             /** @var PsrConnectionFactory $factory */
             $factory = new $this->factoryClass(isset($this->factoryConfig['dsn']) ? $this->factoryConfig['dsn'] : $this->factoryConfig);
+
+            if ($factory instanceof DelayStrategyAware) {
+                if (false != $this->rabbitmqDelayStrategy) {
+                    switch ($this->rabbitmqDelayStrategy) {
+                        case self::RABBITMQ_DELAY_DLX:
+                            $factory->setDelayStrategy(new RabbitMqDlxDelayStrategy());
+                            break;
+                        case self::RABBITMQ_DELAY_DELAYED_MESSAGE_PLUGIN:
+                            $factory->setDelayStrategy(new RabbitMqDelayPluginDelayStrategy());
+                            break;
+                        default:
+                            throw new \LogicException(sprintf('Unknown rabbitmq delay strategy: "%s"', $this->rabbitmqDelayStrategy));
+                    }
+                }
+            }
 
             $this->context = $factory->createContext();
 
