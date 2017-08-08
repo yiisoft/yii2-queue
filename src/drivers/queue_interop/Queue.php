@@ -116,7 +116,7 @@ class Queue extends CliQueue
                 throw new \LogicException(sprintf('The "factoryClass" option "%s" is not a class', $this->factoryClass));
             }
 
-            if (false == is_a($this->factoryClass, PsrConnectionFactory::class)) {
+            if (false == is_a($this->factoryClass, PsrConnectionFactory::class, true)) {
                 throw new \LogicException(sprintf('The "factoryClass" option must contain a class that implements "%s" but it is not', PsrConnectionFactory::class));
             }
 
