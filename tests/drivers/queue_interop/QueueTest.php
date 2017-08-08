@@ -25,11 +25,6 @@ class QueueTest extends CliTestCase
         // Not supported
     }
 
-    public function testLater()
-    {
-        // Not supported
-    }
-
     public function testRetry()
     {
         // Limited support
