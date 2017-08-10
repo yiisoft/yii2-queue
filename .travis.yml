@@ -7,6 +7,9 @@ php:
   - 7.1
 
 matrix:
+  include:
+    - php: 5.5
+      env: EXCLUDE_ENQUEUE=true
   fast_finish: true
 
 services:
