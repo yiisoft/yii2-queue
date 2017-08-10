@@ -30,7 +30,7 @@ before_install:
 install:
   - travis_retry composer self-update && composer --version
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - if  [ "$EXCLUDE_ENQUEUE" = true ]; then travis_retry composer remove "enqueue/amqp-lib" "enqueue/amqp-tools" --dev --no-interaction  --no-update; fi
+  - if [ "$EXCLUDE_ENQUEUE" = true ]; then travis_retry composer remove "enqueue/amqp-lib" "enqueue/amqp-tools" --dev --no-interaction  --no-update; fi
   - travis_retry composer install --prefer-dist --no-interaction
 
 before_script:
