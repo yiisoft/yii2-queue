@@ -7,6 +7,15 @@ use yii\queue\queue_interop\Queue;
 
 class QueueTest extends CliTestCase
 {
+    protected function setUp()
+    {
+        if ('true' == getenv('EXCLUDE_ENQUEUE')) {
+            $this->markTestSkipped('Queue interop tests are disabled for php 5.5');
+        }
+
+        parent::setUp();
+    }
+
     /**
      * @return Queue
      */
