@@ -5,8 +5,8 @@ For create job template you can be use the gii code generator.
 Configuration
 -------------
 
-In order to use gii/job you have to configure it like the following:
-(for example `backend/config/main-local.php`)
+In order to use gii/job you have to configure it like the following:  
+(for example into `backend/config/main-local.php`)
 
 ```php
 if (!YII_ENV_TEST) {
