@@ -78,9 +78,9 @@ class StopBehavior extends Behavior
         if (!$this->checkWaiting || $this->owner->isWaiting($id)) {
             $this->markAsStopped($id);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -101,8 +101,8 @@ class StopBehavior extends Behavior
         if ($this->cache->exists(__CLASS__ . $id)) {
             $this->cache->delete(__CLASS__ . $id);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }
