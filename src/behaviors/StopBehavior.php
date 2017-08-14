@@ -14,9 +14,9 @@ use yii\queue\ExecEvent;
 use yii\queue\Queue;
 
 /**
- * Stoppable behavior allow stopping scheduled jobs in a queue.
+ * StopBehavior allows stopping scheduled jobs in a queue.
  *
- * This behavior provides a [[stop()]] method, which allows to mark scheduled jobs as "stopped", which
+ * It provides a [[stop()]] method to mark scheduled jobs as "stopped", that
  * will prevent their execution.
  *
  * This behavior should be attached to the [[Queue]] component.
