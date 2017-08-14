@@ -21,3 +21,8 @@
 * [RabbitMQ драйвер](driver-amqp.md)
 * [Beanstalk драйвер](driver-beanstalk.md)
 * [Gearman драйвер](driver-gearman.md)
+
+Генератор кода
+--------
+
+* [Включение gii](gii.md)
