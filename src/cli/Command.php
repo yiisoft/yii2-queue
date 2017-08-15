@@ -129,14 +129,11 @@ abstract class Command extends Controller
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        // Executes child process
-        $queueCmd = (\Yii::$app->id != $this->module->id)
-            ? $this->module->id.'/'.$this->id
-            : $this->id;        
+        // Executes child process        
         $cmd = strtr('{php} {yii} {queue}/exec "{id}" "{ttr}" "{attempt}"', [
             '{php}' => PHP_BINARY,
             '{yii}' => $_SERVER['SCRIPT_FILENAME'],
-            '{queue}' => $queueCmd,
+            '{queue}' => $this->uniqueId,
             '{id}' => $id,
             '{ttr}' => $ttr,
             '{attempt}' => $attempt,
