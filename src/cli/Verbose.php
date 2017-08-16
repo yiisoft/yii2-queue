@@ -84,7 +84,7 @@ class Verbose extends Behavior
     protected function formatTitle(ExecEvent $event)
     {
         return strtr('{time}: [{id}] {class} (attempt: {attempt})', [
-            '{time}' => date('Y-m-d H:i:s'),
+            '{time}' => \Yii::$app->formatter->asDatetime('now'),
             '{id}' => $event->id,
             '{class}' => get_class($event->job),
             '{attempt}' => $event->attempt,
