@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 2.0.1 under development
 
+- Bug #118: Synchronized moving of delayed and reserved jobs to waiting list (zhuravljov)
 - Bug #112: Queue command inside module (tsingsun)
 - Enh #116: Add Chinese Guide (kids-return)
 - Enh #97: Queue::status is public method (zhuravljov)
