@@ -1,9 +1,8 @@
-# Code generator gii
+# Turn on Gii
 
-For create job template you can be use the gii code generator.
+For create job template you can be use the Gii code generator.
 
-Configuration
--------------
+## Configuration
 
 In order to use gii/job you have to configure it like the following:  
 (for example into `backend/config/main-local.php`)
