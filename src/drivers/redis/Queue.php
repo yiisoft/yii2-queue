@@ -84,11 +84,10 @@ class Queue extends CliQueue
      */
     protected function reserve($wait)
     {
-        // Move delayed messages into waiting
-        if ($this->now < time()) {
-            $this->now = time();
-            $this->moveExpired("$this->channel.delayed", $this->now);
-            $this->moveExpired("$this->channel.reserved", $this->now);
+        // Moves delayed and reserved jobs into waiting list with lock for one second
+        if ($this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
+            $this->moveExpired("$this->channel.delayed");
+            $this->moveExpired("$this->channel.reserved");
         }
 
         // Find a new waiting message
@@ -110,24 +109,18 @@ class Queue extends CliQueue
         return [$id, $message, $ttr, $attempt];
     }
 
-    private $now = 0;
-
     /**
      * @param string $from
-     * @param int $time
      */
-    protected function moveExpired($from, $time)
+    protected function moveExpired($from)
     {
-        if (!$this->redis->set("$from.lock", true, 'NX', 'EX', 10)) {
-            return;
-        }
-        if ($expired = $this->redis->zrevrangebyscore($from, $time, '-inf')) {
-            $this->redis->zremrangebyscore($from, '-inf', $time);
+        $now = time();
+        if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
+            $this->redis->zremrangebyscore($from, '-inf', $now);
             foreach ($expired as $id) {
                 $this->redis->rpush("$this->channel.waiting", $id);
             }
         }
-        $this->redis->del("$from.lock");
     }
 
     /**
