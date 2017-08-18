@@ -15,7 +15,7 @@ if (!YII_ENV_TEST) {
         'class' => 'yii\gii\Module',
         'generators' => [
             'job' => [
-                'class' => yii\queue\gii\Generator::class,
+                'class' => \yii\queue\gii\Generator::class,
             ],
         ],
     ];
