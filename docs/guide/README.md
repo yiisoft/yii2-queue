@@ -9,7 +9,6 @@ Introduction
 * [Usage basics](usage.md)
 * [Errors and retryable jobs](retryable.md)
 * [Worker starting control](worker.md)
-* [Debugging](debug.md)
 
 Queue Drivers
 -------------
@@ -21,3 +20,9 @@ Queue Drivers
 * [RabbitMQ](driver-amqp.md)
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
+
+Developer tools
+---------------
+
+* [Debugging](debug.md)
+* [Code generator Gii](gii.md)
