@@ -35,8 +35,13 @@ class QueueTest extends CliTestCase
         $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 3]));
         $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 4]));
         $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 2]));
-        $this->runProcess('php tests/yii queue/run');
+        $this->startProcess('php tests/yii queue/listen');
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
+    }
+
+    public function testRun()
+    {
+        // Not supported
     }
 
     public function testStatus()
