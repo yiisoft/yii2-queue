@@ -21,7 +21,10 @@ class QueueTest extends CliTestCase
      */
     protected function getQueue()
     {
-        return \Yii::$app->interopQueue;
+        $queue = \Yii::$app->interopQueue;
+        $queue->setupBroker();
+
+        return $queue;
     }
 
     public function testRun()
