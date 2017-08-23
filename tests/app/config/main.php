@@ -78,9 +78,10 @@ $config = [
         ],
         'interopQueue' => [
             'class' => \yii\queue\queue_interop\Queue::class,
-            'queueName' => 'interop_queue',
-            'factoryClass' => \Enqueue\AmqpLib\AmqpConnectionFactory::class,
-            'factoryConfig' => [
+            'config' => [
+                'driver' => \yii\queue\queue_interop\driver\AmqpDriver::class,
+                'factory' => \Enqueue\AmqpLib\AmqpConnectionFactory::class,
+
                 'host' => 'localhost',
                 'port' => 5672,
                 'user' => 'guest',

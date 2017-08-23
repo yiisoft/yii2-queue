@@ -12,10 +12,22 @@ interface Driver
     const H_DELAY = 'yii-delay';
     const H_PRIORITY = 'yii-priority';
 
+    /**
+     * @param string $message
+     * @param string $ttr
+     * @param int    $delay
+     * @param int    $priority
+     */
     public function push($message, $ttr, $delay, $priority);
 
+    /**
+     * @param PsrMessage $message
+     */
     public function redeliver(PsrMessage $message);
 
+    /**
+     * Creates all required queues, topics etc
+     */
     public function setupBroker();
 
     /**

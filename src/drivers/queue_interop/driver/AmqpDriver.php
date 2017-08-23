@@ -33,6 +33,9 @@ class AmqpDriver implements Driver
      */
     private $consumer;
 
+    /**
+     * @param array $config
+     */
     public function __construct($config)
     {
         $this->config = array_replace([
@@ -42,6 +45,9 @@ class AmqpDriver implements Driver
         ], $config);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setupBroker()
     {
         $this->getContext()->declareQueue($this->getQueue());
@@ -84,6 +90,9 @@ class AmqpDriver implements Driver
         $this->getContext()->createProducer()->send($this->getQueue(), $newMessage);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getConsumer()
     {
         if (null === $this->consumer) {
@@ -93,6 +102,9 @@ class AmqpDriver implements Driver
         return $this->consumer;
     }
 
+    /**
+     * @return AmqpContext
+     */
     public function getContext()
     {
         if (null === $this->context) {

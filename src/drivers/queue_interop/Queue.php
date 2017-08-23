@@ -33,7 +33,6 @@ class Queue extends CliQueue
         while (true) {
             if ($message = $consumer->receive()) {
                 if ($message->isRedelivered()) {
-                    echo 'redelivered', PHP_EOL;
                     $this->driver->redeliver($message);
                 } else {
                     $ttr = $message->getProperty(Driver::H_TTR);
