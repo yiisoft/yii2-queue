@@ -55,5 +55,3 @@ class <?= $jobClass ?> extends <?= $baseClass ?> <?= $implements ?>
     }
 <?php endif; ?>
 }
-
-

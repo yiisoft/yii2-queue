@@ -127,13 +127,13 @@ abstract class Command extends Controller
      * @throws
      * @see actionExec()
      */
-    private function handleMessage($id, $message, $ttr, $attempt)
+    protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        // Executes child process
+        // Executes child process        
         $cmd = strtr('{php} {yii} {queue}/exec "{id}" "{ttr}" "{attempt}"', [
             '{php}' => PHP_BINARY,
             '{yii}' => $_SERVER['SCRIPT_FILENAME'],
-            '{queue}' => $this->id,
+            '{queue}' => $this->uniqueId,
             '{id}' => $id,
             '{ttr}' => $ttr,
             '{attempt}' => $attempt,

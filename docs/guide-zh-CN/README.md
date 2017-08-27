@@ -1,16 +1,17 @@
-Yii2 Queue extension
+Yii2 队列扩展
 ====================
 
-An extension for running tasks asyncronously via queues.
+通过这个队列扩展可以异步执行任务
 
-Introduction
+介绍
 ------------
 
-* [Usage basics](usage.md)
-* [Errors and retryable jobs](retryable.md)
+* [基本使用](usage.md)
+* [错误与重试作业](retryable.md)
 * [Worker starting control](worker.md)
+* [调试](debug.md)
 
-Queue Drivers
+队列驱动
 -------------
 
 * [Syncronous](driver-sync.md)
@@ -20,9 +21,3 @@ Queue Drivers
 * [RabbitMQ](driver-amqp.md)
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
-
-Developer tools
----------------
-
-* [Debugging](debug.md)
-* [Code generator Gii](gii.md)
