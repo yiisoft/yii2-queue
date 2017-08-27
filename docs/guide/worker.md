@@ -50,7 +50,7 @@ Config example:
 
 ```conf
 [Unit]
-Description=YUNCMS Jobs Server
+Description=Yii Jobs Server
 After=network.target
 After=syslog.target
 
