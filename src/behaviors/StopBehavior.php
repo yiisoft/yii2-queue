@@ -31,7 +31,7 @@ class StopBehavior extends Behavior
      */
     public $cache = 'cache';
     /**
-     * @var bool
+     * @var bool option allows to turn status checking off in case a driver does not support it.
      */
     public $checkWaiting = true;
     /**
