@@ -5,16 +5,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\queue\behaviors;
+namespace yii\queue\stoppable;
 
-use yii\base\Behavior;
 use yii\caching\Cache;
 use yii\di\Instance;
 use yii\queue\ExecEvent;
 use yii\queue\Queue;
 
 /**
- * StopBehavior allows stopping scheduled jobs in a queue.
+ * Stoppable Behavior allows stopping scheduled jobs in a queue.
  *
  * It provides a [[stop()]] method to mark scheduled jobs as "stopped", that
  * will prevent their execution.
@@ -24,7 +23,7 @@ use yii\queue\Queue;
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  * @since 2.0.1
  */
-class StopBehavior extends Behavior
+class Behavior extends \yii\base\Behavior
 {
     /**
      * @var Cache|array|string the cache instance used to store stopped status.
