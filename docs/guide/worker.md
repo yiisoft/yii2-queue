@@ -43,6 +43,29 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
 
+Systemd
+-------
+
+Config example:
+
+```conf
+[Unit]
+Description=YUNCMS Jobs Server
+After=network.target
+After=syslog.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/yii-queue/master.pid
+ExecStart=/path/to/app/yii queue/listen --verbose=1 --color=0 >> /var/logs/yii-queue.log 2>&1
+ExecStop=/bin/kill $MAINPID
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target graphical.target
+```
+
 Cron
 ----
 
