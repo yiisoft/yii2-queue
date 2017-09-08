@@ -22,6 +22,7 @@
     "require": {
         "php": ">=5.5.0",
         "yiisoft/yii2": "~2.0.10",
+        "aws/aws-sdk-php": ">=2.4",
         "symfony/process": "*"
     },
     "require-dev": {
