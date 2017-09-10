@@ -10,9 +10,9 @@ namespace yii\queue\sqs;
 use yii\queue\cli\Command as CliCommand;
 
 /**
- * Manages application gearman-queue.
+ * Manages application aws sqs-queue.
  *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * @author Manoj Malviya <manojm@girnarsoft.com>
  */
 class Command extends CliCommand
 {
@@ -22,7 +22,7 @@ class Command extends CliCommand
     public $queue;
 
     /**
-     * Runs all jobs from gearman-queue.
+     * Runs all jobs from sqs.
      * It can be used as cron job.
      */
     public function actionRun()
@@ -31,7 +31,7 @@ class Command extends CliCommand
     }
 
     /**
-     * Listens gearman-queue and runs new jobs.
+     * Listens sqs and runs new jobs.
      * It can be used as demon process.
      */
     public function actionListen()
