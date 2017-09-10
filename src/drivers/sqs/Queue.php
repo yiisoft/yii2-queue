@@ -16,14 +16,38 @@ use Aws\Credentials\CredentialProvider;
 class Queue extends CliQueue
 {
     /**
+    * @var SqsClient
+    */
+    private $_client;
+
+    /**
      * The SQS url.
      * @var string
      */
     public $url;
 
+    /**
+     * aws access key
+     * @var string
+     */
     public $key = '';
+
+    /**
+     * aws secret
+     * @var string
+     */
     public $secret = '';
+
+    /**
+     * region where queue is hosted.
+     * @var string
+     */
     public $region = '';
+
+    /**
+     * API version
+     * @var string
+     */
     public $version = 'latest';
 
     /**
@@ -49,8 +73,7 @@ class Queue extends CliQueue
 
             $this->reserve($payload, $ttr); //reserve it so it is not visible to another worker till ttr
 
-            if($this->handleMessage(null, $message, $ttr, 1))
-            {
+            if ($this->handleMessage(null, $message, $ttr, 1)) {
                 //if handled then remove from queue
                 $this->release($payload);
             }
@@ -70,8 +93,7 @@ class Queue extends CliQueue
      */
     protected function pushMessage($message, $ttr, $delay, $priority)
     {
-        if ($priority)
-        {
+        if ($priority) {
             throw new NotSupportedException('Priority is not supported in this driver');
         }
 
@@ -101,14 +123,13 @@ class Queue extends CliQueue
      */
     protected function getClient()
     {
-        if ($this->key && $this->secret) 
-        {
+        if ($this->key && $this->secret) {
             $provider = [
                 'key'    => $this->key, 
                 'secret' => $this->secret
             ];
         } else {
-            // use default provider if no key and secret key passed
+            // use default provider if no key and secret passed
             //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
             $provider = CredentialProvider::defaultProvider();
         }
@@ -126,8 +147,9 @@ class Queue extends CliQueue
         return $this->_client;
     }
 
-    private $_client;
-
+    /**
+    *
+    */
     private function getPayload()
     {
         $payload = $this->getClient()->receiveMessage([
@@ -137,17 +159,19 @@ class Queue extends CliQueue
         ]);
 
         $payload = $payload['Messages'];
-        if ($payload){
+        if ($payload) {
             return array_pop($payload);
         }
 
         return null;
-        
     }
 
     /**
     * Set the visibilty to reserve message
     * So that no other worker can see this message
+    *
+    * @param array $payload
+    * @param int $ttr  
     */
     private function reserve($payload, $ttr)
     {
@@ -161,6 +185,9 @@ class Queue extends CliQueue
 
     /**
     * Mark the message as handled
+    *
+    * @param array $payload
+    * @return boolean
     */
     private function release($payload)
     {
