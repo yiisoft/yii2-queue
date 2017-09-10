@@ -50,7 +50,8 @@
             "yii\\queue\\file\\": "src/drivers/file",
             "yii\\queue\\gearman\\": "src/drivers/gearman",
             "yii\\queue\\redis\\": "src/drivers/redis",
-            "yii\\queue\\sync\\": "src/drivers/sync"
+            "yii\\queue\\sync\\": "src/drivers/sync",
+            "yii\\queue\\sqs\\": "src/drivers/sqs"
         }
     },
     "extra": {
