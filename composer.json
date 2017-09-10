@@ -22,7 +22,6 @@
     "require": {
         "php": ">=5.5.0",
         "yiisoft/yii2": "~2.0.10",
-        "aws/aws-sdk-php": ">=2.4",
         "symfony/process": "*"
     },
     "require-dev": {
@@ -32,14 +31,16 @@
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "phpunit/phpunit": "~4.4"
+        "phpunit/phpunit": "~4.4",
+        "aws/aws-sdk-php": ">=2.4"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
         "yiisoft/yii2-redis": "Need for Redis queue.",
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
-        "ext-gearman": "Need for Gearman queue."
+        "ext-gearman": "Need for Gearman queue.",
+        "aws/aws-sdk-php": "Need for aws SQS."
     },
     "autoload": {
         "psr-4": {

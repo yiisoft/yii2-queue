@@ -6,6 +6,7 @@ use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 use yii\queue\cli\Signal;
 use \Aws\Sqs\SqsClient;
+use Aws\Credentials\CredentialProvider;
 
 /**
  * SQS Queue
@@ -39,14 +40,18 @@ class Queue extends CliQueue
      }
 
     /**
-     * Runs all jobs from gearman-queue.
+     * Runs all jobs from queue.
      */
     public function run()
     {
         while (!Signal::isExit() && ($payload = $this->getPayload())) {
-            list($ttr, $message) = explode(';', $payload->workload(), 2);
+            list($ttr, $message) = explode(';', $payload['Body'], 2);
+
+            $this->reserve($payload, $ttr); //reserve it so it is not visible to another worker till ttr
+
             if($this->handleMessage(null, $message, $ttr, 1))
             {
+                //if handled then remove from queue
                 $this->release($payload);
             }
         }
@@ -73,7 +78,7 @@ class Queue extends CliQueue
         $model = $this->getClient()->sendMessage([
             'DelaySeconds' => $delay,
             'QueueUrl' => $this->url,
-            'MessageBody' => "$ttr;message",
+            'MessageBody' => "$ttr;$message",
         ]);
 
         if ($model !== null) {
@@ -88,14 +93,7 @@ class Queue extends CliQueue
      */
     public function status($id)
     {
-        $status = $this->getClient()->jobStatus($id);
-        if ($status[0] && !$status[1]) {
-            return self::STATUS_WAITING;
-        } elseif ($status[0] && $status[1]) {
-            return self::STATUS_RESERVED;
-        } else {
-            return self::STATUS_DONE;
-        }
+        throw new NotSupportedException('Status is not supported in the driver.');
     }
 
     /**
@@ -103,8 +101,26 @@ class Queue extends CliQueue
      */
     protected function getClient()
     {
+        if ($this->key && $this->secret) 
+        {
+            $provider = [
+                'key'    => $this->key, 
+                'secret' => $this->secret
+            ];
+        } else {
+            // use default provider if no key and secret key passed
+            //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
+            $provider = CredentialProvider::defaultProvider();
+        }
+        
+        $config = [
+            'credential' => $provider,
+            'region' => $this->region,
+            'version' => $this->version,
+        ];
+
         if (!$this->_client) {
-            $this->_client = SqsClient::factory($this->config);
+            $this->_client = SqsClient::factory($config);
 
         }
         return $this->_client;
@@ -120,13 +136,36 @@ class Queue extends CliQueue
             'MaxNumberOfMessages' => 1,
         ]);
 
-        return $payload;
+        $payload = $payload['Messages'];
+        if ($payload){
+            return array_pop($payload);
+        }
+
+        return null;
+        
     }
 
-    private function release()
+    /**
+    * Set the visibilty to reserve message
+    * So that no other worker can see this message
+    */
+    private function reserve($payload, $ttr)
     {
-        if (!empty($job->header['ReceiptHandle'])) {
-            $receiptHandle = $job->header['ReceiptHandle'];
+        $receiptHandle = $payload['ReceiptHandle'];
+        $this->getClient()->changeMessageVisibility(array(
+            'QueueUrl' => $this->url,
+            'ReceiptHandle' => $queue_handle,
+            'VisibilityTimeout' => $ttr
+        ));
+    }
+
+    /**
+    * Mark the message as handled
+    */
+    private function release($payload)
+    {
+        if (!empty($payload['ReceiptHandle'])) {
+            $receiptHandle = $payload['ReceiptHandle'];
             $response = $this->getClient()->deleteMessage([
                 'QueueUrl'      => $this->url,
                 'ReceiptHandle' => $receiptHandle,
