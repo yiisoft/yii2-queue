@@ -178,7 +178,7 @@ class Queue extends CliQueue
         $receiptHandle = $payload['ReceiptHandle'];
         $this->getClient()->changeMessageVisibility(array(
             'QueueUrl' => $this->url,
-            'ReceiptHandle' => $queue_handle,
+            'ReceiptHandle' => $receiptHandle,
             'VisibilityTimeout' => $ttr
         ));
     }
