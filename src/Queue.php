@@ -190,6 +190,8 @@ abstract class Queue extends Component
             $event->job->execute($this);
         } catch (\Exception $error) {
             return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
+        } catch (\Throwable $error) {
+            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
         }
         $this->trigger(self::EVENT_AFTER_EXEC, $event);
 
@@ -201,7 +203,7 @@ abstract class Queue extends Component
      * @param Job $job
      * @param int $ttr
      * @param int $attempt
-     * @param \Exception $error
+     * @param \Exception|\Throwable $error
      * @return bool
      * @internal
      */
