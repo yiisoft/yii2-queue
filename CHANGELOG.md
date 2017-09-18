@@ -8,6 +8,7 @@ Yii2 Queue Extension Change Log
 - Enh #116: Add Chinese Guide (kids-return)
 - Enh #97: Queue::status is public method (zhuravljov)
 - Bug #98: Fixed timeout error handler (zhuravljov)
+- Enh #137: All throwable errors caused by jobs are now caught (brandonkelly)
 
 ## 2.0.0
 

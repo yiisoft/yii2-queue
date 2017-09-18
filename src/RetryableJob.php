@@ -21,7 +21,7 @@ interface RetryableJob extends Job
 
     /**
      * @param int $attempt number
-     * @param \Exception $error from last execute of the job
+     * @param \Exception|\Throwable $error from last execute of the job
      * @return bool
      */
     public function canRetry($attempt, $error);
