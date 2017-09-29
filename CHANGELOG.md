@@ -9,6 +9,7 @@ Yii2 Queue Extension Change Log
 - Enh #97: Queue::status is public method (zhuravljov)
 - Bug #98: Fixed timeout error handler (zhuravljov)
 - Enh #137: All throwable errors caused by jobs are now caught (brandonkelly)
+- Enh: Added `Signal::setExitFlag()` to stop `Queue::run()` loop manually (silverfire)
 
 ## 2.0.0
 
