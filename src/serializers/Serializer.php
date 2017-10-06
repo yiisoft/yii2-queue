@@ -7,7 +7,7 @@
 
 namespace yii\queue\serializers;
 
-use yii\queue\Job;
+use yii\queue\JobInterface;
 
 /**
  * Class Serializer
@@ -17,14 +17,14 @@ use yii\queue\Job;
 interface Serializer
 {
     /**
-     * @param Job|mixed $job
+     * @param JobInterface|mixed $job
      * @return string
      */
     public function serialize($job);
 
     /**
      * @param string $serialized
-     * @return Job
+     * @return JobInterface
      */
     public function unserialize($serialized);
 }

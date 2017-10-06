@@ -29,13 +29,13 @@ are over, and the job isn't done, it will be removed from a queue as completed.
 The options extend to all jobs in a queue, and if you need to change this behavior fo several jobs,
 there is second method.
  
-RetryableJob interface
-----------------------
+RetryableJobInterface
+---------------------
 
-Separate control of retry is implemented by `RetryableJob` interface. For example:
+Separate control of retry is implemented by `RetryableJobInterface` interface. For example:
 
 ```php
-class SomeJob extends Object implements RetryableJob
+class SomeJob extends Object implements RetryableJobInterface
 {
     public function execute($queue)
     {
@@ -82,7 +82,8 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
 });
 ```
 
-Event handlers are executed after `RetryableJob` methods, and therefore have the highest priority.
+Event handlers are executed after `RetryableJobInterface` methods, and therefore have the highest
+priority.
 
 Restrictions
 ------------

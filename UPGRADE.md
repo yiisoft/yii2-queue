@@ -4,6 +4,14 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
+Upgrade from 2.0.0 to 2.0.1
+---------------------------
+
+* `Job` and `RetryableJob` interfaces were renamed to `JobInterface` and `RetryableJobInterface`.
+  Old names are declared as deprecated and will be removed in `2.1.0`.   
+
+
+
 Upgrade from 1.1.0 to 2.0.0
 ---------------------------
 

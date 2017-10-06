@@ -11,7 +11,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\base\ViewContextInterface;
 use yii\helpers\VarDumper;
-use yii\queue\Job;
+use yii\queue\JobInterface;
 use yii\queue\PushEvent;
 use yii\queue\Queue;
 
@@ -60,7 +60,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
         $data['ttr'] = $event->ttr;
         $data['delay'] = $event->delay;
         $data['priority'] = $event->priority;
-        if ($event->job instanceof Job) {
+        if ($event->job instanceof JobInterface) {
             $data['class'] = get_class($event->job);
             $data['properties'] = [];
             foreach (get_object_vars($event->job) as $property => $value) {
