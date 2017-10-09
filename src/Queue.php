@@ -13,7 +13,7 @@ use yii\base\InvalidParamException;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 use yii\queue\serializers\PhpSerializer;
-use yii\queue\serializers\Serializer;
+use yii\queue\serializers\SerializerInterface;
 
 /**
  * Base Queue
@@ -56,7 +56,7 @@ abstract class Queue extends Component
     const STATUS_DONE = 3;
 
     /**
-     * @var Serializer|array
+     * @var SerializerInterface|array
      */
     public $serializer = PhpSerializer::class;
     /**
@@ -78,7 +78,7 @@ abstract class Queue extends Component
     public function init()
     {
         parent::init();
-        $this->serializer = Instance::ensure($this->serializer, Serializer::class);
+        $this->serializer = Instance::ensure($this->serializer, SerializerInterface::class);
     }
 
     /**

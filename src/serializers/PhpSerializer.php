@@ -14,7 +14,7 @@ use yii\base\Object;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class PhpSerializer extends Object implements Serializer
+class PhpSerializer extends Object implements SerializerInterface
 {
     /**
      * @inheritdoc

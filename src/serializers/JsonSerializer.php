@@ -17,7 +17,7 @@ use yii\helpers\Json;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class JsonSerializer extends Object implements Serializer
+class JsonSerializer extends Object implements SerializerInterface
 {
     /**
      * @var string
