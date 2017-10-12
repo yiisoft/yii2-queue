@@ -62,9 +62,8 @@ class Queue extends CliQueue
         $this->open();
         $callback = function(AMQPMessage $payload) {
             list($ttr, $message) = explode(';', $payload->body, 2);
-            if ($this->handleMessage(null, $message, $ttr, 1)) {
-                $payload->delivery_info['channel']->basic_ack($payload->delivery_info['delivery_tag']);
-            }
+            $method = $this->handleMessage(null, $message, $ttr, 1) ? 'basic_ack' : 'basic_reject';
+            $payload->delivery_info['channel']->{$method}($payload->delivery_info['delivery_tag'], false);
         };
         $this->channel->basic_qos(null, 1, null);
         $this->channel->basic_consume($this->queueName, '', false, false, false, false, $callback);
