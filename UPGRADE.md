@@ -7,6 +7,9 @@ application when you upgrade the package from one version to another.
 Upgrade from 2.0.0 to 2.0.1
 ---------------------------
 
+* `yii\queue\cli\Verbose` behavior was renamed to `yii\queue\cli\VerboseBehavior`. Old class was
+  marked as deprecated and will be removed in `2.1.0`.
+
 * `Job`, `RetryableJob` and `Serializer` interfaces were renamed to `JobInterface`,
   `RetryableJobInterface` and `SerializerInterface`. Old names are declared as deprecated
   and will be removed in `2.1.0`.

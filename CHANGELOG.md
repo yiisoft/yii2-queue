@@ -3,7 +3,9 @@ Yii2 Queue Extension Change Log
 
 ## 2.0.1 under development
 
+- Enh: Rename cli\Verbose behavior to cli\VerboseBehavior (zhuravljov)
 - Enh #147: Igbinary job serializer (xutl)
+- Enh: Rename serializers\Serializer interface to serializers\SerializerInterface (zhuravljov)
 - Enh #122: Rename Job to JobInterface (zhuravljov)
 - Bug #118: Synchronized moving of delayed and reserved jobs to waiting list (zhuravljov)
 - Bug #112: Queue command inside module (tsingsun)
