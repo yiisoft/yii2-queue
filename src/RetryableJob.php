@@ -10,19 +10,10 @@ namespace yii\queue;
 /**
  * Interface RetryableJob
  *
+ * @deprecated Will be removed in 2.1.0. Use RetryableJobInterface instead of RetryableJob.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-interface RetryableJob extends Job
+interface RetryableJob extends RetryableJobInterface
 {
-    /**
-     * @return int time to reserve in seconds
-     */
-    public function getTtr();
-
-    /**
-     * @param int $attempt number
-     * @param \Exception $error from last execute of the job
-     * @return bool
-     */
-    public function canRetry($attempt, $error);
 }

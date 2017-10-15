@@ -21,7 +21,7 @@ class JobEvent extends Event
      */
     public $id;
     /**
-     * @var Job
+     * @var JobInterface
      */
     public $job;
     /**

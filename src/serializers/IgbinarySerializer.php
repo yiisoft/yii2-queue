@@ -10,18 +10,21 @@ namespace yii\queue\serializers;
 use yii\base\Object;
 
 /**
- * Class PhpSerializer
+ * Class IgbinarySerializer
  *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * It uses an alternative serializer available via PECL extension which produces
+ * more compact data chunks significantly faster that native PHP one.
+ *
+ * @author xutl <xutongle@gmail.com>
  */
-class PhpSerializer extends Object implements SerializerInterface
+class IgbinarySerializer extends Object implements SerializerInterface
 {
     /**
      * @inheritdoc
      */
     public function serialize($job)
     {
-        return serialize($job);
+        return igbinary_serialize($job);
     }
 
     /**
@@ -29,6 +32,6 @@ class PhpSerializer extends Object implements SerializerInterface
      */
     public function unserialize($serialized)
     {
-        return unserialize($serialized);
+        return igbinary_unserialize($serialized);
     }
 }

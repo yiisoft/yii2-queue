@@ -9,14 +9,14 @@ namespace tests\app;
 
 use Yii;
 use yii\base\Object;
-use yii\queue\RetryableJob;
+use yii\queue\RetryableJobInterface;
 
 /**
  * Class RetryJob
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class RetryJob extends Object implements RetryableJob
+class RetryJob extends Object implements RetryableJobInterface
 {
     public $uid;
 

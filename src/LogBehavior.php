@@ -72,7 +72,9 @@ class LogBehavior extends Behavior
     {
         $title = strtr('[id] name', [
             'id' => $event->id,
-            'name' => $event->job instanceof Job ? get_class($event->job) : 'mixed data',
+            'name' => $event->job instanceof JobInterface
+                ? get_class($event->job)
+                : 'mixed data',
         ]);
         if ($event instanceof ExecEvent) {
             $title .= " (attempt: $event->attempt)";

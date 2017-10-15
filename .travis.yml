@@ -25,6 +25,7 @@ before_install:
   - sudo apt-get install -qq beanstalkd
   - sudo beanstalkd -v
   - sudo service beanstalkd start
+  - pecl install igbinary
 
 install:
   - travis_retry composer self-update && composer --version

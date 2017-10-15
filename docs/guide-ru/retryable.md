@@ -35,14 +35,14 @@
 Описанные опции действуют глобально на все задания в очереди, а, чтобы для отдельных заданий это
 поведение переопределить, существует дополнительные возможности.
 
-Интерфейс RetryableJob
-----------------------
+RetryableJobInterface
+---------------------
 
-Индивидуальный контроль повторного выполнения реализован интерфейсом `RetryableJob`, код такого
-job-объекта может выглядеть так:
+Индивидуальный контроль повторного выполнения реализован интерфейсом `RetryableJobInterface`, код
+такого job-объекта может выглядеть так:
 
 ```php
-class SomeJob extends Object implements RetryableJob
+class SomeJob extends Object implements RetryableJobInterface
 {
     public function execute($queue)
     {
@@ -91,8 +91,8 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
 });
 ```
 
-Обработчики событий выполняются после методов `RetryableJob`, и, следовательно, имеют наивысший
-приоритет.
+Обработчики событий выполняются после методов `RetryableJobInterface`, и, следовательно, имеют
+наивысший приоритет.
 
 Ограничения
 -----------

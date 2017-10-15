@@ -9,7 +9,7 @@ namespace tests\serializers;
 
 use tests\app\SimpleJob;
 use yii\base\Object;
-use yii\queue\serializers\Serializer;
+use yii\queue\serializers\SerializerInterface;
 
 /**
  * Class TestCase
@@ -19,7 +19,7 @@ use yii\queue\serializers\Serializer;
 abstract class TestCase extends \tests\TestCase
 {
     /**
-     * @return Serializer
+     * @return SerializerInterface
      */
     abstract protected function createSerializer();
 

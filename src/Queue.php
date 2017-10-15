@@ -13,7 +13,7 @@ use yii\base\InvalidParamException;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 use yii\queue\serializers\PhpSerializer;
-use yii\queue\serializers\Serializer;
+use yii\queue\serializers\SerializerInterface;
 
 /**
  * Base Queue
@@ -56,7 +56,7 @@ abstract class Queue extends Component
     const STATUS_DONE = 3;
 
     /**
-     * @var Serializer|array
+     * @var SerializerInterface|array
      */
     public $serializer = PhpSerializer::class;
     /**
@@ -78,7 +78,7 @@ abstract class Queue extends Component
     public function init()
     {
         parent::init();
-        $this->serializer = Instance::ensure($this->serializer, Serializer::class);
+        $this->serializer = Instance::ensure($this->serializer, SerializerInterface::class);
     }
 
     /**
@@ -120,14 +120,14 @@ abstract class Queue extends Component
     /**
      * Pushes job into queue
      *
-     * @param Job|mixed $job
+     * @param JobInterface|mixed $job
      * @return string|null id of a job message
      */
     public function push($job)
     {
         $event = new PushEvent([
             'job' => $job,
-            'ttr' => $job instanceof RetryableJob
+            'ttr' => $job instanceof RetryableJobInterface
                 ? $job->getTtr()
                 : ($this->pushTtr ?: $this->ttr),
             'delay' => $this->pushDelay ?: 0,
@@ -168,9 +168,9 @@ abstract class Queue extends Component
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
         $job = $this->serializer->unserialize($message);
-        if (!($job instanceof Job)) {
+        if (!($job instanceof JobInterface)) {
             throw new InvalidParamException(strtr('Job must be {class} object instead of {dump}.', [
-                '{class}' => Job::class,
+                '{class}' => JobInterface::class,
                 '{dump}' => VarDumper::dumpAsString($job),
             ]));
         }
@@ -190,6 +190,8 @@ abstract class Queue extends Component
             $event->job->execute($this);
         } catch (\Exception $error) {
             return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
+        } catch (\Throwable $error) {
+            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
         }
         $this->trigger(self::EVENT_AFTER_EXEC, $event);
 
@@ -198,10 +200,10 @@ abstract class Queue extends Component
 
     /**
      * @param string|null $id
-     * @param Job $job
+     * @param JobInterface $job
      * @param int $ttr
      * @param int $attempt
-     * @param \Exception $error
+     * @param \Exception|\Throwable $error
      * @return bool
      * @internal
      */
@@ -213,7 +215,7 @@ abstract class Queue extends Component
             'ttr' => $ttr,
             'attempt' => $attempt,
             'error' => $error,
-            'retry' => $job instanceof RetryableJob
+            'retry' => $job instanceof RetryableJobInterface
                 ? $job->canRetry($attempt, $error)
                 : $attempt < $this->attempts,
         ]);

@@ -30,10 +30,10 @@
 重试作业接口
 ----------------------
 
-Separate control of retry is implemented by `RetryableJob` 接口。 示例:
+Separate control of retry is implemented by `RetryableJobInterface` 接口。 示例:
 
 ```php
-class SomeJob extends Object implements RetryableJob
+class SomeJob extends Object implements RetryableJobInterface
 {
     public function execute($queue)
     {
@@ -80,7 +80,7 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
 });
 ```
 
-事件处理程序在 `RetryableJob` 方法之后执行，因此具有最高优先级。
+事件处理程序在 `RetryableJobInterface` 方法之后执行，因此具有最高优先级。
 
 限制
 ------------
