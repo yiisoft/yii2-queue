@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 2.0.1 under development
 
+- Enh #147: Igbinary job serializer (xutl)
 - Enh #122: Rename Job to JobInterface (zhuravljov)
 - Bug #118: Synchronized moving of delayed and reserved jobs to waiting list (zhuravljov)
 - Bug #112: Queue command inside module (tsingsun)
