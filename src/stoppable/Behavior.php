@@ -9,35 +9,19 @@ namespace yii\queue\stoppable;
 
 use yii\caching\Cache;
 use yii\di\Instance;
-use yii\queue\ExecEvent;
-use yii\queue\Queue;
 
 /**
- * Stoppable Behavior allows stopping scheduled jobs in a queue.
- *
- * It provides a [[stop()]] method to mark scheduled jobs as "stopped", that
- * will prevent their execution.
- *
- * This behavior should be attached to the [[Queue]] component.
+ * Stoppable Behavior
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  * @since 2.0.1
  */
-class Behavior extends \yii\base\Behavior
+class Behavior extends BaseBehavior
 {
     /**
      * @var Cache|array|string the cache instance used to store stopped status.
      */
     public $cache = 'cache';
-    /**
-     * @var bool option allows to turn status checking off in case a driver does not support it.
-     */
-    public $checkWaiting = true;
-    /**
-     * @var Queue
-     * @inheritdoc
-     */
-    public $owner;
 
     /**
      * @inheritdoc
@@ -47,41 +31,6 @@ class Behavior extends \yii\base\Behavior
         parent::init();
         $this->cache = Instance::ensure($this->cache, Cache::class);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function events()
-    {
-        return [
-            Queue::EVENT_BEFORE_EXEC => 'beforeExec',
-        ];
-    }
-
-    /**
-     * @param ExecEvent $event
-     */
-    public function beforeExec(ExecEvent $event)
-    {
-        $event->handled = $this->isStopped($event->id);
-    }
-
-    /**
-     * Sets stop flag.
-     *
-     * @param string $id of a job
-     * @return bool
-     */
-    public function stop($id)
-    {
-        if (!$this->checkWaiting || $this->owner->isWaiting($id)) {
-            $this->markAsStopped($id);
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * @param string $id of a job
      * @return bool
