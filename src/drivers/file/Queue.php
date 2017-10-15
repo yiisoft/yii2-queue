@@ -22,12 +22,34 @@ use yii\queue\cli\Signal;
  */
 class Queue extends CliQueue
 {
+    /**
+     * @var string
+     */
     public $path = '@runtime/queue';
+    /**
+     * @var int
+     */
     public $dirMode = 0755;
+    /**
+     * @var int|null
+     */
     public $fileMode;
-
+    /**
+     * @var callable
+     */
+    public $indexSerializer = 'serialize';
+    /**
+     * @var callable
+     */
+    public $indexDeserializer = 'unserialize';
+    /**
+     * @var string
+     */
     public $commandClass = Command::class;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -189,11 +211,14 @@ class Queue extends CliQueue
             throw new InvalidConfigException("Unable to open index file: $fileName");
         }
         flock($file, LOCK_EX);
+        $data = [];
         $content = stream_get_contents($file);
-        $data = $content === '' ? [] : unserialize($content);
+        if ($content !== '') {
+            $data = call_user_func($this->indexDeserializer, $content);
+        }
         try {
             $callback($data);
-            $newContent = serialize($data);
+            $newContent = call_user_func($this->indexSerializer, $data);
             if ($newContent !== $content) {
                 ftruncate($file, 0);
                 rewind($file);
