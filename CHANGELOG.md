@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 2.0.1 under development
 
+- Enh #102: Stoppable behavior (zhuravljov)
 - Enh: Rename cli\Verbose behavior to cli\VerboseBehavior (zhuravljov)
 - Enh #147: Igbinary job serializer (xutl)
 - Enh: Rename serializers\Serializer interface to serializers\SerializerInterface (zhuravljov)
