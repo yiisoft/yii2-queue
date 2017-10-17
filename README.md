@@ -91,7 +91,7 @@ See documentation for more details about driver console commands and their optio
 The component has ability to track status of a job which was pushed into queue.
 
 ```php
-// Push a job into queue and get massage ID.
+// Push a job into queue and get message ID.
 $id = Yii::$app->queue->push(new SomeJob());
 
 // The job is waiting for execute.
