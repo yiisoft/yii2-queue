@@ -7,6 +7,7 @@
 
 namespace yii\queue\beanstalk;
 
+use yii\helpers\Console;
 use yii\queue\cli\Command as CliCommand;
 
 /**
@@ -52,5 +53,22 @@ class Command extends CliCommand
     public function actionListen()
     {
         $this->queue->listen();
+    }
+
+    /**
+     * Removes a job by id.
+     *
+     * @param int $id
+     * @return int exit code
+     */
+    public function actionRemove($id)
+    {
+        if ($this->queue->remove($id)) {
+            Console::output('The job has been removed.');
+            return static::EXIT_CODE_NORMAL;
+        } else {
+            Console::output('The job is not found.');
+            return static::EXIT_CODE_ERROR;
+        }
     }
 }

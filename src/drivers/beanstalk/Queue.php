@@ -80,20 +80,6 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
-    {
-        return $this->getPheanstalk()->putInTube(
-            $this->tube,
-            $message,
-            $priority ?: PheanstalkInterface::DEFAULT_PRIORITY,
-            $delay,
-            $ttr
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function status($id)
     {
         if (!is_numeric($id) || $id <= 0) {
@@ -114,6 +100,42 @@ class Queue extends CliQueue
                 throw $e;
             }
         }
+    }
+
+    /**
+     * Removes a job by ID
+     *
+     * @param int $id of a job
+     * @return bool
+     * @throws
+     */
+    public function remove($id)
+    {
+        try {
+            $job = $this->getPheanstalk()->peek($id);
+            $this->getPheanstalk()->delete($job);
+            return true;
+        } catch (ServerException $e) {
+            if (strpos($e->getMessage(), 'NOT_FOUND') === 0) {
+                return false;
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushMessage($message, $ttr, $delay, $priority)
+    {
+        return $this->getPheanstalk()->putInTube(
+            $this->tube,
+            $message,
+            $priority ?: PheanstalkInterface::DEFAULT_PRIORITY,
+            $delay,
+            $ttr
+        );
     }
 
     /**
