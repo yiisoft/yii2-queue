@@ -9,6 +9,7 @@ namespace tests\drivers\file;
 
 use tests\drivers\CliTestCase;
 use Yii;
+use yii\helpers\FileHelper;
 use yii\queue\file\Queue;
 
 /**
@@ -18,6 +19,22 @@ use yii\queue\file\Queue;
  */
 class QueueTest extends CliTestCase
 {
+    public function testClear()
+    {
+        $this->getQueue()->push($this->createSimpleJob());
+        $this->assertNotEmpty(glob($this->getQueue()->path . '/job*.data'));
+        $this->runProcess('php tests/yii queue/clear --interactive=0');
+        $this->assertEmpty(glob($this->getQueue()->path . '/job*.data'));
+    }
+
+    public function testRemove()
+    {
+        $id = $this->getQueue()->push($this->createSimpleJob());
+        $this->assertFileExists($this->getQueue()->path . "/job$id.data");
+        $this->runProcess("php tests/yii queue/remove $id");
+        $this->assertFileNotExists($this->getQueue()->path . "/job$id.data");
+    }
+
     /**
      * @return Queue
      */

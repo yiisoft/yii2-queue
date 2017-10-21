@@ -85,6 +85,80 @@ class Queue extends CliQueue
     }
 
     /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        if (!is_numeric($id) || $id <= 0) {
+            throw new InvalidParamException("Unknown messages ID: $id.");
+        }
+
+        if (file_exists("$this->path/job$id.data")) {
+            return self::STATUS_WAITING;
+        } else {
+            return self::STATUS_DONE;
+        }
+    }
+
+    /**
+     * Clears the queue
+     */
+    public function clear()
+    {
+        $this->touchIndex(function (&$data) {
+            $data = [];
+            foreach (glob("$this->path/job*.data") as $fileName) {
+                unlink($fileName);
+            }
+        });
+    }
+
+    /**
+     * Removes a job by ID
+     *
+     * @param int $id of a job
+     * @return bool
+     */
+    public function remove($id)
+    {
+        $removed = false;
+        $this->touchIndex(function (&$data) use ($id, &$removed) {
+            if (!empty($data['waiting'])) {
+                foreach ($data['waiting'] as $key => $payload) {
+                    if ($payload[0] === $id) {
+                        unset($data['waiting'][$key]);
+                        $removed = true;
+                        break;
+                    }
+                }
+            }
+            if (!$removed && !empty($data['delayed'])) {
+                foreach ($data['delayed'] as $key => $payload) {
+                    if ($payload[0] === $id) {
+                        unset($data['delayed'][$key]);
+                        $removed = true;
+                        break;
+                    }
+                }
+            }
+            if (!$removed && !empty($data['reserved'])) {
+                foreach ($data['reserved'] as $key => $payload) {
+                    if ($payload[0] === $id) {
+                        unset($data['reserved'][$key]);
+                        $removed = true;
+                        break;
+                    }
+                }
+            }
+            if ($removed) {
+                unlink("$this->path/job$id.data");
+            }
+        });
+
+        return $removed;
+    }
+
+    /**
      * Reserves message for execute
      *
      * @return string|null payload
@@ -177,22 +251,6 @@ class Queue extends CliQueue
         });
 
         return $id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function status($id)
-    {
-        if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidParamException("Unknown messages ID: $id.");
-        }
-
-        if (file_exists("$this->path/job$id.data")) {
-            return self::STATUS_WAITING;
-        } else {
-            return self::STATUS_DONE;
-        }
     }
 
     /**
