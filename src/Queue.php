@@ -57,6 +57,7 @@ abstract class Queue extends Component
 
     /**
      * @var bool
+     * @since 2.0.1
      */
     public $strictJobType = true;
     /**
@@ -147,7 +148,7 @@ abstract class Queue extends Component
         }
 
         if ($this->strictJobType && !($event->job instanceof JobInterface)) {
-            throw new InvalidParamException("Job must be JobInterface object.");
+            throw new InvalidParamException('Job must be instance of JobInterface.');
         }
 
         $message = $this->serializer->serialize($event->job);
@@ -178,7 +179,7 @@ abstract class Queue extends Component
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof JobInterface)) {
             $dump = VarDumper::dumpAsString($job);
-            throw new InvalidParamException("Job $id must be JobInterface object instead of $dump.");
+            throw new InvalidParamException("Job $id must be a JobInterface instance instead of $dump.");
         }
 
         $event = new ExecEvent([

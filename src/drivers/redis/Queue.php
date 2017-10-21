@@ -84,7 +84,7 @@ class Queue extends CliQueue
     public function status($id)
     {
         if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidParamException("Unknown messages ID: $id.");
+            throw new InvalidParamException("Unknown message ID: $id.");
         }
 
         if ($this->redis->hexists("$this->channel.attempts", $id)) {
@@ -98,6 +98,8 @@ class Queue extends CliQueue
 
     /**
      * Clears the queue
+     *
+     * @since 2.0.1
      */
     public function clear()
     {
@@ -112,6 +114,7 @@ class Queue extends CliQueue
      *
      * @param int $id of a job
      * @return bool
+     * @since 2.0.1
      */
     public function remove($id)
     {

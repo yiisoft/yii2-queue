@@ -7,7 +7,6 @@
 
 namespace yii\queue\db;
 
-use yii\helpers\Console;
 use yii\queue\cli\Command as CliCommand;
 
 /**
@@ -59,12 +58,14 @@ class Command extends CliCommand
 
     /**
      * Clears the queue.
+     *
+     * @since 2.0.1
      */
     public function actionClear()
     {
         if ($this->confirm('Are you sure?')) {
             $this->queue->clear();
-            Console::output('Queue has been cleared.');
+            $this->stdout("Queue has been cleared.\n");
         }
     }
 
@@ -73,14 +74,15 @@ class Command extends CliCommand
      *
      * @param int $id
      * @return int exit code
+     * @since 2.0.1
      */
     public function actionRemove($id)
     {
         if ($this->queue->remove($id)) {
-            Console::output('The job has been removed.');
+            $this->stdout("The job has been removed.\n");
             return static::EXIT_CODE_NORMAL;
         } else {
-            Console::output('The job is not found.');
+            $this->stdout("The job was not found.\n");
             return static::EXIT_CODE_ERROR;
         }
     }
