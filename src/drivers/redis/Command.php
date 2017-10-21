@@ -7,6 +7,7 @@
 
 namespace yii\queue\redis;
 
+use yii\helpers\Console;
 use yii\queue\cli\Command as CliCommand;
 
 /**
@@ -54,5 +55,33 @@ class Command extends CliCommand
     public function actionListen($wait = 3)
     {
         $this->queue->listen($wait);
+    }
+
+    /**
+     * Clears the queue.
+     */
+    public function actionClear()
+    {
+        if ($this->confirm('Are you sure?')) {
+            $this->queue->clear();
+            Console::output('Queue has been cleared.');
+        }
+    }
+
+    /**
+     * Removes a job by id.
+     *
+     * @param int $id
+     * @return int exit code
+     */
+    public function actionRemove($id)
+    {
+        if ($this->queue->remove($id)) {
+            Console::output('The job has been removed.');
+            return static::EXIT_CODE_NORMAL;
+        } else {
+            Console::output('The job is not found.');
+            return static::EXIT_CODE_ERROR;
+        }
     }
 }

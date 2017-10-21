@@ -55,3 +55,15 @@ yii queue/info
 ```
 
 `info` 命令打印关于队列状态的信息。
+
+```sh
+yii queue/clear
+```
+
+`clear` command clears a queue.
+
+```sh
+yii queue/remove [id]
+```
+
+`remove` command removes a job.
