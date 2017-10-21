@@ -95,25 +95,6 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
-    {
-        $this->db->createCommand()->insert($this->tableName, [
-            'channel' => $this->channel,
-            'job' => $message,
-            'pushed_at' => time(),
-            'ttr' => $ttr,
-            'delay' => $delay,
-            'priority' => $priority ?: 1024,
-        ])->execute();
-        $tableSchema = $this->db->getTableSchema($this->tableName);
-        $id = $this->db->getLastInsertID($tableSchema->sequenceName);
-
-        return $id;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function status($id)
     {
         $payload = (new Query())
@@ -136,6 +117,48 @@ class Queue extends CliQueue
         } else {
             return self::STATUS_DONE;
         }
+    }
+
+    /**
+     * Clears the queue
+     */
+    public function clear()
+    {
+        $this->db->createCommand()
+            ->delete($this->tableName, ['channel' => $this->channel])
+            ->execute();
+    }
+
+    /**
+     * Removes a job by ID
+     *
+     * @param int $id of a job
+     * @return bool
+     */
+    public function remove($id)
+    {
+        return (bool) $this->db->createCommand()
+            ->delete($this->tableName, ['channel' => $this->channel, 'id' => $id])
+            ->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function pushMessage($message, $ttr, $delay, $priority)
+    {
+        $this->db->createCommand()->insert($this->tableName, [
+            'channel' => $this->channel,
+            'job' => $message,
+            'pushed_at' => time(),
+            'ttr' => $ttr,
+            'delay' => $delay,
+            'priority' => $priority ?: 1024,
+        ])->execute();
+        $tableSchema = $this->db->getTableSchema($this->tableName);
+        $id = $this->db->getLastInsertID($tableSchema->sequenceName);
+
+        return $id;
     }
 
     /**

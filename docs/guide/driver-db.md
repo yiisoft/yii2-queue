@@ -104,3 +104,15 @@ yii queue/info
 ```
 
 `info` command prints out information about queue status.
+
+```sh
+yii queue/clear
+```
+
+`clear` command clears a queue.
+
+```sh
+yii queue/remove [id]
+```
+
+`remove` command removes a job.
