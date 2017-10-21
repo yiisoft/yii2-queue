@@ -56,6 +56,10 @@ abstract class Queue extends Component
     const STATUS_DONE = 3;
 
     /**
+     * @var bool
+     */
+    public $strictJobType = true;
+    /**
      * @var SerializerInterface|array
      */
     public $serializer = PhpSerializer::class;
@@ -142,6 +146,10 @@ abstract class Queue extends Component
             return null;
         }
 
+        if ($this->strictJobType && !($event->job instanceof JobInterface)) {
+            throw new InvalidParamException("Job must be JobInterface object.");
+        }
+
         $message = $this->serializer->serialize($event->job);
         $event->id = $this->pushMessage($message, $event->ttr, $event->delay, $event->priority);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
@@ -169,10 +177,8 @@ abstract class Queue extends Component
     {
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof JobInterface)) {
-            throw new InvalidParamException(strtr('Job must be {class} object instead of {dump}.', [
-                '{class}' => JobInterface::class,
-                '{dump}' => VarDumper::dumpAsString($job),
-            ]));
+            $dump = VarDumper::dumpAsString($job);
+            throw new InvalidParamException("Job $id must be JobInterface object instead of $dump.");
         }
 
         $event = new ExecEvent([
