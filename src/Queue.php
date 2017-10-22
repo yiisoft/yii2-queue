@@ -56,7 +56,8 @@ abstract class Queue extends Component
     const STATUS_DONE = 3;
 
     /**
-     * @var bool
+     * @var bool whether to enable strict job type control.
+     * Note that in order to enable type control, a pushing job must be [[JobInterface]] instance.
      * @since 2.0.1
      */
     public $strictJobType = true;
