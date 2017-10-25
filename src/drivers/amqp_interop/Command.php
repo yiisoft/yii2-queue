@@ -5,13 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\queue\amqp;
+namespace yii\queue\amqp_interop;
 
 use yii\queue\cli\Command as CliCommand;
 
 /**
- * @deprecated since 2.1 will be removed in 3.0. Consider using amqp_interop driver instead
- *
  * Manages application amqp-queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
@@ -30,5 +28,13 @@ class Command extends CliCommand
     public function actionListen()
     {
         $this->queue->listen();
+    }
+
+    /**
+     * Creates all required queues, topics etc
+     */
+    public function actionSetupBroker()
+    {
+        $this->queue->setupBroker();
     }
 }

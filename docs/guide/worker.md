@@ -34,7 +34,7 @@ file.
 For more info about Supervisor's configure and usage see [documentation](http://supervisord.org).
 
 Worker starting in daemon mode with `queue/listen` command supports [File], [Db], [Redis],
-[RabbitMQ], [Beanstalk], [Gearman] drivers. For additional options see driver guide.
+[RabbitMQ], [AMQP Interop], [Beanstalk], [Gearman] drivers. For additional options see driver guide.
 
 [File]: driver-file.md
 [Db]: driver-db.md
@@ -42,6 +42,7 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 [RabbitMQ]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AMQP Interop]: driver-amqp-interop.md
 
 Systemd
 -------

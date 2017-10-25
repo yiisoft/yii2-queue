@@ -1,11 +1,9 @@
-RabbitMQ Driver
-===============
-
-_**Note:** The driver hsa been deprecated since 2.1 will be removed in 3.0. Consider using [amqp_interop](driver-amqp-interop.md) driver instead._
+AMQP Interop 
+============
 
 The driver works with RabbitMQ queues.
 
-In order for it to work you should add `php-amqplib/php-amqplib` package to your project.
+In order for it to work you should add any [amqp interop](https://github.com/queue-interop/queue-interop#amqp-interop) compatible transport to your project, for example `enqueue/amqp-lib` package.
 
 Configuration example:
 
@@ -16,12 +14,18 @@ return [
     ],
     'components' => [
         'queue' => [
-            'class' => \yii\queue\amqp\Queue::class,
-            'host' => 'localhost',
+            'class' => \yii\queue\amqp_interop\Queue::class,
             'port' => 5672,
             'user' => 'guest',
             'password' => 'guest',
             'queueName' => 'queue',
+            'driver' => 'lib',
+            
+            // or
+            'dsn' => 'amqp://guest:guest@localhost:5672/%2F',
+            
+            // or (same as above
+            'dsn' => 'amqp:',
         ],
     ],
 ];
