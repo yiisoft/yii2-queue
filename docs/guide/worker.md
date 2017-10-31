@@ -43,6 +43,57 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
 
+Systemd
+-------
+
+Systemd is an init system used in Linux to bootstrap the user space. To configure a start of workers
+using systemd, create config file named `yii-queue@.service` in `/etc/systemd/system`, that
+will contain:
+
+```conf
+[Unit]
+Description=Yii Queue Worker %I
+After=network.target
+After=mysql.service
+Requires=mysql.service
+
+[Service]
+User=www-data
+Group=www-data
+ExecStart=/usr/bin/php /var/www/my_project/yii queue/listen --verbose
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+You need to reload systemd, so it tries to apply the unit:
+
+```sh
+systemctl daemon-reload
+```
+
+Set of commands to control of the workers:
+
+```sh
+# To start two workers
+systemctl start yii-queue@1 yii-queue@2
+
+# To get status of running workers
+systemctl status "yii-queue@*"
+
+# To stop the worker
+systemctl stop yii-queue@2
+
+# To stop all running workers
+systemctl stop "yii-queue@*"
+
+# To start two workers at boot
+systemctl enable yii-queue@1 yii-queue@2
+```
+
+To learn all features of systemd, see systemd documentation.
+
 Cron
 ----
 

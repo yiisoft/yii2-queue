@@ -43,6 +43,58 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
 
+Systemd
+-------
+
+Systemd - системный менеджер для инициализации демонов в Linux. Чтобы настроить запуск воркеров под
+управлением systemd, создайте конфиг с именем `yii-queue@.service` в папке `/etc/systemd/system`,
+со следующими настройками:
+
+```conf
+[Unit]
+Description=Yii Queue Worker %I
+After=network.target
+After=mysql.service
+Requires=mysql.service
+
+[Service]
+User=www-data
+Group=www-data
+ExecStart=/usr/bin/php /var/www/my_project/yii queue/listen --verbose
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Перегрузите systemd чтобы он увидел новый конфиг с помощью команды:
+
+```sh
+systemctl daemon-reload
+```
+
+Набор команд для управления воркерами:
+
+```sh
+# Запустить два воркера
+systemctl start yii-queue@1 yii-queue@2
+
+# Получить статус запущенных воркеров
+systemctl status "yii-queue@*"
+
+# Остановить один воркер
+systemctl stop yii-queue@2
+
+# Остановить все воркеры
+systemctl stop "yii-queue@*"
+
+# Добавить воркеры в автозагрузку
+systemctl enable yii-queue@1 yii-queue@2
+```
+
+Чтобы ознакомиться со всеми возможностями systemd, и сделать более тонкую настройку, смотрите
+документацию systemd.
+
 Cron
 ----
 
