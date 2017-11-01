@@ -23,6 +23,7 @@ use yii\queue\cli\Queue as CliQueue;
 class Queue extends CliQueue
 {
     public $host = 'localhost';
+    public $vhost = '/';
     public $port = 5672;
     public $user = 'guest';
     public $password = 'guest';
@@ -110,7 +111,7 @@ class Queue extends CliQueue
     protected function open()
     {
         if ($this->channel) return;
-        $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password);
+        $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password, $this->vhost);
         $this->channel = $this->connection->channel();
         $this->channel->queue_declare($this->queueName, false, true, false, false);
         $this->channel->exchange_declare($this->exchangeName, 'direct', false, true, false);
