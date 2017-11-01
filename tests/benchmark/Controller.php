@@ -10,7 +10,7 @@ namespace tests\benchmark;
 use Yii;
 
 /**
- * Class Controller
+ * Benchmark commands.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

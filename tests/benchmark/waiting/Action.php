@@ -9,11 +9,12 @@ namespace tests\benchmark\waiting;
 
 use Symfony\Component\Process\Process;
 use Yii;
+use yii\console\Exception as ConsoleException;
 use yii\helpers\Console;
 use yii\queue\Queue;
 
 /**
- * Class Action
+ * Benchmark of job wait time.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -40,16 +41,31 @@ class Action extends \yii\base\Action
             'fileQueue'      => 'file-queue/listen 1    --isolate=0',
         ],
     ];
+    /**
+     * @var Process[]
+     */
+    private $workers = [];
 
     /**
      * Runs benchmark of job wait time.
      *
-     * @param string $mode one of default or isolate
+     * @param string $mode one of 'default' or 'fast'
      * @param int $jobCount number of jobs that will be pushed to a queue
      * @param int $workerCount number of workers that listen a queue
+     * @throws
      */
     public function run($mode = 'default', $jobCount = 1000, $workerCount = 10)
     {
+        if (!isset($this->modes[$mode])) {
+            throw new ConsoleException("Unknown mode: $mode.");
+        }
+        if ($jobCount <= 0) {
+            throw new ConsoleException("Job count must be greater than zero.");
+        }
+        if ($workerCount <= 0) {
+            throw new ConsoleException("Worker count must be greater than zero.");
+        }
+
         foreach ($this->modes[$mode] as $queueName => $workerCommand) {
             /** @var Queue $queue */
             $queue = Yii::$app->get($queueName);
@@ -70,7 +86,7 @@ class Action extends \yii\base\Action
 
                     // Push batch of jobs
                     $jobs = [];
-                    for ($i = 0; $i < $workerCount; $i++) {
+                    for ($i = 0; $i < $workerCount && $pushedCount < $jobCount; $i++) {
                         $jobs[] = $job = new Job();
                         $job->resultFileName = $resultFileName;
                         $lockName = uniqid($queueName);
@@ -134,8 +150,6 @@ class Action extends \yii\base\Action
         $this->workers = [];
     }
 
-    private $workers = [];
-
     /**
      * Calculates aggregated wait time.
      *
@@ -158,7 +172,6 @@ class Action extends \yii\base\Action
         $avg = array_sum($times) / $count;
         $min = min($times);
         $max = max($times);
-
 
         return [
             '{count}' => $count,

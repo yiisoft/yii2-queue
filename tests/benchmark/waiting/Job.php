@@ -11,7 +11,7 @@ use yii\base\Object;
 use yii\queue\JobInterface;
 
 /**
- * Class Job
+ * The job calculates waiting time.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -25,8 +25,11 @@ class Job extends Object implements JobInterface
     {
         $waitingTime = microtime(true) - $this->pushedAt;
         if (file_exists($this->lockFileName)) {
+            // Saves waiting time to storage
             file_put_contents($this->resultFileName, "$waitingTime\n", FILE_APPEND);
+            // Emulation of job execution
             usleep(rand(100000, 300000));
+            // Signals to the benchmark that job is done
             unlink($this->lockFileName);
         }
     }
