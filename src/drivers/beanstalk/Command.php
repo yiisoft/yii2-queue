@@ -7,6 +7,7 @@
 
 namespace yii\queue\beanstalk;
 
+use yii\console\ExitCode;
 use yii\queue\cli\Command as CliCommand;
 
 /**
@@ -65,10 +66,10 @@ class Command extends CliCommand
     {
         if ($this->queue->remove($id)) {
             $this->stdout("The job has been removed.\n");
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         } else {
             $this->stdout("The job was not found.\n");
-            return static::EXIT_CODE_ERROR;
+            return ExitCode::DATAERR;
         }
     }
 }
