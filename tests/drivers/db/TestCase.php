@@ -9,6 +9,7 @@ namespace tests\drivers\db;
 
 use tests\app\PriorityJob;
 use tests\drivers\CliTestCase;
+use yii\db\Query;
 
 /**
  * Db Queue Test Case
@@ -26,6 +27,28 @@ abstract class TestCase extends CliTestCase
         $this->getQueue()->priority(100)->push(new PriorityJob(['number' => 2]));
         $this->runProcess('php tests/yii queue/run');
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
+    }
+
+    public function testClear()
+    {
+        $this->getQueue()->push($this->createSimpleJob());
+        $this->runProcess('php tests/yii queue/clear --interactive=0');
+        $actual = (new Query())
+            ->from($this->getQueue()->tableName)
+            ->where(['channel' => $this->getQueue()->channel])
+            ->count('*', $this->getQueue()->db);
+        $this->assertEquals(0, $actual);
+    }
+
+    public function testRemove()
+    {
+        $id = $this->getQueue()->push($this->createSimpleJob());
+        $this->runProcess("php tests/yii queue/remove $id");
+        $actual = (new Query())
+            ->from($this->getQueue()->tableName)
+            ->where(['channel' => $this->getQueue()->channel, 'id' => $id])
+            ->count('*', $this->getQueue()->db);
+        $this->assertEquals(0, $actual);
     }
 
     protected function tearDown()

@@ -95,6 +95,59 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
+    public function status($id)
+    {
+        $payload = (new Query())
+            ->from($this->tableName)
+            ->where(['id' => $id])
+            ->one($this->db);
+
+        if (!$payload) {
+            if ($this->deleteReleased) {
+                return self::STATUS_DONE;
+            } else {
+                throw new InvalidParamException("Unknown message ID: $id.");
+            }
+        }
+
+        if (!$payload['reserved_at']) {
+            return self::STATUS_WAITING;
+        } elseif (!$payload['done_at']) {
+            return self::STATUS_RESERVED;
+        } else {
+            return self::STATUS_DONE;
+        }
+    }
+
+    /**
+     * Clears the queue
+     *
+     * @since 2.0.1
+     */
+    public function clear()
+    {
+        $this->db->createCommand()
+            ->delete($this->tableName, ['channel' => $this->channel])
+            ->execute();
+    }
+
+    /**
+     * Removes a job by ID
+     *
+     * @param int $id of a job
+     * @return bool
+     * @since 2.0.1
+     */
+    public function remove($id)
+    {
+        return (bool) $this->db->createCommand()
+            ->delete($this->tableName, ['channel' => $this->channel, 'id' => $id])
+            ->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function pushMessage($message, $ttr, $delay, $priority)
     {
         $this->db->createCommand()->insert($this->tableName, [
@@ -109,33 +162,6 @@ class Queue extends CliQueue
         $id = $this->db->getLastInsertID($tableSchema->sequenceName);
 
         return $id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function status($id)
-    {
-        $payload = (new Query())
-            ->from($this->tableName)
-            ->where(['id' => $id])
-            ->one($this->db);
-
-        if (!$payload) {
-            if ($this->deleteReleased) {
-                return self::STATUS_DONE;
-            } else {
-                throw new InvalidParamException("Unknown messages ID: $id.");
-            }
-        }
-
-        if (!$payload['reserved_at']) {
-            return self::STATUS_WAITING;
-        } elseif (!$payload['done_at']) {
-            return self::STATUS_RESERVED;
-        } else {
-            return self::STATUS_DONE;
-        }
     }
 
     /**

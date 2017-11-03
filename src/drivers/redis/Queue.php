@@ -79,6 +79,61 @@ class Queue extends CliQueue
     }
 
     /**
+     * @inheritdoc
+     */
+    public function status($id)
+    {
+        if (!is_numeric($id) || $id <= 0) {
+            throw new InvalidParamException("Unknown message ID: $id.");
+        }
+
+        if ($this->redis->hexists("$this->channel.attempts", $id)) {
+            return self::STATUS_RESERVED;
+        } elseif ($this->redis->hexists("$this->channel.messages", $id)) {
+            return self::STATUS_WAITING;
+        } else {
+            return self::STATUS_DONE;
+        }
+    }
+
+    /**
+     * Clears the queue
+     *
+     * @since 2.0.1
+     */
+    public function clear()
+    {
+        while (!$this->redis->set("$this->channel.moving_lock", true, 'NX')) {
+            usleep(10000);
+        }
+        $this->redis->executeCommand('DEL', $this->redis->keys("$this->channel.*"));
+    }
+
+    /**
+     * Removes a job by ID
+     *
+     * @param int $id of a job
+     * @return bool
+     * @since 2.0.1
+     */
+    public function remove($id)
+    {
+        while (!$this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
+            usleep(10000);
+        }
+        if ($this->redis->hdel("$this->channel.messages", $id)) {
+            $this->redis->zrem("$this->channel.delayed", $id);
+            $this->redis->zrem("$this->channel.reserved", $id);
+            $this->redis->lrem("$this->channel.waiting", 0, $id);
+            $this->redis->hdel("$this->channel.attempts", $id);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @param int $wait timeout
      * @return array|null payload
      */
@@ -164,23 +219,5 @@ class Queue extends CliQueue
     protected function closeWorker()
     {
         $this->redis->clientSetname('');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function status($id)
-    {
-        if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidParamException("Unknown messages ID: $id.");
-        }
-
-        if ($this->redis->hexists("$this->channel.attempts", $id)) {
-            return self::STATUS_RESERVED;
-        } elseif ($this->redis->hexists("$this->channel.messages", $id)) {
-            return self::STATUS_WAITING;
-        } else {
-            return self::STATUS_DONE;
-        }
     }
 }

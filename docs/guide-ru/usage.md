@@ -119,6 +119,7 @@ return [
     'components' => [
         'queue' => [
             'class' => \yii\queue\<driver>\Queue::class,
+            'strictJobType' => false,
             'serializer' => \yii\queue\serializers\JsonSerializer::class,
         ],
     ],
@@ -187,6 +188,7 @@ return [
         ],
         'queue2' => [
             'class' => \yii\queue\db\Queue::class,
+            'strictJobType' => false,
             'serializer' => \yii\queue\serializers\JsonSerializer::class,
         ],
     ],
