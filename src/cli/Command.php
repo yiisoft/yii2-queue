@@ -10,6 +10,7 @@ namespace yii\queue\cli;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use yii\console\Controller;
+use yii\console\ExitCode;
 
 /**
  * Class Command
@@ -110,9 +111,9 @@ abstract class Command extends Controller
     public function actionExec($id, $ttr, $attempt)
     {
         if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt)) {
-            return self::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         } else {
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
     }
 
@@ -161,6 +162,6 @@ abstract class Command extends Controller
             return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
         }
 
-        return $exitCode == self::EXIT_CODE_NORMAL;
+        return $exitCode == ExitCode::OK;
     }
 }

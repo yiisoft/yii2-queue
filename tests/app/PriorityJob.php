@@ -8,7 +8,7 @@
 namespace tests\app;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\queue\JobInterface;
 
 /**
@@ -16,7 +16,7 @@ use yii\queue\JobInterface;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class PriorityJob extends Object implements JobInterface
+class PriorityJob extends BaseObject implements JobInterface
 {
     public $number;
 

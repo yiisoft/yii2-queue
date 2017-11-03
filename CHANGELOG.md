@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 ## 2.0.1 under development
 
+- Enh #151: Compatibility with Yii 2.0.13 and PHP 7.2 (zhuravljov)
 - Enh #148: Allow to change vhost setting for RabbitMQ (ischenko)
 - Enh #160: Benchmark of job wait time (zhuravljov)
 - Bug #155: Slave DB breaks listener (zhuravljov)

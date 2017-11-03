@@ -42,7 +42,7 @@ RetryableJobInterface
 такого job-объекта может выглядеть так:
 
 ```php
-class SomeJob extends Object implements RetryableJobInterface
+class SomeJob extends BaseObject implements RetryableJobInterface
 {
     public function execute($queue)
     {

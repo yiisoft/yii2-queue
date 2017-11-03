@@ -7,7 +7,7 @@
 
 namespace tests\benchmark\waiting;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\queue\JobInterface;
 
 /**
@@ -15,7 +15,7 @@ use yii\queue\JobInterface;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Job extends Object implements JobInterface
+class Job extends BaseObject implements JobInterface
 {
     public $pushedAt;
     public $resultFileName;
