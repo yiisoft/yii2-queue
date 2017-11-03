@@ -35,7 +35,7 @@ RetryableJobInterface
 Separate control of retry is implemented by `RetryableJobInterface` interface. For example:
 
 ```php
-class SomeJob extends Object implements RetryableJobInterface
+class SomeJob extends BaseObject implements RetryableJobInterface
 {
     public function execute($queue)
     {

@@ -165,57 +165,50 @@ class Queue extends CliQueue
     }
 
     /**
+     * Takes one message from waiting list and reserves it for handling.
+     *
      * @return array|false payload
      * @throws Exception in case it hasn't waited the lock
      */
     protected function reserve()
     {
-        if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
-            throw new Exception("Has not waited the lock.");
-        }
+        return $this->db->useMaster(function () {
 
-        // Move reserved and not done messages into waiting list
+            if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
+                throw new Exception("Has not waited the lock.");
+            }
 
-        if ($this->reserveTime !== time()) {
-            $this->reserveTime = time();
-            $this->db->createCommand()->update(
-                $this->tableName,
-                ['reserved_at' => null],
-                '[[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
-                [':time' => $this->reserveTime]
-            )->execute();
-        }
+            $this->moveExpired();
 
-        // Reserve one message
+            // Reserve one message
+            $payload = (new Query())
+                ->from($this->tableName)
+                ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
+                ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
+                ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
+                ->limit(1)
+                ->one($this->db);
+            if (is_array($payload)) {
+                $payload['reserved_at'] = time();
+                $payload['attempt'] = (int)$payload['attempt'] + 1;
+                $this->db->createCommand()->update($this->tableName, [
+                    'reserved_at' => $payload['reserved_at'], 'attempt' => $payload['attempt']],
+                    ['id' => $payload['id']]
+                )->execute();
 
-        $payload = (new Query())
-            ->from($this->tableName)
-            ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
-            ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
-            ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
-            ->limit(1)
-            ->one($this->db);
+                // pgsql
+                if (is_resource($payload['job'])) {
+                    $payload['job'] = stream_get_contents($payload['job']);
+                }
+            }
 
-        if (is_array($payload)) {
-            $payload['reserved_at'] = time();
-            $payload['attempt'] = (int)$payload['attempt'] + 1;
-            $this->db->createCommand()->update($this->tableName, [
-                'reserved_at' => $payload['reserved_at'], 'attempt' => $payload['attempt']],
-                ['id' => $payload['id']]
-            )->execute();
-        }
+            $this->mutex->release(__CLASS__ . $this->channel);
 
-        $this->mutex->release(__CLASS__ . $this->channel);
-
-        // pgsql
-        if (is_resource($payload['job'])) {
-            $payload['job'] = stream_get_contents($payload['job']);
-        }
-
-        return $payload;
+            return $payload;
+        });
     }
 
-    private $reserveTime;
+
 
     /**
      * @param array $payload
@@ -235,4 +228,22 @@ class Queue extends CliQueue
             )->execute();
         }
     }
+
+    /**
+     * Moves expired messages into waiting list.
+     */
+    private function moveExpired()
+    {
+        if ($this->reserveTime !== time()) {
+            $this->reserveTime = time();
+            $this->db->createCommand()->update(
+                $this->tableName,
+                ['reserved_at' => null],
+                '[[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
+                [':time' => $this->reserveTime]
+            )->execute();
+        }
+    }
+
+    private $reserveTime;
 }

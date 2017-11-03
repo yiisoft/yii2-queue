@@ -28,6 +28,7 @@ class Queue extends CliQueue
     public $password = 'guest';
     public $queueName = 'queue';
     public $exchangeName = 'exchange';
+    public $vhost = '/';
 
     /**
      * @var string command class name
@@ -110,7 +111,7 @@ class Queue extends CliQueue
     protected function open()
     {
         if ($this->channel) return;
-        $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password);
+        $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password, $this->vhost);
         $this->channel = $this->connection->channel();
         $this->channel->queue_declare($this->queueName, false, true, false, false);
         $this->channel->exchange_declare($this->exchangeName, 'direct', false, true, false);

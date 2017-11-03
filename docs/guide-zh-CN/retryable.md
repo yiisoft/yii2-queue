@@ -33,7 +33,7 @@
 Separate control of retry is implemented by `RetryableJobInterface` 接口。 示例:
 
 ```php
-class SomeJob extends Object implements RetryableJobInterface
+class SomeJob extends BaseObject implements RetryableJobInterface
 {
     public function execute($queue)
     {
