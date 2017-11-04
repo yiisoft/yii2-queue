@@ -26,14 +26,16 @@ class Action extends \yii\base\Action
     public $modes = [
         // Worker will be run in default mode
         'default' => [
-            'beanstalkQueue' => 'beanstalk-queue/listen',
-            'redisQueue'     => 'redis-queue/listen',
-            'amqpQueue'      => 'amqp-queue/listen',
-            'mysqlQueue'     => 'mysql-queue/listen 1',
-            'fileQueue'      => 'file-queue/listen 1',
+            'gearmanQueue' =>   'gearman-queue/listen   --isolate=1',
+            'beanstalkQueue' => 'beanstalk-queue/listen --isolate=1',
+            'redisQueue'     => 'redis-queue/listen     --isolate=1',
+            'amqpQueue'      => 'amqp-queue/listen      --isolate=1',
+            'mysqlQueue'     => 'mysql-queue/listen 1   --isolate=1',
+            'fileQueue'      => 'file-queue/listen 1    --isolate=1',
         ],
         // Worker will be run in fast mode
         'fast' => [
+            'gearmanQueue' =>   'gearman-queue/listen   --isolate=0',
             'beanstalkQueue' => 'beanstalk-queue/listen --isolate=0',
             'redisQueue'     => 'redis-queue/listen     --isolate=0',
             'amqpQueue'      => 'amqp-queue/listen      --isolate=0',
