@@ -49,7 +49,7 @@ CREATE TABLE `queue` (
 
 Миграции смотрите в [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
-Раширение предлагает использовать
+Расширение предлагает использовать
 [миграции с неймспейсами](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations).
 Чтобы добавить их в ваше приложение отредактируйте консольный конфиг:
 
