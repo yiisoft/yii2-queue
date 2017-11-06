@@ -54,6 +54,8 @@ the following contents:
 [Unit]
 Description=Yii Queue Worker %I
 After=network.target
+# the following two lines only apply if your queue backend is mysql
+# replace this with the service that powers your backend
 After=mysql.service
 Requires=mysql.service
 
@@ -92,7 +94,7 @@ systemctl stop "yii-queue@*"
 systemctl enable yii-queue@1 yii-queue@2
 ```
 
-To learn all features of systemd, check its documentation.
+To learn all features of systemd, check its [documentation](https://freedesktop.org/wiki/Software/systemd/#manualsanddocumentationforusersandadministrators).
 
 Cron
 ----
