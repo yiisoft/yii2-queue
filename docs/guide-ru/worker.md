@@ -54,6 +54,8 @@ Systemd - система Linux для инициализации демонов.
 [Unit]
 Description=Yii Queue Worker %I
 After=network.target
+# Ниже указана зависимость от mysql. Это справедливо если вы используте очереди на основе mysql.
+# Если ваш проект использует другой брокер очередей, нужно изменить или дополнить эту секцию.   
 After=mysql.service
 Requires=mysql.service
 
@@ -93,7 +95,7 @@ systemctl enable yii-queue@1 yii-queue@2
 ```
 
 Чтобы ознакомиться со всеми возможностями systemd, и сделать более тонкую настройку, смотрите
-документацию systemd.
+[документацию](https://freedesktop.org/wiki/Software/systemd/#manualsanddocumentationforusersandadministrators).
 
 Cron
 ----
