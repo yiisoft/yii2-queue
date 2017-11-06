@@ -46,7 +46,7 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 Systemd
 -------
 
-Systemd - системный менеджер для инициализации демонов в Linux. Чтобы настроить запуск воркеров под
+Systemd - система Linux для инициализации демонов. Чтобы настроить запуск воркеров под
 управлением systemd, создайте конфиг с именем `yii-queue@.service` в папке `/etc/systemd/system`,
 со следующими настройками:
 
