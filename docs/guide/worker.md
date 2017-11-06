@@ -46,9 +46,9 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 Systemd
 -------
 
-Systemd is an init system used in Linux to bootstrap the user space. To configure a start of workers
-using systemd, create config file named `yii-queue@.service` in `/etc/systemd/system`, that
-will contain:
+Systemd is a Linux system manager used to bootstrap daemons. To configure workers startup
+using systemd, create a config file named `yii-queue@.service` in `/etc/systemd/system` with
+the following contents:
 
 ```conf
 [Unit]
@@ -67,13 +67,13 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-You need to reload systemd, so it tries to apply the unit:
+You need to reload systemd in order for it to re-read configuration:
 
 ```sh
 systemctl daemon-reload
 ```
 
-Set of commands to control of the workers:
+Set of commands to control workers:
 
 ```sh
 # To start two workers
@@ -88,11 +88,11 @@ systemctl stop yii-queue@2
 # To stop all running workers
 systemctl stop "yii-queue@*"
 
-# To start two workers at boot
+# To start two workers at system boot
 systemctl enable yii-queue@1 yii-queue@2
 ```
 
-To learn all features of systemd, see systemd documentation.
+To learn all features of systemd, check its documentation.
 
 Cron
 ----
