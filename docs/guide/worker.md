@@ -46,7 +46,7 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 Systemd
 -------
 
-Systemd is a Linux system manager used to bootstrap daemons. To configure workers startup
+Systemd is an init system used in Linux to bootstrap the user space. To configure workers startup
 using systemd, create a config file named `yii-queue@.service` in `/etc/systemd/system` with
 the following contents:
 
