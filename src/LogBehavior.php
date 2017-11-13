@@ -26,6 +26,7 @@ class LogBehavior extends Behavior
      */
     public $autoFlush = true;
 
+
     /**
      * @inheritdoc
      */

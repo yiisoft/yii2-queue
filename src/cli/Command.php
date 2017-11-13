@@ -33,6 +33,7 @@ abstract class Command extends Controller
      */
     public $isolate = true;
 
+
     /**
      * @inheritdoc
      */

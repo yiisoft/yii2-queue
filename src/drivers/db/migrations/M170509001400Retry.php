@@ -18,6 +18,7 @@ class M170509001400Retry extends Migration
 {
     public $tableName = '{{%queue}}';
 
+
     public function up()
     {
         if ($this->db->driverName !== 'sqlite') {

@@ -33,6 +33,7 @@ class Behavior extends \yii\base\Behavior
      */
     public $owner;
 
+
     /**
      * @inheritdoc
      */

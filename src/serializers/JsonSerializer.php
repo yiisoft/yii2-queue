@@ -28,6 +28,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
      */
     public $options = 0;
 
+
     /**
      * @inheritdoc
      */

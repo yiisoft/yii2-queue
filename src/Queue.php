@@ -78,6 +78,7 @@ abstract class Queue extends Component
     private $pushDelay;
     private $pushPriority;
 
+
     /**
      * @inheritdoc
      */
@@ -173,7 +174,7 @@ abstract class Queue extends Component
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number
-     * @return boolean
+     * @return bool
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {

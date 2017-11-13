@@ -47,6 +47,7 @@ class Queue extends CliQueue
      */
     public $commandClass = Command::class;
 
+
     /**
      * @inheritdoc
      */
@@ -75,7 +76,7 @@ class Queue extends CliQueue
     /**
      * Listens file-queue and runs new jobs.
      *
-     * @param integer $delay number of seconds for waiting new job.
+     * @param int $delay number of seconds for waiting new job.
      */
     public function listen($delay)
     {

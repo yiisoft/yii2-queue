@@ -21,11 +21,11 @@ class Queue extends CliQueue
     public $host = 'localhost';
     public $port = 4730;
     public $channel = 'queue';
-
     /**
      * @var string command class name
      */
     public $commandClass = Command::class;
+
 
     /**
      * Runs all jobs from gearman-queue.

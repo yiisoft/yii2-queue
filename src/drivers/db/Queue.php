@@ -47,11 +47,11 @@ class Queue extends CliQueue
      * @var boolean ability to delete released messages from table
      */
     public $deleteReleased = true;
-
     /**
      * @var string command class name
      */
     public $commandClass = Command::class;
+
 
     /**
      * @inheritdoc
@@ -83,7 +83,7 @@ class Queue extends CliQueue
     /**
      * Listens db-queue and runs new jobs.
      *
-     * @param integer $delay number of seconds for waiting new job.
+     * @param int $delay number of seconds for waiting new job.
      */
     public function listen($delay)
     {

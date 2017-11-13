@@ -21,6 +21,7 @@ class Command extends CliCommand
      */
     public $queue;
 
+
     /**
      * Runs all jobs from gearman-queue.
      * It can be used as cron job.

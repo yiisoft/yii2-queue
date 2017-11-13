@@ -22,6 +22,7 @@ class Job implements JobInterface
      */
     public $serialized;
 
+
     /**
      * Unserializes and executes a closure
      * @inheritdoc

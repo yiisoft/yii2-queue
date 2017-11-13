@@ -21,11 +21,11 @@ class Command extends CliCommand
      * @var Queue
      */
     public $queue;
-
     /**
      * @var string
      */
     public $defaultAction = 'info';
+
 
     /**
      * @inheritdoc
@@ -50,7 +50,7 @@ class Command extends CliCommand
      * Listens db-queue and runs new jobs.
      * It can be used as demon process.
      *
-     * @param integer $delay Number of seconds for waiting new job.
+     * @param int $delay Number of seconds for waiting new job.
      */
     public function actionListen($delay = 3)
     {

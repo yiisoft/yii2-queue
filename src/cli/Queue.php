@@ -35,6 +35,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     public $messageHandler;
 
+
     /**
      * @return string command id
      * @throws

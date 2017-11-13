@@ -31,6 +31,7 @@ class VerboseBehavior extends Behavior
 
     private $start;
 
+
     /**
      * @inheritdoc
      */

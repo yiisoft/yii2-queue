@@ -21,6 +21,7 @@ class Command extends CliCommand
      */
     public $queue;
 
+
     /**
      * Listens amqp-queue and runs new jobs.
      * It can be used as demon process.

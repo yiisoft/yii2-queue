@@ -29,11 +29,11 @@ class Queue extends CliQueue
      * @var string
      */
     public $channel = 'queue';
-
     /**
      * @var string command class name
      */
     public $commandClass = Command::class;
+
 
     /**
      * @inheritdoc

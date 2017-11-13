@@ -22,6 +22,7 @@ class InfoAction extends Action
      */
     public $queue;
 
+
     /**
      * Info about queue status.
      */
@@ -43,7 +44,7 @@ class InfoAction extends Action
     }
 
     /**
-     * @return integer
+     * @return int
      */
     protected function getWaitingCount()
     {
@@ -54,7 +55,7 @@ class InfoAction extends Action
     }
 
     /**
-     * @return integer
+     * @return int
      */
     protected function getDelayedCount()
     {
@@ -65,7 +66,7 @@ class InfoAction extends Action
     }
 
     /**
-     * @return integer
+     * @return int
      */
     protected function getReservedCount()
     {
@@ -76,7 +77,7 @@ class InfoAction extends Action
     }
 
     /**
-     * @return integer
+     * @return int
      */
     protected function getDoneCount()
     {

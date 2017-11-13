@@ -24,6 +24,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
 {
     private $_jobs = [];
 
+
     /**
      * @inheritdoc
      */

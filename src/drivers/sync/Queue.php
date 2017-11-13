@@ -23,6 +23,7 @@ class Queue extends BaseQueue
      * @var bool
      */
     public $handle = false;
+
     /**
      * @var array of payloads
      */
@@ -39,6 +40,7 @@ class Queue extends BaseQueue
      * @var int last finished ID
      */
     private $finishedId = 0;
+
 
     /**
      * @inheritdoc

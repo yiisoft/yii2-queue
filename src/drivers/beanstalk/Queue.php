@@ -33,11 +33,11 @@ class Queue extends CliQueue
      * @var string beanstalk tube
      */
     public $tube = 'queue';
-
     /**
      * @var string command class name
      */
     public $commandClass = Command::class;
+
 
     /**
      * Runs all jobs from queue.

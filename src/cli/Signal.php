@@ -16,6 +16,7 @@ class Signal
 {
     private static $exit = false;
 
+
     /**
      * Checks exit signals
      * Used mainly by [[yii\queue\Queue]] to check, whether job execution

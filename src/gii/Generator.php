@@ -26,6 +26,7 @@ class Generator extends \yii\gii\Generator
     public $ns = 'app\jobs';
     public $baseClass = BaseObject::class;
 
+
     /**
      * @inheritdoc
      */

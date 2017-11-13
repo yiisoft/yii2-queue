@@ -1,23 +1,23 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-## 2.0.1 under development
+## 2.0.1, November 13, 2017
 
-- Enh #141: Clear and remove commands for File, DB, Beanstalk and Redis drivers (zhuravljov)
-- Enh #151: Compatibility with Yii 2.0.13 and PHP 7.2 (zhuravljov)
-- Enh #148: Allow to change vhost setting for RabbitMQ (ischenko)
-- Enh #160: Benchmark of job wait time (zhuravljov)
-- Bug #155: Slave DB breaks listener (zhuravljov)
-- Enh: Rename `cli\Verbose` behavior to `cli\VerboseBehavior` (zhuravljov)
-- Enh #147: Igbinary job serializer (xutl)
-- Enh: Rename `serializers\Serializer` interface to `serializers\SerializerInterface` (zhuravljov)
-- Enh #122: Rename `Job` to `JobInterface` (zhuravljov)
-- Bug #118: Synchronized moving of delayed and reserved jobs to waiting list (zhuravljov)
-- Bug #112: Queue command inside module (tsingsun)
-- Enh #116: Add Chinese Guide (kids-return)
-- Enh #97: `Queue::status` is public method (zhuravljov)
 - Bug #98: Fixed timeout error handler (zhuravljov)
+- Bug #112: Queue command inside module (tsingsun)
+- Bug #118: Synchronized moving of delayed and reserved jobs to waiting list (zhuravljov)
+- Bug #155: Slave DB breaks listener (zhuravljov)
+- Enh #97: `Queue::status` is public method (zhuravljov)
+- Enh #116: Add Chinese Guide (kids-return)
+- Enh #122: Rename `Job` to `JobInterface` (zhuravljov)
 - Enh #137: All throwable errors caused by jobs are now caught (brandonkelly)
+- Enh #141: Clear and remove commands for File, DB, Beanstalk and Redis drivers (zhuravljov)
+- Enh #147: Igbinary job serializer (xutl)
+- Enh #148: Allow to change vhost setting for RabbitMQ (ischenko)
+- Enh #151: Compatibility with Yii 2.0.13 and PHP 7.2 (zhuravljov)
+- Enh #160: Benchmark of job wait time (zhuravljov)
+- Enh: Rename `cli\Verbose` behavior to `cli\VerboseBehavior` (zhuravljov)
+- Enh: Rename `serializers\Serializer` interface to `serializers\SerializerInterface` (zhuravljov)
 - Enh: Added `Signal::setExitFlag()` to stop `Queue::run()` loop manually (silverfire)
 
 ## 2.0.0
@@ -96,3 +96,6 @@ Yii2 Queue Extension Change Log
 - Enh: Add exchange for AMQP driver (airani)
 - Enh: Beanstalk driver (zhuravljov)
 - Enh: Added English docs (samdark)
+
+
+
