@@ -1,8 +1,8 @@
 {
     "name": "yiisoft/yii2-queue",
-    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk and Gearman",
+    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk, Gearman, Kafka, AWS SQS, STOMP, Filesystem",
     "type": "yii2-extension",
-    "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman"],
+    "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman", "amqp-interop", "queue-interop", "php-enqueue"],
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -22,19 +22,33 @@
     },
     "require-dev": {
         "yiisoft/yii2-redis": "*",
-        "php-amqplib/php-amqplib": "*",
+        "php-amqplib/php-amqplib": "2.7.x-dev",
         "pda/pheanstalk": "*",
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "phpunit/phpunit": "~4.4"
+        "phpunit/phpunit": "~4.4",
+        "enqueue/amqp-lib": "0.7.x-dev",
+        "enqueue/amqp-tools": "0.7.x-dev"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
         "yiisoft/yii2-redis": "Need for Redis queue.",
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
-        "ext-gearman": "Need for Gearman queue."
+        "ext-gearman": "Need for Gearman queue.",
+        "enqueue/amqp-ext": "Required for support of AMQP with queue interop",
+        "enqueue/amqp-lib": "Required for support of AMQP with queue interop",
+        "enqueue/amqp-bunny": "Required for support of AMQP with queue interop",
+        "enqueue/amqp-tools": "Required for support of message delay with AMQP",
+        "enqueue/rdkafka": "Required for support of Kafka with queue interop",
+        "enqueue/sqs": "Required for support of AWS SQS with queue interop",
+        "enqueue/dbal": "Required for support of Doctrine Dbal queue with queue interop",
+        "enqueue/redis": "Required for support of Redis queue with queue interop",
+        "enqueue/fs": "Required for support of filesystem queue with queue interop",
+        "enqueue/gearman": "Required for support of Gearman queue with queue interop",
+        "enqueue/pheanstalk": "Required for support of Beanstalk queue with queue interop",
+        "enqueue/stomp": "Required for support of STOMP with queue interop"
     },
     "autoload": {
         "psr-4": {
@@ -45,7 +59,8 @@
             "yii\\queue\\file\\": "src/drivers/file",
             "yii\\queue\\gearman\\": "src/drivers/gearman",
             "yii\\queue\\redis\\": "src/drivers/redis",
-            "yii\\queue\\sync\\": "src/drivers/sync"
+            "yii\\queue\\sync\\": "src/drivers/sync",
+            "yii\\queue\\queue_interop\\": "src/drivers/queue_interop"
         }
     },
     "extra": {

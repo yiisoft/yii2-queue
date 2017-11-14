@@ -20,6 +20,7 @@ Queue Drivers
 * [RabbitMQ](driver-amqp.md)
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
+* [Queue Interop (php-enqueue)](driver-queue-interop.md)
 
 Developer tools
 ---------------

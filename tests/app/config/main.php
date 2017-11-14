@@ -11,6 +11,7 @@ $config = [
         'redisQueue',
         'amqpQueue',
         'beanstalkQueue',
+        'interopQueue',
     ],
     'components' => [
         'syncQueue' => [
@@ -74,6 +75,19 @@ $config = [
         ],
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,
+        ],
+        'interopQueue' => [
+            'class' => \yii\queue\queue_interop\Queue::class,
+            'config' => [
+                'driver' => \yii\queue\queue_interop\driver\AmqpDriver::class,
+                'factory' => \Enqueue\AmqpLib\AmqpConnectionFactory::class,
+
+                'host' => 'localhost',
+                'port' => 5672,
+                'user' => 'guest',
+                'pass' => 'guest',
+                'vhost' => '/'
+            ]
         ],
     ],
 ];
