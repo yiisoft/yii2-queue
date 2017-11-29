@@ -32,10 +32,10 @@ use yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    const H_ATTEMPT = 'yii-attempt';
-    const H_TTR = 'yii-ttr';
-    const H_DELAY = 'yii-delay';
-    const H_PRIORITY = 'yii-priority';
+    const ATTEMPT = 'yii-attempt';
+    const TTR = 'yii-ttr';
+    const DELAY = 'yii-delay';
+    const PRIORITY = 'yii-priority';
 
     const ENQUEUE_AMQP_LIB = 'enqueue/amqp-lib';
     const ENQUEUE_AMQP_EXT = 'enqueue/amqp-ext';
@@ -262,8 +262,8 @@ class Queue extends CliQueue
                 return true;
             }
 
-            $ttr = $message->getProperty(self::H_TTR);
-            $attempt = $message->getProperty(self::H_ATTEMPT, 1);
+            $ttr = $message->getProperty(self::TTR);
+            $attempt = $message->getProperty(self::ATTEMPT, 1);
 
             if ($this->handleMessage($message->getMessageId(), $message->getBody(), $ttr, $attempt)) {
                 $consumer->acknowledge($message);
@@ -303,18 +303,18 @@ class Queue extends CliQueue
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
         $message->setTimestamp(time());
-        $message->setProperty(self::H_ATTEMPT, 1);
-        $message->setProperty(self::H_TTR, $ttr);
+        $message->setProperty(self::ATTEMPT, 1);
+        $message->setProperty(self::TTR, $ttr);
 
         $producer = $this->context->createProducer();
 
         if ($delay) {
-            $message->setProperty(self::H_DELAY, $delay);
+            $message->setProperty(self::DELAY, $delay);
             $producer->setDeliveryDelay($delay * 1000);
         }
 
         if ($priority) {
-            $message->setProperty(self::H_PRIORITY, $priority);
+            $message->setProperty(self::PRIORITY, $priority);
             $producer->setPriority($priority);
         }
 
@@ -427,11 +427,11 @@ class Queue extends CliQueue
      */
     protected function redeliver(AmqpMessage $message)
     {
-         $attempt = $message->getProperty(self::H_ATTEMPT, 1);
+         $attempt = $message->getProperty(self::ATTEMPT, 1);
 
          $newMessage = $this->context->createMessage($message->getBody(), $message->getProperties(), $message->getHeaders());
          $newMessage->setDeliveryMode($message->getDeliveryMode());
-         $newMessage->setProperty(self::H_ATTEMPT, ++$attempt);
+         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
          $this->context->createProducer()->send(
              $this->context->createQueue($this->queueName),
