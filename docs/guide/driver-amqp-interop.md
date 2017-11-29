@@ -9,7 +9,7 @@ Advantages:
 
 * It would work with any amqp interop compatible transports, such as 
 
-    * [enqueue/amqp-ext](https://github.com/php-enqueue/amqp-ext) based on [php amqp extension](https://github.com/pdezwart/php-amqp)
+    * [enqueue/amqp-ext](https://github.com/php-enqueue/amqp-ext) based on [PHP amqp extension](https://github.com/pdezwart/php-amqp)
     * [enqueue/amqp-lib](https://github.com/php-enqueue/amqp-lib) based on [php-amqplib/php-amqplib](https://github.com/php-amqplib/php-amqplib)
     * [enqueue/amqp-bunny](https://github.com/php-enqueue/amqp-bunny) based on [bunny](https://github.com/jakubkulhan/bunny)
     
@@ -35,7 +35,7 @@ return [
             'user' => 'guest',
             'password' => 'guest',
             'queueName' => 'queue',
-            'driver' => 'lib',
+            'driver' => yii\queue\amqp_interop\Queue::ENQUEUE_AMQP_LIB,
             
             // or
             'dsn' => 'amqp://guest:guest@localhost:5672/%2F',

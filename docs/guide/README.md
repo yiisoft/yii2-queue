@@ -18,7 +18,7 @@ Queue Drivers
 * [Db](driver-db.md)
 * [Redis](driver-redis.md)
 * [RabbitMQ](driver-amqp.md)
-* [AMQP Interop)](driver-amqp-interop.md)
+* [AMQP Interop](driver-amqp-interop.md)
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
 

@@ -42,21 +42,21 @@ class QueueTest extends CliTestCase
 
     public function testRun()
     {
-        // Not supported
+        $this->markTestSkipped('Not supported');
     }
 
     public function testStatus()
     {
-        // Not supported
+        $this->markTestSkipped('Not supported');
     }
 
     public function testLater()
     {
-        // Not supported
+        $this->markTestSkipped('Not supported');
     }
 
     public function testRetry()
     {
-        // Limited support
+        $this->markTestSkipped('Not supported');
     }
 }
