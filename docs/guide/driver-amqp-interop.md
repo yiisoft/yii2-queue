@@ -40,7 +40,7 @@ return [
             // or
             'dsn' => 'amqp://guest:guest@localhost:5672/%2F',
             
-            // or (same as above
+            // or, same as above
             'dsn' => 'amqp:',
         ],
     ],
