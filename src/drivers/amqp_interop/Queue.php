@@ -262,7 +262,7 @@ class Queue extends CliQueue
 
         $producer->send($topic, $message);
 
-        return null;
+        return $message->getMessageId();
     }
 
     /**
