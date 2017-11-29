@@ -27,7 +27,7 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Amqp Queue
  *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */
 class Queue extends CliQueue
 {
@@ -147,7 +147,7 @@ class Queue extends CliQueue
     /**
      * @var string
      */
-    public $queueName = 'queue';
+    public $queueName = 'interop_queue';
 
     /**
      * @var string

@@ -12,7 +12,7 @@ use yii\queue\cli\Command as CliCommand;
 /**
  * Manages application amqp-queue.
  *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */
 class Command extends CliCommand
 {

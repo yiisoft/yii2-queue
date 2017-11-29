@@ -14,7 +14,7 @@ use yii\queue\amqp_interop\Queue;
 /**
  * AMQP Queue Test
  *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */
 class QueueTest extends CliTestCase
 {

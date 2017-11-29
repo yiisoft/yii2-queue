@@ -16,8 +16,6 @@ use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * @deprecated since 2.1 will be removed in 3.0. Consider using amqp_interop driver instead
- *
  * Amqp Queue
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>

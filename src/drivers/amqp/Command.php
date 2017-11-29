@@ -10,8 +10,6 @@ namespace yii\queue\amqp;
 use yii\queue\cli\Command as CliCommand;
 
 /**
- * @deprecated since 2.1 will be removed in 3.0. Consider using amqp_interop driver instead
- *
  * Manages application amqp-queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
