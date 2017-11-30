@@ -88,10 +88,13 @@ class Queue extends CliQueue
         }
 
         if ($this->redis->hexists("$this->channel.attempts", $id)) {
+            // 保留
             return self::STATUS_RESERVED;
         } elseif ($this->redis->hexists("$this->channel.messages", $id)) {
+            // 等待状态
             return self::STATUS_WAITING;
         } else {
+            // 已完成
             return self::STATUS_DONE;
         }
     }
@@ -127,6 +130,9 @@ class Queue extends CliQueue
             $this->redis->lrem("$this->channel.waiting", 0, $id);
             $this->redis->hdel("$this->channel.attempts", $id);
 
+            $keys = $this->redis->keys("$this->channel.waiting.*");
+            foreach ($keys as $key) $this->redis->lrem($key, 0, $id);
+
             return true;
         } else {
             return false;
@@ -143,6 +149,15 @@ class Queue extends CliQueue
         if ($this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
             $this->moveExpired("$this->channel.delayed");
             $this->moveExpired("$this->channel.reserved");
+        }
+
+        // 如果列表为空  则遍历所有的子队列 每个拿一条数据放到列表
+        if(!$this->redis->llen("$this->channel.waiting")){
+            $keys = $this->redis->keys("$this->channel.waiting.*");
+            foreach ($keys as $key){
+                $id = $this->redis->rpop($key);
+                $this->redis->lpush("$this->channel.waiting", $id);
+            }
         }
 
         // Find a new waiting message
@@ -193,7 +208,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage($message, $ttr, $delay, $priority, $group)
     {
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
@@ -202,7 +217,9 @@ class Queue extends CliQueue
         $id = $this->redis->incr("$this->channel.message_id");
         $this->redis->hset("$this->channel.messages", $id, "$ttr;$message");
         if (!$delay) {
-            $this->redis->lpush("$this->channel.waiting", $id);
+            $group ?
+                $this->redis->lpush("$this->channel.waiting.$group", $id) :
+                $this->redis->lpush("$this->channel.waiting", $id);
         } else {
             $this->redis->zadd("$this->channel.delayed", time() + $delay, $id);
         }

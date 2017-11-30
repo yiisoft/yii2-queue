@@ -77,6 +77,7 @@ abstract class Queue extends Component
     private $pushTtr;
     private $pushDelay;
     private $pushPriority;
+    private $pushGroup;
 
 
     /**
@@ -125,6 +126,18 @@ abstract class Queue extends Component
     }
 
     /**
+     * Sets group for later execute
+     *
+     * @param int|mixed $value
+     * @return $this
+     */
+    public function group($value)
+    {
+        $this->pushGroup = $value;
+        return $this;
+    }
+
+    /**
      * Pushes job into queue
      *
      * @param JobInterface|mixed $job
@@ -139,6 +152,7 @@ abstract class Queue extends Component
                 : ($this->pushTtr ?: $this->ttr),
             'delay' => $this->pushDelay ?: 0,
             'priority' => $this->pushPriority,
+            'group' => $this->pushGroup ?: null,
         ]);
         $this->pushTtr = null;
         $this->pushDelay = null;
@@ -165,9 +179,10 @@ abstract class Queue extends Component
      * @param int $ttr time to reserve in seconds
      * @param int $delay
      * @param mixed $priority
-     * @return string|null id of a job message
+     * @param mixed $group
+     * @return null|string id of a job message
      */
-    abstract protected function pushMessage($message, $ttr, $delay, $priority);
+    abstract protected function pushMessage($message, $ttr, $delay, $priority, $group);
 
     /**
      * @param string|null $id of a job message

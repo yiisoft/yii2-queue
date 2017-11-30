@@ -22,4 +22,8 @@ class PushEvent extends JobEvent
      * @var mixed
      */
     public $priority;
+    /**
+     * @var mixed
+     */
+    public $group;
 }
