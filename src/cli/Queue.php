@@ -76,7 +76,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     }
 
     /**
-     * @param string|null $id of a message
+     * @param string $id of a message
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number

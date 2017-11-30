@@ -7,8 +7,6 @@
 
 namespace tests\benchmark;
 
-use Yii;
-
 /**
  * Benchmark commands.
  *

@@ -165,12 +165,12 @@ abstract class Queue extends Component
      * @param int $ttr time to reserve in seconds
      * @param int $delay
      * @param mixed $priority
-     * @return string|null id of a job message
+     * @return string id of a job message
      */
     abstract protected function pushMessage($message, $ttr, $delay, $priority);
 
     /**
-     * @param string|null $id of a job message
+     * @param string $id of a job message
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number

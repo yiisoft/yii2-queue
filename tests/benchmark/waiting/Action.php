@@ -24,23 +24,23 @@ class Action extends \yii\base\Action
      * @var array
      */
     public $modes = [
-        // Worker will be run in default mode
-        'default' => [
-            'gearmanQueue' =>   'gearman-queue/listen   --isolate=1',
-            'beanstalkQueue' => 'beanstalk-queue/listen --isolate=1',
-            'redisQueue'     => 'redis-queue/listen     --isolate=1',
-            'amqpQueue'      => 'amqp-queue/listen      --isolate=1',
-            'mysqlQueue'     => 'mysql-queue/listen 1   --isolate=1',
-            'fileQueue'      => 'file-queue/listen 1    --isolate=1',
-        ],
         // Worker will be run in fast mode
         'fast' => [
-            'gearmanQueue' =>   'gearman-queue/listen   --isolate=0',
-            'beanstalkQueue' => 'beanstalk-queue/listen --isolate=0',
-            'redisQueue'     => 'redis-queue/listen     --isolate=0',
-            'amqpQueue'      => 'amqp-queue/listen      --isolate=0',
-            'mysqlQueue'     => 'mysql-queue/listen 1   --isolate=0',
-            'fileQueue'      => 'file-queue/listen 1    --isolate=0',
+            'gearmanQueue'     => 'gearman-queue/listen      --isolate=0',
+            'beanstalkQueue'   => 'beanstalk-queue/listen    --isolate=0',
+            'redisQueue'       => 'redis-queue/listen        --isolate=0',
+            'amqpQueue'        => 'amqp-queue/listen         --isolate=0',
+            'mysqlQueue'       => 'mysql-queue/listen 1      --isolate=0',
+            'fileQueue'        => 'file-queue/listen 1       --isolate=0',
+        ],
+        // Worker will be run in isolate mode
+        'isolate' => [
+            'gearmanQueue'     => 'gearman-queue/listen      --isolate=1',
+            'beanstalkQueue'   => 'beanstalk-queue/listen    --isolate=1',
+            'redisQueue'       => 'redis-queue/listen        --isolate=1',
+            'amqpQueue'        => 'amqp-queue/listen         --isolate=1',
+            'mysqlQueue'       => 'mysql-queue/listen 1      --isolate=1',
+            'fileQueue'        => 'file-queue/listen 1       --isolate=1',
         ],
     ];
     /**
@@ -51,12 +51,12 @@ class Action extends \yii\base\Action
     /**
      * Runs benchmark of job wait time.
      *
-     * @param string $mode one of 'default' or 'fast'
+     * @param string $mode one of 'fast' or 'isolate'
      * @param int $jobCount number of jobs that will be pushed to a queue
      * @param int $workerCount number of workers that listen a queue
      * @throws
      */
-    public function run($mode = 'default', $jobCount = 1000, $workerCount = 10)
+    public function run($mode = 'fast', $jobCount = 1000, $workerCount = 10)
     {
         if (!isset($this->modes[$mode])) {
             throw new ConsoleException("Unknown mode: $mode.");
@@ -73,15 +73,19 @@ class Action extends \yii\base\Action
             $queue = Yii::$app->get($queueName);
 
             // Starts worker
-            $this->startWorkers($workerCommand, $workerCount);
+            $stdoutFileName = Yii::getAlias("@runtime/$queueName-out.log");
+            file_put_contents($stdoutFileName, '');
+            $this->startWorkers($workerCommand, $workerCount, function ($type, $buffer) use ($stdoutFileName) {
+                file_put_contents($stdoutFileName, $buffer, FILE_APPEND | LOCK_EX);
+            });
 
             // Prepares result storage
             sleep(2);
-            $resultFileName = Yii::getAlias("@runtime/$queueName.log");
+            $resultFileName = Yii::getAlias("@runtime/$queueName-result.log");
             file_put_contents($resultFileName, '');
 
             try {
-                Console::startProgress(0, $jobCount, str_pad( "- $queueName: ", 20));
+                Console::startProgress(0, $jobCount, str_pad( "- $queueName: ", 22));
 
                 $pushedCount = 0;
                 while ($pushedCount < $jobCount) {
@@ -130,13 +134,13 @@ class Action extends \yii\base\Action
      *
      * @param string $command
      * @param int $count
+     * @param callable $callback
      */
-    private function startWorkers($command, $count)
+    private function startWorkers($command, $count, callable $callback)
     {
         for ($i = 0; $i < $count; $i++) {
-            $worker = new Process("exec php tests/yii $command");
-            $worker->start();
-            $this->workers[] = $worker;
+            $this->workers[] = $worker = new Process("exec php tests/yii $command");
+            $worker->start($callback);
         }
     }
 
