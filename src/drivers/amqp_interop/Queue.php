@@ -249,6 +249,7 @@ class Queue extends CliQueue
     public function listen()
     {
         $this->open();
+        $this->setupBroker();
 
         $queue = $this->context->createQueue($this->queueName);
         $consumer = $this->context->createConsumer($queue);
@@ -294,6 +295,7 @@ class Queue extends CliQueue
     protected function pushMessage($payload, $ttr, $delay, $priority)
     {
         $this->open();
+        $this->setupBroker();
 
         $topic = $this->context->createTopic($this->exchangeName);
 
@@ -391,14 +393,9 @@ class Queue extends CliQueue
         if ($this->context instanceof DelayStrategyAware) {
             $this->context->setDelayStrategy(new RabbitMqDlxDelayStrategy());
         }
-
-        $this->setupBroker();
     }
 
-    /**
-     * Creates all required queues, topics etc
-     */
-    protected function setupBroker()
+    public function setupBroker()
     {
         $queue = $this->context->createQueue($this->queueName);
         $queue->addFlag(AmqpQueue::FLAG_DURABLE);
