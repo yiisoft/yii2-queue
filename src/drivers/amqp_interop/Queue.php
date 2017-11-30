@@ -233,6 +233,14 @@ class Queue extends CliQueue
     protected $supportedDrivers = [self::ENQUEUE_AMQP_LIB, self::ENQUEUE_AMQP_EXT, self::ENQUEUE_AMQP_BUNNY];
 
     /**
+     * The property tells whether the setupBroker method was called or not.
+     * Having it we can do broker setup only once per process.
+     *
+     * @var bool
+     */
+    protected $setupBrokerDone = false;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -397,6 +405,10 @@ class Queue extends CliQueue
 
     public function setupBroker()
     {
+        if ($this->setupBrokerDone) {
+            return;
+        }
+
         $queue = $this->context->createQueue($this->queueName);
         $queue->addFlag(AmqpQueue::FLAG_DURABLE);
         $queue->setArguments(['x-max-priority' => $this->maxPriority]);
@@ -408,6 +420,8 @@ class Queue extends CliQueue
         $this->context->declareTopic($topic);
 
         $this->context->bind(new AmqpBind($queue, $topic));
+
+        $this->setupBrokerDone = true;
     }
 
     /**
@@ -420,6 +434,8 @@ class Queue extends CliQueue
         }
 
         $this->context->close();
+        $this->context = null;
+        $this->setupBrokerDone = false;
     }
 
     /**
