@@ -1,7 +1,7 @@
 RabbitMQ Driver
 ===============
 
-_**Note:** The driver provides basic support only and misses some features: delaying, priorities and others. Consider using [amqp_interop](driver-amqp-interop.md) driver which supports more features._
+__**Note:** The driver hsa been deprecated since 2.0.2 and will be removed in 3.0. Consider using [amqp_interop](driver-amqp-interop.md) driver instead._
 
 The driver works with RabbitMQ queues.
 

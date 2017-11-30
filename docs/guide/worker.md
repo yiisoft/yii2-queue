@@ -39,10 +39,10 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 [File]: driver-file.md
 [Db]: driver-db.md
 [Redis]: driver-redis.md
-[RabbitMQ]: driver-amqp.md
+[RabbitMQ (AMQP Interop)]: driver-amqp-interop.md
+[RabbitMQ (Deprecated)]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
-[AMQP Interop]: driver-amqp-interop.md
 
 Systemd
 -------
