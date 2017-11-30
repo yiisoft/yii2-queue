@@ -26,7 +26,7 @@ class Job extends BaseObject implements JobInterface
         $waitingTime = microtime(true) - $this->pushedAt;
         if (file_exists($this->lockFileName)) {
             // Saves waiting time to storage
-            file_put_contents($this->resultFileName, "$waitingTime\n", FILE_APPEND);
+            file_put_contents($this->resultFileName, "$waitingTime\n", FILE_APPEND | LOCK_EX);
             // Emulation of job execution
             usleep(rand(100000, 300000));
             // Signals to the benchmark that job is done
