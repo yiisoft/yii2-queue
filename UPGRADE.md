@@ -4,6 +4,11 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
+Upgrade from 2.0.1 to 2.0.2
+---------------------------
+
+* The [Amqp driver](docs/guide/driver-amqp.md) has been deprecated. You can still use till 3.0 release where it will be removed. It is advised to migrate to [Amqp Interop]((docs/guide/driver-amqp-interop.md)).  
+
 Upgrade from 2.0.0 to 2.0.1
 ---------------------------
 
