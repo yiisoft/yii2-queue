@@ -178,31 +178,33 @@ class Queue extends CliQueue
                 throw new Exception("Has not waited the lock.");
             }
 
-            $this->moveExpired();
+            try {
+                $this->moveExpired();
 
-            // Reserve one message
-            $payload = (new Query())
-                ->from($this->tableName)
-                ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
-                ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
-                ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
-                ->limit(1)
-                ->one($this->db);
-            if (is_array($payload)) {
-                $payload['reserved_at'] = time();
-                $payload['attempt'] = (int)$payload['attempt'] + 1;
-                $this->db->createCommand()->update($this->tableName, [
-                    'reserved_at' => $payload['reserved_at'], 'attempt' => $payload['attempt']],
-                    ['id' => $payload['id']]
-                )->execute();
+                // Reserve one message
+                $payload = (new Query())
+                    ->from($this->tableName)
+                    ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
+                    ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
+                    ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
+                    ->limit(1)
+                    ->one($this->db);
+                if (is_array($payload)) {
+                    $payload['reserved_at'] = time();
+                    $payload['attempt'] = (int)$payload['attempt'] + 1;
+                    $this->db->createCommand()->update($this->tableName, [
+                        'reserved_at' => $payload['reserved_at'], 'attempt' => $payload['attempt']],
+                        ['id' => $payload['id']]
+                    )->execute();
 
-                // pgsql
-                if (is_resource($payload['job'])) {
-                    $payload['job'] = stream_get_contents($payload['job']);
+                    // pgsql
+                    if (is_resource($payload['job'])) {
+                        $payload['job'] = stream_get_contents($payload['job']);
+                    }
                 }
+            } finally {
+                $this->mutex->release(__CLASS__ . $this->channel);
             }
-
-            $this->mutex->release(__CLASS__ . $this->channel);
 
             return $payload;
         });
