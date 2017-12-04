@@ -5,6 +5,7 @@ Yii2 Queue Extension Change Log
 -----------------------
 
 - Enh #158: Add Amqp Interop driver (makasim)
+- Bug #180: Fixed info command of file driver (victorruan)
 
 ## 2.0.1, November 13, 2017
 
