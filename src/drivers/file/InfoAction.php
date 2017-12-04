@@ -94,7 +94,7 @@ class InfoAction extends Action
         if ($data === null) {
             $fileName = $this->queue->path . '/index.data';
             if (file_exists($fileName)) {
-                $data = unserialize(file_get_contents($fileName));
+                $data = $this->queue->serializer->unserialize(file_get_contents($fileName));
             } else {
                 $data = [];
             }
