@@ -30,12 +30,4 @@ class Command extends CliCommand
     {
         $this->queue->listen();
     }
-
-    /**
-     * Creates all required queues, topics etc
-     */
-    public function actionSetupBroker()
-    {
-        $this->queue->setupBroker();
-    }
 }

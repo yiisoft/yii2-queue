@@ -403,7 +403,7 @@ class Queue extends CliQueue
         }
     }
 
-    public function setupBroker()
+    protected function setupBroker()
     {
         if ($this->setupBrokerDone) {
             return;
