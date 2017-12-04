@@ -1,8 +1,8 @@
 {
     "name": "yiisoft/yii2-queue",
-    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk and Gearman",
+    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk, SQS and Gearman",
     "type": "yii2-extension",
-    "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman"],
+    "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman", "sqs"],
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -27,14 +27,16 @@
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "phpunit/phpunit": "~4.4"
+        "phpunit/phpunit": "~4.4",
+        "aws/aws-sdk-php": ">=2.4"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
         "yiisoft/yii2-redis": "Need for Redis queue.",
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
-        "ext-gearman": "Need for Gearman queue."
+        "ext-gearman": "Need for Gearman queue.",
+        "aws/aws-sdk-php": "Need for aws SQS."
     },
     "autoload": {
         "psr-4": {
@@ -45,7 +47,8 @@
             "yii\\queue\\file\\": "src/drivers/file",
             "yii\\queue\\gearman\\": "src/drivers/gearman",
             "yii\\queue\\redis\\": "src/drivers/redis",
-            "yii\\queue\\sync\\": "src/drivers/sync"
+            "yii\\queue\\sync\\": "src/drivers/sync",
+            "yii\\queue\\sqs\\": "src/drivers/sqs"
         }
     },
     "extra": {
