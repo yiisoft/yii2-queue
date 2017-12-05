@@ -23,6 +23,7 @@
     "require-dev": {
         "yiisoft/yii2-redis": "*",
         "php-amqplib/php-amqplib": "*",
+        "enqueue/amqp-lib": "^0.8",
         "pda/pheanstalk": "*",
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
@@ -34,12 +35,14 @@
         "yiisoft/yii2-redis": "Need for Redis queue.",
         "pda/pheanstalk": "Need for Beanstalk queue.",
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
+        "enqueue/amqp-lib": "Need for AMQP interop queue.",
         "ext-gearman": "Need for Gearman queue."
     },
     "autoload": {
         "psr-4": {
             "yii\\queue\\": "src",
             "yii\\queue\\amqp\\": "src/drivers/amqp",
+            "yii\\queue\\amqp_interop\\": "src/drivers/amqp_interop",
             "yii\\queue\\beanstalk\\": "src/drivers/beanstalk",
             "yii\\queue\\db\\": "src/drivers/db",
             "yii\\queue\\file\\": "src/drivers/file",

@@ -18,6 +18,8 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Amqp Queue
  *
+ * @deprecated since 2.0.2 and will be removed in 3.0. Consider using amqp_interop driver instead
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Queue extends CliQueue
@@ -29,6 +31,7 @@ class Queue extends CliQueue
     public $queueName = 'queue';
     public $exchangeName = 'exchange';
     public $vhost = '/';
+
     /**
      * @var string command class name
      */
@@ -42,6 +45,7 @@ class Queue extends CliQueue
      * @var AMQPChannel
      */
     protected $channel;
+
 
 
     /**

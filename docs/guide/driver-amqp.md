@@ -1,6 +1,8 @@
 RabbitMQ Driver
 ===============
 
+__**Note:** The driver hsa been deprecated since 2.0.2 and will be removed in 3.0. Consider using [amqp_interop](driver-amqp-interop.md) driver instead._
+
 The driver works with RabbitMQ queues.
 
 In order for it to work you should add `php-amqplib/php-amqplib` package to your project.

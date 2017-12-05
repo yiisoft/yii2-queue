@@ -10,6 +10,7 @@ $config = [
         'pgsqlQueue',
         'redisQueue',
         'amqpQueue',
+        'amqpInteropQueue',
         'beanstalkQueue',
     ],
     'components' => [
@@ -73,6 +74,9 @@ $config = [
             'class' => \yii\queue\amqp\Queue::class,
             'queueName' => 'queue-basic',
             'exchangeName' => 'exchange-basic',
+        ],
+        'amqpInteropQueue' => [
+            'class' => \yii\queue\amqp_interop\Queue::class,
         ],
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,
