@@ -33,7 +33,6 @@ abstract class Command extends Controller
      */
     public $isolate = true;
 
-
     /**
      * @inheritdoc
      */
@@ -63,10 +62,17 @@ abstract class Command extends Controller
     /**
      * @param string $actionID
      * @return bool
+     * @since 2.0.2
+     */
+    abstract protected function isWorkerAction($actionID);
+
+    /**
+     * @param string $actionID
+     * @return bool
      */
     protected function useVerboseOption($actionID)
     {
-        return in_array($actionID, ['exec', 'run', 'listen']);
+        return $actionID === 'exec' || $this->isWorkerAction($actionID);
     }
 
     /**
@@ -75,7 +81,7 @@ abstract class Command extends Controller
      */
     protected function useIsolateOption($actionID)
     {
-        return in_array($actionID, ['run', 'listen']);
+        return $this->isWorkerAction($actionID);
     }
 
     /**
@@ -98,7 +104,32 @@ abstract class Command extends Controller
             $this->queue->messageHandler = null;
         }
 
+        if ($this->isWorkerAction($action->id)) {
+            $this->queue->setWorkerPid(getmypid());
+            $this->queue->trigger(Queue::EVENT_WORKER_START, new WorkerEvent([
+                'action' => $action,
+                'pid' => $this->queue->getWorkerPid(),
+            ]));
+        }
+
         return parent::beforeAction($action);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterAction($action, $result)
+    {
+        $result = parent::afterAction($action, $result);
+
+        if ($this->isWorkerAction($action->id)) {
+            $this->queue->trigger(Queue::EVENT_WORKER_STOP, new WorkerEvent([
+                'action' => $action,
+                'pid' => $this->queue->getWorkerPid(),
+            ]));
+        }
+
+        return $result;
     }
 
     /**
@@ -107,11 +138,12 @@ abstract class Command extends Controller
      * @param string|null $id of a message
      * @param int $ttr time to reserve
      * @param int $attempt number
+     * @param int $pid of a worker
      * @return int exit code
      */
-    public function actionExec($id, $ttr, $attempt)
+    public function actionExec($id, $ttr, $attempt, $pid)
     {
-        if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt)) {
+        if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid)) {
             return ExitCode::OK;
         } else {
             return ExitCode::UNSPECIFIED_ERROR;
@@ -132,13 +164,14 @@ abstract class Command extends Controller
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
         // Executes child process        
-        $cmd = strtr('{php} {yii} {queue}/exec "{id}" "{ttr}" "{attempt}"', [
-            '{php}' => PHP_BINARY,
-            '{yii}' => $_SERVER['SCRIPT_FILENAME'],
-            '{queue}' => $this->uniqueId,
-            '{id}' => $id,
-            '{ttr}' => $ttr,
-            '{attempt}' => $attempt,
+        $cmd = strtr('php yii queue/exec "id" "ttr" "attempt" "pid"', [
+            'php' => PHP_BINARY,
+            'yii' => $_SERVER['SCRIPT_FILENAME'],
+            'queue' => $this->uniqueId,
+            'id' => $id,
+            'ttr' => $ttr,
+            'attempt' => $attempt,
+            'pid' => $this->queue->getWorkerPid(),
         ]);
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'))) {

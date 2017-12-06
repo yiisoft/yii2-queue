@@ -5,22 +5,24 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\queue;
+namespace yii\queue\cli;
+
+use yii\base\Event;
 
 /**
- * Class ExecEvent
+ * Class WorkerEvent
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * @since 2.0.2
  */
-class ExecEvent extends JobEvent
+class WorkerEvent extends Event
 {
     /**
-     * @var int attempt number
+     * @var \yii\base\Action
      */
-    public $attempt;
+    public $action;
     /**
-     * @var int|null process ID of the worker.
-     * @since 2.0.2
+     * @var int pid of the worker
      */
-    public $workerPid;
+    public $pid;
 }

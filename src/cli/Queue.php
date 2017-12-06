@@ -22,6 +22,17 @@ use yii\queue\Queue as BaseQueue;
 abstract class Queue extends BaseQueue implements BootstrapInterface
 {
     /**
+     * @event WorkerEvent
+     * @since 2.0.2
+     */
+    const EVENT_WORKER_START = 'workerStart';
+    /**
+     * @event WorkerEvent
+     * @since 2.0.2
+     */
+    const EVENT_WORKER_STOP = 'workerStop';
+
+    /**
      * @var string command class name
      */
     public $commandClass = Command::class;
@@ -34,6 +45,11 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @internal only for command
      */
     public $messageHandler;
+    /**
+     * @var int|null current process ID of a worker.
+     * @since 2.0.2
+     */
+    private $_workerPid;
 
 
     /**
@@ -64,6 +80,30 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     }
 
     /**
+     * Gets process ID of a worker.
+     *
+     * @return int
+     * @internal for worker command only.
+     * @since 2.0.2
+     */
+    public function getWorkerPid()
+    {
+        return $this->_workerPid;
+    }
+
+    /**
+     * Sets process ID of a worker.
+     *
+     * @param int $pid
+     * @internal for worker command only.
+     * @since 2.0.2
+     */
+    public function setWorkerPid($pid)
+    {
+        $this->_workerPid = $pid;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
@@ -80,11 +120,13 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number
+     * @param int $workerPid of worker process
      * @return bool
      * @internal only for command
      */
-    public function execute($id, $message, $ttr, $attempt)
+    public function execute($id, $message, $ttr, $attempt, $workerPid)
     {
+        $this->setWorkerPid($workerPid);
         return parent::handleMessage($id, $message, $ttr, $attempt);
     }
 }

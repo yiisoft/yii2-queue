@@ -23,6 +23,14 @@ class Command extends CliCommand
 
 
     /**
+     * @inheritdoc
+     */
+    protected function isWorkerAction($actionID)
+    {
+        return in_array($actionID, ['run' ,'listen']);
+    }
+
+    /**
      * Runs all jobs from gearman-queue.
      * It can be used as cron job.
      */

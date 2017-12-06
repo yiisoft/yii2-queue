@@ -170,6 +170,18 @@ abstract class Queue extends Component
     abstract protected function pushMessage($message, $ttr, $delay, $priority);
 
     /**
+     * Uses for CLI drivers and gets process ID of a worker.
+     *
+     * @return null
+     * @internal for worker command only.
+     * @since 2.0.2
+     */
+    public function getWorkerPid()
+    {
+        return null;
+    }
+
+    /**
      * @param string $id of a job message
      * @param string $message
      * @param int $ttr time to reserve
@@ -189,6 +201,7 @@ abstract class Queue extends Component
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
+            'workerPid' => $this->getWorkerPid(),
         ]);
         $this->trigger(self::EVENT_BEFORE_EXEC, $event);
         if ($event->handled) {
@@ -223,6 +236,7 @@ abstract class Queue extends Component
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
+            'workerPid' => $this->getWorkerPid(),
             'error' => $error,
             'retry' => $job instanceof RetryableJobInterface
                 ? $job->canRetry($attempt, $error)

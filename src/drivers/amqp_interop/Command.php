@@ -23,6 +23,14 @@ class Command extends CliCommand
     public $queue;
 
     /**
+     * @inheritdoc
+     */
+    protected function isWorkerAction($actionID)
+    {
+        return $actionID === 'listen';
+    }
+
+    /**
      * Listens amqp-queue and runs new jobs.
      * It can be used as demon process.
      */
