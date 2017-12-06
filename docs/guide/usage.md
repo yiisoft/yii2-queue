@@ -129,13 +129,15 @@ Handling events
 
 Queue triggers the following events:
 
-| Event name               | Event class | Triggered on                                              |
-|--------------------------|-------------|-----------------------------------------------------------|
-| Queue::EVENT_BEFORE_PUSH | PushEvent   | Adding job to queue using `Queue::push()` method          |
-| Queue::EVENT_AFTER_PUSH  | PushEvent   | Adding job to queue using `Queue::push()` method          |
-| Queue::EVENT_BEFORE_EXEC | ExecEvent   | Before each job execution                                 |
-| Queue::EVENT_AFTER_EXEC  | ExecEvent   | After each success job execution                          |
-| Queue::EVENT_AFTER_ERROR | ErrorEvent  | When uncaught exception occurred during the job execution |
+| Event name                   | Event class | Triggered on                                              |
+|------------------------------|-------------|-----------------------------------------------------------|
+| Queue::EVENT_BEFORE_PUSH     | PushEvent   | Adding job to queue using `Queue::push()` method          |
+| Queue::EVENT_AFTER_PUSH      | PushEvent   | Adding job to queue using `Queue::push()` method          |
+| Queue::EVENT_BEFORE_EXEC     | ExecEvent   | Before each job execution                                 |
+| Queue::EVENT_AFTER_EXEC      | ExecEvent   | After each success job execution                          |
+| Queue::EVENT_AFTER_ERROR     | ErrorEvent  | When uncaught exception occurred during the job execution |
+| cli\Queue:EVENT_WORKER_START | WorkerEvent | When worker has been started                              |
+| cli\Queue:EVENT_WORKER_STOP  | WorkerEvent | When worker has been stopped                              |
 
 You can easily attach your own handler to any of these events.
 For example, let's delay the job, if its execution failed with a special exception: 

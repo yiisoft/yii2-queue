@@ -127,13 +127,15 @@ return [
 
 队列可以触发以下事件:
 
-| Event name               | Event class | Triggered on                                              |
-|--------------------------|-------------|-----------------------------------------------------------|
-| Queue::EVENT_BEFORE_PUSH | PushEvent   | Adding job to queue using `Queue::push()` method          |
-| Queue::EVENT_AFTER_PUSH  | PushEvent   | Adding job to queue using `Queue::push()` method          |
-| Queue::EVENT_BEFORE_EXEC | ExecEvent   | Before each job execution                                 |
-| Queue::EVENT_AFTER_EXEC  | ExecEvent   | After each success job execution                          |
-| Queue::EVENT_AFTER_ERROR | ErrorEvent  | When uncaught exception occurred during the job execution |
+| Event name                   | Event class | Triggered on                                              |
+|------------------------------|-------------|-----------------------------------------------------------|
+| Queue::EVENT_BEFORE_PUSH     | PushEvent   | Adding job to queue using `Queue::push()` method          |
+| Queue::EVENT_AFTER_PUSH      | PushEvent   | Adding job to queue using `Queue::push()` method          |
+| Queue::EVENT_BEFORE_EXEC     | ExecEvent   | Before each job execution                                 |
+| Queue::EVENT_AFTER_EXEC      | ExecEvent   | After each success job execution                          |
+| Queue::EVENT_AFTER_ERROR     | ErrorEvent  | When uncaught exception occurred during the job execution |
+| cli\Queue:EVENT_WORKER_START | WorkerEvent | When worker has been started                              |
+| cli\Queue:EVENT_WORKER_STOP  | WorkerEvent | When worker has been stopped                              |
 
 您可以很容易地将自己的处理程序附加到这些事件中的任何一个。
 例如，如果它的执行失败了，那么让我们延迟它:
