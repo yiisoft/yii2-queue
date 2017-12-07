@@ -56,9 +56,10 @@ class Action extends \yii\base\Action
      * @param string $mode one of 'fast' or 'isolate'
      * @param int $jobCount number of jobs that will be pushed to a queue
      * @param int $workerCount number of workers that listen a queue
+     * @param int $payloadSize additional job size
      * @throws
      */
-    public function run($mode = 'fast', $jobCount = 1000, $workerCount = 10)
+    public function run($mode = 'fast', $jobCount = 1000, $workerCount = 10, $payloadSize = 0)
     {
         if (!isset($this->modes[$mode])) {
             throw new ConsoleException("Unknown mode: $mode.");
@@ -101,6 +102,7 @@ class Action extends \yii\base\Action
                         $job->lockFileName = Yii::getAlias("@runtime/$lockName.lock");
                         touch($job->lockFileName);
                         $job->pushedAt = microtime(true);
+                        $job->payload = str_repeat('a', $payloadSize);
                         $queue->push($job);
 
                         Console::updateProgress(++$pushedCount, $jobCount);

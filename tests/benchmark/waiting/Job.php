@@ -20,6 +20,7 @@ class Job extends BaseObject implements JobInterface
     public $pushedAt;
     public $resultFileName;
     public $lockFileName;
+    public $payload;
 
     public function execute($queue)
     {
