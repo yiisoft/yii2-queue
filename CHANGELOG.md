@@ -8,6 +8,7 @@ Yii2 Queue Extension Change Log
 - Bug #180: Fixed info command of file driver (victorruan)
 - Bug #92: Resolve issue in debug panel (farmani-eigital)
 - Enh: Start and stop events of a worker (zhuravljov)
+- Bug #99: Retry connecting after connection has timed out for redis driver (cebe)
 
 ## 2.0.1, November 13, 2017
 
