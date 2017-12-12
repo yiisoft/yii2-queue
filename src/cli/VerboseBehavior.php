@@ -92,7 +92,7 @@ class VerboseBehavior extends Behavior
         $this->command->stderr(' - ', Console::FG_YELLOW);
         $this->command->stderr('Error', Console::BG_RED);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
-        $this->command->stdout(" ($duration s)", Console::FG_YELLOW);
+        $this->command->stderr(" ($duration s)", Console::FG_YELLOW);
         $this->command->stderr(PHP_EOL);
         $this->command->stderr($event->error);
         $this->command->stderr(PHP_EOL);
