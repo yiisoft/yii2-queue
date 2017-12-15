@@ -48,12 +48,4 @@ class SignalLoop extends BaseObject implements LoopInterface
 
         return !static::$stopped;
     }
-
-    /**
-     * Method can be used to stop listening of the queue.
-     */
-    public function stop()
-    {
-        static::$stopped = true;
-    }
 }
