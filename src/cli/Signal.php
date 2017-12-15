@@ -10,6 +10,8 @@ namespace yii\queue\cli;
 /**
  * Process Signal Helper
  *
+ * @deprecated since 2.0.2 and will be removed in 2.1. Use SignalLoop instead.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Signal

@@ -13,7 +13,6 @@ use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\cli\Signal;
 
 /**
  * File Queue
@@ -61,28 +60,25 @@ class Queue extends CliQueue
     }
 
     /**
-     * Runs all jobs from db-queue.
+     * Listens queue and runs each job.
+     *
+     * @param bool $loop whether to continue listening when queue is empty.
+     * @param int $delay number of seconds to sleep before next iteration.
      */
-    public function run()
+    public function run($loop, $delay = 0)
     {
-        while (!Signal::isExit() && ($payload = $this->reserve()) !== null) {
-            list($id, $message, $ttr, $attempt) = $payload;
-            if ($this->handleMessage($id, $message, $ttr, $attempt)) {
-                $this->delete($payload);
+        while ($this->loop->canContinue()) {
+            if (($payload = $this->reserve()) !== null) {
+                list($id, $message, $ttr, $attempt) = $payload;
+                if ($this->handleMessage($id, $message, $ttr, $attempt)) {
+                    $this->delete($payload);
+                }
+            } elseif (!$loop) {
+                break;
+            } elseif ($delay) {
+                sleep($delay);
             }
         }
-    }
-
-    /**
-     * Listens file-queue and runs new jobs.
-     *
-     * @param int $delay number of seconds for waiting new job.
-     */
-    public function listen($delay)
-    {
-        do {
-            $this->run();
-        } while (!$delay || sleep($delay) === 0);
     }
 
     /**
@@ -165,7 +161,7 @@ class Queue extends CliQueue
     /**
      * Reserves message for execute
      *
-     * @return string|null payload
+     * @return array|null payload
      */
     protected function reserve()
     {

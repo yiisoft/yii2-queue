@@ -11,6 +11,7 @@ use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
 use yii\console\Application as ConsoleApp;
+use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\queue\Queue as BaseQueue;
 
@@ -31,7 +32,10 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @since 2.0.2
      */
     const EVENT_WORKER_STOP = 'workerStop';
-
+    /**
+     * @var LoopInterface|array|string
+     */
+    public $loop = SignalLoop::class;
     /**
      * @var string command class name
      */
@@ -51,6 +55,14 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     private $_workerPid;
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->loop = Instance::ensure($this->loop, LoopInterface::class);
+    }
 
     /**
      * @return string command id

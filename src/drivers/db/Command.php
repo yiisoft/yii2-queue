@@ -51,7 +51,7 @@ class Command extends CliCommand
      */
     public function actionRun()
     {
-        $this->queue->run();
+        $this->queue->run(false);
     }
 
     /**
@@ -62,7 +62,7 @@ class Command extends CliCommand
      */
     public function actionListen($delay = 3)
     {
-        $this->queue->listen($delay);
+        $this->queue->run(true, $delay);
     }
 
     /**

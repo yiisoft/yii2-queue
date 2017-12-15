@@ -12,7 +12,6 @@ use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\redis\Connection;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\cli\Signal;
 
 /**
  * Redis Queue
@@ -45,34 +44,22 @@ class Queue extends CliQueue
     }
 
     /**
-     * Runs all jobs from redis-queue.
-     */
-    public function run()
-    {
-        $this->openWorker();
-        while (($payload = $this->reserve(0)) !== null) {
-            list($id, $message, $ttr, $attempt) = $payload;
-            if ($this->handleMessage($id, $message, $ttr, $attempt)) {
-                $this->delete($id);
-            }
-        }
-        $this->closeWorker();
-    }
-
-    /**
-     * Listens redis-queue and runs new jobs.
+     * Listens queue and runs each job.
      *
-     * @param int $wait timeout
+     * @param bool $loop whether to continue listening when queue is empty.
+     * @param int $timeout number of seconds to wait for next message.
      */
-    public function listen($wait)
+    public function run($loop, $timeout = 0)
     {
         $this->openWorker();
-        while (!Signal::isExit()) {
-            if (($payload = $this->reserve($wait)) !== null) {
+        while ($this->loop->canContinue()) {
+            if (($payload = $this->reserve($timeout)) !== null) {
                 list($id, $message, $ttr, $attempt) = $payload;
                 if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                     $this->delete($id);
                 }
+            } elseif (!$loop) {
+                break;
             }
         }
         $this->closeWorker();
@@ -134,10 +121,10 @@ class Queue extends CliQueue
     }
 
     /**
-     * @param int $wait timeout
+     * @param int $timeout timeout
      * @return array|null payload
      */
-    protected function reserve($wait)
+    protected function reserve($timeout)
     {
         // Moves delayed and reserved jobs into waiting list with lock for one second
         if ($this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
@@ -147,9 +134,9 @@ class Queue extends CliQueue
 
         // Find a new waiting message
         $id = null;
-        if (!$wait) {
+        if (!$timeout) {
             $id = $this->redis->rpop("$this->channel.waiting");
-        } elseif ($result = $this->redis->brpop("$this->channel.waiting", $wait)) {
+        } elseif ($result = $this->redis->brpop("$this->channel.waiting", $timeout)) {
             $id = $result[1];
         }
         if (!$id) {
