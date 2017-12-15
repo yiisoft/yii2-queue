@@ -57,10 +57,12 @@ class Command extends CliCommand
     /**
      * Listens beanstalk-queue and runs new jobs.
      * It can be used as demon process.
+     *
+     * @param int $timeout number of seconds to wait a job.
      */
-    public function actionListen()
+    public function actionListen($timeout = 3)
     {
-        $this->queue->run(true, 3);
+        $this->queue->run(true, $timeout);
     }
 
     /**

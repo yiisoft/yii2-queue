@@ -58,11 +58,11 @@ class Command extends CliCommand
      * Listens redis-queue and runs new jobs.
      * It can be used as demon process.
      *
-     * @param int $wait timeout
+     * @param int $timeout number of seconds to wait a job.
      */
-    public function actionListen($wait = 3)
+    public function actionListen($timeout = 3)
     {
-        $this->queue->run(true, $wait);
+        $this->queue->run(true, $timeout);
     }
 
     /**

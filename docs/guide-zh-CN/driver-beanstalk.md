@@ -27,11 +27,11 @@ return [
 控制台用于监听和处理队列任务。
 
 ```sh
-yii queue/listen
+yii queue/listen [timeout]
 ```
 
-`listen` 命令启动一个守护进程，它可以无限查询队列。如果有新任务的话它们立即得到并执行。  
-当命令正确地通过[supervisor](worker.md#supervisor)来实现时，这种方法是最有效 。
+`listen` 命令启动一个守护进程，它可以无限查询队列。如果有新的任务，他们立即得到并执行。  
+`timeout` 是下一次查询队列的时间 当命令正确地通过[supervisor](worker.md#supervisor)来实现时，这种方法是最有效的。
 
 ```sh
 yii queue/run

@@ -34,6 +34,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     const EVENT_WORKER_STOP = 'workerStop';
     /**
      * @var LoopInterface|array|string
+     * @since 2.0.2
      */
     public $loop = SignalLoop::class;
     /**

@@ -58,11 +58,11 @@ class Command extends CliCommand
      * Listens file-queue and runs new jobs.
      * It can be used as demon process.
      *
-     * @param int $delay number of seconds for waiting new job.
+     * @param int $timeout number of seconds to sleep before next reading of the queue.
      */
-    public function actionListen($delay = 3)
+    public function actionListen($timeout = 3)
     {
-        $this->queue->run(true, $delay);
+        $this->queue->run(true, $timeout);
     }
 
     /**
