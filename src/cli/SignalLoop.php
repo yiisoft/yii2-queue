@@ -18,34 +18,86 @@ use yii\base\BaseObject;
 class SignalLoop extends BaseObject implements LoopInterface
 {
     /**
-     * @var array of signals that must stop listening of the queue.
+     * @var array of signals to exit from listening of the queue.
      */
-    public $stopSignals = [SIGTERM, SIGINT, SIGHUP];
+    public $exitSignals = [SIGTERM, SIGINT, SIGHUP];
+    /**
+     * @var array of signals to suspend listening of the queue.
+     * For example: SIGTSTP
+     */
+    public $suspendSignals = [];
+    /**
+     * @var array of signals to resume listening of the queue.
+     * For example: SIGCONT
+     */
+    public $resumeSignals = [];
+    /**
+     * @var bool status when exit signal was got.
+     */
+    private static $exit = false;
+    /**
+     * @var bool status when suspend or resume signal was got.
+     */
+    private static $pause = false;
 
-    private static $stopped = false;
     private $handled = false;
 
     /**
+     * Initializes signal handlers once and checks state its.
      * @inheritdoc
      */
     public function canContinue()
     {
-        if (static::$stopped) {
+        if (static::$exit) {
             return false;
         }
 
-        if (function_exists('pcntl_signal')) {
-            if (!$this->handled) {
-                foreach ($this->stopSignals as $signal) {
-                    pcntl_signal($signal, function () {
-                        static::$stopped = true;
-                    });
-                }
-                $this->handled = true;
-            }
-            pcntl_signal_dispatch();
+        if (extension_loaded('pcntl')) {
+            $this->initHandlers();
+            $this->updateStatus();
         }
 
-        return !static::$stopped;
+        return !static::$exit;
+    }
+
+    /**
+     * Sets signal handlers
+     */
+    private function initHandlers()
+    {
+        if ($this->handled) {
+            return;
+        }
+
+        foreach ($this->exitSignals as $signal) {
+            pcntl_signal($signal, function () {
+                static::$exit = true;
+            });
+        }
+        foreach ($this->suspendSignals as $signal) {
+            pcntl_signal($signal, function () {
+                static::$pause = true;
+            });
+        }
+        foreach ($this->resumeSignals as $signal) {
+            pcntl_signal($signal, function () {
+                static::$pause = false;
+            });
+        }
+
+        $this->handled = true;
+    }
+
+    /**
+     * Checks signals and updates status.
+     */
+    private function updateStatus()
+    {
+        pcntl_signal_dispatch();
+        // Wait for resume signal until loop is suspended
+        while (static::$pause && !static::$exit) {
+            usleep(10000);
+            pcntl_signal_dispatch();
+        }
     }
 }
