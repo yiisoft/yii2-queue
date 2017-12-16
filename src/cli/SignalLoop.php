@@ -48,7 +48,7 @@ class SignalLoop extends BaseObject implements LoopInterface
      */
     public function canContinue()
     {
-        if (static::$exit) {
+        if (self::$exit) {
             return false;
         }
 
@@ -57,7 +57,7 @@ class SignalLoop extends BaseObject implements LoopInterface
             $this->updateStatus();
         }
 
-        return !static::$exit;
+        return !self::$exit;
     }
 
     /**
@@ -71,17 +71,17 @@ class SignalLoop extends BaseObject implements LoopInterface
 
         foreach ($this->exitSignals as $signal) {
             pcntl_signal($signal, function () {
-                static::$exit = true;
+                self::$exit = true;
             });
         }
         foreach ($this->suspendSignals as $signal) {
             pcntl_signal($signal, function () {
-                static::$pause = true;
+                self::$pause = true;
             });
         }
         foreach ($this->resumeSignals as $signal) {
             pcntl_signal($signal, function () {
-                static::$pause = false;
+                self::$pause = false;
             });
         }
 
@@ -95,7 +95,7 @@ class SignalLoop extends BaseObject implements LoopInterface
     {
         pcntl_signal_dispatch();
         // Wait for resume signal until loop is suspended
-        while (static::$pause && !static::$exit) {
+        while (self::$pause && !self::$exit) {
             usleep(10000);
             pcntl_signal_dispatch();
         }

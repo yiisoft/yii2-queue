@@ -105,11 +105,7 @@ abstract class Command extends Controller
         }
 
         if ($this->isWorkerAction($action->id)) {
-            $this->queue->setWorkerPid(getmypid());
-            $this->queue->trigger(Queue::EVENT_WORKER_START, new WorkerEvent([
-                'action' => $action,
-                'pid' => $this->queue->getWorkerPid(),
-            ]));
+            $this->queue->onWorkerStart($action, getmypid());
         }
 
         return parent::beforeAction($action);
@@ -123,10 +119,7 @@ abstract class Command extends Controller
         $result = parent::afterAction($action, $result);
 
         if ($this->isWorkerAction($action->id)) {
-            $this->queue->trigger(Queue::EVENT_WORKER_STOP, new WorkerEvent([
-                'action' => $action,
-                'pid' => $this->queue->getWorkerPid(),
-            ]));
+            $this->queue->onWorkerStop($action, getmypid());
         }
 
         return $result;
@@ -171,7 +164,7 @@ abstract class Command extends Controller
             'id' => $id,
             'ttr' => $ttr,
             'attempt' => $attempt,
-            'pid' => $this->queue->getWorkerPid(),
+            'pid' => getmypid(),
         ]);
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'))) {

@@ -51,19 +51,10 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     public $messageHandler;
     /**
-     * @var int|null current process ID of a worker.
+     * @var int current process ID of a worker.
      * @since 2.0.2
      */
     private $_workerPid;
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        $this->loop = Instance::ensure($this->loop, LoopInterface::class);
-    }
 
     /**
      * @return string command id
@@ -93,27 +84,46 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     }
 
     /**
-     * Gets process ID of a worker.
-     *
-     * @return int
+     * @param \yii\base\Action $action
+     * @param int $workerPid
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function getWorkerPid()
+    public function onWorkerStart($action, $workerPid)
     {
-        return $this->_workerPid;
+        $this->loop = Instance::ensure($this->loop, LoopInterface::class);
+
+        $this->_workerPid = $workerPid;
+        $this->trigger(self::EVENT_WORKER_START, new WorkerEvent([
+            'action' => $action,
+            'pid' => $workerPid,
+        ]));
     }
 
     /**
-     * Sets process ID of a worker.
-     *
-     * @param int $pid
+     * @param \yii\base\Action $action
+     * @param int $workerPid
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function setWorkerPid($pid)
+    public function onWorkerStop($action, $workerPid)
     {
-        $this->_workerPid = $pid;
+        $this->trigger(self::EVENT_WORKER_STOP, new WorkerEvent([
+            'action' => $action,
+            'pid' => $workerPid,
+        ]));
+    }
+
+    /**
+     * Gets process ID of a worker.
+     *
+     * @inheritdoc
+     * @return int
+     * @since 2.0.2
+     */
+    protected function getWorkerPid()
+    {
+        return $this->_workerPid;
     }
 
     /**
@@ -139,7 +149,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     public function execute($id, $message, $ttr, $attempt, $workerPid)
     {
-        $this->setWorkerPid($workerPid);
+        $this->_workerPid = $workerPid;
         return parent::handleMessage($id, $message, $ttr, $attempt);
     }
 }

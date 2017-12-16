@@ -173,10 +173,9 @@ abstract class Queue extends Component
      * Uses for CLI drivers and gets process ID of a worker.
      *
      * @return null
-     * @internal for worker command only.
      * @since 2.0.2
      */
-    public function getWorkerPid()
+    protected function getWorkerPid()
     {
         return null;
     }
