@@ -9,7 +9,6 @@ namespace yii\queue\gearman;
 
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\cli\Signal;
 
 /**
  * Gearman Queue
@@ -28,9 +27,11 @@ class Queue extends CliQueue
 
 
     /**
-     * Runs all jobs from gearman-queue.
+     * Listens queue and runs each job.
+     *
+     * @param bool $loop whether to continue listening when queue is empty.
      */
-    public function run()
+    public function run($loop)
     {
         $worker = new \GearmanWorker();
         $worker->addServer($this->host, $this->port);
@@ -38,32 +39,14 @@ class Queue extends CliQueue
             list($ttr, $message) = explode(';', $payload->workload(), 2);
             $this->handleMessage($payload->handle(), $message, $ttr, 1);
         });
-        $worker->setTimeout(1);
-        do {
-            $worker->work();
-        } while (!Signal::isExit() && $worker->returnCode() === GEARMAN_SUCCESS);
-
-    }
-
-    /**
-     * Listens gearman-queue and runs new jobs.
-     */
-    public function listen()
-    {
-        $worker = new \GearmanWorker();
-        $worker->addServer($this->host, $this->port);
-        $worker->addFunction($this->channel, function (\GearmanJob $payload) {
-            list($ttr, $message) = explode(';', $payload->workload(), 2);
-            $this->handleMessage($payload->handle(), $message, $ttr, 1);
-        });
-
-        $worker->setTimeout(1000);
-        do {
-            $worker->work();
-        } while (
-            !Signal::isExit() &&
-            in_array($worker->returnCode(), [GEARMAN_TIMEOUT, GEARMAN_SUCCESS])
-        );
+        $worker->setTimeout($loop ? 1000 : 1);
+        while ($this->loop->canContinue()) {
+            $result = $worker->work();
+            if (!$result && !$loop) {
+                break;
+            }
+            echo "next\n";
+        }
     }
 
     /**

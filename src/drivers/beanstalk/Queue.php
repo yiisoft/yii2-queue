@@ -12,7 +12,6 @@ use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\InvalidParamException;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\cli\Signal;
 
 /**
  * Beanstalk Queue
@@ -40,30 +39,15 @@ class Queue extends CliQueue
 
 
     /**
-     * Runs all jobs from queue.
+     * Listens queue and runs each job.
+     *
+     * @param bool $loop whether to continue listening when queue is empty.
+     * @param int $timeout number of seconds to wait for next message.
      */
-    public function run()
+    public function run($loop, $timeout = 0)
     {
-        while ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 0)) {
-            $info = $this->getPheanstalk()->statsJob($payload);
-            if ($this->handleMessage(
-                $payload->getId(),
-                $payload->getData(),
-                $info->ttr,
-                $info->reserves
-            )) {
-                $this->getPheanstalk()->delete($payload);
-            }
-        }
-    }
-
-    /**
-     * Listens queue and runs new jobs.
-     */
-    public function listen()
-    {
-        while (!Signal::isExit()) {
-            if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, 3)) {
+        while ($this->loop->canContinue()) {
+            if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, $timeout)) {
                 $info = $this->getPheanstalk()->statsJob($payload);
                 if ($this->handleMessage(
                     $payload->getId(),
@@ -73,6 +57,8 @@ class Queue extends CliQueue
                 )) {
                     $this->getPheanstalk()->delete($payload);
                 }
+            } elseif (!$loop) {
+                break;
             }
         }
     }

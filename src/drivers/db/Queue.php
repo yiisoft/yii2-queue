@@ -14,7 +14,6 @@ use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\cli\Signal;
 
 /**
  * Db Queue
@@ -64,32 +63,29 @@ class Queue extends CliQueue
     }
 
     /**
-     * Runs all jobs from db-queue.
+     * Listens queue and runs each job.
+     *
+     * @param bool $loop whether to continue listening when queue is empty.
+     * @param int $delay number of seconds to sleep before next iteration.
      */
-    public function run()
+    public function run($loop, $delay = 0)
     {
-        while (!Signal::isExit() && ($payload = $this->reserve())) {
-            if ($this->handleMessage(
-                $payload['id'],
-                $payload['job'],
-                $payload['ttr'],
-                $payload['attempt']
-            )) {
-                $this->release($payload);
+        while ($this->loop->canContinue()) {
+            if ($payload = $this->reserve()) {
+                if ($this->handleMessage(
+                    $payload['id'],
+                    $payload['job'],
+                    $payload['ttr'],
+                    $payload['attempt']
+                )) {
+                    $this->release($payload);
+                }
+            } elseif (!$loop) {
+                break;
+            } elseif ($delay) {
+                sleep($delay);
             }
         }
-    }
-
-    /**
-     * Listens db-queue and runs new jobs.
-     *
-     * @param int $delay number of seconds for waiting new job.
-     */
-    public function listen($delay)
-    {
-        do {
-            $this->run();
-        } while (!$delay || sleep($delay) === 0);
     }
 
     /**

@@ -58,7 +58,7 @@ yii queue/listen
 
 `listen` command launches a daemon which infinitely queries the queue. If there are new tasks
 they're immediately obtained and executed. This method is most efficient when command is properly
-daemonized via [supervisor](worker.md#supervisor).
+daemonized via [supervisor](worker.md#supervisor) or [systemd](worker.md#systemd).
 
 `listen` command has options:
 

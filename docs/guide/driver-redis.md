@@ -36,13 +36,13 @@ Console
 Console command is used to execute tasks.
 
 ```sh
-yii queue/listen [wait]
+yii queue/listen [timeout]
 ```
 
 `listen` command launches a daemon which infinitely queries the queue. If there are new tasks
-they're immediately obtained and executed. `wait` is time in seconds to wait between querying
-a queue next time. This method is most efficient when command is properly daemonized via
-[supervisor](worker.md#supervisor).
+they're immediately obtained and executed. `timeout` parameter is number of seconds to wait a job.
+This method is most efficient when command is properly daemonized via
+[supervisor](worker.md#supervisor) or [systemd](worker.md#systemd).
 
 ```sh
 yii queue/run
