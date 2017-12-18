@@ -29,6 +29,13 @@ abstract class Command extends Controller
      */
     public $verbose = false;
     /**
+     * @var array additional options to the verbose behavior.
+     * @since 2.0.2
+     */
+    public $verboseOptions = [
+        'class' => VerboseBehavior::class,
+    ];
+    /**
      * @var bool isolate mode. It executes a job in a child process.
      */
     public $isolate = true;
@@ -39,10 +46,10 @@ abstract class Command extends Controller
     public function options($actionID)
     {
         $options = parent::options($actionID);
-        if ($this->useVerboseOption($actionID)) {
+        if ($this->canVerbose($actionID)) {
             $options[] = 'verbose';
         }
-        if ($this->useIsolateOption($actionID)) {
+        if ($this->canIsolate($actionID)) {
             $options[] = 'isolate';
         }
 
@@ -70,7 +77,7 @@ abstract class Command extends Controller
      * @param string $actionID
      * @return bool
      */
-    protected function useVerboseOption($actionID)
+    protected function canVerbose($actionID)
     {
         return $actionID === 'exec' || $this->isWorkerAction($actionID);
     }
@@ -79,7 +86,7 @@ abstract class Command extends Controller
      * @param string $actionID
      * @return bool
      */
-    protected function useIsolateOption($actionID)
+    protected function canIsolate($actionID)
     {
         return $this->isWorkerAction($actionID);
     }
@@ -89,14 +96,11 @@ abstract class Command extends Controller
      */
     public function beforeAction($action)
     {
-        if ($this->useVerboseOption($action->id) && $this->verbose) {
-            $this->queue->attachBehavior('verbose', [
-                'class' => VerboseBehavior::class,
-                'command' => $this,
-            ]);
+        if ($this->canVerbose($action->id) && $this->verbose) {
+            $this->queue->attachBehavior('verbose', ['command' => $this] + $this->verboseOptions);
         }
 
-        if ($this->useIsolateOption($action->id) && $this->isolate) {
+        if ($this->canIsolate($action->id) && $this->isolate) {
             $this->queue->messageHandler = function ($id, $message, $ttr, $attempt) {
                 return $this->handleMessage($id, $message, $ttr, $attempt);
             };

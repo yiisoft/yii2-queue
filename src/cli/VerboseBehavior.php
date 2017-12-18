@@ -86,16 +86,17 @@ class VerboseBehavior extends Behavior
      */
     public function afterError(ErrorEvent $event)
     {
-        $this->command->stderr(date('Y-m-d H:i:s'), Console::FG_YELLOW);
+        $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
         $class = get_class($event->job);
-        $this->command->stderr(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
-        $this->command->stderr(' - ', Console::FG_YELLOW);
-        $this->command->stderr('Error', Console::BG_RED);
+        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout(' - ', Console::FG_YELLOW);
+        $this->command->stdout('Error', Console::BG_RED);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
-        $this->command->stderr(" ($duration s)", Console::FG_YELLOW);
-        $this->command->stderr(PHP_EOL);
-        $this->command->stderr($event->error);
-        $this->command->stderr(PHP_EOL);
+        $this->command->stdout(" ($duration s)", Console::FG_YELLOW);
+        $this->command->stdout(PHP_EOL);
+        $this->command->stdout('> ' . get_class($event->error) . ': ', Console::FG_RED);
+        $this->command->stdout($event->error->getMessage(), Console::FG_GREY);
+        $this->command->stdout(PHP_EOL);
     }
 
     /**

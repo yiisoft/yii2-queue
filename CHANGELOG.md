@@ -10,6 +10,7 @@ Yii2 Queue Extension Change Log
 - Enh: Start and stop events of a worker (zhuravljov)
 - Bug #99: Retry connecting after connection has timed out for redis driver (cebe)
 - Enh #185: Loop object instead of Signal helper (zhuravljov)
+- Enh #188: Configurable verbose mode (zhuravljov)
 
 ## 2.0.1, November 13, 2017
 
