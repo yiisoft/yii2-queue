@@ -20,7 +20,11 @@ class SignalLoop extends BaseObject implements LoopInterface
     /**
      * @var array of signals to exit from listening of the queue.
      */
-    public $exitSignals = [SIGTERM, SIGINT, SIGHUP];
+    public $exitSignals = [
+        15, // SIGTERM
+        2,  // SIGINT
+        1,  // SIGHUP
+    ];
     /**
      * @var array of signals to suspend listening of the queue.
      * For example: SIGTSTP
