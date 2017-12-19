@@ -1,6 +1,9 @@
 RabbitMQ 驱动
 ===============
 
+**Note:** The driver has been deprecated since 2.0.2 and will be removed in 2.1.
+Consider using [amqp_interop](driver-amqp-interop.md) driver instead.
+
 这个驱动使用 RabbitMQ 队列.
 
 如果要使用这个驱动，你应该在你的项目中加入 `php-amqplib/php-amqplib`。

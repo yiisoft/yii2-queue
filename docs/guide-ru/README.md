@@ -18,6 +18,7 @@
 * [Db драйвер](driver-db.md)
 * [Redis драйвер](driver-redis.md)
 * [RabbitMQ драйвер](driver-amqp.md)
+* [AMQP Interop драйвер](driver-amqp-interop.md)
 * [Beanstalk драйвер](driver-beanstalk.md)
 * [Gearman драйвер](driver-gearman.md)
 

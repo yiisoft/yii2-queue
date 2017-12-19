@@ -19,5 +19,6 @@ Yii2 队列扩展
 * [Db](driver-db.md)
 * [Redis](driver-redis.md)
 * [RabbitMQ](driver-amqp.md)
+* [AMQP Interop](driver-amqp-interop.md)
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
