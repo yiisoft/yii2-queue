@@ -18,10 +18,6 @@ use yii\base\Event;
 class WorkerEvent extends Event
 {
     /**
-     * @var \yii\base\Action
-     */
-    public $action;
-    /**
      * @var int pid of the worker
      */
     public $pid;

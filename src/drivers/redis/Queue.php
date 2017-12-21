@@ -10,6 +10,7 @@ namespace yii\queue\redis;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
+use yii\queue\cli\LoopInterface;
 use yii\redis\Connection;
 use yii\queue\cli\Queue as CliQueue;
 
@@ -46,23 +47,27 @@ class Queue extends CliQueue
     /**
      * Listens queue and runs each job.
      *
-     * @param bool $loop whether to continue listening when queue is empty.
+     * @param bool $repeat whether to continue listening when queue is empty.
      * @param int $timeout number of seconds to wait for next message.
+     * @internal for worker command only.
+     * @since 2.0.2
      */
-    public function run($loop, $timeout = 0)
+    public function run($repeat, $timeout = 0)
     {
-        $this->openWorker();
-        while ($this->loop->canContinue()) {
-            if (($payload = $this->reserve($timeout)) !== null) {
-                list($id, $message, $ttr, $attempt) = $payload;
-                if ($this->handleMessage($id, $message, $ttr, $attempt)) {
-                    $this->delete($id);
+        $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
+            $this->openWorker();
+            while ($loop->canContinue()) {
+                if (($payload = $this->reserve($timeout)) !== null) {
+                    list($id, $message, $ttr, $attempt) = $payload;
+                    if ($this->handleMessage($id, $message, $ttr, $attempt)) {
+                        $this->delete($id);
+                    }
+                } elseif (!$repeat) {
+                    break;
                 }
-            } elseif (!$loop) {
-                break;
             }
-        }
-        $this->closeWorker();
+            $this->closeWorker();
+        });
     }
 
     /**

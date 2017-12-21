@@ -11,7 +11,6 @@ use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
 use yii\console\Application as ConsoleApp;
-use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\queue\Queue as BaseQueue;
 
@@ -33,10 +32,10 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     const EVENT_WORKER_STOP = 'workerStop';
     /**
-     * @var LoopInterface|array|string
+     * @var array|string
      * @since 2.0.2
      */
-    public $loop = SignalLoop::class;
+    public $loopConfig = SignalLoop::class;
     /**
      * @var string command class name
      */
@@ -47,7 +46,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     public $commandOptions = [];
     /**
      * @var callable|null
-     * @internal only for command
+     * @internal for worker command only
      */
     public $messageHandler;
     /**
@@ -84,34 +83,22 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     }
 
     /**
-     * @param \yii\base\Action $action
-     * @param int $workerPid
-     * @internal for worker command only.
+     * Runs worker.
+     *
+     * @param callable $handler
      * @since 2.0.2
      */
-    public function onWorkerStart($action, $workerPid)
+    protected function runWorker(callable $handler)
     {
-        $this->loop = Instance::ensure($this->loop, LoopInterface::class);
-
-        $this->_workerPid = $workerPid;
-        $this->trigger(self::EVENT_WORKER_START, new WorkerEvent([
-            'action' => $action,
-            'pid' => $workerPid,
-        ]));
-    }
-
-    /**
-     * @param \yii\base\Action $action
-     * @param int $workerPid
-     * @internal for worker command only.
-     * @since 2.0.2
-     */
-    public function onWorkerStop($action, $workerPid)
-    {
-        $this->trigger(self::EVENT_WORKER_STOP, new WorkerEvent([
-            'action' => $action,
-            'pid' => $workerPid,
-        ]));
+        $this->_workerPid = getmypid();
+        $loop = Yii::createObject($this->loopConfig, [$this]);
+        $event = new WorkerEvent(['pid' => $this->_workerPid]);
+        $this->trigger(self::EVENT_WORKER_START, $event);
+        try {
+            call_user_func($handler, $loop);
+        } finally {
+            $this->trigger(self::EVENT_WORKER_STOP, $event);
+        }
     }
 
     /**
@@ -121,7 +108,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return int
      * @since 2.0.2
      */
-    protected function getWorkerPid()
+    public function getWorkerPid()
     {
         return $this->_workerPid;
     }
@@ -145,7 +132,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @param int $attempt number
      * @param int $workerPid of worker process
      * @return bool
-     * @internal only for command
+     * @internal for worker command only
      */
     public function execute($id, $message, $ttr, $attempt, $workerPid)
     {

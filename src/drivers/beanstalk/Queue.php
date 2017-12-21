@@ -11,6 +11,7 @@ use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\InvalidParamException;
+use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -41,26 +42,30 @@ class Queue extends CliQueue
     /**
      * Listens queue and runs each job.
      *
-     * @param bool $loop whether to continue listening when queue is empty.
+     * @param bool $repeat whether to continue listening when queue is empty.
      * @param int $timeout number of seconds to wait for next message.
+     * @internal for worker command only.
+     * @since 2.0.2
      */
-    public function run($loop, $timeout = 0)
+    public function run($repeat, $timeout = 0)
     {
-        while ($this->loop->canContinue()) {
-            if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, $timeout)) {
-                $info = $this->getPheanstalk()->statsJob($payload);
-                if ($this->handleMessage(
-                    $payload->getId(),
-                    $payload->getData(),
-                    $info->ttr,
-                    $info->reserves
-                )) {
-                    $this->getPheanstalk()->delete($payload);
+        $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
+            while ($loop->canContinue()) {
+                if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, $timeout)) {
+                    $info = $this->getPheanstalk()->statsJob($payload);
+                    if ($this->handleMessage(
+                        $payload->getId(),
+                        $payload->getData(),
+                        $info->ttr,
+                        $info->reserves
+                    )) {
+                        $this->getPheanstalk()->delete($payload);
+                    }
+                } elseif (!$repeat) {
+                    break;
                 }
-            } elseif (!$loop) {
-                break;
             }
-        }
+        });
     }
 
     /**

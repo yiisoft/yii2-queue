@@ -32,7 +32,7 @@ abstract class Command extends Controller
      * @var array additional options to the verbose behavior.
      * @since 2.0.2
      */
-    public $verboseOptions = [
+    public $verboseConfig = [
         'class' => VerboseBehavior::class,
     ];
     /**
@@ -97,7 +97,7 @@ abstract class Command extends Controller
     public function beforeAction($action)
     {
         if ($this->canVerbose($action->id) && $this->verbose) {
-            $this->queue->attachBehavior('verbose', ['command' => $this] + $this->verboseOptions);
+            $this->queue->attachBehavior('verbose', ['command' => $this] + $this->verboseConfig);
         }
 
         if ($this->canIsolate($action->id) && $this->isolate) {
@@ -108,25 +108,7 @@ abstract class Command extends Controller
             $this->queue->messageHandler = null;
         }
 
-        if ($this->isWorkerAction($action->id)) {
-            $this->queue->onWorkerStart($action, getmypid());
-        }
-
         return parent::beforeAction($action);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function afterAction($action, $result)
-    {
-        $result = parent::afterAction($action, $result);
-
-        if ($this->isWorkerAction($action->id)) {
-            $this->queue->onWorkerStop($action, getmypid());
-        }
-
-        return $result;
     }
 
     /**
@@ -168,7 +150,7 @@ abstract class Command extends Controller
             'id' => $id,
             'ttr' => $ttr,
             'attempt' => $attempt,
-            'pid' => getmypid(),
+            'pid' => $this->queue->getWorkerPid(),
         ]);
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'))) {

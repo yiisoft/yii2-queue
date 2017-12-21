@@ -36,6 +36,10 @@ class SignalLoop extends BaseObject implements LoopInterface
      */
     public $resumeSignals = [];
     /**
+     * @var Queue
+     */
+    protected $queue;
+    /**
      * @var bool status when exit signal was got.
      */
     private static $exit = false;
@@ -44,64 +48,59 @@ class SignalLoop extends BaseObject implements LoopInterface
      */
     private static $pause = false;
 
-    private $handled = false;
+    /**
+     * @param Queue $queue
+     * @inheritdoc
+     */
+    public function __construct($queue, array $config = [])
+    {
+        $this->queue = $queue;
+        parent::__construct($config);
+    }
 
     /**
-     * Initializes signal handlers once and checks state its.
+     * Sets signal handlers.
+     *
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if (extension_loaded('pcntl')) {
+            foreach ($this->exitSignals as $signal) {
+                pcntl_signal($signal, function () {
+                    self::$exit = true;
+                });
+            }
+            foreach ($this->suspendSignals as $signal) {
+                pcntl_signal($signal, function () {
+                    self::$pause = true;
+                });
+            }
+            foreach ($this->resumeSignals as $signal) {
+                pcntl_signal($signal, function () {
+                    self::$pause = false;
+                });
+            }
+        }
+    }
+
+    /**
+     * Checks signals state.
+     *
      * @inheritdoc
      */
     public function canContinue()
     {
-        if (self::$exit) {
-            return false;
-        }
-
         if (extension_loaded('pcntl')) {
-            $this->initHandlers();
-            $this->updateStatus();
+            pcntl_signal_dispatch();
+            // Wait for resume signal until loop is suspended
+            while (self::$pause && !self::$exit) {
+                usleep(10000);
+                pcntl_signal_dispatch();
+            }
         }
 
         return !self::$exit;
-    }
-
-    /**
-     * Sets signal handlers
-     */
-    private function initHandlers()
-    {
-        if ($this->handled) {
-            return;
-        }
-
-        foreach ($this->exitSignals as $signal) {
-            pcntl_signal($signal, function () {
-                self::$exit = true;
-            });
-        }
-        foreach ($this->suspendSignals as $signal) {
-            pcntl_signal($signal, function () {
-                self::$pause = true;
-            });
-        }
-        foreach ($this->resumeSignals as $signal) {
-            pcntl_signal($signal, function () {
-                self::$pause = false;
-            });
-        }
-
-        $this->handled = true;
-    }
-
-    /**
-     * Checks signals and updates status.
-     */
-    private function updateStatus()
-    {
-        pcntl_signal_dispatch();
-        // Wait for resume signal until loop is suspended
-        while (self::$pause && !self::$exit) {
-            usleep(10000);
-            pcntl_signal_dispatch();
-        }
     }
 }

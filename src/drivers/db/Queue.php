@@ -13,6 +13,7 @@ use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
+use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -65,27 +66,31 @@ class Queue extends CliQueue
     /**
      * Listens queue and runs each job.
      *
-     * @param bool $loop whether to continue listening when queue is empty.
+     * @param bool $repeat whether to continue listening when queue is empty.
      * @param int $delay number of seconds to sleep before next iteration.
+     * @internal for worker command only
+     * @since 2.0.2
      */
-    public function run($loop, $delay = 0)
+    public function run($repeat, $delay = 0)
     {
-        while ($this->loop->canContinue()) {
-            if ($payload = $this->reserve()) {
-                if ($this->handleMessage(
-                    $payload['id'],
-                    $payload['job'],
-                    $payload['ttr'],
-                    $payload['attempt']
-                )) {
-                    $this->release($payload);
+        $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
+            while ($loop->canContinue()) {
+                if ($payload = $this->reserve()) {
+                    if ($this->handleMessage(
+                        $payload['id'],
+                        $payload['job'],
+                        $payload['ttr'],
+                        $payload['attempt']
+                    )) {
+                        $this->release($payload);
+                    }
+                } elseif (!$repeat) {
+                    break;
+                } elseif ($delay) {
+                    sleep($delay);
                 }
-            } elseif (!$loop) {
-                break;
-            } elseif ($delay) {
-                sleep($delay);
             }
-        }
+        });
     }
 
     /**

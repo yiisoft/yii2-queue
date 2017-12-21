@@ -8,6 +8,7 @@
 namespace yii\queue\gearman;
 
 use yii\base\NotSupportedException;
+use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -29,24 +30,27 @@ class Queue extends CliQueue
     /**
      * Listens queue and runs each job.
      *
-     * @param bool $loop whether to continue listening when queue is empty.
+     * @param bool $repeat whether to continue listening when queue is empty.
+     * @internal for worker command only.
+     * @since 2.0.2
      */
-    public function run($loop)
+    public function run($repeat)
     {
-        $worker = new \GearmanWorker();
-        $worker->addServer($this->host, $this->port);
-        $worker->addFunction($this->channel, function (\GearmanJob $payload) {
-            list($ttr, $message) = explode(';', $payload->workload(), 2);
-            $this->handleMessage($payload->handle(), $message, $ttr, 1);
-        });
-        $worker->setTimeout($loop ? 1000 : 1);
-        while ($this->loop->canContinue()) {
-            $result = $worker->work();
-            if (!$result && !$loop) {
-                break;
+        $this->runWorker(function (LoopInterface $loop) use ($repeat) {
+            $worker = new \GearmanWorker();
+            $worker->addServer($this->host, $this->port);
+            $worker->addFunction($this->channel, function (\GearmanJob $payload) {
+                list($ttr, $message) = explode(';', $payload->workload(), 2);
+                $this->handleMessage($payload->handle(), $message, $ttr, 1);
+            });
+            $worker->setTimeout($repeat ? 1000 : 1);
+            while ($loop->canContinue()) {
+                $result = $worker->work();
+                if (!$result && !$repeat) {
+                    break;
+                }
             }
-            echo "next\n";
-        }
+        });
     }
 
     /**

@@ -175,7 +175,7 @@ abstract class Queue extends Component
      * @return null
      * @since 2.0.2
      */
-    protected function getWorkerPid()
+    public function getWorkerPid()
     {
         return null;
     }
