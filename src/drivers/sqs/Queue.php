@@ -135,7 +135,7 @@ class Queue extends CliQueue
         }
         
         $config = [
-            'credential' => $provider,
+            'credentials' => $provider,
             'region' => $this->region,
             'version' => $this->version,
         ];
@@ -167,7 +167,7 @@ class Queue extends CliQueue
     }
 
     /**
-    * Set the visibilty to reserve message
+    * Set the visibility to reserve message
     * So that no other worker can see this message
     *
     * @param array $payload
