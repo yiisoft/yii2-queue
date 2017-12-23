@@ -59,8 +59,7 @@ class VerboseBehavior extends Behavior
     {
         $this->jobStartedAt = microtime(true);
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $class = get_class($event->job);
-        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Started', Console::FG_GREEN);
         $this->command->stdout(PHP_EOL);
@@ -72,8 +71,7 @@ class VerboseBehavior extends Behavior
     public function afterExec(ExecEvent $event)
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $class = get_class($event->job);
-        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Done', Console::FG_GREEN);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
@@ -87,8 +85,7 @@ class VerboseBehavior extends Behavior
     public function afterError(ErrorEvent $event)
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $class = get_class($event->job);
-        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Error', Console::BG_RED);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
@@ -97,6 +94,21 @@ class VerboseBehavior extends Behavior
         $this->command->stdout('> ' . get_class($event->error) . ': ', Console::FG_RED);
         $this->command->stdout($event->error->getMessage(), Console::FG_GREY);
         $this->command->stdout(PHP_EOL);
+    }
+
+    /**
+     * @param ExecEvent $event
+     * @return string
+     * @since 2.0.2
+     */
+    protected function jobTitle(ExecEvent $event)
+    {
+        $class = get_class($event->job);
+        $extra = "attempt: $event->attempt";
+        if ($event->workerPid) {
+            $extra .= ", pid: $event->workerPid";
+        }
+        return " [$event->id] $class ($extra)";
     }
 
     /**
