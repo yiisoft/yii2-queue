@@ -18,6 +18,9 @@ use yii\queue\serializers\SerializerInterface;
 /**
  * Base Queue
  *
+ * @property null|int $workerPid
+ * @since 2.0.2
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 abstract class Queue extends Component
@@ -200,7 +203,6 @@ abstract class Queue extends Component
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
-            'workerPid' => $this->getWorkerPid(),
         ]);
         $this->trigger(self::EVENT_BEFORE_EXEC, $event);
         if ($event->handled) {
@@ -235,7 +237,6 @@ abstract class Queue extends Component
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
-            'workerPid' => $this->getWorkerPid(),
             'error' => $error,
             'retry' => $job instanceof RetryableJobInterface
                 ? $job->canRetry($attempt, $error)

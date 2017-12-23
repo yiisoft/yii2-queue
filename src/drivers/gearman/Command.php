@@ -33,18 +33,22 @@ class Command extends CliCommand
     /**
      * Runs all jobs from gearman-queue.
      * It can be used as cron job.
+     *
+     * @return null|int exit code.
      */
     public function actionRun()
     {
-        $this->queue->run(false);
+        return $this->queue->run(false);
     }
 
     /**
      * Listens gearman-queue and runs new jobs.
      * It can be used as demon process.
+     *
+     * @return null|int exit code.
      */
     public function actionListen()
     {
-        $this->queue->run(true);
+        return $this->queue->run(true);
     }
 }

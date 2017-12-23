@@ -18,9 +18,4 @@ class ExecEvent extends JobEvent
      * @var int attempt number
      */
     public $attempt;
-    /**
-     * @var int|null process ID of the worker.
-     * @since 2.0.2
-     */
-    public $workerPid;
 }
