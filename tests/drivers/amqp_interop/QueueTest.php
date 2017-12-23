@@ -18,18 +18,13 @@ use yii\queue\amqp_interop\Queue;
  */
 class QueueTest extends CliTestCase
 {
-    protected function setUp()
+    public function testListen()
     {
-        if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
-            $this->markTestSkipped('Amqp tests are disabled for php 5.5');
-        }
+        $this->startProcess('php yii queue/listen');
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
 
-        /** @var Queue $queue */
-        $queue = Yii::$app->amqpInteropQueue;
-        $queue->getContext()->deleteQueue($queue->getContext()->createQueue($queue->queueName));
-        $queue->getContext()->deleteTopic($queue->getContext()->createTopic($queue->exchangeName));
-
-        parent::setUp();
+        $this->assertSimpleJobDone($job);
     }
 
     /**
@@ -40,23 +35,18 @@ class QueueTest extends CliTestCase
         return Yii::$app->amqpInteropQueue;
     }
 
-    public function testRun()
+    protected function setUp()
     {
-        $this->markTestSkipped('Not supported');
-    }
+        if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
+            $this->markTestSkipped('Amqp tests are disabled for php 5.5');
+        }
 
-    public function testStatus()
-    {
-        $this->markTestSkipped('Not supported');
-    }
+        $queue = $this->getQueue();
+        $context = $queue->getContext();
 
-    public function testLater()
-    {
-        $this->markTestSkipped('Not supported');
-    }
+        $context->deleteQueue($context->createQueue($queue->queueName));
+        $context->deleteTopic($context->createTopic($queue->exchangeName));
 
-    public function testRetry()
-    {
-        $this->markTestSkipped('Not supported');
+        parent::setUp();
     }
 }

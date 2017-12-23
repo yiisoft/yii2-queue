@@ -19,22 +19,13 @@ use yii\queue\gearman\Queue;
  */
 class QueueTest extends CliTestCase
 {
-    /**
-     * @return Queue
-     */
-    protected function getQueue()
+    public function testRun()
     {
-        return Yii::$app->gearmanQueue;
-    }
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+        $this->runProcess('php yii queue/run');
 
-    public function testLater()
-    {
-        // Not supported
-    }
-
-    public function testRetry()
-    {
-        // Not supported
+        $this->assertSimpleJobDone($job);
     }
 
     public function testPriority()
@@ -44,16 +35,46 @@ class QueueTest extends CliTestCase
         $this->getQueue()->priority('norm')->push(new PriorityJob(['number' => 3]));
         $this->getQueue()->priority('norm')->push(new PriorityJob(['number' => 4]));
         $this->getQueue()->priority('high')->push(new PriorityJob(['number' => 2]));
-        $this->runProcess('php tests/yii queue/run');
+        $this->runProcess('php yii queue/run');
+
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
+    }
+
+    public function testStatus()
+    {
+        $job = $this->createSimpleJob();
+        $id = $this->getQueue()->push($job);
+        $isWaiting = $this->getQueue()->isWaiting($id);
+        $this->runProcess('php yii queue/run');
+        $isDone = $this->getQueue()->isDone($id);
+
+        $this->assertTrue($isWaiting);
+        $this->assertTrue($isDone);
+    }
+
+    public function testListen()
+    {
+        $this->startProcess('php yii queue/listen');
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+
+        $this->assertSimpleJobDone($job);
+    }
+
+    /**
+     * @return Queue
+     */
+    protected function getQueue()
+    {
+        return Yii::$app->gearmanQueue;
     }
 
     public function setUp()
     {
         if (!defined('GEARMAN_SUCCESS')) {
-            $this->markTestSkipped();
-        } else {
-            parent::setUp();
+            $this->markTestSkipped('Gearman in not installed.');
         }
+
+        parent::setUp();
     }
 }
