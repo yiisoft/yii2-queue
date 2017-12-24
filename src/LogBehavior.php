@@ -19,6 +19,7 @@ class LogBehavior extends Behavior
 {
     /**
      * @var Queue
+     * @inheritdoc
      */
     public $owner;
     /**
@@ -118,6 +119,7 @@ class LogBehavior extends Behavior
     /**
      * @param JobEvent $event
      * @return string
+     * @since 2.0.2
      */
     protected function getJobTitle(JobEvent $event)
     {
@@ -128,6 +130,7 @@ class LogBehavior extends Behavior
     /**
      * @param ExecEvent $event
      * @return string
+     * @since 2.0.2
      */
     protected function getExecTitle(ExecEvent $event)
     {

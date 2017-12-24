@@ -18,6 +18,7 @@ class JobEvent extends Event
 {
     /**
      * @var Queue
+     * @inheritdoc
      */
     public $sender;
     /**

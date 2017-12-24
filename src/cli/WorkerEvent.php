@@ -19,6 +19,7 @@ class WorkerEvent extends Event
 {
     /**
      * @var Queue
+     * @inheritdoc
      */
     public $sender;
     /**
