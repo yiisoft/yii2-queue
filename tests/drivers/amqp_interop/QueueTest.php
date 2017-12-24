@@ -51,11 +51,11 @@ class QueueTest extends CliTestCase
 
     public function testPriority()
     {
-        $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 1]));
-        $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 5]));
+        $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 1]));
+        $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 5]));
         $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 3]));
         $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 4]));
-        $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 2]));
+        $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 2]));
         $this->startProcess('php yii queue/listen');
         sleep(3);
 
