@@ -7,6 +7,8 @@
 
 namespace tests\drivers\amqp_interop;
 
+use tests\app\PriorityJob;
+use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\amqp_interop\Queue;
@@ -27,6 +29,39 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
+    public function testLater()
+    {
+        $this->startProcess('php yii queue/listen');
+        $job = $this->createSimpleJob();
+        $this->getQueue()->delay(2)->push($job);
+
+        $this->assertSimpleJobLaterDone($job, 2);
+    }
+
+    public function testRetry()
+    {
+        $this->startProcess('php yii queue/listen');
+        $job = new RetryJob(['uid' => uniqid()]);
+        $this->getQueue()->push($job);
+        sleep(6);
+
+        $this->assertFileExists($job->getFileName());
+        $this->assertEquals('aa', file_get_contents($job->getFileName()));
+    }
+
+    public function testPriority()
+    {
+        $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 1]));
+        $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 5]));
+        $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 3]));
+        $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 4]));
+        $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 2]));
+        $this->startProcess('php yii queue/listen');
+        sleep(3);
+
+        $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
+    }
+
     /**
      * @return Queue
      */
@@ -40,12 +75,6 @@ class QueueTest extends CliTestCase
         if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
             $this->markTestSkipped('Amqp tests are disabled for php 5.5');
         }
-
-        $queue = $this->getQueue();
-        $context = $queue->getContext();
-
-        $context->deleteQueue($context->createQueue($queue->queueName));
-        $context->deleteTopic($context->createTopic($queue->exchangeName));
 
         parent::setUp();
     }
