@@ -31,7 +31,6 @@ class Queue extends CliQueue
     public $queueName = 'queue';
     public $exchangeName = 'exchange';
     public $vhost = '/';
-
     /**
      * @var string command class name
      */
@@ -45,7 +44,6 @@ class Queue extends CliQueue
      * @var AMQPChannel
      */
     protected $channel;
-
 
 
     /**

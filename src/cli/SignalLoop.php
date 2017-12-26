@@ -36,10 +36,12 @@ class SignalLoop extends BaseObject implements LoopInterface
      * For example: SIGCONT
      */
     public $resumeSignals = [];
+
     /**
      * @var Queue
      */
     protected $queue;
+
     /**
      * @var bool status when exit signal was got.
      */
@@ -48,6 +50,7 @@ class SignalLoop extends BaseObject implements LoopInterface
      * @var bool status when suspend or resume signal was got.
      */
     private static $pause = false;
+
 
     /**
      * @param Queue $queue

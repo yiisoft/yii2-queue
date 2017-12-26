@@ -28,6 +28,7 @@ class VerboseBehavior extends Behavior
      * @var Controller
      */
     public $command;
+
     /**
      * @var float timestamp
      */

@@ -1,16 +1,17 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.0.2 under development
+2.0.2 December 26, 2018
 -----------------------
 
-- Enh #158: Add Amqp Interop driver (makasim)
-- Bug #180: Fixed info command of file driver (victorruan)
 - Bug #92: Resolve issue in debug panel (farmani-eigital)
-- Enh: Start and stop events of a worker (zhuravljov)
 - Bug #99: Retry connecting after connection has timed out for redis driver (cebe)
+- Bug #180: Fixed info command of file driver (victorruan)
+- Enh #158: Add Amqp Interop driver (makasim)
 - Enh #185: Loop object instead of Signal helper (zhuravljov)
 - Enh #188: Configurable verbose mode (zhuravljov)
+- Enh: Start and stop events of a worker (zhuravljov)
+
 
 2.0.1 November 13, 2017
 -----------------------
