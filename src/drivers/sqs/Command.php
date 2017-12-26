@@ -38,4 +38,12 @@ class Command extends CliCommand
     {
         $this->queue->listen();
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function isWorkerAction($actionID)
+    {
+        return in_array($actionID, ['run' ,'listen']);
+    }
 }
