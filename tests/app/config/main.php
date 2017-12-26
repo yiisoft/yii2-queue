@@ -77,6 +77,8 @@ $config = [
         ],
         'amqpInteropQueue' => [
             'class' => \yii\queue\amqp_interop\Queue::class,
+            'queueName' => 'queue-interop',
+            'exchangeName' => 'exchange-interop',
         ],
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,

@@ -19,6 +19,7 @@ class LogBehavior extends Behavior
 {
     /**
      * @var Queue
+     * @inheritdoc
      */
     public $owner;
     /**
@@ -47,7 +48,7 @@ class LogBehavior extends Behavior
      */
     public function afterPush(PushEvent $event)
     {
-        $title = $this->getJobEventTitle($event);
+        $title = $this->getJobTitle($event);
         Yii::info("$title is pushed.", Queue::class);
     }
 
@@ -56,7 +57,7 @@ class LogBehavior extends Behavior
      */
     public function beforeExec(ExecEvent $event)
     {
-        $title = $this->getJobEventTitle($event);
+        $title = $this->getExecTitle($event);
         Yii::info("$title is started.", Queue::class);
         Yii::beginProfile($title, Queue::class);
     }
@@ -66,7 +67,7 @@ class LogBehavior extends Behavior
      */
     public function afterExec(ExecEvent $event)
     {
-        $title = $this->getJobEventTitle($event);
+        $title = $this->getExecTitle($event);
         Yii::endProfile($title, Queue::class);
         Yii::info("$title is finished.", Queue::class);
         if ($this->autoFlush) {
@@ -79,7 +80,7 @@ class LogBehavior extends Behavior
      */
     public function afterError(ErrorEvent $event)
     {
-        $title = $this->getJobEventTitle($event);
+        $title = $this->getExecTitle($event);
         Yii::endProfile($title, Queue::class);
         Yii::error("$title is finished with error: $event->error.", Queue::class);
         if ($this->autoFlush) {
@@ -88,31 +89,12 @@ class LogBehavior extends Behavior
     }
 
     /**
-     * @param JobEvent $event
-     * @return string
-     */
-    protected function getJobEventTitle(JobEvent $event)
-    {
-        $title = strtr('[id] name', [
-            'id' => $event->id,
-            'name' => $event->job instanceof JobInterface
-                ? get_class($event->job)
-                : 'mixed data',
-        ]);
-        if ($event instanceof ExecEvent) {
-            $title .= " (attempt: $event->attempt, PID: $event->workerPid)";
-        }
-
-        return $title;
-    }
-
-    /**
      * @param cli\WorkerEvent $event
      * @since 2.0.2
      */
     public function workerStart(cli\WorkerEvent $event)
     {
-        $title = "Worker $event->pid";
+        $title = 'Worker ' . $event->sender->getWorkerPid();
         Yii::info("$title is started.", Queue::class);
         Yii::beginProfile($title, Queue::class);
         if ($this->autoFlush) {
@@ -126,11 +108,37 @@ class LogBehavior extends Behavior
      */
     public function workerStop(cli\WorkerEvent $event)
     {
-        $title = "Worker $event->pid";
+        $title = 'Worker ' . $event->sender->getWorkerPid();
         Yii::endProfile($title, Queue::class);
         Yii::info("$title is stopped.", Queue::class);
         if ($this->autoFlush) {
             Yii::getLogger()->flush(true);
         }
+    }
+
+    /**
+     * @param JobEvent $event
+     * @return string
+     * @since 2.0.2
+     */
+    protected function getJobTitle(JobEvent $event)
+    {
+        $name = $event->job instanceof JobInterface ? get_class($event->job) : 'mixed data';
+        return "[$event->id] $name";
+    }
+
+    /**
+     * @param ExecEvent $event
+     * @return string
+     * @since 2.0.2
+     */
+    protected function getExecTitle(ExecEvent $event)
+    {
+        $title = $this->getJobTitle($event);
+        $extra = "attempt: $event->attempt";
+        if ($pid = $event->sender->getWorkerPid()) {
+            $extra .= ", PID: $pid";
+        }
+        return "$title ($extra)";
     }
 }

@@ -31,12 +31,13 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
+     * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
      */
     public function run($repeat)
     {
-        $this->runWorker(function (LoopInterface $loop) use ($repeat) {
+        return $this->runWorker(function (LoopInterface $loop) use ($repeat) {
             $worker = new \GearmanWorker();
             $worker->addServer($this->host, $this->port);
             $worker->addFunction($this->channel, function (\GearmanJob $payload) {

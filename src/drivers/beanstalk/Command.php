@@ -48,10 +48,12 @@ class Command extends CliCommand
     /**
      * Runs all jobs from beanstalk-queue.
      * It can be used as cron job.
+     *
+     * @return null|int exit code.
      */
     public function actionRun()
     {
-        $this->queue->run(false);
+        return $this->queue->run(false);
     }
 
     /**
@@ -59,10 +61,11 @@ class Command extends CliCommand
      * It can be used as demon process.
      *
      * @param int $timeout number of seconds to wait a job.
+     * @return null|int exit code.
      */
     public function actionListen($timeout = 3)
     {
-        $this->queue->run(true, $timeout);
+        return $this->queue->run(true, $timeout);
     }
 
     /**

@@ -44,12 +44,13 @@ class Queue extends CliQueue
      *
      * @param bool $repeat whether to continue listening when queue is empty.
      * @param int $timeout number of seconds to wait for next message.
+     * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
      */
     public function run($repeat, $timeout = 0)
     {
-        $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
+        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
             while ($loop->canContinue()) {
                 if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, $timeout)) {
                     $info = $this->getPheanstalk()->statsJob($payload);
@@ -130,7 +131,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * @return array tube statistics
+     * @return object tube statistics
      */
     public function getStatsTube()
     {

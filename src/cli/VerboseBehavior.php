@@ -59,8 +59,7 @@ class VerboseBehavior extends Behavior
     {
         $this->jobStartedAt = microtime(true);
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $class = get_class($event->job);
-        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Started', Console::FG_GREEN);
         $this->command->stdout(PHP_EOL);
@@ -72,8 +71,7 @@ class VerboseBehavior extends Behavior
     public function afterExec(ExecEvent $event)
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $class = get_class($event->job);
-        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Done', Console::FG_GREEN);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
@@ -87,8 +85,7 @@ class VerboseBehavior extends Behavior
     public function afterError(ErrorEvent $event)
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $class = get_class($event->job);
-        $this->command->stdout(" [$event->id] $class (attempt: $event->attempt, pid: $event->workerPid)", Console::FG_GREY);
+        $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Error', Console::BG_RED);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
@@ -100,6 +97,21 @@ class VerboseBehavior extends Behavior
     }
 
     /**
+     * @param ExecEvent $event
+     * @return string
+     * @since 2.0.2
+     */
+    protected function jobTitle(ExecEvent $event)
+    {
+        $class = get_class($event->job);
+        $extra = "attempt: $event->attempt";
+        if ($pid = $event->sender->getWorkerPid()) {
+            $extra .= ", pid: $pid";
+        }
+        return " [$event->id] $class ($extra)";
+    }
+
+    /**
      * @param WorkerEvent $event
      * @since 2.0.2
      */
@@ -107,7 +119,8 @@ class VerboseBehavior extends Behavior
     {
         $this->workerStartedAt = time();
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $this->command->stdout(" [pid: $event->pid]", Console::FG_GREY);
+        $pid = $event->sender->getWorkerPid();
+        $this->command->stdout(" [pid: $pid]", Console::FG_GREY);
         $this->command->stdout(" - Worker is started\n", Console::FG_GREEN);
     }
 
@@ -118,7 +131,8 @@ class VerboseBehavior extends Behavior
     public function workerStop(WorkerEvent $event)
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
-        $this->command->stdout(" [pid: $event->pid]", Console::FG_GREY);
+        $pid = $event->sender->getWorkerPid();
+        $this->command->stdout(" [pid: $pid]", Console::FG_GREY);
         $this->command->stdout(' - Worker is stopped ', Console::FG_GREEN);
         $duration = $this->formatDuration(time() - $this->workerStartedAt);
         $this->command->stdout("($duration)\n", Console::FG_YELLOW);

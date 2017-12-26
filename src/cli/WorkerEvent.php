@@ -18,7 +18,16 @@ use yii\base\Event;
 class WorkerEvent extends Event
 {
     /**
-     * @var int pid of the worker
+     * @var Queue
+     * @inheritdoc
      */
-    public $pid;
+    public $sender;
+    /**
+     * @var LoopInterface
+     */
+    public $loop;
+    /**
+     * @var null|int exit code
+     */
+    public $exitCode;
 }

@@ -113,12 +113,14 @@ abstract class Command extends Controller
 
     /**
      * Executes a job.
+     * The command is internal, and used to isolate a job execution. Manual usage is not provided.
      *
      * @param string|null $id of a message
      * @param int $ttr time to reserve
      * @param int $attempt number
      * @param int $pid of a worker
      * @return int exit code
+     * @internal It is used with isolate mode.
      */
     public function actionExec($id, $ttr, $attempt, $pid)
     {
@@ -163,7 +165,7 @@ abstract class Command extends Controller
 
         $process = new Process($cmd, null, null, $message, $ttr);
         try {
-            $exitCode = $process->run(function ($type, $buffer) {
+            $process->run(function ($type, $buffer) {
                 if ($type === Process::ERR) {
                     $this->stderr($buffer);
                 } else {
@@ -175,6 +177,6 @@ abstract class Command extends Controller
             return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
         }
 
-        return $exitCode == ExitCode::OK;
+        return $process->isSuccessful();
     }
 }

@@ -7,7 +7,17 @@ application when you upgrade the package from one version to another.
 Upgrade from 2.0.1 to 2.0.2
 ---------------------------
 
-* The [Amqp driver](docs/guide/driver-amqp.md) has been deprecated. You can still use till 3.0 release where it will be removed. It is advised to migrate to [Amqp Interop]((docs/guide/driver-amqp-interop.md)).  
+* The [Amqp driver](docs/guide/driver-amqp.md) has been deprecated. You can still use till `2.1` release
+  where it will be removed. It is advised to migrate to [Amqp Interop](docs/guide/driver-amqp-interop.md).
+
+* Added `\yii\queue\cli\Command::isWorkerAction()` abstract method. If you use yourself console
+  controllers to run queue listeners, you must implement it.
+
+* `\yii\queue\cli\Signal` helper is deprecated and will be removed since `2.1`.  The extension uses
+  `\yii\queue\cli\SignalLoop` instead of the helper.
+
+* If you had made yourself console controller to listen a queue, you must upgrade it. See native
+  console controllers to upgrade.
 
 Upgrade from 2.0.0 to 2.0.1
 ---------------------------

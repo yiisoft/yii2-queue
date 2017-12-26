@@ -26,23 +26,12 @@ class QueueTest extends CliTestCase
         return Yii::$app->amqpQueue;
     }
 
-    public function testRun()
+    public function testListen()
     {
-        // Not supported
-    }
+        $this->startProcess('php yii queue/listen');
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
 
-    public function testStatus()
-    {
-        // Not supported
-    }
-
-    public function testLater()
-    {
-        // Not supported
-    }
-
-    public function testRetry()
-    {
-        // Limited support
+        $this->assertSimpleJobDone($job);
     }
 }

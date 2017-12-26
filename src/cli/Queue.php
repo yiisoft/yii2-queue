@@ -86,19 +86,30 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * Runs worker.
      *
      * @param callable $handler
+     * @return null|int exit code
      * @since 2.0.2
      */
     protected function runWorker(callable $handler)
     {
         $this->_workerPid = getmypid();
         $loop = Yii::createObject($this->loopConfig, [$this]);
-        $event = new WorkerEvent(['pid' => $this->_workerPid]);
+
+        $event = new WorkerEvent(['loop' => $loop]);
         $this->trigger(self::EVENT_WORKER_START, $event);
-        try {
-            call_user_func($handler, $loop);
-        } finally {
-            $this->trigger(self::EVENT_WORKER_STOP, $event);
+        if ($event->handled || $event->exitCode !== null) {
+            return $event->exitCode;
         }
+
+        $exitCode = null;
+        try {
+            $exitCode = call_user_func($handler, $loop);
+        } finally {
+            $event = new WorkerEvent(['loop' => $loop, 'exitCode' => $exitCode]);
+            $this->trigger(self::EVENT_WORKER_STOP, $event);
+            $this->_workerPid = null;
+        }
+
+        return $event->exitCode;
     }
 
     /**

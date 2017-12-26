@@ -8,6 +8,7 @@
 namespace yii\queue\cli;
 
 use yii\base\BaseObject;
+use yii\console\ExitCode;
 
 /**
  * Class SignalLoop

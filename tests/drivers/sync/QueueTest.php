@@ -31,6 +31,7 @@ class QueueTest extends TestCase
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
         $this->getQueue()->run();
+
         $this->assertSimpleJobDone($job);
     }
 

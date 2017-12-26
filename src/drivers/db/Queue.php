@@ -68,12 +68,13 @@ class Queue extends CliQueue
      *
      * @param bool $repeat whether to continue listening when queue is empty.
      * @param int $delay number of seconds to sleep before next iteration.
+     * @return null|int exit code.
      * @internal for worker command only
      * @since 2.0.2
      */
     public function run($repeat, $delay = 0)
     {
-        $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
+        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
             while ($loop->canContinue()) {
                 if ($payload = $this->reserve()) {
                     if ($this->handleMessage(
