@@ -103,11 +103,11 @@ class Queue extends CliQueue
             'MessageBody' => "$ttr;$message",
         ]);
 
-        if ($model !== null) {
-            return $model['MessageId'];
-        } else {
+        if ($model === null) {
             return false;
         }
+
+        return $model['MessageId'];
     }
 
     /**
@@ -191,16 +191,16 @@ class Queue extends CliQueue
     */
     private function release($payload)
     {
-        if (!empty($payload['ReceiptHandle'])) {
-            $receiptHandle = $payload['ReceiptHandle'];
-            $response = $this->getClient()->deleteMessage([
-                'QueueUrl'      => $this->url,
-                'ReceiptHandle' => $receiptHandle,
-            ]);
-
-            return $response !== null;
+        if (empty($payload['ReceiptHandle'])) {
+            return false;
         }
 
-        return false;
+        $receiptHandle = $payload['ReceiptHandle'];
+        $response = $this->getClient()->deleteMessage([
+            'QueueUrl'      => $this->url,
+            'ReceiptHandle' => $receiptHandle,
+        ]);
+
+        return $response !== null;
     }
 }
