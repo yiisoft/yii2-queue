@@ -126,9 +126,9 @@ abstract class Command extends Controller
     {
         if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid)) {
             return ExitCode::OK;
-        } else {
-            return ExitCode::UNSPECIFIED_ERROR;
         }
+
+        return ExitCode::UNSPECIFIED_ERROR;
     }
 
     /**
@@ -155,11 +155,11 @@ abstract class Command extends Controller
             'pid' => $this->queue->getWorkerPid(),
         ]);
         foreach ($this->getPassedOptions() as $name) {
-            if (in_array($name, $this->options('exec'))) {
+            if (in_array($name, $this->options('exec'), true)) {
                 $cmd .= ' --' . $name . '=' . $this->$name;
             }
         }
-        if (!in_array('color', $this->getPassedOptions())) {
+        if (!in_array('color', $this->getPassedOptions(), true)) {
             $cmd .= ' --color=' . $this->isColorEnabled();
         }
 

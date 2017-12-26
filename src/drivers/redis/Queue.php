@@ -82,11 +82,13 @@ class Queue extends CliQueue
 
         if ($this->redis->hexists("$this->channel.attempts", $id)) {
             return self::STATUS_RESERVED;
-        } elseif ($this->redis->hexists("$this->channel.messages", $id)) {
-            return self::STATUS_WAITING;
-        } else {
-            return self::STATUS_DONE;
         }
+
+        if ($this->redis->hexists("$this->channel.messages", $id)) {
+            return self::STATUS_WAITING;
+        }
+
+        return self::STATUS_DONE;
     }
 
     /**
@@ -121,9 +123,9 @@ class Queue extends CliQueue
             $this->redis->hdel("$this->channel.attempts", $id);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

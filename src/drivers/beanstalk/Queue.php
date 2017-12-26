@@ -82,15 +82,15 @@ class Queue extends CliQueue
             $stats = $this->getPheanstalk()->statsJob($id);
             if ($stats['state'] === 'reserved') {
                 return self::STATUS_RESERVED;
-            } else {
-                return self::STATUS_WAITING;
             }
+
+            return self::STATUS_WAITING;
         } catch (ServerException $e) {
             if ($e->getMessage() === 'Server reported NOT_FOUND') {
                 return self::STATUS_DONE;
-            } else {
-                throw $e;
             }
+
+            throw $e;
         }
     }
 
@@ -110,9 +110,9 @@ class Queue extends CliQueue
         } catch (ServerException $e) {
             if (strpos($e->getMessage(), 'NOT_FOUND') === 0) {
                 return false;
-            } else {
-                throw $e;
             }
+
+            throw $e;
         }
     }
 

@@ -49,9 +49,7 @@ class InfoAction extends Action
     protected function getWaitingCount()
     {
         $data = $this->getIndexData();
-        $count = !empty($data['waiting']) ? count($data['waiting']) : 0;
-
-        return $count;
+        return !empty($data['waiting']) ? count($data['waiting']) : 0;
     }
 
     /**
@@ -60,9 +58,7 @@ class InfoAction extends Action
     protected function getDelayedCount()
     {
         $data = $this->getIndexData();
-        $count = !empty($data['delayed']) ? count($data['delayed']) : 0;
-
-        return $count;
+        return !empty($data['delayed']) ? count($data['delayed']) : 0;
     }
 
     /**
@@ -71,9 +67,7 @@ class InfoAction extends Action
     protected function getReservedCount()
     {
         $data = $this->getIndexData();
-        $count = !empty($data['reserved']) ? count($data['reserved']) : 0;
-
-        return $count;
+        return !empty($data['reserved']) ? count($data['reserved']) : 0;
     }
 
     /**
@@ -83,9 +77,7 @@ class InfoAction extends Action
     {
         $data = $this->getIndexData();
         $total = isset($data['lastId']) ? $data['lastId'] : 0;
-        $done = $total - $this->getDelayedCount() - $this->getWaitingCount();
-
-        return $done;
+        return $total - $this->getDelayedCount() - $this->getWaitingCount();
     }
 
     protected function getIndexData()

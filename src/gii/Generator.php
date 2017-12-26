@@ -133,6 +133,11 @@ class Generator extends \yii\gii\Generator
         return [$jobFile];
     }
 
+    /**
+     * Validates the job class.
+     *
+     * @param string $attribute job attribute name.
+     */
     public function validateJobClass($attribute)
     {
         if ($this->isReservedKeyword($this->$attribute)) {
@@ -143,7 +148,7 @@ class Generator extends \yii\gii\Generator
     /**
      * Validates the namespace.
      *
-     * @param string $attribute Namespace variable.
+     * @param string $attribute Namespace attribute name.
      */
     public function validateNamespace($attribute)
     {

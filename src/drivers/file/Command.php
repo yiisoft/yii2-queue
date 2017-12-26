@@ -93,9 +93,9 @@ class Command extends CliCommand
         if ($this->queue->remove((int) $id)) {
             $this->stdout("The job has been removed.\n");
             return ExitCode::OK;
-        } else {
-            $this->stdout("The job was not found.\n");
-            return ExitCode::DATAERR;
         }
+
+        $this->stdout("The job was not found.\n");
+        return ExitCode::DATAERR;
     }
 }

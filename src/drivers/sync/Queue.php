@@ -87,12 +87,16 @@ class Queue extends BaseQueue
     {
         if (!is_int($id) || $id <= 0 || $id > $this->pushedId) {
             throw new InvalidParamException("Unknown messages ID: $id.");
-        } elseif ($id <= $this->finishedId) {
-            return Queue::STATUS_DONE;
-        } elseif ($id === $this->startedId) {
-            return Queue::STATUS_RESERVED;
-        } else {
-            return Queue::STATUS_WAITING;
         }
+
+        if ($id <= $this->finishedId) {
+            return Queue::STATUS_DONE;
+        }
+
+        if ($id === $this->startedId) {
+            return Queue::STATUS_RESERVED;
+        }
+
+        return Queue::STATUS_WAITING;
     }
 }

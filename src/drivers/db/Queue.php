@@ -107,18 +107,20 @@ class Queue extends CliQueue
         if (!$payload) {
             if ($this->deleteReleased) {
                 return self::STATUS_DONE;
-            } else {
-                throw new InvalidParamException("Unknown message ID: $id.");
             }
+
+            throw new InvalidParamException("Unknown message ID: $id.");
         }
 
         if (!$payload['reserved_at']) {
             return self::STATUS_WAITING;
-        } elseif (!$payload['done_at']) {
-            return self::STATUS_RESERVED;
-        } else {
-            return self::STATUS_DONE;
         }
+
+        if (!$payload['done_at']) {
+            return self::STATUS_RESERVED;
+        }
+
+        return self::STATUS_DONE;
     }
 
     /**
@@ -161,9 +163,7 @@ class Queue extends CliQueue
             'priority' => $priority ?: 1024,
         ])->execute();
         $tableSchema = $this->db->getTableSchema($this->tableName);
-        $id = $this->db->getLastInsertID($tableSchema->sequenceName);
-
-        return $id;
+        return $this->db->getLastInsertID($tableSchema->sequenceName);
     }
 
     /**
