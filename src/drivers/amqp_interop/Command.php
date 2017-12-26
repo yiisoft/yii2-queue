@@ -32,7 +32,7 @@ class Command extends CliCommand
 
     /**
      * Listens amqp-queue and runs new jobs.
-     * It can be used as demon process.
+     * It can be used as daemon process.
      */
     public function actionListen()
     {

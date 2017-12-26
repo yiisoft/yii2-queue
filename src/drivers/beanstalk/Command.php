@@ -58,7 +58,7 @@ class Command extends CliCommand
 
     /**
      * Listens beanstalk-queue and runs new jobs.
-     * It can be used as demon process.
+     * It can be used as daemon process.
      *
      * @param int $timeout number of seconds to wait a job.
      * @return null|int exit code.
