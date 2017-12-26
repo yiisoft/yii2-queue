@@ -3,6 +3,7 @@
 namespace yii\queue\sqs;
 
 use yii\base\NotSupportedException;
+use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 use yii\queue\cli\Signal;
 use \Aws\Sqs\SqsClient;
@@ -64,28 +65,32 @@ class Queue extends CliQueue
      }
 
     /**
-     * Runs all jobs from queue.
+     * Listens queue and runs each job.
+     *
+     * @param bool $repeat whether to continue listening when queue is empty.
+     * @param int $delay number of seconds to sleep before next iteration.
+     * @return null|int exit code.
+     * @internal for worker command only
      */
-    public function run()
+    public function run($repeat, $delay = 0)
     {
-        while (!Signal::isExit() && ($payload = $this->getPayload())) {
-            list($ttr, $message) = explode(';', $payload['Body'], 2);
+        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
+            while ($loop->canContinue()) {
+                if ($payload = $this->getPayload()) {
+                    list($ttr, $message) = explode(';', $payload['Body'], 2);
+                    //reserve it so it is not visible to another worker till ttr
+                    $this->reserve($payload, $ttr);
 
-            $this->reserve($payload, $ttr); //reserve it so it is not visible to another worker till ttr
-
-            if ($this->handleMessage(null, $message, $ttr, 1)) {
-                //if handled then remove from queue
-                $this->release($payload);
+                    if ($this->handleMessage(null, $message, $ttr, 1)) {
+                        $this->release($payload);
+                    }
+                } elseif (!$repeat) {
+                    break;
+                } elseif ($delay) {
+                    sleep($delay);
+                }
             }
-        }
-    }
-
-    /**
-     * Listens to get new jobs.
-     */
-    public function listen()
-    {
-        $this->run();        
+        });
     }
 
     /**
@@ -141,14 +146,14 @@ class Queue extends CliQueue
         ];
 
         if (!$this->_client) {
-            $this->_client = SqsClient::factory($config);
-
+            $this->_client = new SqsClient($config);
         }
+
         return $this->_client;
     }
 
     /**
-    *
+    * Gets a single message from SQS queue
     */
     private function getPayload()
     {
