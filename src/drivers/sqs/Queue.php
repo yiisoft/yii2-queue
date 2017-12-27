@@ -94,6 +94,16 @@ class Queue extends CliQueue
     }
 
     /**
+     * Clears the queue
+     */
+    public function clear()
+    {
+        $this->getClient()->purgeQueue(array(
+            'QueueUrl' => $this->url,
+        ));
+    }
+
+    /**
      * @inheritdoc
      */
     protected function pushMessage($message, $ttr, $delay, $priority)

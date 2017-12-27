@@ -45,6 +45,17 @@ class Command extends CliCommand
     }
 
     /**
+     * Clears the queue.
+     */
+    public function actionClear()
+    {
+        if ($this->confirm('Are you sure?')) {
+            $this->queue->clear();
+            $this->stdout("Queue has been cleared.\n");
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function isWorkerAction($actionID)
