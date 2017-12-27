@@ -7,7 +7,7 @@ Yii2 Queue Extension Change Log
 - no changes in this release.
 
 
-2.0.2 December 26, 2018
+2.0.2 December 26, 2017
 -----------------------
 
 - Bug #92: Resolve issue in debug panel (farmani-eigital)
