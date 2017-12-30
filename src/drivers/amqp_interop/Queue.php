@@ -36,7 +36,6 @@ class Queue extends CliQueue
     const TTR = 'yii-ttr';
     const DELAY = 'yii-delay';
     const PRIORITY = 'yii-priority';
-
     const ENQUEUE_AMQP_LIB = 'enqueue/amqp-lib';
     const ENQUEUE_AMQP_EXT = 'enqueue/amqp-ext';
     const ENQUEUE_AMQP_BUNNY = 'enqueue/amqp-bunny';
@@ -48,84 +47,72 @@ class Queue extends CliQueue
      * @var string
      */
     public $dsn;
-
     /**
      * The message queue broker's host
      *
      * @var string|null
      */
     public $host;
-
     /**
      * The message queue broker's port
      *
      * @var string|null
      */
     public $port;
-
     /**
      * This is RabbitMQ user which is used to login on the broker
      *
      * @var string|null
      */
     public $user;
-
     /**
      * This is RabbitMQ password which is used to login on the broker
      *
      * @var string|null
      */
     public $password;
-
     /**
      * Virtual hosts provide logical grouping and separation of resources.
      *
      * @var string|null
      */
     public $vhost;
-
     /**
      * The time PHP socket waits for an information while reading. In seconds
      *
      * @var float|null
      */
     public $readTimeout;
-
     /**
      * The time PHP socket waits for an information while witting. In seconds
      *
      * @var float|null
      */
     public $writeTimeout;
-
     /**
      * The time RabbitMQ keeps the connection on idle. In seconds
      *
      * @var float|null
      */
     public $connectionTimeout;
-
     /**
      * The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds
      *
      * @var float|null
      */
     public $heartbeat;
-
     /**
      * PHP uses one shared connection if set true
      *
      * @var bool|null
      */
     public $persisted;
-
     /**
      * The connection will be established as later as possible if set true
      *
      * @var bool|null
      */
     public $lazy;
-
     /**
      * If false prefetch_count option applied separately to each new consumer on the channel
      * If true prefetch_count option shared across all consumers on the channel
@@ -133,84 +120,72 @@ class Queue extends CliQueue
      * @var bool|null
      */
     public $qosGlobal;
-
     /**
      * Defines number of message pre-fetched in advance on a channel basis.
      *
      * @var int|null
      */
     public $qosPrefetchSize;
-
     /**
      * Defines number of message pre-fetched in advance per consumer.
      *
      * @var int|null
      */
     public $qosPrefetchCount;
-
     /**
      * Defines whether secure connection should be used or not
      *
      * @var bool|null
      */
     public $sslOn;
-
     /**
      * Require verification of SSL certificate used.
      *
      * @var bool|null
      */
     public $sslVerify;
-
     /**
      * Location of Certificate Authority file on local filesystem which should be used with the verify_peer context option to authenticate the identity of the remote peer.
      *
      * @var string|null
      */
     public $sslCacert;
-
     /**
      * Path to local certificate file on filesystem.
      *
      * @var string|null
      */
     public $sslCert;
-
     /**
      * Path to local private key file on filesystem in case of separate files for certificate (local_cert) and private key.
      *
      * @var string|null
      */
     public $sslKey;
-
     /**
      * The queue used to consume messages from
      *
      * @var string
      */
     public $queueName = 'interop_queue';
-
     /**
      * The exchange used to publish messages to
      *
      * @var string
      */
     public $exchangeName = 'exchange';
-
     /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values
      *
      * @var string
      */
     public $driver = self::ENQUEUE_AMQP_LIB;
-
     /**
      * This property should be an integer indicating the maximum priority the queue should support. Default is 10
      *
      * @var int
      */
     public $maxPriority = 10;
-
     /**
      * The property contains a command class which used in cli.
      *
@@ -224,14 +199,12 @@ class Queue extends CliQueue
      * @var AmqpContext
      */
     protected $context;
-
     /**
      * List of supported amqp interop drivers
      *
      * @var string[]
      */
     protected $supportedDrivers = [self::ENQUEUE_AMQP_LIB, self::ENQUEUE_AMQP_EXT, self::ENQUEUE_AMQP_BUNNY];
-
     /**
      * The property tells whether the setupBroker method was called or not.
      * Having it we can do broker setup only once per process.
@@ -239,6 +212,7 @@ class Queue extends CliQueue
      * @var bool
      */
     protected $setupBrokerDone = false;
+
 
     /**
      * @inheritdoc

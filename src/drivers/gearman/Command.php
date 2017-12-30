@@ -27,7 +27,7 @@ class Command extends CliCommand
      */
     protected function isWorkerAction($actionID)
     {
-        return in_array($actionID, ['run' ,'listen']);
+        return in_array($actionID, ['run' ,'listen'], true);
     }
 
     /**
@@ -43,7 +43,7 @@ class Command extends CliCommand
 
     /**
      * Listens gearman-queue and runs new jobs.
-     * It can be used as demon process.
+     * It can be used as daemon process.
      *
      * @return null|int exit code.
      */

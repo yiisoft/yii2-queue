@@ -28,6 +28,7 @@ class VerboseBehavior extends Behavior
      * @var Controller
      */
     public $command;
+
     /**
      * @var float timestamp
      */
@@ -154,8 +155,8 @@ class VerboseBehavior extends Behavior
 
         if ($days > 0) {
             return sprintf('%d:%02d:%02d:%02d', $days, $hours, $minutes, $seconds);
-        } else {
-            return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
         }
+
+        return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
     }
 }

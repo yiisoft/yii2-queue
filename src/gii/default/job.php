@@ -10,7 +10,7 @@
  */
 
 if ($interfaces) {
-    $implements = 'implements ' . join(', ', $interfaces);
+    $implements = 'implements ' . implode(', ', $interfaces);
 } else {
     $implements = '';
 }

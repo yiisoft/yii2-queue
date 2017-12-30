@@ -98,9 +98,9 @@ class Queue extends CliQueue
 
         if (file_exists("$this->path/job$id.data")) {
             return self::STATUS_WAITING;
-        } else {
-            return self::STATUS_DONE;
         }
+
+        return self::STATUS_DONE;
     }
 
     /**
@@ -199,9 +199,9 @@ class Queue extends CliQueue
 
         if ($id) {
             return [$id, file_get_contents("$this->path/job$id.data"), $ttr, $attempt];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -271,7 +271,7 @@ class Queue extends CliQueue
         if ($isNew && $this->fileMode !== null) {
             chmod($fileName, $this->fileMode);
         }
-        if (($file = fopen($fileName, 'r+')) === false) {
+        if (($file = fopen($fileName, 'rb+')) === false) {
             throw new InvalidConfigException("Unable to open index file: $fileName");
         }
         flock($file, LOCK_EX);

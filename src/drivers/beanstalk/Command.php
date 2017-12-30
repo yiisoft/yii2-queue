@@ -58,7 +58,7 @@ class Command extends CliCommand
 
     /**
      * Listens beanstalk-queue and runs new jobs.
-     * It can be used as demon process.
+     * It can be used as daemon process.
      *
      * @param int $timeout number of seconds to wait a job.
      * @return null|int exit code.
@@ -80,9 +80,9 @@ class Command extends CliCommand
         if ($this->queue->remove($id)) {
             $this->stdout("The job has been removed.\n");
             return ExitCode::OK;
-        } else {
-            $this->stdout("The job was not found.\n");
-            return ExitCode::DATAERR;
         }
+
+        $this->stdout("The job was not found.\n");
+        return ExitCode::DATAERR;
     }
 }

@@ -58,7 +58,7 @@ class Command extends CliCommand
 
     /**
      * Listens file-queue and runs new jobs.
-     * It can be used as demon process.
+     * It can be used as daemon process.
      *
      * @param int $timeout number of seconds to sleep before next reading of the queue.
      * @return null|int exit code.
@@ -93,9 +93,9 @@ class Command extends CliCommand
         if ($this->queue->remove((int) $id)) {
             $this->stdout("The job has been removed.\n");
             return ExitCode::OK;
-        } else {
-            $this->stdout("The job was not found.\n");
-            return ExitCode::DATAERR;
         }
+
+        $this->stdout("The job was not found.\n");
+        return ExitCode::DATAERR;
     }
 }

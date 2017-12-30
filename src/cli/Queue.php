@@ -31,6 +31,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @since 2.0.2
      */
     const EVENT_WORKER_STOP = 'workerStop';
+
     /**
      * @var array|string
      * @since 2.0.2
@@ -49,11 +50,13 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @internal for worker command only
      */
     public $messageHandler;
+
     /**
      * @var int current process ID of a worker.
      * @since 2.0.2
      */
     private $_workerPid;
+
 
     /**
      * @return string command id
@@ -131,9 +134,9 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     {
         if ($this->messageHandler) {
             return call_user_func($this->messageHandler, $id, $message, $ttr, $attempt);
-        } else {
-            return parent::handleMessage($id, $message, $ttr, $attempt);
         }
+
+        return parent::handleMessage($id, $message, $ttr, $attempt);
     }
 
     /**

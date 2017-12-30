@@ -81,11 +81,13 @@ class Queue extends CliQueue
         $status = $this->getClient()->jobStatus($id);
         if ($status[0] && !$status[1]) {
             return self::STATUS_WAITING;
-        } elseif ($status[0] && $status[1]) {
-            return self::STATUS_RESERVED;
-        } else {
-            return self::STATUS_DONE;
         }
+
+        if ($status[0] && $status[1]) {
+            return self::STATUS_RESERVED;
+        }
+
+        return self::STATUS_DONE;
     }
 
     /**
