@@ -117,10 +117,6 @@ class Queue extends CliQueue
             'MessageBody' => "$ttr;$message",
         ]);
 
-        if ($model === null) {
-            return false;
-        }
-
         return $model['MessageId'];
     }
 
