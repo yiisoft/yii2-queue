@@ -2,6 +2,7 @@
 
 namespace yii\queue\sqs;
 
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
@@ -68,15 +69,15 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $delay number of seconds to sleep before next iteration.
+     * @param int $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only
      */
-    public function run($repeat, $delay = 0)
+    public function run($repeat, $timeout = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
+        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
             while ($loop->canContinue()) {
-                if ($payload = $this->getPayload()) {
+                if ($payload = $this->getPayload($timeout)) {
                     list($ttr, $message) = explode(';', $payload['Body'], 2);
                     //reserve it so it is not visible to another worker till ttr
                     $this->reserve($payload, $ttr);
@@ -86,8 +87,6 @@ class Queue extends CliQueue
                     }
                 } elseif (!$repeat) {
                     break;
-                } elseif ($delay) {
-                    sleep($delay);
                 }
             }
         });
@@ -156,7 +155,7 @@ class Queue extends CliQueue
         ];
 
         if (!$this->_client) {
-            $this->_client = new SqsClient($config);
+            $this->_client = SqsClient::factory($config);
         }
 
         return $this->_client;
@@ -164,13 +163,20 @@ class Queue extends CliQueue
 
     /**
     * Gets a single message from SQS queue
+    *
+    * @param int $timeout number of seconds for long polling. Must be between 0 and 20.
+    * @return null|array payload.
     */
-    private function getPayload()
+    private function getPayload($timeout = 0)
     {
+        if ($timeout < 0 || $timeout > 20) {
+            throw new InvalidParamException('Timeout must be between 0 and 20');
+        }
         $payload = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
             'AttributeNames' => ['ApproximateReceiveCount'],
             'MaxNumberOfMessages' => 1,
+            'WaitTimeSeconds' => $timeout,
         ]);
 
         $payload = $payload['Messages'];
