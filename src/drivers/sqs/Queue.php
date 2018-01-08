@@ -6,7 +6,6 @@ use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\cli\Signal;
 use \Aws\Sqs\SqsClient;
 use Aws\Credentials\CredentialProvider;
 
@@ -17,11 +16,6 @@ use Aws\Credentials\CredentialProvider;
  */
 class Queue extends CliQueue
 {
-    /**
-    * @var SqsClient
-    */
-    private $_client;
-
     /**
      * The SQS url.
      * @var string
@@ -58,11 +52,26 @@ class Queue extends CliQueue
     public $commandClass = Command::class;
 
     /**
+     * @var SqsClient
+     */
+    private $_client;
+
+    /**
      * @inheritdoc
      */
      public function init()
      {
          parent::init();
+     }
+
+    /**
+     * Sets the AWS SQS client instance for the queue
+     *
+     * @param SqsClient $client AWS SQS client object.
+     */
+     public function setClient(SqsClient $client)
+     {
+         $this->_client = $client;
      }
 
     /**
@@ -105,6 +114,14 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
+    public function status($id)
+    {
+        throw new NotSupportedException('Status is not supported in the driver.');
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function pushMessage($message, $ttr, $delay, $priority)
     {
         if ($priority) {
@@ -118,14 +135,6 @@ class Queue extends CliQueue
         ]);
 
         return $model['MessageId'];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function status($id)
-    {
-        throw new NotSupportedException('Status is not supported in the driver.');
     }
 
     /**
