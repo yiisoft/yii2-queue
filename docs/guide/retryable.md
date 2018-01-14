@@ -92,6 +92,10 @@ Full support of retryable implements for [Beanstalk], [DB], [File], [AMQP Intero
 [Sync] driver will not retry failed jobs. [Gearman] driver doesn't support of retryable.
 [RabbitMQ] has only its basic retryable support, in which an attempt number can not be got.
 
+[AWS SQS] uses [Dead Letter Queue] for handling messages that were failed to process.
+All unprocessed messages after a maximum number of attempts are moved to that queue.
+You should set an address of a Dead Letter Queue and a maximum number of attempts in the AWS Console while creating a queue.
+
 [Beanstalk]: driver-beanstalk.md
 [DB]: driver-db.md
 [File]: driver-file.md
@@ -100,3 +104,5 @@ Full support of retryable implements for [Beanstalk], [DB], [File], [AMQP Intero
 [Gearman]: driver-gearman.md
 [RabbitMQ]: driver-amqp.md
 [AMQP Interop]: driver-amqp-interop.md
+[AWS SQS]: driver-sqs.md
+[Dead Letter Queue]: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html

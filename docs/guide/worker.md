@@ -34,7 +34,7 @@ file.
 For more info about Supervisor's configure and usage see [documentation](http://supervisord.org).
 
 Worker starting in daemon mode with `queue/listen` command supports [File], [Db], [Redis],
-[RabbitMQ], [AMQP Interop], [Beanstalk], [Gearman] drivers. For additional options see driver guide.
+[RabbitMQ], [AMQP Interop], [Beanstalk], [Gearman], [AWS SQS] drivers. For additional options see driver guide.
 
 [File]: driver-file.md
 [Db]: driver-db.md
@@ -43,6 +43,7 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 [RabbitMQ (Deprecated)]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AWS SQS]: driver-sqs.md
 
 Systemd
 -------
@@ -111,7 +112,7 @@ Config example:
 
 In this case cron will start the command every minute. 
 
-`queue/run` command is supported by [File], [Db], [Redis], [Beanstalk], [Gearman] drivers.
+`queue/run` command is supported by [File], [Db], [Redis], [Beanstalk], [Gearman], [AWS SQS] drivers.
 For additional options see driver guide.
 
 [File]: driver-file.md
@@ -119,3 +120,4 @@ For additional options see driver guide.
 [Redis]: driver-redis.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AWS SQS]: driver-sqs.md

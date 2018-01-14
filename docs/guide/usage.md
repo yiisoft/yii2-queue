@@ -78,7 +78,7 @@ Job status
 The component has ability to track status of a job which was pushed into queue.
 
 ```php
-// Push a job into queue and get massage ID.
+// Push a job into queue and get message ID.
 $id = Yii::$app->queue->push(new SomeJob());
 
 // The job is waiting for execute.
@@ -91,7 +91,7 @@ Yii::$app->queue->isReserved($id);
 Yii::$app->queue->isDone($id);
 ```
 
-**Important:** RabbitMQ driver doesn't support job statuses.
+**Important:** RabbitMQ and AWS SQS drivers don't support job statuses.
 
 
 Messaging third party workers
