@@ -74,6 +74,7 @@ class Queue extends CliQueue
      */
     public function run($repeat, $delay = 0)
     {
+        $delay = intval($delay);
         return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
             while ($loop->canContinue()) {
                 if ($payload = $this->reserve()) {
