@@ -55,7 +55,6 @@ class Queue extends CliQueue
     public function run($repeat, $timeout = 0)
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
-            $this->openWorker();
             while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
                     list($id, $message, $ttr, $attempt) = $payload;
@@ -66,7 +65,6 @@ class Queue extends CliQueue
                     break;
                 }
             }
-            $this->closeWorker();
         });
     }
 
@@ -202,16 +200,5 @@ class Queue extends CliQueue
         }
 
         return $id;
-    }
-
-    protected function openWorker()
-    {
-        $id = $this->redis->incr("$this->channel.worker_id");
-        $this->redis->clientSetname("$this->channel.worker.$id");
-    }
-
-    protected function closeWorker()
-    {
-        $this->redis->clientSetname('');
     }
 }
