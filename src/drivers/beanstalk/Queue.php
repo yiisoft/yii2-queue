@@ -11,7 +11,6 @@ use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\InvalidParamException;
-use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -50,8 +49,8 @@ class Queue extends CliQueue
      */
     public function run($repeat, $timeout = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
-            while ($loop->canContinue()) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
+            while ($canContinue()) {
                 if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, $timeout)) {
                     $info = $this->getPheanstalk()->statsJob($payload);
                     if ($this->handleMessage(

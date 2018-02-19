@@ -13,7 +13,6 @@ use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
-use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -74,8 +73,8 @@ class Queue extends CliQueue
      */
     public function run($repeat, $delay = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
-            while ($loop->canContinue()) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $delay) {
+            while ($canContinue()) {
                 if ($payload = $this->reserve()) {
                     if ($this->handleMessage(
                         $payload['id'],

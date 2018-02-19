@@ -10,7 +10,6 @@ namespace yii\queue\redis;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
-use yii\queue\cli\LoopInterface;
 use yii\redis\Connection;
 use yii\queue\cli\Queue as CliQueue;
 
@@ -55,9 +54,9 @@ class Queue extends CliQueue
      */
     public function run($repeat, $timeout = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             $this->openWorker();
-            while ($loop->canContinue()) {
+            while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
                     list($id, $message, $ttr, $attempt) = $payload;
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {

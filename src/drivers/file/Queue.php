@@ -12,7 +12,6 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
-use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -71,8 +70,8 @@ class Queue extends CliQueue
      */
     public function run($repeat, $delay = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
-            while ($loop->canContinue()) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $delay) {
+            while ($canContinue()) {
                 if (($payload = $this->reserve()) !== null) {
                     list($id, $message, $ttr, $attempt) = $payload;
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {

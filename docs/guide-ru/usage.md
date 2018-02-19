@@ -139,6 +139,7 @@ return [
 | Queue::EVENT_AFTER_EXEC      | ExecEvent     | После каждого успешного выполнения задания                    |
 | Queue::EVENT_AFTER_ERROR     | ErrorEvent    | Если при выполнение задания случилось непойманное исключение  |
 | cli\Queue:EVENT_WORKER_START | WorkerEvent   | В момент запуска нового воркера                               |
+| cli\Queue:EVENT_WORKER_LOOP  | WorkerEvent   | В цикле между опросами очереди                                |
 | cli\Queue:EVENT_WORKER_STOP  | WorkerEvent   | В момент остановки воркера                                    |
 
 Вы с лёгкостью можете подключить свой собственный слушатель на любое из этих событий.
