@@ -6,6 +6,7 @@ Yii2 Queue Extension Change Log
 
 - Bug #210: Worker option to define php bin path to run child process (zhuravljov)
 - Enh: Worker loop event (zhuravljov)
+- Bug #207: Console params validation (zhuravljov)
 
 2.0.2 December 26, 2017
 -----------------------

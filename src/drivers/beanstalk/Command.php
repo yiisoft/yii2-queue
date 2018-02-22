@@ -7,7 +7,7 @@
 
 namespace yii\queue\beanstalk;
 
-use yii\console\ExitCode;
+use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
 
 /**
@@ -61,28 +61,32 @@ class Command extends CliCommand
      * It can be used as daemon process.
      *
      * @param int $timeout number of seconds to wait a job.
+     * @throws Exception when params are invalid.
      * @return null|int exit code.
      */
     public function actionListen($timeout = 3)
     {
+        if (!is_numeric($timeout)) {
+            throw new Exception('Timeout must be numeric.');
+        }
+        if ($timeout < 1) {
+            throw new Exception('Timeout must be greater that zero.');
+        }
+
         return $this->queue->run(true, $timeout);
     }
 
     /**
      * Removes a job by id.
      *
-     * @param int $id
-     * @return int exit code
+     * @param int $id of the job.
+     * @throws Exception when the job is not found.
      * @since 2.0.1
      */
     public function actionRemove($id)
     {
-        if ($this->queue->remove($id)) {
-            $this->stdout("The job has been removed.\n");
-            return ExitCode::OK;
+        if (!$this->queue->remove($id)) {
+            throw new Exception('The job is not found.');
         }
-
-        $this->stdout("The job was not found.\n");
-        return ExitCode::DATAERR;
     }
 }
