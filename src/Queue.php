@@ -137,9 +137,11 @@ abstract class Queue extends Component
     {
         $event = new PushEvent([
             'job' => $job,
-            'ttr' => $job instanceof RetryableJobInterface
-                ? $job->getTtr()
-                : ($this->pushTtr ?: $this->ttr),
+            'ttr' => $this->pushTtr ?: (
+                $job instanceof RetryableJobInterface
+                    ? $job->getTtr()
+                    : $this->ttr
+            ),
             'delay' => $this->pushDelay ?: 0,
             'priority' => $this->pushPriority,
         ]);
