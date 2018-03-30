@@ -186,7 +186,7 @@ class Queue extends CliQueue
                 $payload = (new Query())
                     ->from($this->tableName)
                     ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
-                    ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
+                    ->andWhere('[[pushed_at]] <= :time - [[delay]]', [':time' => time()])
                     ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
                     ->limit(1)
                     ->one($this->db);
