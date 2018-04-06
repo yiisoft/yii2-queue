@@ -6,9 +6,9 @@
     <br>
 </p>
 
-An extension for running tasks asyncronously via queues.
+An extension for running tasks asynchronously via queues.
 
-It supported queues based on **DB**, **Redis**, **RabbitMQ**, **Beanstalk** and **Gearman**.
+It supports queues based on **DB**, **Redis**, **RabbitMQ**, **AMQP**, **Beanstalk** and **Gearman**.
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
@@ -54,7 +54,7 @@ class DownloadJob extends BaseObject implements \yii\queue\JobInterface
 }
 ```
 
-Here's how to send a task into queue:
+Here's how to send a task into the queue:
 
 ```php
 Yii::$app->queue->push(new DownloadJob([
@@ -62,7 +62,7 @@ Yii::$app->queue->push(new DownloadJob([
     'file' => '/tmp/image.jpg',
 ]));
 ```
-Pushes job into queue that run after 5 min:
+To push a job into the queue that should run after 5 minutes:
 
 ```php
 Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
@@ -71,36 +71,36 @@ Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
 ]));
 ```
 
-The exact way task is executed depends on the driver used. The most part of drivers can be run using
-console commands, which the component registers in your application.
+The exact way a task is executed depends on the used driver. Most drivers can be run using
+console commands, which the component automatically registers in your application.
 
-Command that obtains and executes tasks in a loop until queue is empty:
+This command obtains and executes tasks in a loop until the queue is empty:
 
 ```sh
 yii queue/run
 ```
 
-Command launches a daemon which infinitely queries the queue:
+This command launches a daemon which infinitely queries the queue:
 
 ```sh
 yii queue/listen
 ```
 
-See documentation for more details about driver console commands and their options.
+See the documentation for more details about driver specific console commands and their options.
 
-The component has ability to track status of a job which was pushed into queue.
+The component also has the ability to track the status of a job which was pushed into queue.
 
 ```php
-// Push a job into queue and get message ID.
+// Push a job into the queue and get a message ID.
 $id = Yii::$app->queue->push(new SomeJob());
 
-// The job is waiting for execute.
+// Check whether the job is waiting for execution.
 Yii::$app->queue->isWaiting($id);
 
-// Worker gets the job from queue, and executing it.
+// Check whether a worker got the job from the queue and executes it.
 Yii::$app->queue->isReserved($id);
 
-// Worker has executed the job.
+// Check whether a worker has executed the job.
 Yii::$app->queue->isDone($id);
 ```
 
