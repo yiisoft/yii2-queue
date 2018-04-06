@@ -1,8 +1,8 @@
-Syncronous Driver
-=================
+Synchronous Driver
+==================
 
-Runs tasks syncronously in the same process if `handle` property is turned on. Could be used when developing and debugging
-application.
+Runs tasks synchronously in the same process if the `handle` property is turned on.
+It could be used when developing and debugging an application.
 
 Configuration example:
 
@@ -11,7 +11,7 @@ return [
     'components' => [
         'queue' => [
             'class' => \yii\queue\sync\Queue::class,
-            'handle' => false, // if tasks should be executed immediately
+            'handle' => false, // whether tasks should be executed immediately
         ],
     ],
 ];

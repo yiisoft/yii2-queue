@@ -1,13 +1,12 @@
-Code generator Gii
+Gii Code generator
 ==================
 
-In order to create a job template you can use the Gii code generator.
+You can use the Gii code generator to create a job template.
 
 Configuration
 -------------
 
-In order to use Gii job generator you have to configure it like the following:  
-(for example into `backend/config/main-local.php`)
+To use the Gii job generator you have to configure it like the following:
 
 ```php
 if (!YII_ENV_TEST) {
@@ -24,6 +23,6 @@ if (!YII_ENV_TEST) {
 
 ```
 
-After doing it you'll find the generator in the menu.
+After doing so you'll find the generator in the Gii menu.
 
 ![default](https://user-images.githubusercontent.com/1656851/29426628-e9a3e5ae-838f-11e7-859f-6f3cb8649f02.png)

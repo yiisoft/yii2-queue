@@ -1,14 +1,14 @@
 Gearman Driver
 ==============
 
-Driver works with Gearman queues.
+This driver works with Gearman queues.
 
 Configuration example:
 
 ```php
 return [
     'bootstrap' => [
-        'queue', // The component registers own console commands
+        'queue', // The component registers its own console commands
     ],
     'components' => [
         'queue' => [
@@ -24,7 +24,7 @@ return [
 Console
 -------
 
-Console is used to process queued tasks.
+Console commands are used to process queued tasks.
 
 ```sh
 yii queue/listen
