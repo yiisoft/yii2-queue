@@ -84,8 +84,8 @@ class Queue extends CliQueue
      */
     public function run($repeat, $timeout = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $timeout) {
-            while ($loop->canContinue()) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
+            while ($canContinue) {
                 if ($payload = $this->getPayload($timeout)) {
                     list($ttr, $message) = explode(';', $payload['Body'], 2);
                     //reserve it so it is not visible to another worker till ttr
