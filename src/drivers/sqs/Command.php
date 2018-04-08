@@ -7,6 +7,7 @@
 
 namespace yii\queue\sqs;
 
+use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
 
 /**
@@ -37,10 +38,18 @@ class Command extends CliCommand
      * It can be used as demon process.
      *
      * @param int $timeout number of seconds to sleep before next reading of the queue.
+     * @throws Exception when params are invalid.
      * @return null|int exit code.
      */
     public function actionListen($timeout = 3)
     {
+        if (!is_numeric($timeout)) {
+            throw new Exception('Timeout must be numeric.');
+        }
+        if ($timeout < 1 || $timeout > 20) {
+            throw new Exception('Timeout must be between 1 and 20');
+        }
+
         return $this->queue->run(true, $timeout);
     }
 

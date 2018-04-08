@@ -174,9 +174,6 @@ class Queue extends CliQueue
     */
     private function getPayload($timeout = 0)
     {
-        if ($timeout < 0 || $timeout > 20) {
-            throw new InvalidParamException('Timeout must be between 0 and 20');
-        }
         $payload = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
             'AttributeNames' => ['ApproximateReceiveCount'],
