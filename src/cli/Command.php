@@ -39,6 +39,12 @@ abstract class Command extends Controller
      * @var bool isolate mode. It executes a job in a child process.
      */
     public $isolate = true;
+    /**
+     * @var string path to php interpreter that uses to run child processes.
+     * If it is undefined, PHP_BINARY will be used.
+     * @since 2.0.3
+     */
+    public $phpBinary;
 
 
     /**
@@ -52,6 +58,7 @@ abstract class Command extends Controller
         }
         if ($this->canIsolate($actionID)) {
             $options[] = 'isolate';
+            $options[] = 'phpBinary';
         }
 
         return $options;
@@ -102,11 +109,12 @@ abstract class Command extends Controller
         }
 
         if ($this->canIsolate($action->id) && $this->isolate) {
+            if ($this->phpBinary === null) {
+                $this->phpBinary = PHP_BINARY;
+            }
             $this->queue->messageHandler = function ($id, $message, $ttr, $attempt) {
                 return $this->handleMessage($id, $message, $ttr, $attempt);
             };
-        } else {
-            $this->queue->messageHandler = null;
         }
 
         return parent::beforeAction($action);
@@ -147,7 +155,7 @@ abstract class Command extends Controller
     {
         // Executes child process        
         $cmd = strtr('php yii queue/exec "id" "ttr" "attempt" "pid"', [
-            'php' => PHP_BINARY,
+            'php' => $this->phpBinary,
             'yii' => $_SERVER['SCRIPT_FILENAME'],
             'queue' => $this->uniqueId,
             'id' => $id,

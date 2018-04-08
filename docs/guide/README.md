@@ -1,19 +1,19 @@
 Yii2 Queue extension
 ====================
 
-An extension for running tasks asyncronously via queues.
+An extension for running tasks asynchronously via queues.
 
 Introduction
 ------------
 
 * [Usage basics](usage.md)
 * [Errors and retryable jobs](retryable.md)
-* [Worker starting control](worker.md)
+* [Starting workers](worker.md)
 
 Queue Drivers
 -------------
 
-* [Syncronous](driver-sync.md)
+* [Synchronous](driver-sync.md)
 * [File](driver-file.md)
 * [Db](driver-db.md)
 * [Redis](driver-redis.md)

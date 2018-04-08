@@ -4,8 +4,10 @@ Yii2 Queue Extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
-
+- Bug #210: Worker option to define php bin path to run child process (zhuravljov)
+- Enh: Worker loop event (zhuravljov)
+- Bug #207: Console params validation (zhuravljov)
+- Bug #224: Invalid identifier "DELAY" (lar-dragon)
 
 2.0.2 December 26, 2017
 -----------------------
@@ -17,7 +19,6 @@ Yii2 Queue Extension Change Log
 - Enh #185: Loop object instead of Signal helper (zhuravljov)
 - Enh #188: Configurable verbose mode (zhuravljov)
 - Enh: Start and stop events of a worker (zhuravljov)
-
 
 2.0.1 November 13, 2017
 -----------------------

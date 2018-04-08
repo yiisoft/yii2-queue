@@ -12,7 +12,6 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
-use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -64,15 +63,15 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $delay number of seconds to sleep before next iteration.
+     * @param int $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $delay = 0)
+    public function run($repeat, $timeout = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
-            while ($loop->canContinue()) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
+            while ($canContinue()) {
                 if (($payload = $this->reserve()) !== null) {
                     list($id, $message, $ttr, $attempt) = $payload;
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
@@ -80,8 +79,8 @@ class Queue extends CliQueue
                     }
                 } elseif (!$repeat) {
                     break;
-                } elseif ($delay) {
-                    sleep($delay);
+                } elseif ($timeout) {
+                    sleep($timeout);
                 }
             }
         });

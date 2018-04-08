@@ -1,38 +1,41 @@
 Errors and retryable jobs
 =========================
 
-Exceptions can be thrown during job handling. This can be internal errors which result of poorly
-written code, and external, when the requested services and external resources are unavailable.
-In the second case, it's good to be able to retry a job after time.
+The execution of a job can fail. This can be due to internal errors which result from
+poorly written code which should be fixed first. But they can also fail due to external
+problems like a service or a resource being unavailable. This can lead to Exceptions or
+timeouts.
 
-There are several ways to do this.
+In the latter cases, it's good to be able to retry a job after some time. There are several ways to do this.
 
 Retry options
 -------------
 
-The first method is implemented by the component options:
+The first method is to use component options:
 
 ```php
 'components' => [
     'queue' => [
         'class' => \yii\queue\<driver>\Queue::class,
-        'ttr' => 5 * 60, // Max time for anything job handling 
+        'ttr' => 5 * 60, // Max time for job execution
         'attempts' => 3, // Max number of attempts
     ],
 ],
 ```
 
-The `ttr` option sets time to reserve of a job in queue. If a job doesn't executed during this time,
-it will return to a queue for retry. The `attempts` option sets max number of attempts. If attempts
-are over, and the job isn't done, it will be removed from a queue as completed.
+The `ttr` option sets the time to reserve for job execution. If the execution of a job takes longer than
+this time, execution will be stopped and it will be returned to the queue for later retry. The same happens
+if the job throws an Exception. The `attempts` option sets the max. number of attempts. If this number is
+reached, and the job still isn't done, it will be removed from the queue as completed.
 
-The options extend to all jobs in a queue, and if you need to change this behavior fo several jobs,
-there is second method.
- 
+These options apply to all jobs in the queue. If you need to change this behavior for specific
+jobs, see the following method.
+
 RetryableJobInterface
 ---------------------
 
-Separate control of retry is implemented by `RetryableJobInterface` interface. For example:
+To have more control over the retry logic a job can implement the `RetryableJobInterface`.
+For example:
 
 ```php
 class SomeJob extends BaseObject implements RetryableJobInterface
@@ -54,15 +57,15 @@ class SomeJob extends BaseObject implements RetryableJobInterface
 }
 ```
 
-`getTtr()` and `canRetry()` methods have a higher priority than the component options.
+The `getTtr()` and `canRetry()` methods have a higher priority than the component options mentioned above.
 
 Event handlers
 --------------
 
-The third method to set TTR and the need to retry of failed job involves using
+The third method to control TTR and number of retries for failed jobs involves the
 `Queue::EVENT_BEFORE_PUSH` and `Queue::EVENT_AFTER_ERROR` events.
 
-`Queue::EVENT_BEFORE_PUSH` event can be used to set TTR:
+The TTR can be set with the `Queue::EVENT_BEFORE_PUSH` event:
 
 ```php
 Yii::$app->queue->on(Queue::EVENT_BEFORE_PUSH, function (PushEvent $event) {
@@ -72,7 +75,7 @@ Yii::$app->queue->on(Queue::EVENT_BEFORE_PUSH, function (PushEvent $event) {
 });
 ```
 
-And `Queue::EVENT_AFTER_ERROR` event can be used to set a new attempt:
+And the `Queue::EVENT_AFTER_ERROR` event can be used to decide whether to try another attempt:
 
 ```php
 Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
@@ -88,9 +91,9 @@ priority.
 Restrictions
 ------------
 
-Full support of retryable implements for [Beanstalk], [DB], [File], [AMQP Interop] and [Redis] drivers.
-[Sync] driver will not retry failed jobs. [Gearman] driver doesn't support of retryable.
-[RabbitMQ] has only its basic retryable support, in which an attempt number can not be got.
+Full support for retryable jobs is implemented in the [Beanstalk], [DB], [File], [AMQP Interop] and [Redis] drivers.
+The [Sync] driver will not retry failed jobs. The [Gearman] driver doesn't support retryable jobs.
+[RabbitMQ] has only its basic retryable support, where the number of attempts can not be set.
 
 [AWS SQS] uses [Dead Letter Queue] for handling messages that were failed to process.
 All unprocessed messages after a maximum number of attempts are moved to that queue.

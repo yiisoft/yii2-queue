@@ -22,12 +22,17 @@ use yii\queue\Queue as BaseQueue;
 abstract class Queue extends BaseQueue implements BootstrapInterface
 {
     /**
-     * @event WorkerEvent
+     * @event WorkerEvent that is triggered when the worker is started.
      * @since 2.0.2
      */
     const EVENT_WORKER_START = 'workerStart';
     /**
-     * @event WorkerEvent
+     * @event WorkerEvent that is triggered each iteration between requests to queue.
+     * @since 2.0.3
+     */
+    const EVENT_WORKER_LOOP = 'workerLoop';
+    /**
+     * @event WorkerEvent that is triggered when the worker is stopped.
      * @since 2.0.2
      */
     const EVENT_WORKER_STOP = 'workerStop';
@@ -95,19 +100,22 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     protected function runWorker(callable $handler)
     {
         $this->_workerPid = getmypid();
+        /** @var LoopInterface $loop */
         $loop = Yii::createObject($this->loopConfig, [$this]);
 
         $event = new WorkerEvent(['loop' => $loop]);
         $this->trigger(self::EVENT_WORKER_START, $event);
-        if ($event->handled || $event->exitCode !== null) {
+        if ($event->exitCode !== null) {
             return $event->exitCode;
         }
 
         $exitCode = null;
         try {
-            $exitCode = call_user_func($handler, $loop);
+            call_user_func($handler, function () use ($loop, $event) {
+                $this->trigger(self::EVENT_WORKER_LOOP, $event);
+                return $event->exitCode === null && $loop->canContinue();
+            });
         } finally {
-            $event = new WorkerEvent(['loop' => $loop, 'exitCode' => $exitCode]);
             $this->trigger(self::EVENT_WORKER_STOP, $event);
             $this->_workerPid = null;
         }

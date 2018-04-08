@@ -13,7 +13,6 @@ use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
-use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -67,15 +66,15 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $delay number of seconds to sleep before next iteration.
+     * @param int $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only
      * @since 2.0.2
      */
-    public function run($repeat, $delay = 0)
+    public function run($repeat, $timeout = 0)
     {
-        return $this->runWorker(function (LoopInterface $loop) use ($repeat, $delay) {
-            while ($loop->canContinue()) {
+        return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
+            while ($canContinue()) {
                 if ($payload = $this->reserve()) {
                     if ($this->handleMessage(
                         $payload['id'],
@@ -87,8 +86,8 @@ class Queue extends CliQueue
                     }
                 } elseif (!$repeat) {
                     break;
-                } elseif ($delay) {
-                    sleep($delay);
+                } elseif ($timeout) {
+                    sleep($timeout);
                 }
             }
         });
@@ -187,7 +186,7 @@ class Queue extends CliQueue
                 $payload = (new Query())
                     ->from($this->tableName)
                     ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
-                    ->andWhere('[[pushed_at]] <= :time - delay', [':time' => time()])
+                    ->andWhere('[[pushed_at]] <= :time - [[delay]]', [':time' => time()])
                     ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
                     ->limit(1)
                     ->one($this->db);

@@ -1,20 +1,20 @@
-Worker starting control
-=======================
+Starting Workers
+================
 
 Supervisor
 ----------
 
-Supervisor is process monitor for Linux. It automatically starts your console processes. For install
-on Ubuntu you need run command:
+[Supervisor](http://supervisord.org) is a process monitor for Linux. It automatically starts
+console processes.  On Ubuntu it can be installed with this command:
 
 ```sh
 sudo apt-get install supervisor
 ```
 
-Supervisor config files usually available in `/etc/supervisor/conf.d`. You can create any number of
-config files.
+Supervisor config files are usually available in `/etc/supervisor/conf.d`. You can create any number of
+config files there.
 
-Config example:
+Here's an example:
 
 ```conf
 [program:yii-queue-worker]
@@ -28,19 +28,19 @@ redirect_stderr=true
 stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 ```
 
-In this case Supervisor must starts 4 `queue/listen` workers. Worker output will write into log
-file.
+In this case Supervisor should start 4 `queue/listen` workers. The worker output will be written
+to the specified log file.
 
-For more info about Supervisor's configure and usage see [documentation](http://supervisord.org).
+For more info about Supervisor's configuration and usage see its [documentation](http://supervisord.org).
 
-Worker starting in daemon mode with `queue/listen` command supports [File], [Db], [Redis],
-[RabbitMQ], [AMQP Interop], [Beanstalk], [Gearman], [AWS SQS] drivers. For additional options see driver guide.
+Note that worker daemons started with `queue/listen` are only supported by the [File], [Db], [Redis],
+[RabbitMQ], [AMQP Interop], [Beanstalk], [Gearman], and [AWS SQS] drivers. For additional options see driver guide.
 
 [File]: driver-file.md
 [Db]: driver-db.md
 [Redis]: driver-redis.md
-[RabbitMQ (AMQP Interop)]: driver-amqp-interop.md
-[RabbitMQ (Deprecated)]: driver-amqp.md
+[AMQP Interop]: driver-amqp-interop.md
+[RabbitMQ]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
 [AWS SQS]: driver-sqs.md
@@ -48,9 +48,9 @@ Worker starting in daemon mode with `queue/listen` command supports [File], [Db]
 Systemd
 -------
 
-Systemd is an init system used in Linux to bootstrap the user space. To configure workers startup
+Systemd is another init system used on Linux to bootstrap the user space. To configure workers startup
 using systemd, create a config file named `yii-queue@.service` in `/etc/systemd/system` with
-the following contents:
+the following content:
 
 ```conf
 [Unit]
@@ -71,7 +71,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-You need to reload systemd in order for it to re-read configuration:
+You need to reload systemd in order to re-read its configuration:
 
 ```sh
 systemctl daemon-reload
@@ -83,10 +83,10 @@ Set of commands to control workers:
 # To start two workers
 systemctl start yii-queue@1 yii-queue@2
 
-# To get status of running workers
+# To get the status of running workers
 systemctl status "yii-queue@*"
 
-# To stop the worker
+# To stop a specific worker
 systemctl stop yii-queue@2
 
 # To stop all running workers
@@ -101,18 +101,17 @@ To learn all features of systemd, check its [documentation](https://freedesktop.
 Cron
 ----
 
-You can start worker using cron. You have to use `queue/run` command. It works as long as queue
-contains jobs.
+You can also start workers using cron. Here you have to use the `queue/run` command.
 
-Config example: 
+Config example:
 
 ```sh
 * * * * * /usr/bin/php /var/www/my_project/yii queue/run
 ```
 
-In this case cron will start the command every minute. 
+In this case cron will run the command every minute.
 
-`queue/run` command is supported by [File], [Db], [Redis], [Beanstalk], [Gearman], [AWS SQS] drivers.
+The `queue/run` command is supported by the [File], [Db], [Redis], [Beanstalk], [Gearman], [AWS SQS] drivers.
 For additional options see driver guide.
 
 [File]: driver-file.md
