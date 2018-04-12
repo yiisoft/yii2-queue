@@ -7,7 +7,7 @@
 
 namespace yii\queue\cli;
 
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Exception\RuntimeException as ProcessRuntimeException;
 use Symfony\Component\Process\Process;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -181,7 +181,7 @@ abstract class Command extends Controller
                     $this->stdout($buffer);
                 }
             });
-        } catch (ProcessTimedOutException $error) {
+        } catch (ProcessRuntimeException $error) {
             $job = $this->queue->serializer->unserialize($message);
             return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
         }
