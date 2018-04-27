@@ -9,7 +9,7 @@ namespace yii\queue;
 
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 use yii\queue\serializers\PhpSerializer;
@@ -155,7 +155,7 @@ abstract class Queue extends Component
         }
 
         if ($this->strictJobType && !($event->job instanceof JobInterface)) {
-            throw new InvalidParamException('Job must be instance of JobInterface.');
+            throw new InvalidArgumentException('Job must be instance of JobInterface.');
         }
 
         $message = $this->serializer->serialize($event->job);
@@ -197,7 +197,7 @@ abstract class Queue extends Component
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof JobInterface)) {
             $dump = VarDumper::dumpAsString($job);
-            throw new InvalidParamException("Job $id must be a JobInterface instance instead of $dump.");
+            throw new InvalidArgumentException("Job $id must be a JobInterface instance instead of $dump.");
         }
 
         $event = new ExecEvent([

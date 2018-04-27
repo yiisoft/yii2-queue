@@ -7,7 +7,7 @@
 
 namespace yii\queue\redis;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\redis\Connection;
@@ -74,7 +74,7 @@ class Queue extends CliQueue
     public function status($id)
     {
         if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidParamException("Unknown message ID: $id.");
+            throw new InvalidArgumentException("Unknown message ID: $id.");
         }
 
         if ($this->redis->hexists("$this->channel.attempts", $id)) {

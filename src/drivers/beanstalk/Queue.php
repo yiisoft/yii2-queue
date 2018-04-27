@@ -10,7 +10,7 @@ namespace yii\queue\beanstalk;
 use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
@@ -74,7 +74,7 @@ class Queue extends CliQueue
     public function status($id)
     {
         if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidParamException("Unknown message ID: $id.");
+            throw new InvalidArgumentException("Unknown message ID: $id.");
         }
 
         try {

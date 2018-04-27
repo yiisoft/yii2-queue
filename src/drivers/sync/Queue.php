@@ -9,7 +9,7 @@ namespace yii\queue\sync;
 
 use Yii;
 use yii\base\Application;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\queue\Queue as BaseQueue;
 
 /**
@@ -86,7 +86,7 @@ class Queue extends BaseQueue
     public function status($id)
     {
         if (!is_int($id) || $id <= 0 || $id > $this->pushedId) {
-            throw new InvalidParamException("Unknown messages ID: $id.");
+            throw new InvalidArgumentException("Unknown messages ID: $id.");
         }
 
         if ($id <= $this->finishedId) {

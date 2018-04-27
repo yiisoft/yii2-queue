@@ -8,8 +8,8 @@
 namespace yii\queue\file;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
@@ -92,7 +92,7 @@ class Queue extends CliQueue
     public function status($id)
     {
         if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidParamException("Unknown message ID: $id.");
+            throw new InvalidArgumentException("Unknown message ID: $id.");
         }
 
         if (file_exists("$this->path/job$id.data")) {

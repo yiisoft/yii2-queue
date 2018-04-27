@@ -8,7 +8,7 @@
 namespace yii\queue\db;
 
 use yii\base\Exception;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -108,7 +108,7 @@ class Queue extends CliQueue
                 return self::STATUS_DONE;
             }
 
-            throw new InvalidParamException("Unknown message ID: $id.");
+            throw new InvalidArgumentException("Unknown message ID: $id.");
         }
 
         if (!$payload['reserved_at']) {
