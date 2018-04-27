@@ -34,7 +34,7 @@ to the specified log file.
 For more info about Supervisor's configuration and usage see its [documentation](http://supervisord.org).
 
 Note that worker daemons started with `queue/listen` are only supported by the [File], [Db], [Redis],
-[RabbitMQ], [AMQP Interop], [Beanstalk] and [Gearman] drivers. For additional options see driver guide.
+[RabbitMQ], [AMQP Interop], [Beanstalk], [Gearman], and [AWS SQS] drivers. For additional options see driver guide.
 
 [File]: driver-file.md
 [Db]: driver-db.md
@@ -43,6 +43,7 @@ Note that worker daemons started with `queue/listen` are only supported by the [
 [RabbitMQ]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AWS SQS]: driver-sqs.md
 
 Systemd
 -------
@@ -110,7 +111,7 @@ Config example:
 
 In this case cron will run the command every minute.
 
-The `queue/run` command is supported by the [File], [Db], [Redis], [Beanstalk], [Gearman] drivers.
+The `queue/run` command is supported by the [File], [Db], [Redis], [Beanstalk], [Gearman], [AWS SQS] drivers.
 For additional options see driver guide.
 
 [File]: driver-file.md
@@ -118,3 +119,4 @@ For additional options see driver guide.
 [Redis]: driver-redis.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AWS SQS]: driver-sqs.md

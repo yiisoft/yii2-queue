@@ -21,6 +21,7 @@
 * [AMQP Interop драйвер](driver-amqp-interop.md)
 * [Beanstalk драйвер](driver-beanstalk.md)
 * [Gearman драйвер](driver-gearman.md)
+* [AWS SQS драйвер](driver-sqs.md)
 
 Инструменты разработчика
 ------------------------
