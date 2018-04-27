@@ -11,6 +11,7 @@ use Aws\Credentials\CredentialProvider;
 use Aws\Sqs\SqsClient;
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\serializers\JsonSerializer;
 
 /**
  * SQS Queue.
@@ -52,8 +53,14 @@ class Queue extends CliQueue
 
     /**
      * @var string command class name
+     * @inheritdoc
      */
     public $commandClass = Command::class;
+    /**
+     * Json serializer by default.
+     * @inheritdoc
+     */
+    public $serializer = JsonSerializer::class;
 
     /**
      * @var SqsClient
@@ -80,12 +87,12 @@ class Queue extends CliQueue
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
-                if (($payload = $this->getPayload($timeout)) !== null) {
-                    list($ttr, $message) = explode(';', base64_decode($payload['Body']), 2);
-                    //reserve it so it is not visible to another worker till ttr
-                    $this->reserve($payload, $ttr);
-
-                    if ($this->handleMessage(null, $message, $ttr, 1)) {
+                if (($payload = $this->reserve($timeout)) !== null) {
+                    $id = $payload['MessageId'];
+                    $message = $payload['Body'];
+                    $ttr = (int) $payload['MessageAttributes']['TTR']['StringValue'];
+                    $attempt = (int) $payload['Attributes']['ApproximateReceiveCount'];
+                    if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                         $this->release($payload);
                     }
                 } elseif (!$repeat) {
@@ -96,64 +103,50 @@ class Queue extends CliQueue
     }
 
     /**
-     * Gets a single message from SQS queue.
+     * Gets a single message from SQS queue and sets the visibility to reserve message.
      *
      * @param int $timeout number of seconds for long polling. Must be between 0 and 20.
      * @return null|array payload.
      */
-    private function getPayload($timeout = 0)
+    public function reserve($timeout)
     {
-        $payload = $this->getClient()->receiveMessage([
+        $response = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
             'AttributeNames' => ['ApproximateReceiveCount'],
+            'MessageAttributeNames' => ['TTR'],
             'MaxNumberOfMessages' => 1,
+            'VisibilityTimeout' => $this->ttr,
             'WaitTimeSeconds' => $timeout,
         ]);
-
-        $payload = $payload['Messages'];
-        if ($payload) {
-            return array_pop($payload);
+        if (!$response['Messages']) {
+            return null;
         }
 
-        return null;
-    }
+        $payload = reset($response['Messages']);
 
-    /**
-     * Set the visibility to reserve message.
-     * So that no other worker can see this message.
-     *
-     * @param array $payload
-     * @param int $ttr
-     */
-    private function reserve($payload, $ttr)
-    {
-        $receiptHandle = $payload['ReceiptHandle'];
-        $this->getClient()->changeMessageVisibility([
-            'QueueUrl' => $this->url,
-            'ReceiptHandle' => $receiptHandle,
-            'VisibilityTimeout' => $ttr,
-        ]);
+        $ttr = (int) $payload['MessageAttributes']['TTR']['StringValue'];
+        if ($ttr != $this->ttr) {
+            $this->getClient()->changeMessageVisibility([
+                'QueueUrl' => $this->url,
+                'ReceiptHandle' => $payload['ReceiptHandle'],
+                'VisibilityTimeout' => $ttr,
+            ]);
+        }
+
+        return $payload;
     }
 
     /**
      * Mark the message as handled.
      *
      * @param array $payload
-     * @return bool
      */
     private function release($payload)
     {
-        if (empty($payload['ReceiptHandle'])) {
-            return false;
-        }
-
-        $receiptHandle = $payload['ReceiptHandle'];
-        $response = $this->getClient()->deleteMessage([
+        $this->getClient()->deleteMessage([
             'QueueUrl' => $this->url,
-            'ReceiptHandle' => $receiptHandle,
+            'ReceiptHandle' => $payload['ReceiptHandle'],
         ]);
-
-        return $response !== null;
     }
 
     /**
@@ -183,13 +176,18 @@ class Queue extends CliQueue
             throw new NotSupportedException('Priority is not supported in this driver');
         }
 
-        $model = $this->getClient()->sendMessage([
-            'DelaySeconds' => $delay,
+        $response = $this->getClient()->sendMessage([
             'QueueUrl' => $this->url,
-            'MessageBody' => base64_encode("$ttr;$message"),
+            'MessageBody' => $message,
+            'DelaySeconds' => $delay,
+            'MessageAttributes' => [
+                'TTR' => [
+                    'DataType' => 'Number',
+                    'StringValue' => $ttr,
+                ],
+            ],
         ]);
-
-        return $model['MessageId'];
+        return $response['MessageId'];
     }
 
     /**
@@ -211,22 +209,12 @@ class Queue extends CliQueue
             //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
             $credentials = CredentialProvider::defaultProvider();
         }
+
         $this->_client = new SqsClient([
             'credentials' => $credentials,
             'region' => $this->region,
             'version' => $this->version,
         ]);
-
         return $this->_client;
-    }
-
-    /**
-     * Sets the AWS SQS client instance for the queue.
-     *
-     * @param SqsClient $client AWS SQS client object.
-     */
-    public function setClient(SqsClient $client)
-    {
-        $this->_client = $client;
     }
 }

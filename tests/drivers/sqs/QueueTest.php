@@ -7,6 +7,7 @@
 
 namespace tests\drivers\sqs;
 
+use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\sqs\Queue;
@@ -43,6 +44,17 @@ class QueueTest extends CliTestCase
         $this->getQueue()->delay(2)->push($job);
 
         $this->assertSimpleJobLaterDone($job, 2);
+    }
+
+    public function testRetry()
+    {
+        $this->startProcess('php yii queue/listen 1');
+        $job = new RetryJob(['uid' => uniqid()]);
+        $this->getQueue()->push($job);
+        sleep(6);
+
+        $this->assertFileExists($job->getFileName());
+        $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
     public function testClear()
