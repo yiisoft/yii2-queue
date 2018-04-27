@@ -12,7 +12,6 @@ $config = [
         'amqpQueue',
         'amqpInteropQueue',
         'beanstalkQueue',
-        'sqsQueue',
     ],
     'components' => [
         'syncQueue' => [
@@ -84,9 +83,6 @@ $config = [
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,
         ],
-        'sqsQueue' => [
-            'class' => \yii\queue\sqs\Queue::class,
-        ],
     ],
 ];
 
@@ -94,6 +90,17 @@ if (defined('GEARMAN_SUCCESS')) {
     $config['bootstrap'][] = 'gearmanQueue';
     $config['components']['gearmanQueue'] = [
         'class' => \yii\queue\gearman\Queue::class,
+    ];
+}
+
+if (getenv('AWS_SQS_URL') !== false) {
+    $config['bootstrap'][] = 'sqsQueue';
+    $config['components']['sqsQueue'] = [
+        'class' => \yii\queue\sqs\Queue::class,
+        'url' => getenv('AWS_SQS_URL'),
+        'key' => getenv('AWS_KEY'),
+        'secret' => getenv('AWS_SECRET'),
+        'region' => getenv('AWS_REGION'),
     ];
 }
 

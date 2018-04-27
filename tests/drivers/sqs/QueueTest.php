@@ -7,7 +7,6 @@
 
 namespace tests\drivers\sqs;
 
-use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\sqs\Queue;
@@ -19,41 +18,35 @@ class QueueTest extends CliTestCase
 {
     public function testRun()
     {
-        $client = $this->getMockBuilder('Aws\Sqs\SqsClient')
-            ->disableOriginalConstructor()
-            ->setMethods([
-                'receiveMessage',
-                'sendMessage',
-                'changeMessageVisibility',
-                'deleteMessage',
-            ])
-            ->getMock();
-
-        $client->method('sendMessage')
-            ->willReturn(['MessageId' => '1']);
-
-        $client->method('deleteMessage')
-            ->willReturn(true);
-
         $job = $this->createSimpleJob();
-        $serialized = serialize($job);
-
-        $client->method('receiveMessage')
-            ->will($this->onConsecutiveCalls(
-                ['Messages' => [[
-                    'MessageId' => '1',
-                    'ReceiptHandle' => '1',
-                    'MD5OfBody' => '1',
-                    'Body' => '300;'.$serialized,
-                ]]],
-                ['Messages' => []]));
-
-
-        $this->getQueue()->setClient($client);
-
         $this->getQueue()->push($job);
-        $this->getQueue()->run(false);
+        $this->runProcess('php yii queue/run');
+
         $this->assertSimpleJobDone($job);
+    }
+
+    public function testListen()
+    {
+        $this->startProcess('php yii queue/listen 1');
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+
+        $this->assertSimpleJobDone($job);
+    }
+
+    public function testLater()
+    {
+        $this->startProcess('php yii queue/listen 1');
+        $job = $this->createSimpleJob();
+        $this->getQueue()->delay(2)->push($job);
+
+        $this->assertSimpleJobLaterDone($job, 2);
+    }
+
+    public function testClear()
+    {
+        $this->getQueue()->push($this->createSimpleJob());
+        $this->runProcess('php yii queue/clear --interactive=0');
     }
 
     /**
@@ -62,5 +55,14 @@ class QueueTest extends CliTestCase
     protected function getQueue()
     {
         return Yii::$app->sqsQueue;
+    }
+
+    protected function setUp()
+    {
+        if (getenv('AWS_SQS_URL') === false) {
+            $this->markTestSkipped('AWS SQS tests are disabled');
+        }
+
+        parent::setUp();
     }
 }

@@ -2,9 +2,7 @@
 
 namespace yii\queue\sqs;
 
-use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\queue\cli\LoopInterface;
 use yii\queue\cli\Queue as CliQueue;
 use \Aws\Sqs\SqsClient;
 use Aws\Credentials\CredentialProvider;
@@ -12,6 +10,7 @@ use Aws\Credentials\CredentialProvider;
 /**
  * SQS Queue
  *
+ * @author Max Kozlovsky <kozlovskymaxim@gmail.com>
  * @author Manoj Malviya <manojm@girnarsoft.com>
  */
 class Queue extends CliQueue
@@ -75,7 +74,7 @@ class Queue extends CliQueue
     public function run($repeat, $timeout = 0)
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
-            while ($canContinue) {
+            while ($canContinue()) {
                 if ($payload = $this->getPayload($timeout)) {
                     list($ttr, $message) = explode(';', $payload['Body'], 2);
                     //reserve it so it is not visible to another worker till ttr
@@ -163,11 +162,11 @@ class Queue extends CliQueue
     private function reserve($payload, $ttr)
     {
         $receiptHandle = $payload['ReceiptHandle'];
-        $this->getClient()->changeMessageVisibility(array(
+        $this->getClient()->changeMessageVisibility([
             'QueueUrl' => $this->url,
             'ReceiptHandle' => $receiptHandle,
             'VisibilityTimeout' => $ttr
-        ));
+        ]);
     }
 
     /**
@@ -196,9 +195,9 @@ class Queue extends CliQueue
      */
     public function clear()
     {
-        $this->getClient()->purgeQueue(array(
+        $this->getClient()->purgeQueue([
             'QueueUrl' => $this->url,
-        ));
+        ]);
     }
 
     /**

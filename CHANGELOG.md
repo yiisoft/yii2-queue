@@ -8,6 +8,7 @@ Yii2 Queue Extension Change Log
 - Enh: Worker loop event (zhuravljov)
 - Bug #207: Console params validation (zhuravljov)
 - Bug #224: Invalid identifier "DELAY" (lar-dragon)
+- Enh #192: AWS SQS implementation (elitemaks, manoj-girnar)
 
 2.0.2 December 26, 2017
 -----------------------

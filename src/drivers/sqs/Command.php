@@ -13,6 +13,7 @@ use yii\queue\cli\Command as CliCommand;
 /**
  * Manages application aws sqs-queue.
  *
+ * @author Max Kozlovsky <kozlovskymaxim@gmail.com>
  * @author Manoj Malviya <manojm@girnarsoft.com>
  */
 class Command extends CliCommand

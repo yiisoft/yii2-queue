@@ -29,7 +29,7 @@ abstract class CliTestCase extends TestCase
     {
         $cmd = $this->prepareCmd($cmd);
         $process = new Process($cmd);
-        $process->run();
+        $process->mustRun();
 
         $error = $process->getErrorOutput();
         $this->assertEmpty($error, "Can not execute '$cmd' command:\n$error");
