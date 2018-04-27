@@ -43,6 +43,16 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
+    public function testClear()
+    {
+        if (!getenv('AWS_SQS_CLEAR_TEST_ENABLED')) {
+            $this->markTestSkipped(__METHOD__ . ' is disabled');
+        }
+
+        $this->getQueue()->push($this->createSimpleJob());
+        $this->runProcess('php yii queue/clear --interactive=0');
+    }
+
     /**
      * @return Queue
      */
@@ -53,7 +63,7 @@ class QueueTest extends CliTestCase
 
     protected function setUp()
     {
-        if (getenv('AWS_SQS_URL') === false) {
+        if (!getenv('AWS_SQS_ENABLED')) {
             $this->markTestSkipped('AWS SQS tests are disabled');
         }
 

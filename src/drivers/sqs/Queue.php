@@ -23,15 +23,15 @@ class Queue extends CliQueue
 
     /**
      * aws access key
-     * @var string
+     * @var string|null
      */
-    public $key = '';
+    public $key;
 
     /**
      * aws secret
-     * @var string
+     * @var string|null
      */
-    public $secret = '';
+    public $secret;
 
     /**
      * region where queue is hosted.
@@ -118,26 +118,25 @@ class Queue extends CliQueue
      */
     protected function getClient()
     {
-        if ($this->key && $this->secret) {
-            $provider = [
+        if ($this->_client) {
+            return $this->_client;
+        }
+
+        if ($this->key !== null && $this->secret !== null) {
+            $credentials = [
                 'key'    => $this->key,
                 'secret' => $this->secret
             ];
         } else {
             // use default provider if no key and secret passed
             //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
-            $provider = CredentialProvider::defaultProvider();
+            $credentials = CredentialProvider::defaultProvider();
         }
-
-        $config = [
-            'credentials' => $provider,
+        $this->_client = new SqsClient([
+            'credentials' => $credentials,
             'region' => $this->region,
             'version' => $this->version,
-        ];
-
-        if (!$this->_client) {
-            $this->_client = SqsClient::factory($config);
-        }
+        ]);
 
         return $this->_client;
     }

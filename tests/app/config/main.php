@@ -93,7 +93,7 @@ if (defined('GEARMAN_SUCCESS')) {
     ];
 }
 
-if (getenv('AWS_SQS_URL') !== false) {
+if (getenv('AWS_SQS_ENABLED')) {
     $config['bootstrap'][] = 'sqsQueue';
     $config['components']['sqsQueue'] = [
         'class' => \yii\queue\sqs\Queue::class,
