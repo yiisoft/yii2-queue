@@ -12,6 +12,7 @@ $config = [
         'amqpQueue',
         'amqpInteropQueue',
         'beanstalkQueue',
+        'sqsQueue',
     ],
     'components' => [
         'syncQueue' => [
@@ -82,6 +83,9 @@ $config = [
         ],
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,
+        ],
+        'sqsQueue' => [
+            'class' => \yii\queue\sqs\Queue::class,
         ],
     ],
 ];

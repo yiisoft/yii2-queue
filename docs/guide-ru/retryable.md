@@ -102,6 +102,10 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
 не будет повторять невыполненные задания. [Gearman] не поддерживает повторное выполнение вообще.
 А [RabbitMQ] имеет только свою базовую поддержку повторов, при которой номер попытки узнать
 не получится.    
+ 
+В [AWS SQS] для обработки сообщений, которые не могут быть обработаны, используется [Dead Letter очередь].
+В эту очередь попадают сообщения, которые не обработались после максимального количества попыток.
+Указать Dead Letter очередь и максимальное количество попыток можно при создании очереди через консоль AWS.   
 
 [Beanstalk]: driver-beanstalk.md
 [DB]: driver-db.md
@@ -110,3 +114,5 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
 [Синхронный драйвер]: driver-sync.md
 [Gearman]: driver-gearman.md
 [RabbitMQ]: driver-amqp.md
+[AWS SQS]: driver-sqs.md
+[Dead Letter очередь]: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html

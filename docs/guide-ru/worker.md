@@ -34,7 +34,7 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 Подробнее о настройке и использовании Supervisor читайте в [документации](http://supervisord.org).
 
 Запуск воркера в режиме демона командой `queue/listen` поддерживают драйвера [File], [Db], [Redis],
-[RabbitMQ], [Beanstalk], [Gearman]. Дополнительные опции смотрите в описании нужных вам драйверов.
+[RabbitMQ], [Beanstalk], [Gearman], [AWS SQS]. Дополнительные опции смотрите в описании нужных вам драйверов.
 
 [File]: driver-file.md
 [Db]: driver-db.md
@@ -42,6 +42,7 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 [RabbitMQ]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AWS SQS]: driver-sqs.md
 
 Systemd
 -------
@@ -111,7 +112,7 @@ Cron
 
 В этом случае cron будет запускать команду каждую минуту.
 
-Команду `queue/run` поддерживают драйвера [File], [Db], [Redis], [Beanstalk], [Gearman].
+Команду `queue/run` поддерживают драйвера [File], [Db], [Redis], [Beanstalk], [Gearman], [AWS SQS].
 Дополнительные опции смотрите в описании нужных вам драйверов.
 
 [File]: driver-file.md
@@ -119,3 +120,4 @@ Cron
 [Redis]: driver-redis.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+[AWS SQS]: driver-sqs.md
