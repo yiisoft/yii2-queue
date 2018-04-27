@@ -8,7 +8,7 @@
 namespace yii\queue\cli;
 
 /**
- * Class Verbose
+ * Verbose Behavior.
  *
  * @deprecated Will be removed in 2.1.0. Use VerboseBehavior instead of Verbose.
  *

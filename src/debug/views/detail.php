@@ -3,7 +3,6 @@
  * @var \yii\web\View $this
  * @var array $jobs
  */
-
 use yii\helpers\Html;
 
 $styles = [
@@ -77,7 +76,8 @@ $styles = [
     </div>
 <?php endforeach; ?>
 <?php
-$this->registerCss(<<<CSS
+$this->registerCss(
+<<<'CSS'
 
 .panel > .table th {
     width: 25%;

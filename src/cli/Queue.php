@@ -15,7 +15,7 @@ use yii\helpers\Inflector;
 use yii\queue\Queue as BaseQueue;
 
 /**
- * Queue with CLI
+ * Queue with CLI.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

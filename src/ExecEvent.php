@@ -8,7 +8,7 @@
 namespace yii\queue;
 
 /**
- * Class ExecEvent
+ * Exec Event.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

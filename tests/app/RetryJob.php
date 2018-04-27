@@ -12,7 +12,7 @@ use yii\base\BaseObject;
 use yii\queue\RetryableJobInterface;
 
 /**
- * Class RetryJob
+ * Retry Job.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

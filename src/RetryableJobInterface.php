@@ -8,7 +8,7 @@
 namespace yii\queue;
 
 /**
- * Interface RetryableJobInterface
+ * Retryable Job Interface.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

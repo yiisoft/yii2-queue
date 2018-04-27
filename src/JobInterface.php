@@ -8,7 +8,7 @@
 namespace yii\queue;
 
 /**
- * Interface JobInterface
+ * Job Interface.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

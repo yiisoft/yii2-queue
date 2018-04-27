@@ -8,7 +8,7 @@
 namespace yii\queue;
 
 /**
- * Class ErrorEvent
+ * Error Event.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

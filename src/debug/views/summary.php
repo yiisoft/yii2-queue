@@ -2,7 +2,7 @@
 /**
  * @var \yii\web\View $this
  * @var string $url
- * @var integer $count
+ * @var int $count
  */
 ?>
 <div class="yii-debug-toolbar__block">

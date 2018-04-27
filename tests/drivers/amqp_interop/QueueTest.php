@@ -14,7 +14,7 @@ use Yii;
 use yii\queue\amqp_interop\Queue;
 
 /**
- * AMQP Queue Test
+ * AMQP Queue Test.
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */

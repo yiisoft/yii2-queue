@@ -42,7 +42,7 @@ class Command extends CliCommand
      */
     protected function isWorkerAction($actionID)
     {
-        return in_array($actionID, ['run' ,'listen']);
+        return in_array($actionID, ['run', 'listen']);
     }
 
     /**

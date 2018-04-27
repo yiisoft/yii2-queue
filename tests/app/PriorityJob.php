@@ -12,7 +12,7 @@ use yii\base\BaseObject;
 use yii\queue\JobInterface;
 
 /**
- * Class PriorityJob
+ * Priority Job.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

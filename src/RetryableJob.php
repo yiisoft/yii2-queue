@@ -8,7 +8,7 @@
 namespace yii\queue;
 
 /**
- * Interface RetryableJob
+ * Retryable Job Interface.
  *
  * @deprecated Will be removed in 2.1.0. Use RetryableJobInterface instead of RetryableJob.
  *

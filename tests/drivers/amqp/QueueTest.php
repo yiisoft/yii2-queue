@@ -12,7 +12,7 @@ use Yii;
 use yii\queue\amqp\Queue;
 
 /**
- * AMQP Queue Test
+ * AMQP Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

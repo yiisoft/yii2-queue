@@ -1,14 +1,19 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\queue\sqs;
 
+use Aws\Credentials\CredentialProvider;
+use Aws\Sqs\SqsClient;
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
-use \Aws\Sqs\SqsClient;
-use Aws\Credentials\CredentialProvider;
 
 /**
- * SQS Queue
+ * SQS Queue.
  *
  * @author Max Kozlovsky <kozlovskymaxim@gmail.com>
  * @author Manoj Malviya <manojm@girnarsoft.com>
@@ -22,13 +27,13 @@ class Queue extends CliQueue
     public $url;
 
     /**
-     * aws access key
+     * aws access key.
      * @var string|null
      */
     public $key;
 
     /**
-     * aws secret
+     * aws secret.
      * @var string|null
      */
     public $secret;
@@ -40,7 +45,7 @@ class Queue extends CliQueue
     public $region = '';
 
     /**
-     * API version
+     * API version.
      * @var string
      */
     public $version = 'latest';
@@ -91,7 +96,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Gets a single message from SQS queue
+     * Gets a single message from SQS queue.
      *
      * @param int $timeout number of seconds for long polling. Must be between 0 and 20.
      * @return null|array payload.
@@ -124,8 +129,8 @@ class Queue extends CliQueue
 
         if ($this->key !== null && $this->secret !== null) {
             $credentials = [
-                'key'    => $this->key,
-                'secret' => $this->secret
+                'key' => $this->key,
+                'secret' => $this->secret,
             ];
         } else {
             // use default provider if no key and secret passed
@@ -142,7 +147,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Sets the AWS SQS client instance for the queue
+     * Sets the AWS SQS client instance for the queue.
      *
      * @param SqsClient $client AWS SQS client object.
      */
@@ -152,8 +157,8 @@ class Queue extends CliQueue
     }
 
     /**
-     * Set the visibility to reserve message
-     * So that no other worker can see this message
+     * Set the visibility to reserve message.
+     * So that no other worker can see this message.
      *
      * @param array $payload
      * @param int $ttr
@@ -164,15 +169,15 @@ class Queue extends CliQueue
         $this->getClient()->changeMessageVisibility([
             'QueueUrl' => $this->url,
             'ReceiptHandle' => $receiptHandle,
-            'VisibilityTimeout' => $ttr
+            'VisibilityTimeout' => $ttr,
         ]);
     }
 
     /**
-     * Mark the message as handled
+     * Mark the message as handled.
      *
      * @param array $payload
-     * @return boolean
+     * @return bool
      */
     private function release($payload)
     {
@@ -182,7 +187,7 @@ class Queue extends CliQueue
 
         $receiptHandle = $payload['ReceiptHandle'];
         $response = $this->getClient()->deleteMessage([
-            'QueueUrl'      => $this->url,
+            'QueueUrl' => $this->url,
             'ReceiptHandle' => $receiptHandle,
         ]);
 
@@ -190,7 +195,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Clears the queue
+     * Clears the queue.
      */
     public function clear()
     {

@@ -11,7 +11,7 @@ use Symfony\Component\Process\Process;
 use tests\app\PriorityJob;
 
 /**
- * Class CliTestCase
+ * CLI Test Case.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -79,5 +79,4 @@ abstract class CliTestCase extends TestCase
 
         parent::tearDown();
     }
-
 }

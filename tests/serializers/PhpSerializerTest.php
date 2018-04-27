@@ -10,7 +10,7 @@ namespace tests\serializers;
 use yii\queue\serializers\PhpSerializer;
 
 /**
- * Class PhpSerializerTest
+ * PHP Serializer Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

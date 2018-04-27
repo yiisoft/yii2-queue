@@ -15,7 +15,7 @@ use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * File Queue
+ * File Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -103,7 +103,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Clears the queue
+     * Clears the queue.
      *
      * @since 2.0.1
      */
@@ -118,7 +118,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Removes a job by ID
+     * Removes a job by ID.
      *
      * @param int $id of a job
      * @return bool
@@ -164,7 +164,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Reserves message for execute
+     * Reserves message for execute.
      *
      * @return array|null payload
      */
@@ -186,7 +186,7 @@ class Queue extends CliQueue
             }
 
             if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
-                list($id, $ttr,) = array_shift($data['delayed']);
+                list($id, $ttr, $time) = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
                 list($id, $ttr) = array_shift($data['waiting']);
             }
@@ -204,7 +204,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Deletes reserved message
+     * Deletes reserved message.
      *
      * @param array $payload
      */
@@ -246,10 +246,18 @@ class Queue extends CliQueue
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
                 usort($data['delayed'], function ($a, $b) {
-                    if ($a[2] < $b[2]) return -1;
-                    if ($a[2] > $b[2]) return 1;
-                    if ($a[0] < $b[0]) return -1;
-                    if ($a[0] > $b[0]) return 1;
+                    if ($a[2] < $b[2]) {
+                        return -1;
+                    }
+                    if ($a[2] > $b[2]) {
+                        return 1;
+                    }
+                    if ($a[0] < $b[0]) {
+                        return -1;
+                    }
+                    if ($a[0] > $b[0]) {
+                        return 1;
+                    }
                     return 0;
                 });
             }

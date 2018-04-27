@@ -10,7 +10,7 @@ namespace yii\queue\serializers;
 use yii\queue\JobInterface;
 
 /**
- * Interface SerializerInterface
+ * Serializer Interface.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

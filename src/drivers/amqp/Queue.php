@@ -16,7 +16,7 @@ use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * Amqp Queue
+ * Amqp Queue.
  *
  * @deprecated since 2.0.2 and will be removed in 2.1. Consider using amqp_interop driver instead.
  *
@@ -63,7 +63,7 @@ class Queue extends CliQueue
     public function listen()
     {
         $this->open();
-        $callback = function(AMQPMessage $payload) {
+        $callback = function (AMQPMessage $payload) {
             $id = $payload->get('message_id');
             list($ttr, $message) = explode(';', $payload->body, 2);
             if ($this->handleMessage($id, $message, $ttr, 1)) {
@@ -72,7 +72,7 @@ class Queue extends CliQueue
         };
         $this->channel->basic_qos(null, 1, null);
         $this->channel->basic_consume($this->queueName, '', false, false, false, false, $callback);
-        while(count($this->channel->callbacks)) {
+        while (count($this->channel->callbacks)) {
             $this->channel->wait();
         }
     }
@@ -111,7 +111,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Opens connection and channel
+     * Opens connection and channel.
      */
     protected function open()
     {
@@ -126,7 +126,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Closes connection and channel
+     * Closes connection and channel.
      */
     protected function close()
     {

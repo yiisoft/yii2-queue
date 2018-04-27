@@ -10,7 +10,7 @@ namespace yii\queue\serializers;
 use yii\base\BaseObject;
 
 /**
- * Class PhpSerializer
+ * Php Serializer.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

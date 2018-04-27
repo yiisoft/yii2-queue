@@ -13,7 +13,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 
 /**
- * Class Json
+ * Json Serializer.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -63,7 +63,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
 
             return $result;
         }
-        
+
         if (is_array($data)) {
             $result = [];
             foreach ($data as $key => $value) {
@@ -75,7 +75,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
 
             return $result;
         }
-        
+
         return $data;
     }
 
@@ -88,22 +88,22 @@ class JsonSerializer extends BaseObject implements SerializerInterface
         if (!is_array($data)) {
             return $data;
         }
-        
+
         if (!isset($data[$this->classKey])) {
             $result = [];
             foreach ($data as $key => $value) {
                 $result[$key] = $this->fromArray($value);
             }
-            
+
             return $result;
         }
-        
+
         $config = ['class' => $data[$this->classKey]];
         unset($data[$this->classKey]);
         foreach ($data as $property => $value) {
             $config[$property] = $this->fromArray($value);
         }
-        
+
         return Yii::createObject($config);
     }
 }

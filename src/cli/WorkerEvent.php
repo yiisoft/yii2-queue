@@ -10,7 +10,7 @@ namespace yii\queue\cli;
 use yii\base\Event;
 
 /**
- * Class WorkerEvent
+ * Worker Event.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  * @since 2.0.2

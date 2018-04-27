@@ -88,7 +88,7 @@ class Action extends \yii\base\Action
             file_put_contents($resultFileName, '');
 
             try {
-                Console::startProgress(0, $jobCount, str_pad( "- $queueName: ", 22));
+                Console::startProgress(0, $jobCount, str_pad("- $queueName: ", 22));
 
                 $pushedCount = 0;
                 while ($pushedCount < $jobCount) {
@@ -119,14 +119,13 @@ class Action extends \yii\base\Action
                                 break;
                             }
                         }
-                    } while(!$handled);
+                    } while (!$handled);
                 }
 
                 Console::endProgress(strtr(
                     'MEDIAN = {median} s; AVG = {avg} s; MIN = {min} s; MAX = {max} s' . PHP_EOL,
                     $this->calcResult($resultFileName, 4)
                 ));
-
             } finally {
                 $this->stopWorkers();
             }

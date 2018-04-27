@@ -14,7 +14,7 @@ use yii\queue\ErrorEvent;
 use yii\queue\ExecEvent;
 
 /**
- * Verbose Behavior
+ * Verbose Behavior.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

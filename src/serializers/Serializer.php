@@ -8,7 +8,7 @@
 namespace yii\queue\serializers;
 
 /**
- * Interface Serializer
+ * Interface Serializer.
  *
  * @deprecated Will be removed in 2.1.0. Use SerializerInterface instead of Serializer.
  *

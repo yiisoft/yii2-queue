@@ -12,7 +12,7 @@ use tests\app\SimpleJob;
 use yii\queue\Queue;
 
 /**
- * Driver Test Case
+ * Driver Test Case.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

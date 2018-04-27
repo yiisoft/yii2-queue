@@ -13,7 +13,7 @@ use Yii;
 use yii\queue\gearman\Queue;
 
 /**
- * Gearman Queue Test
+ * Gearman Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

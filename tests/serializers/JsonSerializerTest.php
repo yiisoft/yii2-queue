@@ -10,7 +10,7 @@ namespace tests\serializers;
 use yii\queue\serializers\JsonSerializer;
 
 /**
- * Class JsonSerializerTest
+ * Json Serializer Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

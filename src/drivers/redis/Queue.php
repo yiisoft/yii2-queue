@@ -10,11 +10,11 @@ namespace yii\queue\redis;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
-use yii\redis\Connection;
 use yii\queue\cli\Queue as CliQueue;
+use yii\redis\Connection;
 
 /**
- * Redis Queue
+ * Redis Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -89,7 +89,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Clears the queue
+     * Clears the queue.
      *
      * @since 2.0.1
      */
@@ -102,7 +102,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Removes a job by ID
+     * Removes a job by ID.
      *
      * @param int $id of a job
      * @return bool
@@ -171,7 +171,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Deletes message by ID
+     * Deletes message by ID.
      *
      * @param int $id of a message
      */

@@ -12,7 +12,7 @@ use yii\base\BaseObject;
 use yii\queue\serializers\SerializerInterface;
 
 /**
- * Class TestCase
+ * Serializer Test Case.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

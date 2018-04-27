@@ -7,11 +7,11 @@
 
 namespace yii\queue\amqp_interop;
 
+use Enqueue\AmqpBunny\AmqpConnectionFactory as AmqpBunnyConnectionFactory;
+use Enqueue\AmqpExt\AmqpConnectionFactory as AmqpExtConnectionFactory;
+use Enqueue\AmqpLib\AmqpConnectionFactory as AmqpLibConnectionFactory;
 use Enqueue\AmqpTools\DelayStrategyAware;
 use Enqueue\AmqpTools\RabbitMqDlxDelayStrategy;
-use Enqueue\AmqpLib\AmqpConnectionFactory as AmqpLibConnectionFactory;
-use Enqueue\AmqpExt\AmqpConnectionFactory as AmqpExtConnectionFactory;
-use Enqueue\AmqpBunny\AmqpConnectionFactory as AmqpBunnyConnectionFactory;
 use Interop\Amqp\AmqpConnectionFactory;
 use Interop\Amqp\AmqpConsumer;
 use Interop\Amqp\AmqpContext;
@@ -25,7 +25,7 @@ use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * Amqp Queue
+ * Amqp Queue.
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  * @since 2.0.2
@@ -42,31 +42,31 @@ class Queue extends CliQueue
 
     /**
      * The connection to the borker could be configured as an array of options
-     * or as a DSN string like amqp:, amqps:, amqps://user:pass@localhost:1000/vhost
+     * or as a DSN string like amqp:, amqps:, amqps://user:pass@localhost:1000/vhost.
      *
      * @var string
      */
     public $dsn;
     /**
-     * The message queue broker's host
+     * The message queue broker's host.
      *
      * @var string|null
      */
     public $host;
     /**
-     * The message queue broker's port
+     * The message queue broker's port.
      *
      * @var string|null
      */
     public $port;
     /**
-     * This is RabbitMQ user which is used to login on the broker
+     * This is RabbitMQ user which is used to login on the broker.
      *
      * @var string|null
      */
     public $user;
     /**
-     * This is RabbitMQ password which is used to login on the broker
+     * This is RabbitMQ password which is used to login on the broker.
      *
      * @var string|null
      */
@@ -78,44 +78,44 @@ class Queue extends CliQueue
      */
     public $vhost;
     /**
-     * The time PHP socket waits for an information while reading. In seconds
+     * The time PHP socket waits for an information while reading. In seconds.
      *
      * @var float|null
      */
     public $readTimeout;
     /**
-     * The time PHP socket waits for an information while witting. In seconds
+     * The time PHP socket waits for an information while witting. In seconds.
      *
      * @var float|null
      */
     public $writeTimeout;
     /**
-     * The time RabbitMQ keeps the connection on idle. In seconds
+     * The time RabbitMQ keeps the connection on idle. In seconds.
      *
      * @var float|null
      */
     public $connectionTimeout;
     /**
-     * The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds
+     * The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds.
      *
      * @var float|null
      */
     public $heartbeat;
     /**
-     * PHP uses one shared connection if set true
+     * PHP uses one shared connection if set true.
      *
      * @var bool|null
      */
     public $persisted;
     /**
-     * The connection will be established as later as possible if set true
+     * The connection will be established as later as possible if set true.
      *
      * @var bool|null
      */
     public $lazy;
     /**
      * If false prefetch_count option applied separately to each new consumer on the channel
-     * If true prefetch_count option shared across all consumers on the channel
+     * If true prefetch_count option shared across all consumers on the channel.
      *
      * @var bool|null
      */
@@ -133,7 +133,7 @@ class Queue extends CliQueue
      */
     public $qosPrefetchCount;
     /**
-     * Defines whether secure connection should be used or not
+     * Defines whether secure connection should be used or not.
      *
      * @var bool|null
      */
@@ -163,25 +163,25 @@ class Queue extends CliQueue
      */
     public $sslKey;
     /**
-     * The queue used to consume messages from
+     * The queue used to consume messages from.
      *
      * @var string
      */
     public $queueName = 'interop_queue';
     /**
-     * The exchange used to publish messages to
+     * The exchange used to publish messages to.
      *
      * @var string
      */
     public $exchangeName = 'exchange';
     /**
-     * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values
+     * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
      * @var string
      */
     public $driver = self::ENQUEUE_AMQP_LIB;
     /**
-     * This property should be an integer indicating the maximum priority the queue should support. Default is 10
+     * This property should be an integer indicating the maximum priority the queue should support. Default is 10.
      *
      * @var int
      */
@@ -194,13 +194,13 @@ class Queue extends CliQueue
     public $commandClass = Command::class;
 
     /**
-     * Amqp interop context
+     * Amqp interop context.
      *
      * @var AmqpContext
      */
     protected $context;
     /**
-     * List of supported amqp interop drivers
+     * List of supported amqp interop drivers.
      *
      * @var string[]
      */
@@ -235,7 +235,7 @@ class Queue extends CliQueue
 
         $queue = $this->context->createQueue($this->queueName);
         $consumer = $this->context->createConsumer($queue);
-        $this->context->subscribe($consumer, function(AmqpMessage $message, AmqpConsumer $consumer) {
+        $this->context->subscribe($consumer, function (AmqpMessage $message, AmqpConsumer $consumer) {
             if ($message->isRedelivered()) {
                 $consumer->acknowledge($message);
 
@@ -314,7 +314,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Opens connection and channel
+     * Opens connection and channel.
      */
     protected function open()
     {
@@ -325,17 +325,13 @@ class Queue extends CliQueue
         switch ($this->driver) {
             case self::ENQUEUE_AMQP_LIB:
                 $connectionClass = AmqpLibConnectionFactory::class;
-
                 break;
             case self::ENQUEUE_AMQP_EXT:
                 $connectionClass = AmqpExtConnectionFactory::class;
-
                 break;
             case self::ENQUEUE_AMQP_BUNNY:
                 $connectionClass = AmqpBunnyConnectionFactory::class;
-
                 break;
-
             default:
                 throw new \LogicException(sprintf('The given driver "%s" is not supported. Drivers supported are "%s"', $this->driver, implode('", "', $this->supportedDrivers)));
         }
@@ -363,7 +359,7 @@ class Queue extends CliQueue
             'ssl_key' => $this->sslKey,
         ];
 
-        $config = array_filter($config, function($value) {
+        $config = array_filter($config, function ($value) {
             return null !== $value;
         });
 
@@ -399,7 +395,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Closes connection and channel
+     * Closes connection and channel.
      */
     protected function close()
     {
@@ -417,15 +413,15 @@ class Queue extends CliQueue
      */
     protected function redeliver(AmqpMessage $message)
     {
-         $attempt = $message->getProperty(self::ATTEMPT, 1);
+        $attempt = $message->getProperty(self::ATTEMPT, 1);
 
-         $newMessage = $this->context->createMessage($message->getBody(), $message->getProperties(), $message->getHeaders());
-         $newMessage->setDeliveryMode($message->getDeliveryMode());
-         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
+        $newMessage = $this->context->createMessage($message->getBody(), $message->getProperties(), $message->getHeaders());
+        $newMessage->setDeliveryMode($message->getDeliveryMode());
+        $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
-         $this->context->createProducer()->send(
+        $this->context->createProducer()->send(
              $this->context->createQueue($this->queueName),
              $newMessage
          );
-     }
+    }
 }

@@ -13,7 +13,7 @@ use yii\base\InvalidArgumentException;
 use yii\queue\Queue as BaseQueue;
 
 /**
- * Sync Queue
+ * Sync Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -90,13 +90,13 @@ class Queue extends BaseQueue
         }
 
         if ($id <= $this->finishedId) {
-            return Queue::STATUS_DONE;
+            return self::STATUS_DONE;
         }
 
         if ($id === $this->startedId) {
-            return Queue::STATUS_RESERVED;
+            return self::STATUS_RESERVED;
         }
 
-        return Queue::STATUS_WAITING;
+        return self::STATUS_WAITING;
     }
 }

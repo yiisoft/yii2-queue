@@ -12,7 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\console\Controller as ConsoleController;
 
 /**
- * Class Action
+ * Base Command Action.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

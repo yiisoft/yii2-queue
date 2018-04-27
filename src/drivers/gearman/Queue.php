@@ -11,7 +11,7 @@ use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * Gearman Queue
+ * Gearman Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

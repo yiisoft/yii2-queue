@@ -12,7 +12,9 @@ use Yii;
 use yii\queue\sqs\Queue;
 
 /**
- * SQS Queue Test
+ * SQS Queue Test.
+ *
+ * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class QueueTest extends CliTestCase
 {

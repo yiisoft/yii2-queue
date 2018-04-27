@@ -14,7 +14,7 @@ use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * Beanstalk Queue
+ * Beanstalk Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -94,7 +94,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Removes a job by ID
+     * Removes a job by ID.
      *
      * @param int $id of a job
      * @return bool

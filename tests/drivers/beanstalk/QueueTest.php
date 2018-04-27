@@ -16,7 +16,7 @@ use Yii;
 use yii\queue\beanstalk\Queue;
 
 /**
- * Beanstalk Queue Test
+ * Beanstalk Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

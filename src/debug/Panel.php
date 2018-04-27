@@ -16,7 +16,7 @@ use yii\queue\PushEvent;
 use yii\queue\Queue;
 
 /**
- * Class Panel
+ * Debug Panel.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

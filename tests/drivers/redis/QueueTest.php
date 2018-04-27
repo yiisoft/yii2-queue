@@ -13,7 +13,7 @@ use Yii;
 use yii\queue\redis\Queue;
 
 /**
- * Redis Queue Test
+ * Redis Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

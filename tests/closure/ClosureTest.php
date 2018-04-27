@@ -13,7 +13,7 @@ use yii\queue\closure\Behavior;
 use yii\queue\sync\Queue;
 
 /**
- * Closure Test
+ * Closure Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

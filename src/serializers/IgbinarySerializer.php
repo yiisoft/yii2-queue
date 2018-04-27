@@ -10,7 +10,7 @@ namespace yii\queue\serializers;
 use yii\base\BaseObject;
 
 /**
- * Class IgbinarySerializer
+ * Igbinary Serializer.
  *
  * It uses an alternative serializer available via PECL extension which produces
  * more compact data chunks significantly faster that native PHP one.

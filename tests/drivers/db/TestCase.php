@@ -13,7 +13,7 @@ use tests\drivers\CliTestCase;
 use yii\db\Query;
 
 /**
- * Db Queue Test Case
+ * Db Queue Test Case.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

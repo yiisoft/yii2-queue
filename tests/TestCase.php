@@ -8,7 +8,7 @@
 namespace tests;
 
 /**
- * Class TestCase
+ * Base Test Case.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

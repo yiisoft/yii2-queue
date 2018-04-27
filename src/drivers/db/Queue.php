@@ -16,7 +16,7 @@ use yii\mutex\Mutex;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
- * Db Queue
+ * Db Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -43,7 +43,7 @@ class Queue extends CliQueue
      */
     public $channel = 'queue';
     /**
-     * @var boolean ability to delete released messages from table
+     * @var bool ability to delete released messages from table
      */
     public $deleteReleased = true;
     /**
@@ -123,7 +123,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Clears the queue
+     * Clears the queue.
      *
      * @since 2.0.1
      */
@@ -135,7 +135,7 @@ class Queue extends CliQueue
     }
 
     /**
-     * Removes a job by ID
+     * Removes a job by ID.
      *
      * @param int $id of a job
      * @return bool
@@ -174,9 +174,8 @@ class Queue extends CliQueue
     protected function reserve()
     {
         return $this->db->useMaster(function () {
-
             if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
-                throw new Exception("Has not waited the lock.");
+                throw new Exception('Has not waited the lock.');
             }
 
             try {
@@ -192,11 +191,13 @@ class Queue extends CliQueue
                     ->one($this->db);
                 if (is_array($payload)) {
                     $payload['reserved_at'] = time();
-                    $payload['attempt'] = (int)$payload['attempt'] + 1;
+                    $payload['attempt'] = (int) $payload['attempt'] + 1;
                     $this->db->createCommand()->update($this->tableName, [
-                        'reserved_at' => $payload['reserved_at'], 'attempt' => $payload['attempt']],
-                        ['id' => $payload['id']]
-                    )->execute();
+                        'reserved_at' => $payload['reserved_at'],
+                        'attempt' => $payload['attempt'],
+                    ], [
+                        'id' => $payload['id'],
+                    ])->execute();
 
                     // pgsql
                     if (is_resource($payload['job'])) {

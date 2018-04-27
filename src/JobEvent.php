@@ -10,7 +10,7 @@ namespace yii\queue;
 use yii\base\Event;
 
 /**
- * Class JobEvent
+ * Job Event.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

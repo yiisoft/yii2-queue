@@ -10,7 +10,7 @@ namespace tests\serializers;
 use yii\queue\serializers\IgbinarySerializer;
 
 /**
- * Class IgbinarySerializerTest
+ * Igbinary Serializer Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

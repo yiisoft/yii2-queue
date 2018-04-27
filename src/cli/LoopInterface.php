@@ -8,7 +8,7 @@
 namespace yii\queue\cli;
 
 /**
- * Loop Interface
+ * Loop Interface.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  * @since 2.0.2

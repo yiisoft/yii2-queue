@@ -10,7 +10,7 @@ namespace yii\queue\db\migrations;
 use yii\db\Migration;
 
 /**
- * Example of migration for queue message storage
+ * Example of migration for queue message storage.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

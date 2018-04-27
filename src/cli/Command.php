@@ -13,7 +13,7 @@ use yii\console\Controller;
 use yii\console\ExitCode;
 
 /**
- * Class Command
+ * Base Command.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -153,7 +153,7 @@ abstract class Command extends Controller
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        // Executes child process        
+        // Executes child process
         $cmd = strtr('php yii queue/exec "id" "ttr" "attempt" "pid"', [
             'php' => $this->phpBinary,
             'yii' => $_SERVER['SCRIPT_FILENAME'],

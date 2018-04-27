@@ -11,7 +11,7 @@ use Yii;
 use yii\queue\db\Queue;
 
 /**
- * Postgres Queue Test
+ * Postgres Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

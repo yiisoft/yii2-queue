@@ -13,7 +13,7 @@ use Yii;
 use yii\queue\file\Queue;
 
 /**
- * File Queue Test
+ * File Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

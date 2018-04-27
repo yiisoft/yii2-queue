@@ -8,7 +8,7 @@
 namespace yii\queue;
 
 /**
- * Class PushEvent
+ * Push Event.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

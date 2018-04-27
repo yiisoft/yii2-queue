@@ -11,7 +11,7 @@ use Yii;
 use yii\base\Behavior;
 
 /**
- * Class LogBehavior
+ * Log Behavior.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

@@ -12,7 +12,7 @@ use yii\queue\PushEvent;
 use yii\queue\Queue;
 
 /**
- * Closure Behavior
+ * Closure Behavior.
  *
  * If you use the behavior, you can push closures into queue. For example:
  *
@@ -45,7 +45,7 @@ class Behavior extends \yii\base\Behavior
     }
 
     /**
-     * Converts the closure to a job object
+     * Converts the closure to a job object.
      * @param PushEvent $event
      */
     public function beforePush(PushEvent $event)

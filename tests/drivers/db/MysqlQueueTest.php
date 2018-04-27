@@ -11,7 +11,7 @@ use Yii;
 use yii\queue\db\Queue;
 
 /**
- * MySQL Queue Test
+ * MySQL Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \yii\web\View
+ * @var \yii\web\View $this
  * @var \yii\queue\gii\Generator $generator
  * @var string $jobClass
  * @var string $$ns
@@ -8,7 +8,6 @@
  * @var string[] $interfaces
  * @var string[] $properties
  */
-
 if ($interfaces) {
     $implements = 'implements ' . implode(', ', $interfaces);
 } else {

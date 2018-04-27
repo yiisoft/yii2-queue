@@ -11,7 +11,7 @@ use Yii;
 use yii\queue\db\Queue;
 
 /**
- * Sqlite Queue Test
+ * Sqlite Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

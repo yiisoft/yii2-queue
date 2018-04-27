@@ -28,7 +28,7 @@ class InfoAction extends Action
      */
     public function run()
     {
-        Console::output($this->format("Statistical information about the tube:", Console::FG_GREEN));
+        Console::output($this->format('Statistical information about the tube:', Console::FG_GREEN));
 
         foreach ($this->queue->getStatsTube() as $key => $value) {
             Console::stdout($this->format("- $key: ", Console::FG_YELLOW));

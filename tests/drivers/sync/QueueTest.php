@@ -12,7 +12,7 @@ use tests\drivers\TestCase;
 use yii\queue\sync\Queue;
 
 /**
- * Sync Queue Test
+ * Sync Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
