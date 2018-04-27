@@ -80,8 +80,8 @@ class Queue extends CliQueue
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
-                if ($payload = $this->getPayload($timeout)) {
-                    list($ttr, $message) = explode(';', $payload['Body'], 2);
+                if (($payload = $this->getPayload($timeout)) !== null) {
+                    list($ttr, $message) = explode(';', base64_decode($payload['Body']), 2);
                     //reserve it so it is not visible to another worker till ttr
                     $this->reserve($payload, $ttr);
 
@@ -116,44 +116,6 @@ class Queue extends CliQueue
         }
 
         return null;
-    }
-
-    /**
-     * @return \Aws\Sqs\SqsClient
-     */
-    protected function getClient()
-    {
-        if ($this->_client) {
-            return $this->_client;
-        }
-
-        if ($this->key !== null && $this->secret !== null) {
-            $credentials = [
-                'key' => $this->key,
-                'secret' => $this->secret,
-            ];
-        } else {
-            // use default provider if no key and secret passed
-            //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
-            $credentials = CredentialProvider::defaultProvider();
-        }
-        $this->_client = new SqsClient([
-            'credentials' => $credentials,
-            'region' => $this->region,
-            'version' => $this->version,
-        ]);
-
-        return $this->_client;
-    }
-
-    /**
-     * Sets the AWS SQS client instance for the queue.
-     *
-     * @param SqsClient $client AWS SQS client object.
-     */
-    public function setClient(SqsClient $client)
-    {
-        $this->_client = $client;
     }
 
     /**
@@ -224,9 +186,47 @@ class Queue extends CliQueue
         $model = $this->getClient()->sendMessage([
             'DelaySeconds' => $delay,
             'QueueUrl' => $this->url,
-            'MessageBody' => "$ttr;$message",
+            'MessageBody' => base64_encode("$ttr;$message"),
         ]);
 
         return $model['MessageId'];
+    }
+
+    /**
+     * @return \Aws\Sqs\SqsClient
+     */
+    protected function getClient()
+    {
+        if ($this->_client) {
+            return $this->_client;
+        }
+
+        if ($this->key !== null && $this->secret !== null) {
+            $credentials = [
+                'key' => $this->key,
+                'secret' => $this->secret,
+            ];
+        } else {
+            // use default provider if no key and secret passed
+            //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
+            $credentials = CredentialProvider::defaultProvider();
+        }
+        $this->_client = new SqsClient([
+            'credentials' => $credentials,
+            'region' => $this->region,
+            'version' => $this->version,
+        ]);
+
+        return $this->_client;
+    }
+
+    /**
+     * Sets the AWS SQS client instance for the queue.
+     *
+     * @param SqsClient $client AWS SQS client object.
+     */
+    public function setClient(SqsClient $client)
+    {
+        $this->_client = $client;
     }
 }
