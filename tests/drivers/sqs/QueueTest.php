@@ -43,12 +43,6 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testClear()
-    {
-        $this->getQueue()->push($this->createSimpleJob());
-        $this->runProcess('php yii queue/clear --interactive=0');
-    }
-
     /**
      * @return Queue
      */
