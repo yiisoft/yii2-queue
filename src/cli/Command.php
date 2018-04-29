@@ -7,10 +7,10 @@
 
 namespace yii\queue\cli;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\RuntimeException as ProcessRuntimeException;
 use Symfony\Component\Process\Process;
 use yii\console\Controller;
-use yii\console\ExitCode;
 
 /**
  * Base Command.
@@ -19,6 +19,15 @@ use yii\console\ExitCode;
  */
 abstract class Command extends Controller
 {
+    /**
+     * The exit code of the exec action which is returned when job was done.
+     */
+    const EXEC_DONE = 0;
+    /**
+     * The exit code of the exec action which is returned when job wasn't done and wanted next attempt.
+     */
+    const EXEC_RETRY = 3;
+
     /**
      * @var Queue
      */
@@ -45,7 +54,6 @@ abstract class Command extends Controller
      * @since 2.0.3
      */
     public $phpBinary;
-
 
     /**
      * @inheritdoc
@@ -134,10 +142,9 @@ abstract class Command extends Controller
     public function actionExec($id, $ttr, $attempt, $pid)
     {
         if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid)) {
-            return ExitCode::OK;
+            return self::EXEC_DONE;
         }
-
-        return ExitCode::UNSPECIFIED_ERROR;
+        return self::EXEC_RETRY;
     }
 
     /**
@@ -174,18 +181,20 @@ abstract class Command extends Controller
 
         $process = new Process($cmd, null, null, $message, $ttr);
         try {
-            $process->run(function ($type, $buffer) {
+            $result = $process->run(function ($type, $buffer) {
                 if ($type === Process::ERR) {
                     $this->stderr($buffer);
                 } else {
                     $this->stdout($buffer);
                 }
             });
+            if (!in_array($result, [self::EXEC_DONE, self::EXEC_RETRY])) {
+                throw new ProcessFailedException($process);
+            }
+            return $result === self::EXEC_DONE;
         } catch (ProcessRuntimeException $error) {
             $job = $this->queue->serializer->unserialize($message);
             return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
         }
-
-        return $process->isSuccessful();
     }
 }
