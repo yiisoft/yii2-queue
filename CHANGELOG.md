@@ -9,6 +9,7 @@ Yii2 Queue Extension Change Log
 - Bug #207: Console params validation (zhuravljov)
 - Bug #224: Invalid identifier "DELAY" (lar-dragon)
 - Enh #192: AWS SQS implementation (elitemaks, manoj-girnar)
+- Bug #126: Handles a fatal error of the job execution in isolate mode (zhuravljov)
 
 2.0.2 December 26, 2017
 -----------------------
