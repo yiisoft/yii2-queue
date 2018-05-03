@@ -83,8 +83,8 @@ yii queue/listen [timeout]
 
 `listen` コマンドは無限にキューを調べ続けるデーモンを起動します。キューに新しいタスクがあると、即座に取得され、実行されます。
 `timeout` パラメータはキューを調べる間のスリープの秒数を指定するものです。
-
-このコマンドを [supervisor](worker.md#supervisor) または [systemd](worker.md#systemd) によって適切にデーモン化するのが、最も効率的な方法です。
+このコマンドを [supervisor](worker.md#supervisor) または [systemd](worker.md#systemd) によって適切にデーモン化するのが、
+最も効率的な方法です。
 
 ```sh
 yii queue/run

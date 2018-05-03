@@ -34,8 +34,7 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 Supervisor の構成と使用方法については、その [ドキュメント](http://supervisord.org) を参照して下さい。
 
 `queue/listen` で開始されるワーカ・デーモンがサポートされているのは、[ファイル]、[データベース]、[Redis]、
-[RabbitMQ]、[AMQP Interop]、[Beanstalk] および [Gearman] のドライバだけであることに留意して下さい。
-追加のオプションについては、ドライバのガイドを参照して下さい。
+[RabbitMQ]、[AMQP Interop]、[Beanstalk] および [Gearman] のドライバだけであることに留意して下さい。追加のオプションについては、ドライバのガイドを参照して下さい。
 
 [ファイル]: driver-file.md
 [データベース]: driver-db.md
