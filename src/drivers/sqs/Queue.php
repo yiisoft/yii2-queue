@@ -93,7 +93,7 @@ class Queue extends CliQueue
                     $ttr = (int) $payload['MessageAttributes']['TTR']['StringValue'];
                     $attempt = (int) $payload['Attributes']['ApproximateReceiveCount'];
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
-                        $this->release($payload);
+                        $this->delete($payload);
                     }
                 } elseif (!$repeat) {
                     break;
@@ -108,7 +108,7 @@ class Queue extends CliQueue
      * @param int $timeout number of seconds for long polling. Must be between 0 and 20.
      * @return null|array payload.
      */
-    public function reserve($timeout)
+    protected function reserve($timeout)
     {
         $response = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
@@ -137,11 +137,11 @@ class Queue extends CliQueue
     }
 
     /**
-     * Mark the message as handled.
+     * Deletes the message after successfully handling.
      *
      * @param array $payload
      */
-    private function release($payload)
+    protected function delete($payload)
     {
         $this->getClient()->deleteMessage([
             'QueueUrl' => $this->url,
