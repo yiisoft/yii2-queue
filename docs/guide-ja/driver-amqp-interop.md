@@ -3,7 +3,8 @@ AMQP Interop
 
 このドライバは RabbitMQ のキューによって動作します。
 
-[amqp interop](https://github.com/queue-interop/queue-interop#amqp-interop) 互換のトランスポート、例えば `enqueue/amqp-lib` パッケージを必要とします。
+[amqp interop](https://github.com/queue-interop/queue-interop#amqp-interop) 互換のトランスポート、
+例えば `enqueue/amqp-lib` パッケージを必要とします。
 
 利点:
 
@@ -58,5 +59,5 @@ yii queue/listen [timeout]
 
 `listen` コマンドが無限にキューを調べ続けるデーモンを起動します。キューに新しいタスクがあると、即座に取得され、実行されます。
 `timeout` パラメータはキューを調べる間のスリープの秒数を指定するものです。
-
-このコマンドを [supervisor](worker.md#supervisor) または [systemd](worker.md#systemd) によって適切にデーモン化するのが、最も効率的な方法です。
+このコマンドを [supervisor](worker.md#supervisor) または [systemd](worker.md#systemd) によって適切にデーモン化するのが、
+最も効率的な方法です。
