@@ -21,6 +21,7 @@ Yii2 キュー・エクステンション
 * [AMQP Interop](driver-amqp-interop.md)
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
+* [AWS SQS](driver-sqs.md)
 
 開発ツール
 ----------
