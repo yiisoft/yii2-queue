@@ -1,0 +1,135 @@
+version: "3"
+services:
+
+  # https://docs.docker.com/samples/library/php/
+  php72:
+    container_name: yii2_queue_php72
+    build:
+      context: .
+      dockerfile: tests/app/docker/php/7.2/Dockerfile
+    command: &php_command ["sleep", "infinity"]
+    dns: &php_dns
+      - 8.8.8.8
+      - 4.4.4.4
+    volumes: &php_volumes
+      #- .:/code
+      - ./tests/app/runtime/composer:/root/.composer
+    environment: &php_environment
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: yii2_queue_test
+      MYSQL_PASSWORD: yii2_queue_test
+      MYSQL_DATABASE: yii2_queue_test
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: yii2_queue_test
+      POSTGRES_PASSWORD: yii2_queue_test
+      POSTGRES_DB: yii2_queue_test
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 2
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      BEANSTALK_HOST: beanstalk
+      BEANSTALK_PORT: 11300
+      GEARMAN_HOST: gearmand
+      GEARMAN_PORT: 4730
+    depends_on: &php_depends_on
+      - mysql
+      - postgres
+      - redis
+      - rabbitmq
+      - beanstalk
+      - gearmand
+  php71:
+    container_name: yii2_queue_php71
+    build:
+      context: .
+      dockerfile: tests/app/docker/php/7.1/Dockerfile
+    command: *php_command
+    dns: *php_dns
+    volumes: *php_volumes
+    environment: *php_environment
+    depends_on: *php_depends_on
+  php70:
+    container_name: yii2_queue_php70
+    build:
+      context: .
+      dockerfile: tests/app/docker/php/7.0/Dockerfile
+    command: *php_command
+    dns: *php_dns
+    volumes: *php_volumes
+    environment: *php_environment
+    depends_on: *php_depends_on
+  php56:
+    container_name: yii2_queue_php56
+    build:
+      context: .
+      dockerfile: tests/app/docker/php/5.6/Dockerfile
+    command: *php_command
+    dns: *php_dns
+    volumes: *php_volumes
+    environment: *php_environment
+    depends_on: *php_depends_on
+
+  # https://docs.docker.com/samples/library/mysql/
+  mysql:
+    container_name: yii2-queue-mysql
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    volumes:
+      - ./tests/app/docker/mysql/8.0/auth.cnf:/etc/mysql/conf.d/auth.cnf:ro
+      #- ./tests/app/runtime/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_USER: yii2_queue_test
+      MYSQL_PASSWORD: yii2_queue_test
+      MYSQL_DATABASE: yii2_queue_test
+
+  # https://docs.docker.com/samples/library/postgres/
+  postgres:
+    container_name: yii2_queue_postgres
+    image: postgres:10.4
+    ports:
+      - 5432:5432
+    #volumes:
+    #  - ./tests/app/runtime/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: yii2_queue_test
+      POSTGRES_PASSWORD: yii2_queue_test
+      POSTGRES_DB: yii2_queue_test
+
+  # https://docs.docker.com/samples/library/redis/
+  redis:
+    container_name: yii2_queue_redis
+    image: redis:4.0
+    ports:
+      - 6379:6379
+    #volumes:
+    #  - ./tests/app/runtime/redis:/data
+
+  # https://docs.docker.com/samples/library/rabbitmq/
+  rabbitmq:
+    container_name: yii2_queue_rabbitmq
+    image: rabbitmq:3.7
+    ports:
+      - 5672:5672
+    #volumes:
+    #  - ./tests/app/runtime/rabbitmq:/var/lib/rabbitmq
+
+  # https://hub.docker.com/r/schickling/beanstalkd/
+  beanstalk:
+    container_name: yii2_queue_beanstalk
+    image: schickling/beanstalkd
+    ports:
+      - 11300:11300
+
+  # https://hub.docker.com/r/artefactual/gearmand/
+  gearmand:
+    container_name: yii2_queue_gearmand
+    image: artefactual/gearmand
+    ports:
+      - 4730:4730

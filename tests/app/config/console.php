@@ -25,6 +25,6 @@ return [
                 'yii\queue\db\migrations',
             ],
         ],
-        'benchmark' => \tests\benchmark\Controller::class,
+        'benchmark' => \tests\app\benchmark\Controller::class,
     ],
 ];
