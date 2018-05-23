@@ -1,8 +1,8 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.0.3 under development
------------------------
+2.1.0 May 24, 2018
+------------------
 
 - Bug #210: Worker option to define php bin path to run child process (zhuravljov)
 - Enh: Worker loop event (zhuravljov)
@@ -130,6 +130,9 @@ Yii2 Queue Extension Change Log
 - Enh: Add exchange for AMQP driver (airani)
 - Enh: Beanstalk driver (zhuravljov)
 - Enh: Added English docs (samdark)
+
+
+
 
 
 

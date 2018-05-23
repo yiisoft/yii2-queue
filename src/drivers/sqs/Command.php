@@ -23,6 +23,7 @@ class Command extends CliCommand
      */
     public $queue;
 
+
     /**
      * Runs all jobs from sqs.
      * It can be used as cron job.

@@ -26,31 +26,26 @@ class Queue extends CliQueue
      * @var string
      */
     public $url;
-
     /**
      * aws access key.
      * @var string|null
      */
     public $key;
-
     /**
      * aws secret.
      * @var string|null
      */
     public $secret;
-
     /**
      * region where queue is hosted.
      * @var string
      */
     public $region = '';
-
     /**
      * API version.
      * @var string
      */
     public $version = 'latest';
-
     /**
      * @var string command class name
      * @inheritdoc
@@ -66,6 +61,7 @@ class Queue extends CliQueue
      * @var SqsClient
      */
     private $_client;
+
 
     /**
      * @inheritdoc
