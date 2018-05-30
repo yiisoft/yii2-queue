@@ -10,7 +10,7 @@ namespace yii\queue;
 /**
  * Retryable Job Interface.
  *
- * @deprecated Will be removed in 2.1.0. Use RetryableJobInterface instead of RetryableJob.
+ * @deprecated Will be removed in 3.0. Use RetryableJobInterface instead of RetryableJob.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

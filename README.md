@@ -30,7 +30,7 @@ php composer.phar require --prefer-dist yiisoft/yii2-queue
 or add
 
 ```
-"yiisoft/yii2-queue": "~2.0.0"
+"yiisoft/yii2-queue": "~2.0"
 ```
 
 to the require section of your `composer.json` file.
