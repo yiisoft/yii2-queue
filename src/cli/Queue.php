@@ -61,6 +61,11 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @since 2.0.2
      */
     private $_workerPid;
+    
+    /**
+     * @var Timeout
+     */
+    public $timeout;
 
 
     /**
@@ -86,6 +91,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
             $app->controllerMap[$this->getCommandId()] = [
                 'class' => $this->commandClass,
                 'queue' => $this,
+                'timeout'=>isset($this->timeout)?$this->timeout:0
             ] + $this->commandOptions;
         }
     }
