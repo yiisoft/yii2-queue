@@ -54,7 +54,10 @@ abstract class Command extends Controller
      * @since 2.0.3
      */
     public $phpBinary;
-
+    /**
+     * @var Timeout
+     */
+    public $timeout=0;
 
     /**
      * @inheritdoc
@@ -181,6 +184,7 @@ abstract class Command extends Controller
         }
 
         $process = new Process($cmd, null, null, $message, $ttr);
+        $process->setTimeout($this->timeout);
         try {
             $result = $process->run(function ($type, $buffer) {
                 if ($type === Process::ERR) {
