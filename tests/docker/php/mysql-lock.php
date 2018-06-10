@@ -42,7 +42,7 @@ passthru($command, $exitCode);
 $query = $mysql->prepare('SELECT RELEASE_LOCK(?)');
 $query->execute([$lockName]);
 if (!$query->fetch(PDO::FETCH_NUM)[0]) {
-    echo basename(__FILE__) . ': release the lock.' . PHP_EOL;
+    echo basename(__FILE__) . ': cannot release the lock.' . PHP_EOL;
     exit(1);
 }
 
