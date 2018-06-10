@@ -8,5 +8,5 @@
 /.php_cs.cache
 /.travis.yml
 /composer.lock
-/tests/app/runtime
+/tests/runtime/*
 /vendor

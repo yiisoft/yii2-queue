@@ -9,6 +9,8 @@
         <testsuite name="Test Suite">
             <directory>./tests</directory>
             <exclude>./tests/app</exclude>
+            <exclude>./tests/docker</exclude>
+            <exclude>./tests/runtime</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

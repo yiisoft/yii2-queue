@@ -1,4 +1,4 @@
-FROM php:5.6-cli
+FROM php:7.1-cli
 
 RUN apt-get update \
     && apt-get install -y curl \
@@ -15,8 +15,16 @@ RUN apt-get update \
     && apt-get install -y libpq-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo_pgsql \
-    && apt-get install -y libgearman-dev \
-    && pecl install gearman \
+    && apt-get -y install libgearman-dev \
+    && TMPDIR=$(mktemp -d) \
+    && cd $TMPDIR \
+    && curl -L https://github.com/wcgallego/pecl-gearman/archive/gearman-2.0.3.tar.gz | tar xzv --strip 1 \
+    && phpize \
+    && ./configure \
+    && make -j$(nproc) \
+    && make install \
+    && cd - \
+    && rm -r $TMPDIR \
     && docker-php-ext-enable gearman \
     && curl -L -o /tmp/composer-setup.php https://getcomposer.org/installer \
     && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
@@ -27,4 +35,5 @@ RUN apt-get update \
 COPY . /code
 WORKDIR /code
 
-ENTRYPOINT ["tests/app/docker/php/entrypoint.sh"]
+ENTRYPOINT ["tests/docker/php/entrypoint.sh"]
+CMD ["sleep", "infinity"]
