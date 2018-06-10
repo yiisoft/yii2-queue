@@ -1,13 +1,12 @@
 #!/usr/bin/env php
 <?php
 /**
- * Запуск команды с сетевой синхронизацией через MySQL.
+ * Runs a command with network sync using MySQL.
  *
- * Когда запускается сеть из docker-контейнеров каждый php-контейнер в числе
- * прочих запускает команду миграции БД. И, чтобы исключить высокую вероятность,
- * запуска нескольких таких процессов одновременно, используется синхронизация
- * на уровне блокировок MySQL. Это гарантирует, что одновременно будет работать
- * только одна из запущенных команд, а остальные будут ждать завершения.
+ * When network of docker containers is starting, each php container executes
+ * DB migration command. To except chance to execute many commands at the same time,
+ * network sync is used. It uses `GET_LOCK()` and `RELEASE_LOCK()` MySQL functions.
+ * This ensures monopoly execution. One of the commands will be run, and others will wait.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -15,6 +14,7 @@
 $params = $_SERVER['argv'];
 array_shift($params);
 $command = implode(' ', $params);
+$lockName = md5($command);
 
 $mysql = new PDO(
     sprintf(
@@ -29,9 +29,10 @@ $mysql = new PDO(
 
 // Waiting a lock for the command
 $query = $mysql->prepare('SELECT GET_LOCK(?, -1)');
-$query->execute([md5($command)]);
+$query->execute([$lockName]);
 if (!$query->fetch(PDO::FETCH_NUM)[0]) {
-    throw new Exception('Cannot get the lock.');
+    echo basename(__FILE__) . ': cannot get the lock.' . PHP_EOL;
+    exit(1);
 }
 
 // Executes the command
@@ -39,9 +40,10 @@ passthru($command, $exitCode);
 
 // Releases the lock
 $query = $mysql->prepare('SELECT RELEASE_LOCK(?)');
-$query->execute([md5($command)]);
+$query->execute([$lockName]);
 if (!$query->fetch(PDO::FETCH_NUM)[0]) {
-    throw new Exception('Cannot release the lock.');
+    echo basename(__FILE__) . ': release the lock.' . PHP_EOL;
+    exit(1);
 }
 
 exit($exitCode);
