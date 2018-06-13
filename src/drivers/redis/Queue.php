@@ -74,21 +74,22 @@ class Queue extends CliQueue
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if ($this->acquire()) {
-                    if (($payload = $this->reserve($timeout)) !== null) {
+                    try {
+                        $payload = $this->reserve($timeout);
+                    } finally {
+                        $this->release();
+                    }
+
+                    if ($payload !== null) {
                         list($id, $message, $ttr, $attempt) = $payload;
                         if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                             $this->delete($id);
                         }
-
                     } elseif (!$repeat) {
                         break;
                     }
-
-                    $this->release();
                 }
             }
-
-            $this->release();
         });
     }
 
