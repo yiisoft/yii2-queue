@@ -84,7 +84,12 @@ class Queue extends CliQueue
                         list($id, $message, $ttr, $attempt) = $payload;
                         if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                             $this->delete($id);
+                        } else {
+                            // job is failed but we want to return it back into
+                            // the queue
+                            $this->redis->zadd("$this->channel.reserved", time(), $id);
                         }
+
                     } elseif (!$repeat) {
                         break;
                     }
