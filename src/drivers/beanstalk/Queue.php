@@ -103,8 +103,7 @@ class Queue extends CliQueue
     public function remove($id)
     {
         try {
-            $job = $this->getPheanstalk()->peek($id);
-            $this->getPheanstalk()->delete($job);
+            $this->getPheanstalk()->delete(new Job($id, null));
             return true;
         } catch (ServerException $e) {
             if (strpos($e->getMessage(), 'NOT_FOUND') === 0) {
