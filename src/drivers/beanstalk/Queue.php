@@ -8,6 +8,7 @@
 namespace yii\queue\beanstalk;
 
 use Pheanstalk\Exception\ServerException;
+use Pheanstalk\Job;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use yii\base\InvalidArgumentException;
