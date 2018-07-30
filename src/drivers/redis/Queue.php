@@ -23,6 +23,11 @@ use yii\mutex\Mutex as BaseMutex;
 class Queue extends CliQueue
 {
     /**
+     * @var int
+     */
+    const MUTEX_TIMEOUT = 0;
+
+    /**
      * @var Connection|array|string
      */
     public $redis = 'redis';
@@ -36,9 +41,9 @@ class Queue extends CliQueue
     ];
 
     /**
-     * @var integer
+     * @var integer Number of microseconds between attempts to acquire a lock.
      */
-    public $mutexTimeout = 3;
+    public $acquireTimeout = 10000;
 
     /**
      * @var string
@@ -94,6 +99,8 @@ class Queue extends CliQueue
                     } elseif (!$repeat) {
                         break;
                     }
+                } else {
+                    usleep($this->acquireTimeout);
                 }
             }
         });
@@ -126,8 +133,8 @@ class Queue extends CliQueue
      */
     public function clear()
     {
-        while (!$this->acquire(0)) {
-            usleep(10000);
+        while (!$this->acquire()) {
+            usleep($this->acquireTimeout);
         }
 
         try {
@@ -146,8 +153,8 @@ class Queue extends CliQueue
      */
     public function remove($id)
     {
-        while (!$this->acquire(0)) {
-            usleep(10000);
+        while (!$this->acquire()) {
+            usleep($this->acquireTimeout);
         }
 
         try {
@@ -249,11 +256,9 @@ class Queue extends CliQueue
      *
      * @return boolean
      */
-    protected function acquire($timeout = null)
+    protected function acquire()
     {
-        $timeout = $timeout !== null ? $timeout : $this->mutexTimeout;
-
-        return $this->mutex->acquire(__CLASS__ . $this->channel, $timeout);
+        return $this->mutex->acquire(__CLASS__ . $this->channel, self::MUTEX_TIMEOUT);
     }
 
     /**
