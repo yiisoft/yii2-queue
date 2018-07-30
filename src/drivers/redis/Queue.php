@@ -13,6 +13,7 @@ use yii\di\Instance;
 use yii\queue\cli\Queue as CliQueue;
 use yii\redis\Connection;
 use yii\redis\Mutex;
+use yii\mutex\Mutex as BaseMutex;
 
 /**
  * Redis Queue.
@@ -57,7 +58,7 @@ class Queue extends CliQueue
     {
         parent::init();
         $this->redis = Instance::ensure($this->redis, Connection::class);
-        $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+        $this->mutex = Instance::ensure($this->mutex, BaseMutex::class);
     }
 
     /**
