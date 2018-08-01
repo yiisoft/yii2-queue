@@ -4,6 +4,7 @@ Yii2 Queue Extension Change Log
 2.1.1 under development
 -----------------------
 
+- Bug: Worker handles process timeout exception (HunterKaan)
 - Enh #248: Reduce roundtrips to beanstalk server when removing job (SamMousa)
 
 2.1.0 May 24, 2018
