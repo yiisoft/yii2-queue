@@ -21,6 +21,7 @@ services:
   - postgresql
   - redis-server
   - rabbitmq
+  - docker
 
 # cache vendor dirs
 cache:
@@ -32,6 +33,9 @@ before_install:
   - sudo apt-get install -qq beanstalkd
   - sudo beanstalkd -v
   - sudo service beanstalkd start
+  - pecl install igbinary
+  - docker pull webcenter/activemq
+  - docker run -d -p 61613:61613 webcenter/activemq
   - if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then pecl install igbinary-2.0.8; else pecl install igbinary; fi
 
 install:
