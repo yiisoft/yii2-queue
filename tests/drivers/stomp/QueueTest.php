@@ -63,7 +63,7 @@ class QueueTest extends CliTestCase
      */
     protected function getQueue()
     {
-        return Yii::$app->amqpInteropQueue;
+        return Yii::$app->stompQueue;
     }
 
 }
