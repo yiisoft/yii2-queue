@@ -130,11 +130,11 @@ class Queue extends CliQueue
         $producer = $this->context->createProducer();
 
         if ($delay) {
-            $message->setProperty('AMQ_SCHEDULED_DELAY', $delay * 1000);
+            throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
         if ($priority) {
-            $message->setHeader('priority', $priority);
+            throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
         $producer->send($queue, $message);

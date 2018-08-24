@@ -25,15 +25,6 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
-    {
-        $this->startProcess('php yii queue/listen');
-        $job = $this->createSimpleJob();
-        $this->getQueue()->delay(2)->push($job);
-
-        $this->assertSimpleJobLaterDone($job, 2);
-    }
-
     public function testRetry()
     {
         $this->startProcess('php yii queue/listen');
@@ -45,25 +36,22 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testPriority()
-    {
-        $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 1]));
-        $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 5]));
-        $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 3]));
-        $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 4]));
-        $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 2]));
-        $this->startProcess('php yii queue/listen');
-        sleep(3);
-
-        $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
-    }
-
     /**
      * @return Queue
      */
     protected function getQueue()
     {
         return Yii::$app->stompQueue;
+    }
+
+
+    protected function setUp()
+    {
+        if ('true' == getenv('EXCLUDE_STOMP')) {
+            $this->markTestSkipped('Stomp tests are disabled for php 5.5');
+        }
+
+        parent::setUp();
     }
 
 }
