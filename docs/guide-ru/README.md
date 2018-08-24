@@ -22,6 +22,7 @@
 * [Beanstalk драйвер](driver-beanstalk.md)
 * [Gearman драйвер](driver-gearman.md)
 * [AWS SQS драйвер](driver-sqs.md)
+* [Stomp драйвер](driver-stomp.md)
 
 Инструменты разработчика
 ------------------------

@@ -22,6 +22,7 @@ Queue Drivers
 * [Beanstalk](driver-beanstalk.md)
 * [Gearman](driver-gearman.md)
 * [AWS SQS](driver-sqs.md)
+* [Stomp](driver-stomp.md)
 
 Developer tools
 ---------------
