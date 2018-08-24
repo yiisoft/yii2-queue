@@ -38,7 +38,8 @@
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
         "enqueue/amqp-lib": "Need for AMQP interop queue.",
         "ext-gearman": "Need for Gearman queue.",
-        "aws/aws-sdk-php": "Need for aws SQS."
+        "aws/aws-sdk-php": "Need for aws SQS.",
+        "enqueue/stomp": "Need for Stomp queue."
     },
     "autoload": {
         "psr-4": {
@@ -51,7 +52,8 @@
             "yii\\queue\\gearman\\": "src/drivers/gearman",
             "yii\\queue\\redis\\": "src/drivers/redis",
             "yii\\queue\\sync\\": "src/drivers/sync",
-            "yii\\queue\\sqs\\": "src/drivers/sqs"
+            "yii\\queue\\sqs\\": "src/drivers/sqs",
+            "yii\\queue\\stomp\\": "src/drivers/stomp"
         }
     },
     "autoload-dev": {
