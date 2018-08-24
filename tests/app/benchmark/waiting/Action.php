@@ -33,6 +33,7 @@ class Action extends \yii\base\Action
             'amqpInteropQueue' => 'amqp-interop-queue/listen --isolate=0',
             'mysqlQueue'       => 'mysql-queue/listen 1      --isolate=0',
             'fileQueue'        => 'file-queue/listen 1       --isolate=0',
+            'stompQueue'       => 'stomp-queue/listen        --isolate=0',
         ],
         // Worker will be run in isolate mode
         'isolate' => [
@@ -43,6 +44,7 @@ class Action extends \yii\base\Action
             'amqpInteropQueue' => 'amqp-interop-queue/listen --isolate=1',
             'mysqlQueue'       => 'mysql-queue/listen 1      --isolate=1',
             'fileQueue'        => 'file-queue/listen 1       --isolate=1',
+            'stompQueue'       => 'stomp-queue/listen 1      --isolate=1',
         ],
     ];
     /**

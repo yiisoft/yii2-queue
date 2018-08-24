@@ -13,6 +13,7 @@ $config = [
         'amqpQueue',
         'amqpInteropQueue',
         'beanstalkQueue',
+        'stompQueue',
     ],
     'components' => [
         'syncQueue' => [
@@ -99,6 +100,11 @@ $config = [
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,
             'host' => getenv('BEANSTALK_HOST') ?: 'localhost',
+        ],
+        'stompQueue' => [
+            'class' => \yii\queue\stomp\Queue::class,
+            'host' => getenv('ACTIVEMQ_HOST') ?: 'localhost',
+            'port' => getenv('ACTIVEMQ_PORT') ?: 61613,
         ],
     ],
 ];
