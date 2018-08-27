@@ -10,6 +10,11 @@ namespace yii\queue\stomp;
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
 
+/**
+ * Manages application stomp-queue.
+ *
+ * @author Sergey Vershinin <versh23@gmail.com>
+ */
 class Command extends CliCommand
 {
     /**
@@ -27,12 +32,25 @@ class Command extends CliCommand
     }
 
 
+    /**
+     * Runs all jobs from stomp-queue.
+     * It can be used as cron job.
+     *
+     * @return null|int exit code.
+     */
     public function actionRun()
     {
         return $this->queue->run(false);
     }
 
-
+    /**
+     * Listens stomp-queue and runs new jobs.
+     * It can be used as daemon process.
+     *
+     * @param int $timeout number of seconds to wait a job.
+     * @throws Exception when params are invalid.
+     * @return null|int exit code.
+     */
     public function actionListen($timeout = 3)
     {
         if (!is_numeric($timeout)) {

@@ -15,31 +15,91 @@ use yii\base\Event;
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 
+/**
+ * Stomp Queue.
+ * @author Sergey Vershinin <versh23@gmail.com>
+ */
 class Queue extends CliQueue
 {
     const ATTEMPT = 'yii-attempt';
     const TTR = 'yii-ttr';
 
+    /**
+     * The message queue broker's host.
+     *
+     * @var string|null
+     */
     public $host;
+    /**
+     * The message queue broker's port.
+     *
+     * @var string|null
+     */
     public $port;
+    /**
+     * This is user which is used to login on the broker.
+     *
+     * @var string|null
+     */
     public $user;
+    /**
+     * This is password which is used to login on the broker.
+     *
+     * @var string|null
+     */
     public $password;
-
+    /**
+     * Sets an fixed vhostname, which will be passed on connect as header['host'].
+     *
+     * @var string|null
+     */
     public $vhost;
+    /**
+     * @var int
+     */
     public $bufferSize;
+    /**
+     * @var int
+     */
     public $connectionTimeout;
+    /**
+     * Perform request synchronously.
+     * @var bool
+     */
     public $sync;
+    /**
+     * The connection will be established as later as possible if set true.
+     *
+     * @var bool|null
+     */
     public $lazy;
+    /**
+     * Defines whether secure connection should be used or not.
+     *
+     * @var bool|null
+     */
     public $sslOn;
-
+    /**
+     * The queue used to consume messages from.
+     *
+     * @var string
+     */
     public $queueName = 'stomp_queue';
-
+    /**
+     * The property contains a command class which used in cli.
+     *
+     * @var string command class name
+     */
     public $commandClass = Command::class;
+
     /**
      * @var StompContext
      */
     protected $context;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -48,7 +108,9 @@ class Queue extends CliQueue
         });
     }
 
-
+    /**
+     * Opens connection.
+     */
     protected function open()
     {
         if ($this->context) {
@@ -77,11 +139,18 @@ class Queue extends CliQueue
         $this->context = $factory->createContext();
     }
 
+    /**
+     * Listens queue and runs each job.
+     *
+     * @param $repeat
+     * @param int $timeout
+     * @return int|null
+     */
     public function run($repeat, $timeout = 0)
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             $this->open();
-            $queue = $this->context->createQueue($this->queueName);
+            $queue = $this->createQueue($this->queueName);
             $consumer = $this->context->createConsumer($queue);
 
             while ($canContinue()) {
@@ -115,12 +184,14 @@ class Queue extends CliQueue
 
     /**
      * @inheritdoc
+     * @throws \Interop\Queue\Exception
+     * @throws NotSupportedException
      */
     protected function pushMessage($message, $ttr, $delay, $priority)
     {
         $this->open();
 
-        $queue = $this->context->createQueue($this->queueName);
+        $queue = $this->createQueue($this->queueName);
         $message = $this->context->createMessage($message);
         $message->setMessageId(uniqid('', true));
         $message->setPersistent(true);
@@ -142,6 +213,9 @@ class Queue extends CliQueue
         return $message->getMessageId();
     }
 
+    /**
+     * Closes connection.
+     */
     protected function close()
     {
         if (!$this->context) {
@@ -154,12 +228,19 @@ class Queue extends CliQueue
 
     /**
      * @inheritdoc
+     * @throws NotSupportedException
      */
     public function status($id)
     {
         throw new NotSupportedException('Status is not supported in the driver.');
     }
 
+    /**
+     * @param StompMessage $message
+     * @throws \Interop\Queue\Exception
+     * @throws \Interop\Queue\InvalidDestinationException
+     * @throws \Interop\Queue\InvalidMessageException
+     */
     protected function redeliver(StompMessage $message)
     {
         $attempt = $message->getProperty(self::ATTEMPT, 1);
@@ -168,8 +249,22 @@ class Queue extends CliQueue
         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
         $this->context->createProducer()->send(
-            $this->context->createQueue($this->queueName),
+            $this->createQueue($this->queueName),
             $newMessage
         );
+    }
+
+    /**
+     * @param $name
+     * @return \Enqueue\Stomp\StompDestination
+     */
+    private function createQueue($name)
+    {
+        $queue = $this->context->createQueue($name);
+        $queue->setDurable(true);
+        $queue->setAutoDelete(false);
+        $queue->setExclusive(false);
+
+        return $queue;
     }
 }
