@@ -54,6 +54,11 @@
             "yii\\queue\\sqs\\": "src/drivers/sqs"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.x-dev"

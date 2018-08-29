@@ -7,6 +7,7 @@
 
 namespace tests\drivers;
 
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use tests\app\PriorityJob;
 
@@ -42,6 +43,10 @@ abstract class CliTestCase extends TestCase
     {
         $process = new Process('exec ' . $this->prepareCmd($cmd));
         $process->start();
+        sleep(2);
+        if ($process->getExitCode() !== null) {
+            throw new ProcessFailedException($process);
+        }
         $this->processes[] = $process;
     }
 

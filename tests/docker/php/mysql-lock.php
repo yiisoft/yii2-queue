@@ -17,12 +17,7 @@ $command = implode(' ', $params);
 $lockName = md5($command);
 
 $mysql = new PDO(
-    sprintf(
-        'mysql:host=%s;port=%s;dbname=%s',
-        getenv('MYSQL_HOST'),
-        getenv('MYSQL_PORT'),
-        getenv('MYSQL_DATABASE')
-    ),
+    sprintf('mysql:host=%s;dbname=%s', getenv('MYSQL_HOST'), getenv('MYSQL_DATABASE')),
     getenv('MYSQL_USER'),
     getenv('MYSQL_PASSWORD')
 );

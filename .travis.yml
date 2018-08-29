@@ -45,4 +45,4 @@ before_script:
   - php tests/yii pgsql-migrate --interactive=0
 
 script:
-  - vendor/bin/phpunit --verbose
+  - vendor/bin/phpunit

@@ -24,9 +24,8 @@ $config = [
         'mysql' => [
             'class' => \yii\db\Connection::class,
             'dsn' => sprintf(
-                'mysql:host=%s;port=%s;dbname=%s',
+                'mysql:host=%s;dbname=%s',
                 getenv('MYSQL_HOST') ?: 'localhost',
-                getenv('MYSQL_PORT') ?: 3306,
                 getenv('MYSQL_DATABASE') ?: 'yii2_queue_test'
             ),
             'username' => getenv('MYSQL_USER') ?: 'root',
@@ -56,9 +55,8 @@ $config = [
         'pgsql' => [
             'class' => \yii\db\Connection::class,
             'dsn' => sprintf(
-                'pgsql:host=%s;port=%s;dbname=%s',
+                'pgsql:host=%s;dbname=%s',
                 getenv('POSTGRES_HOST') ?: 'localhost',
-                getenv('POSTGRES_PORT') ?: 5432,
                 getenv('POSTGRES_DB') ?: 'yii2_queue_test'
             ),
             'username' => getenv('POSTGRES_USER') ?: 'postgres',
@@ -77,7 +75,6 @@ $config = [
         'redis' => [
             'class' => \yii\redis\Connection::class,
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
-            'port' => getenv('REDIS_PORT') ?: 6379,
             'database' => getenv('REDIS_DB') ?: 1,
         ],
         'redisQueue' => [
@@ -86,7 +83,6 @@ $config = [
         'amqpQueue' => [
             'class' => \yii\queue\amqp\Queue::class,
             'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
-            'port' => getenv('RABBITMQ_PORT') ?: 5672,
             'user' => getenv('RABBITMQ_USER') ?: 'guest',
             'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
             'queueName' => 'queue-basic',
@@ -95,7 +91,6 @@ $config = [
         'amqpInteropQueue' => [
             'class' => \yii\queue\amqp_interop\Queue::class,
             'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
-            'port' => getenv('RABBITMQ_PORT') ?: 5672,
             'user' => getenv('RABBITMQ_USER') ?: 'guest',
             'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
             'queueName' => 'queue-interop',
@@ -104,7 +99,6 @@ $config = [
         'beanstalkQueue' => [
             'class' => \yii\queue\beanstalk\Queue::class,
             'host' => getenv('BEANSTALK_HOST') ?: 'localhost',
-            'port' => getenv('BEANSTALK_PORT') ?: 11300,
         ],
     ],
 ];
@@ -114,7 +108,6 @@ if (defined('GEARMAN_SUCCESS')) {
     $config['components']['gearmanQueue'] = [
         'class' => \yii\queue\gearman\Queue::class,
         'host' => getenv('GEARMAN_HOST') ?: 'localhost',
-        'port' => getenv('GEARMAN_PORT') ?: 4730,
     ];
 }
 
