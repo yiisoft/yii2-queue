@@ -161,23 +161,24 @@ abstract class Command extends Controller
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        // Executes child process
-        $cmd = strtr('php yii queue/exec "id" "ttr" "attempt" "pid"', [
-            'php' => $this->phpBinary,
-            'yii' => $_SERVER['SCRIPT_FILENAME'],
-            'queue' => $this->uniqueId,
-            'id' => $id,
-            'ttr' => $ttr,
-            'attempt' => $attempt,
-            'pid' => $this->queue->getWorkerPid(),
-        ]);
+        // Child process command: php yii queue/exec "id" "ttr" "attempt" "pid"
+        $cmd = [
+            $this->phpBinary,
+            $_SERVER['SCRIPT_FILENAME'],
+            $this->uniqueId . '/exec',
+            $id,
+            $ttr,
+            $attempt,
+            $this->queue->getWorkerPid(),
+        ];
+
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'), true)) {
-                $cmd .= ' --' . $name . '=' . $this->$name;
+                $cmd[] = '--' . $name . '=' . $this->$name;
             }
         }
         if (!in_array('color', $this->getPassedOptions(), true)) {
-            $cmd .= ' --color=' . $this->isColorEnabled();
+            $cmd[] = '--color=' . $this->isColorEnabled();
         }
 
         $process = new Process($cmd, null, null, $message, $ttr);
