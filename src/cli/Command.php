@@ -142,7 +142,7 @@ abstract class Command extends Controller
      */
     public function actionExec($id, $ttr, $attempt, $pid)
     {
-        if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid)) {
+        if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid ?: null)) {
             return self::EXEC_DONE;
         }
         return self::EXEC_RETRY;
@@ -169,7 +169,7 @@ abstract class Command extends Controller
             $id,
             $ttr,
             $attempt,
-            $this->queue->getWorkerPid(),
+            $this->queue->getWorkerPid() ?: 0,
         ];
 
         foreach ($this->getPassedOptions() as $name) {

@@ -57,7 +57,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     public $messageHandler;
 
     /**
-     * @var int current process ID of a worker.
+     * @var int|null current process ID of a worker.
      * @since 2.0.2
      */
     private $_workerPid;
@@ -127,7 +127,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * Gets process ID of a worker.
      *
      * @inheritdoc
-     * @return int
+     * @return int|null
      * @since 2.0.2
      */
     public function getWorkerPid()
@@ -152,7 +152,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number
-     * @param int $workerPid of worker process
+     * @param int|null $workerPid of worker process
      * @return bool
      * @internal for worker command only
      */
