@@ -104,7 +104,6 @@ $config = [
         'stompQueue' => [
             'class' => \yii\queue\stomp\Queue::class,
             'host' => getenv('ACTIVEMQ_HOST') ?: 'localhost',
-            'port' => getenv('ACTIVEMQ_PORT') ?: 61613,
         ],
     ],
 ];

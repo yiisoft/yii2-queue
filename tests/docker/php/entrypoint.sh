@@ -20,6 +20,8 @@ tests/docker/wait-for-it.sh beanstalk:11300 -t 180
 
 tests/docker/wait-for-it.sh gearmand:4730 -t 180
 
+tests/docker/wait-for-it.sh activemq:61613 -t 180
+
 php --version
 set -x
 exec "$@"
