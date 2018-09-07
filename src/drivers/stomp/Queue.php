@@ -154,7 +154,7 @@ class Queue extends CliQueue
             $consumer = $this->context->createConsumer($queue);
 
             while ($canContinue()) {
-                if ($message = $consumer->receive()) {
+                if ($message = $consumer->receiveNoWait()) {
                     if ($message->isRedelivered()) {
                         $consumer->acknowledge($message);
 
