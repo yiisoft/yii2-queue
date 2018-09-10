@@ -10,6 +10,7 @@ namespace yii\queue\stomp;
 use Enqueue\Stomp\StompConnectionFactory;
 use Enqueue\Stomp\StompContext;
 use Enqueue\Stomp\StompMessage;
+use Interop\Queue\PsrMessage;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -155,6 +156,11 @@ class Queue extends CliQueue
 
             while ($canContinue()) {
                 if ($message = $consumer->receiveNoWait()) {
+                    $messageId = $message->getMessageId();
+                    if (!$messageId) {
+                        $message = $this->setMessageId($message);
+                    }
+
                     if ($message->isRedelivered()) {
                         $consumer->acknowledge($message);
 
@@ -163,7 +169,7 @@ class Queue extends CliQueue
                         continue;
                     }
 
-                    $ttr = $message->getProperty(self::TTR);
+                    $ttr = $message->getProperty(self::TTR, $this->ttr);
                     $attempt = $message->getProperty(self::ATTEMPT, 1);
 
                     if ($this->handleMessage($message->getMessageId(), $message->getBody(), $ttr, $attempt)) {
@@ -182,6 +188,12 @@ class Queue extends CliQueue
         });
     }
 
+    protected function setMessageId(PsrMessage $message)
+    {
+        $message->setMessageId(uniqid('', true));
+        return $message;
+    }
+
     /**
      * @inheritdoc
      * @throws \Interop\Queue\Exception
@@ -193,7 +205,7 @@ class Queue extends CliQueue
 
         $queue = $this->createQueue($this->queueName);
         $message = $this->context->createMessage($message);
-        $message->setMessageId(uniqid('', true));
+        $message = $this->setMessageId($message);
         $message->setPersistent(true);
         $message->setProperty(self::ATTEMPT, 1);
         $message->setProperty(self::TTR, $ttr);
