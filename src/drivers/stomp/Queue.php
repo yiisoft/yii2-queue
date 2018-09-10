@@ -155,7 +155,7 @@ class Queue extends CliQueue
             $consumer = $this->context->createConsumer($queue);
 
             while ($canContinue()) {
-                if ($message = $consumer->receiveNoWait()) {
+                if ($message = $consumer->receive(0.1)) {
                     $messageId = $message->getMessageId();
                     if (!$messageId) {
                         $message = $this->setMessageId($message);
