@@ -94,6 +94,12 @@ class Queue extends CliQueue
     public $commandClass = Command::class;
 
     /**
+     * Set the read timeout.
+     * @var float
+     */
+    public $readTimeOut = 0.1;
+
+    /**
      * @var StompContext
      */
     protected $context;
@@ -146,16 +152,22 @@ class Queue extends CliQueue
      * @param $repeat
      * @param int $timeout
      * @return int|null
+     * @throws NotSupportedException
      */
     public function run($repeat, $timeout = 0)
     {
+        if ($this->readTimeOut <= 0) {
+            //prevent infinite loop
+            throw new NotSupportedException('readTimeOut must be greater than 0');
+        }
+
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             $this->open();
             $queue = $this->createQueue($this->queueName);
             $consumer = $this->context->createConsumer($queue);
 
             while ($canContinue()) {
-                if ($message = $consumer->receive(0.1)) {
+                if ($message = $consumer->receive($this->readTimeOut)) {
                     $messageId = $message->getMessageId();
                     if (!$messageId) {
                         $message = $this->setMessageId($message);
