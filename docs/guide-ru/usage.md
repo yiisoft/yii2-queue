@@ -32,7 +32,7 @@ return [
 Например, если нужно скачать и сохранить файл, класс может выглядеть так:
 
 ```php
-class DownloadJob extends BaseObject implements \yii\queue\JobInterface
+class DownloadJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {
     public $url;
     public $file;
@@ -241,7 +241,7 @@ Yii::$app->queue->push(new SomeJob([
 Класс задания:
 
 ```php
-class SomeJob extends BaseObject implements \yii\queue\JobInterface
+class SomeJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {
     public $userId;
     public $bookId;

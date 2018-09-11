@@ -32,7 +32,7 @@ Each task which is sent to the queue should be defined as a separate class.
 For example, if you need to download and save a file the class may look like the following:
 
 ```php
-class DownloadJob extends BaseObject implements \yii\queue\JobInterface
+class DownloadJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {
     public $url;
     public $file;
@@ -239,7 +239,7 @@ Yii::$app->queue->push(new SomeJob([
 Task class:
 
 ```php
-class SomeJob extends BaseObject implements \yii\queue\JobInterface
+class SomeJob extends \yii\base\BaseObject implements \yii\queue\JobInterface
 {
     public $userId;
     public $bookId;
