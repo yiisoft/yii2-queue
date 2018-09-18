@@ -34,10 +34,9 @@ Console
 A console command is used to execute queued jobs.
 
 ```sh
-yii queue/listen [timeout]
+yii queue/listen
 ```
 
-The `listen` command launches a daemon which infinitely queries the queue. If there are new tasks
-they're immediately obtained and executed. The `timeout` parameter specifies the number of seconds to sleep between
-querying the queue. This method is most efficient when the command is properly daemonized via
-[supervisor](worker.md#supervisor) or [systemd](worker.md#systemd).
+The `listen` command launches a daemon which infinitely queries the queue. This method is most
+efficient when the command is properly daemonized via [supervisor](worker.md#supervisor)
+or [systemd](worker.md#systemd).
