@@ -123,7 +123,7 @@ class LogBehavior extends Behavior
      */
     protected function getJobTitle(JobEvent $event)
     {
-        $name = $event->job instanceof JobInterface ? get_class($event->job) : 'mixed data';
+        $name = $event->job instanceof JobInterface ? get_class($event->job) : 'unknown job';
         return "[$event->id] $name";
     }
 

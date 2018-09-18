@@ -5,7 +5,8 @@ Yii2 Queue Extension Change Log
 -----------------------
 
 - Enh #248: Reduce roundtrips to beanstalk server when removing job (SamMousa)
-- Fix #258: Worker in isolated mode fails if PHP_BINARY contains spaces (luke-)
+- Bug #258: Worker in isolated mode fails if PHP_BINARY contains spaces (luke-)
+- Bug #269: Handling of broken messages that are not unserialized correctly (zhuravljov)
 
 2.1.0 May 24, 2018
 ------------------

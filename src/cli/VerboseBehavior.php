@@ -12,6 +12,7 @@ use yii\console\Controller;
 use yii\helpers\Console;
 use yii\queue\ErrorEvent;
 use yii\queue\ExecEvent;
+use yii\queue\JobInterface;
 
 /**
  * Verbose Behavior.
@@ -107,12 +108,12 @@ class VerboseBehavior extends Behavior
      */
     protected function jobTitle(ExecEvent $event)
     {
-        $class = get_class($event->job);
+        $name = $event->job instanceof JobInterface ? get_class($event->job) : 'unknown job';
         $extra = "attempt: $event->attempt";
         if ($pid = $event->sender->getWorkerPid()) {
             $extra .= ", pid: $pid";
         }
-        return " [$event->id] $class ($extra)";
+        return " [$event->id] $name ($extra)";
     }
 
     /**

@@ -193,11 +193,7 @@ abstract class Queue extends Component
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        $job = $this->serializer->unserialize($message);
-        if (!($job instanceof JobInterface)) {
-            $dump = VarDumper::dumpAsString($job);
-            throw new InvalidArgumentException("Job $id must be a JobInterface instance instead of $dump.");
-        }
+        list($job, $error) = $this->unserializeMessage($message);
 
         $event = new ExecEvent([
             'id' => $id,
@@ -208,6 +204,10 @@ abstract class Queue extends Component
         $this->trigger(self::EVENT_BEFORE_EXEC, $event);
         if ($event->handled) {
             return true;
+        }
+
+        if ($error) {
+            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
         }
 
         try {
@@ -223,6 +223,31 @@ abstract class Queue extends Component
     }
 
     /**
+     * Unserializes
+     *
+     * @param string $id of the job
+     * @param string $serialized message
+     * @return array pair of a job and error that
+     */
+    public function unserializeMessage($serialized)
+    {
+        try {
+            $job = $this->serializer->unserialize($serialized);
+        } catch (\Exception $e) {
+            return [null, new InvalidJobException($serialized, $e->getMessage(), 0, $e)];
+        }
+
+        if ($job instanceof JobInterface) {
+            return [$job, null];
+        }
+
+        return [null, new InvalidJobException($serialized, sprintf(
+            'Job must be a JobInterface instance instead of %s.',
+            VarDumper::dumpAsString($job)
+        ))];
+    }
+
+    /**
      * @param string|null $id
      * @param JobInterface $job
      * @param int $ttr
@@ -233,18 +258,21 @@ abstract class Queue extends Component
      */
     public function handleError($id, $job, $ttr, $attempt, $error)
     {
+        $retry = $attempt < $this->attempts;
+        if ($error instanceof InvalidJobException) {
+            $retry = false;
+        } elseif ($job instanceof RetryableJobInterface) {
+            $retry = $job->canRetry($attempt, $error);
+        }
         $event = new ErrorEvent([
             'id' => $id,
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
             'error' => $error,
-            'retry' => $job instanceof RetryableJobInterface
-                ? $job->canRetry($attempt, $error)
-                : $attempt < $this->attempts,
+            'retry' => $retry,
         ]);
         $this->trigger(self::EVENT_AFTER_ERROR, $event);
-
         return !$event->retry;
     }
 

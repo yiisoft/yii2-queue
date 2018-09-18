@@ -195,7 +195,7 @@ abstract class Command extends Controller
             }
             return $result === self::EXEC_DONE;
         } catch (ProcessRuntimeException $error) {
-            $job = $this->queue->serializer->unserialize($message);
+            list($job) = $this->queue->unserializeMessage($message);
             return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
         }
     }
