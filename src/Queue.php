@@ -196,7 +196,8 @@ abstract class Queue extends Component
         $job = $this->serializer->unserialize($message);
         if (!($job instanceof JobInterface)) {
             $dump = VarDumper::dumpAsString($job);
-            throw new InvalidArgumentException("Job $id must be a JobInterface instance instead of $dump.");
+            Yii::error("Job $id must be a JobInterface instance instead of $dump.", Queue::class);
+            return true;
         }
 
         $event = new ExecEvent([
