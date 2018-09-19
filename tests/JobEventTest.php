@@ -8,7 +8,6 @@
 namespace tests;
 
 use yii\queue\closure\Behavior as ClosureBehavior;
-use yii\queue\ErrorEvent;
 use yii\queue\ExecEvent;
 use yii\queue\InvalidJobException;
 use yii\queue\JobEvent;
@@ -31,7 +30,7 @@ class JobEventTest extends TestCase
         $queue = new SyncQueue(['strictJobType' => false]);
         $queue->on(Queue::EVENT_BEFORE_EXEC, $eventHandler);
         $queue->on(Queue::EVENT_AFTER_ERROR, $eventHandler);
-        $queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
+        $queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
             $this->assertTrue($event->error instanceof InvalidJobException);
             $this->assertFalse($event->retry);
         });

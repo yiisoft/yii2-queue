@@ -76,9 +76,9 @@ class LogBehavior extends Behavior
     }
 
     /**
-     * @param ErrorEvent $event
+     * @param ExecEvent $event
      */
-    public function afterError(ErrorEvent $event)
+    public function afterError(ExecEvent $event)
     {
         $title = $this->getExecTitle($event);
         Yii::endProfile($title, Queue::class);

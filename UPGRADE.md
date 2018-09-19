@@ -4,6 +4,12 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
+Upgrade to 2.1.1
+----------------
+
+* `\yii\queue\ErrorEvent` has been deprecated and will be removed in `3.0`.
+  Use `\yii\queue\ExecEvent` instead.
+
 Upgrade from 2.0.1 to 2.0.2
 ---------------------------
 

@@ -135,7 +135,7 @@ return [
 | Queue::EVENT_AFTER_PUSH      | PushEvent   | `Queue::push()` メソッドを使ってジョブをキューに追加した後 |
 | Queue::EVENT_BEFORE_EXEC     | ExecEvent   | ジョブを実行する前 |
 | Queue::EVENT_AFTER_EXEC      | ExecEvent   | ジョブが完了した後 |
-| Queue::EVENT_AFTER_ERROR     | ErrorEvent  | ジョブ実行中にキャッチされない例外が発生したとき |
+| Queue::EVENT_AFTER_ERROR     | ExecEvent   | ジョブ実行中にキャッチされない例外が発生したとき |
 | cli\Queue:EVENT_WORKER_START | WorkerEvent | ワーカが開始されたとき |
 | cli\Queue:EVENT_WORKER_LOOP  | WorkerEvent | キューに対するリクエストを繰り返すたびに |
 | cli\Queue:EVENT_WORKER_STOP  | WorkerEvent | ワーカが停止されたとき |

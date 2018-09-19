@@ -194,36 +194,35 @@ abstract class Queue extends Component
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
         list($job, $error) = $this->unserializeMessage($message);
-
         $event = new ExecEvent([
             'id' => $id,
             'job' => $job,
             'ttr' => $ttr,
             'attempt' => $attempt,
+            'error' => $error,
         ]);
         $this->trigger(self::EVENT_BEFORE_EXEC, $event);
         if ($event->handled) {
             return true;
         }
-
-        if ($error) {
-            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
+        if ($event->error) {
+            return $this->handleError($event);
         }
-
         try {
             $event->result = $event->job->execute($this);
         } catch (\Exception $error) {
-            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
+            $event->error = $error;
+            return $this->handleError($event);
         } catch (\Throwable $error) {
-            return $this->handleError($event->id, $event->job, $event->ttr, $event->attempt, $error);
+            $event->error = $error;
+            return $this->handleError($event);
         }
         $this->trigger(self::EVENT_AFTER_EXEC, $event);
-
         return true;
     }
 
     /**
-     * Unserializes
+     * Unserializes.
      *
      * @param string $id of the job
      * @param string $serialized message
@@ -248,30 +247,18 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string|null $id
-     * @param JobInterface $job
-     * @param int $ttr
-     * @param int $attempt
-     * @param \Exception|\Throwable $error
+     * @param ExecEvent $event
      * @return bool
      * @internal
      */
-    public function handleError($id, $job, $ttr, $attempt, $error)
+    public function handleError(ExecEvent $event)
     {
-        $retry = $attempt < $this->attempts;
-        if ($error instanceof InvalidJobException) {
-            $retry = false;
-        } elseif ($job instanceof RetryableJobInterface) {
-            $retry = $job->canRetry($attempt, $error);
+        $event->retry = $event->attempt < $this->attempts;
+        if ($event->error instanceof InvalidJobException) {
+            $event->retry = false;
+        } elseif ($event->job instanceof RetryableJobInterface) {
+            $event->retry = $event->job->canRetry($event->attempt, $event->error);
         }
-        $event = new ErrorEvent([
-            'id' => $id,
-            'job' => $job,
-            'ttr' => $ttr,
-            'attempt' => $attempt,
-            'error' => $error,
-            'retry' => $retry,
-        ]);
         $this->trigger(self::EVENT_AFTER_ERROR, $event);
         return !$event->retry;
     }

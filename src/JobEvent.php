@@ -14,7 +14,7 @@ use yii\base\Event;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class JobEvent extends Event
+abstract class JobEvent extends Event
 {
     /**
      * @var Queue

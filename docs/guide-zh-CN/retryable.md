@@ -73,7 +73,7 @@ Yii::$app->queue->on(Queue::EVENT_BEFORE_PUSH, function (PushEvent $event) {
 并且 `Queue::EVENT_AFTER_ERROR` 事件可用于设置新的尝试:
 
 ```php
-Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
+Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
     if ($event->job instanceof SomeJob) {
         $event->retry = ($event->attempt < 5) && ($event->error instanceof TemporaryException);
     }

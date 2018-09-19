@@ -11,6 +11,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\RuntimeException as ProcessRuntimeException;
 use Symfony\Component\Process\Process;
 use yii\console\Controller;
+use yii\queue\ExecEvent;
 
 /**
  * Base Command.
@@ -196,7 +197,13 @@ abstract class Command extends Controller
             return $result === self::EXEC_DONE;
         } catch (ProcessRuntimeException $error) {
             list($job) = $this->queue->unserializeMessage($message);
-            return $this->queue->handleError($id, $job, $ttr, $attempt, $error);
+            return $this->queue->handleError(new ExecEvent([
+                'id' => $id,
+                'job' => $job,
+                'ttr' => $ttr,
+                'attempt' => $attempt,
+                'error' => $error,
+            ]));
         }
     }
 }

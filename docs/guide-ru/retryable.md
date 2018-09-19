@@ -84,7 +84,7 @@ Yii::$app->queue->on(Queue::EVENT_BEFORE_PUSH, function (PushEvent $event) {
 А событие `Queue::EVENT_AFTER_ERROR` — чтобы определить задание на повторную попытку:
 
 ```php
-Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ErrorEvent $event) {
+Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
     if ($event->job instanceof SomeJob) {
         $event->retry = ($event->attempt < 5) && ($event->error instanceof TemporaryException);
     }

@@ -10,7 +10,7 @@ namespace yii\queue;
 use Throwable;
 
 /**
- * Invalid Job Exception
+ * Invalid Job Exception.
  *
  * Throws when serialized message cannot be unserialized to a job.
  *

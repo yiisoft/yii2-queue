@@ -133,7 +133,7 @@ return [
 | Queue::EVENT_AFTER_PUSH      | PushEvent   | Adding job to queue using `Queue::push()` method          |
 | Queue::EVENT_BEFORE_EXEC     | ExecEvent   | Before each job execution                                 |
 | Queue::EVENT_AFTER_EXEC      | ExecEvent   | After each success job execution                          |
-| Queue::EVENT_AFTER_ERROR     | ErrorEvent  | When uncaught exception occurred during the job execution |
+| Queue::EVENT_AFTER_ERROR     | ExecEvent   | When uncaught exception occurred during the job execution |
 | cli\Queue:EVENT_WORKER_START | WorkerEvent | When worker has been started                              |
 | cli\Queue:EVENT_WORKER_LOOP  | WorkerEvent | Each iteration between requests to queue                  |
 | cli\Queue:EVENT_WORKER_STOP  | WorkerEvent | When worker has been stopped                              |

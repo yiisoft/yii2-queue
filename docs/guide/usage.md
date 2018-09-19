@@ -135,7 +135,7 @@ The queue triggers the following events:
 | Queue::EVENT_AFTER_PUSH      | PushEvent   | after adding a job to queue using `Queue::push()` method  |
 | Queue::EVENT_BEFORE_EXEC     | ExecEvent   | before executing a job                                    |
 | Queue::EVENT_AFTER_EXEC      | ExecEvent   | after successful job execution                            |
-| Queue::EVENT_AFTER_ERROR     | ErrorEvent  | on uncaught exception during the job execution            |
+| Queue::EVENT_AFTER_ERROR     | ExecEvent   | on uncaught exception during the job execution            |
 | cli\Queue:EVENT_WORKER_START | WorkerEvent | when worker has been started                              |
 | cli\Queue:EVENT_WORKER_LOOP  | WorkerEvent | on each iteration between requests to queue               |
 | cli\Queue:EVENT_WORKER_STOP  | WorkerEvent | when worker has been stopped                              |
