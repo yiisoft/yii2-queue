@@ -31,6 +31,6 @@ class Job implements JobInterface
     {
         $serializer = new Serializer();
         $closure = $serializer->unserialize($this->serialized);
-        $closure();
+        return $closure();
     }
 }

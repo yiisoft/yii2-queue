@@ -7,7 +7,9 @@
 
 namespace tests;
 
+use yii\queue\closure\Behavior as ClosureBehavior;
 use yii\queue\ErrorEvent;
+use yii\queue\ExecEvent;
 use yii\queue\InvalidJobException;
 use yii\queue\JobEvent;
 use yii\queue\Queue;
@@ -38,5 +40,20 @@ class JobEventTest extends TestCase
         $this->assertArrayHasKey($jobId, $eventCounter);
         $this->assertArrayHasKey(Queue::EVENT_BEFORE_EXEC, $eventCounter[$jobId]);
         $this->assertArrayHasKey(Queue::EVENT_AFTER_ERROR, $eventCounter[$jobId]);
+    }
+
+    public function testExecResult()
+    {
+        $queue = new SyncQueue(['as closure' => ClosureBehavior::class]);
+        $isTriggered = false;
+        $queue->on(Queue::EVENT_AFTER_EXEC, function (ExecEvent $event) use (&$isTriggered) {
+            $isTriggered = true;
+            $this->assertSame(12345, $event->result);
+        });
+        $queue->push(function () {
+            return 12345;
+        });
+        $queue->run();
+        $this->assertTrue($isTriggered);
     }
 }

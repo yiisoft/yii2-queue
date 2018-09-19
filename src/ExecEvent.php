@@ -18,4 +18,9 @@ class ExecEvent extends JobEvent
      * @var int attempt number
      */
     public $attempt;
+    /**
+     * @var mixed result of a job execution
+     * @since 2.1.1
+     */
+    public $result;
 }
