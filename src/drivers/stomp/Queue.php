@@ -19,6 +19,7 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Stomp Queue.
  * @author Sergey Vershinin <versh23@gmail.com>
+ * @since 2.1.1
  */
 class Queue extends CliQueue
 {
