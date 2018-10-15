@@ -10,7 +10,6 @@ namespace yii\queue\stomp;
 use Enqueue\Stomp\StompConnectionFactory;
 use Enqueue\Stomp\StompContext;
 use Enqueue\Stomp\StompMessage;
-use Interop\Queue\PsrMessage;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -196,7 +195,7 @@ class Queue extends CliQueue
         });
     }
 
-    protected function setMessageId(PsrMessage $message)
+    protected function setMessageId(StompMessage $message)
     {
         $message->setMessageId(uniqid('', true));
         return $message;
@@ -258,8 +257,8 @@ class Queue extends CliQueue
     /**
      * @param StompMessage $message
      * @throws \Interop\Queue\Exception
-     * @throws \Interop\Queue\InvalidDestinationException
-     * @throws \Interop\Queue\InvalidMessageException
+     * @throws \Interop\Queue\Exception\InvalidDestinationException
+     * @throws \Interop\Queue\Exception\InvalidMessageException
      */
     protected function redeliver(StompMessage $message)
     {
