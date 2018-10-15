@@ -190,6 +190,7 @@ class Queue extends CliQueue
                     break;
                 } elseif ($timeout) {
                     sleep($timeout);
+                    $this->context->getStomp()->getConnection()->sendAlive();
                 }
             }
         });
