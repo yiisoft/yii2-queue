@@ -195,6 +195,11 @@ class Queue extends CliQueue
         });
     }
 
+    /**
+     * @param StompMessage $message
+     * @return StompMessage
+     * @throws \Interop\Queue\Exception
+     */
     protected function setMessageId(StompMessage $message)
     {
         $message->setMessageId(uniqid('', true));
@@ -257,8 +262,6 @@ class Queue extends CliQueue
     /**
      * @param StompMessage $message
      * @throws \Interop\Queue\Exception
-     * @throws \Interop\Queue\Exception\InvalidDestinationException
-     * @throws \Interop\Queue\Exception\InvalidMessageException
      */
     protected function redeliver(StompMessage $message)
     {
