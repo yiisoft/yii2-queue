@@ -101,5 +101,17 @@ class Queue extends CliQueue
         return $this->_client;
     }
 
+    /**
+     * @param $chanel
+     * @return $this
+     */
+    public function setChanel($channel){
+
+        $this->channel=$channel;
+
+        return $this;
+
+    }
+
     private $_client;
 }
