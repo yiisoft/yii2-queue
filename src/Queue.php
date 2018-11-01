@@ -77,6 +77,12 @@ abstract class Queue extends Component
      */
     public $attempts = 1;
 
+    /**
+     * @var string
+     * Default worker class
+     */
+    public $defaultWorker;
+
     private $pushTtr;
     private $pushDelay;
     private $pushPriority;
@@ -138,9 +144,9 @@ abstract class Queue extends Component
         $event = new PushEvent([
             'job' => $job,
             'ttr' => $this->pushTtr ?: (
-                $job instanceof RetryableJobInterface
-                    ? $job->getTtr()
-                    : $this->ttr
+            $job instanceof RetryableJobInterface
+                ? $job->getTtr()
+                : $this->ttr
             ),
             'delay' => $this->pushDelay ?: 0,
             'priority' => $this->pushPriority,
@@ -238,6 +244,16 @@ abstract class Queue extends Component
 
         if ($job instanceof JobInterface) {
             return [$job, null];
+        }
+
+        if ($this->defaultWorker){
+
+            $defaultJob = new  $this->defaultWorker;
+            if ($defaultJob instanceof DefaultJobInterface) {
+
+                $defaultJob->setJson($job);
+                return [$defaultJob, null];
+            }
         }
 
         return [null, new InvalidJobException($serialized, sprintf(
