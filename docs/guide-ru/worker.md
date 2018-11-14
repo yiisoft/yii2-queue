@@ -1,11 +1,12 @@
 Управление запуском воркеров
 ============================
 
+
 Supervisor
 ----------
 
-Supervisor — монитор процессов для ОС Linux, он автоматически перезапустит ваши консольные процессы,
-если они остановятся. Для установки Supervisor в Ubuntu можно использовать такую команду:
+Supervisor — монитор процессов для ОС Linux. Он автоматически перезапустит ваши консольные процессы,
+если они остановятся. Для установки Supervisor в Ubuntu можно использовать следующую команду:
 
 ```sh
 sudo apt-get install supervisor
@@ -44,12 +45,12 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 [Gearman]: driver-gearman.md
 [AWS SQS]: driver-sqs.md
 
+
 Systemd
 -------
 
-Systemd - система Linux для инициализации демонов. Чтобы настроить запуск воркеров под
-управлением systemd, создайте конфиг с именем `yii-queue@.service` в папке `/etc/systemd/system`,
-со следующими настройками:
+Systemd - система Linux для инициализации демонов. Чтобы настроить запуск воркеров под управлением systemd, 
+создайте конфиг с именем `yii-queue@.service` в папке `/etc/systemd/system` со следующими настройками:
 
 ```conf
 [Unit]
@@ -70,7 +71,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-Перегрузите systemd чтобы он увидел новый конфиг с помощью команды:
+Перезагрузите systemd, чтобы он увидел новый конфиг, с помощью команды:
 
 ```sh
 systemctl daemon-reload
@@ -98,11 +99,12 @@ systemctl enable yii-queue@1 yii-queue@2
 Чтобы ознакомиться со всеми возможностями systemd, и сделать более тонкую настройку, смотрите
 [документацию](https://freedesktop.org/wiki/Software/systemd/#manualsanddocumentationforusersandadministrators).
 
+
 Cron
 ----
 
 Запускать воркеры можно с помощью cron. Для этого удобнее всего использовать команду `queue/run`.
-Она работает пока в очереди есть задания.
+Она будет работать, пока в очереди есть задания.
 
 Пример настройки: 
 
