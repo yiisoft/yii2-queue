@@ -70,7 +70,7 @@ class Command extends CliCommand
             throw new Exception('Timeout must be numeric.');
         }
         if ($timeout < 1) {
-            throw new Exception('Timeout must be greater that zero.');
+            throw new Exception('Timeout must be greater than zero.');
         }
 
         return $this->queue->run(true, $timeout);
