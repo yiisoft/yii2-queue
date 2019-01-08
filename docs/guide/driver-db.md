@@ -96,7 +96,7 @@ The `run` command obtains and executes tasks in a loop until the queue is empty.
 The `run` and `listen` commands have options:
 
 - `--verbose`, `-v`: print execution statuses to console.
-- `--isolate`: verbose mode of a job execution. If enabled, the execution results of each job will be printed.
+- `--isolate`: each task is executed in a separate child process.
 - `--color`: enable highlighting for verbose mode.
 
 ```sh
