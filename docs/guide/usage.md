@@ -60,8 +60,19 @@ Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
     'file' => '/tmp/image.jpg',
 ]));
 ```
-
 **Important:** Not all drivers support delayed running.
+
+You can also specify a priority when pushing a job:
+
+```php
+Yii::$app->queue->priority(10)->push(new ErrorNotification([
+    'recipient' => 'notifyme@example.com',
+]));
+```
+
+Jobs with a lower priority will be executed first. The default priority is `1024`.
+
+**Important:** Not all drivers support job priorities.
 
 
 Queue handling
