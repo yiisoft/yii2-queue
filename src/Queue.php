@@ -76,6 +76,10 @@ abstract class Queue extends Component
      * @var int default attempt count
      */
     public $attempts = 1;
+    /**
+     * @var string queue name
+     */
+    public $name;
 
     private $pushTtr;
     private $pushDelay;
