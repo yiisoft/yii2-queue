@@ -5,7 +5,7 @@ The driver uses AWS SQS to store queue data.
 
 You have to add `aws/aws-sdk-php` extension to your application in order to use it.
 
-Configuration example:
+Configuration example for standard queues:
 
 ```php
 return [
@@ -23,6 +23,30 @@ return [
     ],
 ];
 ```
+
+Configuration example for FIFO queues:
+
+```php
+return [
+    'bootstrap' => [
+        'queue', // The component registers own console commands
+    ],
+    'components' => [
+        'queue' => [
+            'class' => \yii\queue\sqs\Queue::class,
+            'url' => '<sqs url>',
+            'key' => '<key>',
+            'secret' => '<secret>',
+            'region' => '<region>',
+            'messageGroupId' => '<Group ID>',
+        ],
+    ],
+];
+```
+
+The message group ID is required by SQS for FIFO queues. You can configure your own or use the "default" value.
+
+The deduplication ID is generated automatically, so no matter if you have activated content based deduplication in the SQS queue or not, this ID will be used.
 
 Console
 -------

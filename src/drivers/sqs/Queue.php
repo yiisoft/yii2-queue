@@ -47,6 +47,11 @@ class Queue extends CliQueue
      */
     public $version = 'latest';
     /**
+     * Message Group ID for FIFO queues.
+     * @var string
+     */
+    public $messageGroupId = 'default';
+    /**
      * @var string command class name
      * @inheritdoc
      */
@@ -172,7 +177,7 @@ class Queue extends CliQueue
             throw new NotSupportedException('Priority is not supported in this driver');
         }
 
-        $response = $this->getClient()->sendMessage([
+        $request = [
             'QueueUrl' => $this->url,
             'MessageBody' => $message,
             'DelaySeconds' => $delay,
@@ -182,7 +187,14 @@ class Queue extends CliQueue
                     'StringValue' => $ttr,
                 ],
             ],
-        ]);
+        ];
+
+        if (substr($this->url,-5) === '.fifo') {
+            $request['MessageGroupId'] = $this->messageGroupId;
+            $request['MessageDeduplicationId'] = hash('sha256', $message);
+        }
+
+        $response = $this->getClient()->sendMessage();
         return $response['MessageId'];
     }
 
