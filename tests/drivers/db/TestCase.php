@@ -7,10 +7,12 @@
 
 namespace tests\drivers\db;
 
+use tests\app\DeadlineJob;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use yii\db\Query;
+use Yii;
 
 /**
  * Db Queue Test Case.
@@ -19,6 +21,8 @@ use yii\db\Query;
  */
 abstract class TestCase extends CliTestCase
 {
+    protected $parallelWorkers = 32;
+
     public function testRun()
     {
         $job = $this->createSimpleJob();
@@ -103,6 +107,33 @@ abstract class TestCase extends CliTestCase
             ->count('*', $this->getQueue()->db);
 
         $this->assertEquals(0, $actual);
+    }
+
+    public function testParallel()
+    {
+        $repeats = 16;
+
+        for ($i = 0; $i < $this->parallelWorkers; $i++) {
+            $this->startProcess('php yii queue/listen 1');
+        }
+
+        $fileName = Yii::getAlias("@runtime/job-parallel.lock");
+
+        for ($pass = 0; $pass < $repeats; $pass++) {
+            $deadline = time() + 4;
+
+            for ($job = 0; $job < 2 * $this->parallelWorkers; $job++) {
+                $this->getQueue()->push(new DeadlineJob([
+                    'deadline' => $deadline,
+                    'fileName' => $fileName,
+                ]));
+            }
+
+            sleep(5);
+        }
+
+        $expected = str_repeat('a', 2 * $repeats * $this->parallelWorkers);
+        $this->assertEquals($expected, file_get_contents($fileName));
     }
 
     protected function tearDown()

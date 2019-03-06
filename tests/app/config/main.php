@@ -51,6 +51,7 @@ $config = [
             'class' => \yii\queue\db\Queue::class,
             'db' => 'sqlite',
             'mutex' => \yii\mutex\FileMutex::class,
+            'mutexTimeout' => 10,
         ],
         'pgsql' => [
             'class' => \yii\db\Connection::class,
@@ -70,7 +71,6 @@ $config = [
                 'class' => \yii\mutex\PgsqlMutex::class,
                 'db' => 'pgsql',
             ],
-            'mutexTimeout' => 0,
         ],
         'redis' => [
             'class' => \yii\redis\Connection::class,

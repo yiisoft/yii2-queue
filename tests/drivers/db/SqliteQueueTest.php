@@ -17,6 +17,8 @@ use yii\queue\db\Queue;
  */
 class SqliteQueueTest extends TestCase
 {
+    protected $parallelWorkers = 4;
+
     /**
      * @return Queue
      */

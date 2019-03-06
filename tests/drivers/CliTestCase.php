@@ -76,11 +76,22 @@ abstract class CliTestCase extends TestCase
             unlink(PriorityJob::getFileName());
         }
 
+        $lastFailed = null;
+
         // Kills started processes
         foreach ($this->processes as $process) {
+            if ($process->getExitCode() !== null) {
+                $lastFailed = $process;
+                continue;
+            }
+
             $process->stop();
         }
         $this->processes = [];
+
+        if ($lastFailed !== null) {
+            throw new ProcessFailedException($lastFailed);
+        }
 
         parent::tearDown();
     }
