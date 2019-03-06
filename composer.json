@@ -24,7 +24,7 @@
         "yiisoft/yii2-redis": "*",
         "php-amqplib/php-amqplib": "*",
         "enqueue/amqp-lib": "^0.8",
-        "pda/pheanstalk": "*",
+        "pda/pheanstalk": "v3.*",
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
