@@ -120,7 +120,7 @@ abstract class TestCase extends CliTestCase
         $fileName = Yii::getAlias("@runtime/job-parallel.lock");
 
         for ($pass = 0; $pass < $repeats; $pass++) {
-            $deadline = time() + 4;
+            $deadline = time() + 5;
 
             for ($job = 0; $job < 2 * $this->parallelWorkers; $job++) {
                 $this->getQueue()->push(new DeadlineJob([
@@ -129,8 +129,10 @@ abstract class TestCase extends CliTestCase
                 ]));
             }
 
-            sleep(5);
+            sleep(10);
         }
+
+        sleep($this->parallelWorkers);
 
         $expected = str_repeat('a', 2 * $repeats * $this->parallelWorkers);
         $this->assertEquals($expected, file_get_contents($fileName));
