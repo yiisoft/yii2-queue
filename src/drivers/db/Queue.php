@@ -240,11 +240,19 @@ class Queue extends CliQueue
     {
         if ($this->reserveTime !== time()) {
             $this->reserveTime = time();
+            $ids = (new Query())
+                ->select('id')
+                ->from($this->tableName)
+                ->andWhere(
+                    '[[reserved_at]] < :time - [[ttr]] and [[reserved_at]] is not null and [[done_at]] is null',
+                    [':time' => $this->reserveTime]
+                )
+                ->limit(100)
+                ->column($this->db);
             $this->db->createCommand()->update(
                 $this->tableName,
                 ['reserved_at' => null],
-                '[[reserved_at]] < :time - [[ttr]] and [[reserved_at]] is not null and [[done_at]] is null',
-                [':time' => $this->reserveTime]
+                ['id' => $ids]
             )->execute();
         }
     }

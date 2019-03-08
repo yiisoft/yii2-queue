@@ -11,6 +11,7 @@ Yii2 Queue Extension Change Log
 - Enh: Job execution result that forwarded to the event handler (zhuravljov)
 - Enh: ErrorEvent mark as deprecated (zhuravljov)
 - Enh #318: Added check result call function flock (evaldemar)
+- Bug #245: InnoDB deadlocks with multiple workers (simplefied)
 
 2.1.0 May 24, 2018
 ------------------
