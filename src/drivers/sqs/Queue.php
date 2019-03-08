@@ -189,12 +189,12 @@ class Queue extends CliQueue
             ],
         ];
 
-        if (substr($this->url,-5) === '.fifo') {
+        if (substr($this->url, -5) === '.fifo') {
             $request['MessageGroupId'] = $this->messageGroupId;
             $request['MessageDeduplicationId'] = hash('sha256', $message);
         }
 
-        $response = $this->getClient()->sendMessage();
+        $response = $this->getClient()->sendMessage($request);
         return $response['MessageId'];
     }
 

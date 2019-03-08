@@ -10,6 +10,7 @@ Yii2 Queue Extension Change Log
 - Bug #267: Fixed symfony/process incompatibility (rob006)
 - Enh: Job execution result that forwarded to the event handler (zhuravljov)
 - Enh: ErrorEvent mark as deprecated (zhuravljov)
+- Enh: Add AWS SQS FIFO support (kringkaste)
 
 2.1.0 May 24, 2018
 ------------------

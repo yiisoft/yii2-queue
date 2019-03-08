@@ -46,7 +46,7 @@ return [
 
 The message group ID is required by SQS for FIFO queues. You can configure your own or use the "default" value.
 
-The deduplication ID is generated automatically, so no matter if you have activated content based deduplication in the SQS queue or not, this ID will be used.
+The deduplication ID is generated automatically, so no matter if you have activated content-based deduplication in the SQS queue or not, this ID will be used.
 
 Console
 -------
