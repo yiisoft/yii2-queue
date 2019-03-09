@@ -212,9 +212,6 @@ class Queue extends CliQueue
     {
         $id = $payload[0];
         $this->touchIndex(function (&$data) use ($id) {
-            if (!isset($data['reserved'])) {
-                return;
-            }
             foreach ($data['reserved'] as $key => $payload) {
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
