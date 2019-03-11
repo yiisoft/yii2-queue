@@ -281,7 +281,10 @@ class Queue extends CliQueue
         if (($file = fopen($fileName, 'rb+')) === false) {
             throw new InvalidConfigException("Unable to open index file: $fileName");
         }
-        flock($file, LOCK_EX);
+        if (!flock($file, LOCK_EX)) {
+            fclose($file);
+            throw new InvalidConfigException("Unable to flock index file: $fileName");
+        }
         $data = [];
         $content = stream_get_contents($file);
         if ($content !== '') {
