@@ -243,6 +243,7 @@ class Queue extends CliQueue
             $ids = (new Query())
                 ->select('id')
                 ->from($this->tableName)
+                ->andWhere(['channel' => $this->channel])
                 ->andWhere(
                     '[[reserved_at]] < :time - [[ttr]] and [[reserved_at]] is not null and [[done_at]] is null',
                     [':time' => $this->reserveTime]
