@@ -26,6 +26,7 @@ RUN apt-get update \
     && cd - \
     && rm -r $TMPDIR \
     && docker-php-ext-enable gearman \
+    && rm -rf /var/lib/apt/lists/* \
     && curl -L -o /tmp/composer-setup.php https://getcomposer.org/installer \
     && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && rm /tmp/composer-setup.php \

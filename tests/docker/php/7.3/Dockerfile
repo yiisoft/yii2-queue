@@ -1,8 +1,9 @@
-FROM php:7.2-cli
+FROM php:7.3-cli
 
 RUN apt-get update \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
+    && apt-get install -y libzip-dev \
     && docker-php-ext-install zip \
     && apt-get install -y libicu-dev \
     && docker-php-ext-configure intl \

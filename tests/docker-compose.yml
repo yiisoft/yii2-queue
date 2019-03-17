@@ -2,12 +2,12 @@ version: "3.5"
 services:
 
   # https://docs.docker.com/samples/library/php/
-  php72:
+  php73:
     build:
       context: ..
-      dockerfile: tests/docker/php/7.2/Dockerfile
+      dockerfile: tests/docker/php/7.3/Dockerfile
     volumes:
-    - ./runtime/.composer72:/root/.composer
+    - ./runtime/.composer73:/root/.composer
     - ..:/code
     dns: &php_dns
     - 8.8.8.8
@@ -36,6 +36,17 @@ services:
     - rabbitmq
     - beanstalk
     - gearmand
+    networks:
+      net: {}
+  php72:
+    build:
+      context: ..
+      dockerfile: tests/docker/php/7.2/Dockerfile
+    volumes:
+      - ./runtime/.composer72:/root/.composer
+    dns: *php_dns
+    environment: *php_environment
+    depends_on: *php_depends_on
     networks:
       net: {}
   php71:

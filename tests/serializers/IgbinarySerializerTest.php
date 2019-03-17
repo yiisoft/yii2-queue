@@ -20,4 +20,13 @@ class IgbinarySerializerTest extends TestCase
     {
         return new IgbinarySerializer();
     }
+
+    protected function setUp()
+    {
+        if (!extension_loaded('igbinary')) {
+            $this->markTestSkipped('Igbinary extension is not loaded.');
+        }
+
+        parent::setUp();
+    }
 }

@@ -8,7 +8,7 @@ RUN apt-get update \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
     && docker-php-ext-install pcntl \
-    && pecl install igbinary \
+    && pecl install igbinary-2.0.8 \
     && docker-php-ext-enable igbinary \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install pdo_mysql \
@@ -18,6 +18,7 @@ RUN apt-get update \
     && apt-get install -y libgearman-dev \
     && pecl install gearman \
     && docker-php-ext-enable gearman \
+    && rm -rf /var/lib/apt/lists/* \
     && curl -L -o /tmp/composer-setup.php https://getcomposer.org/installer \
     && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && rm /tmp/composer-setup.php \
