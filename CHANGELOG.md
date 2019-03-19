@@ -4,25 +4,25 @@ Yii2 Queue Extension Change Log
 2.1.1 under development
 -----------------------
 
-- Enh #248: Reduce roundtrips to beanstalk server when removing job (SamMousa)
+- Bug #220: Fixed deadlock problem of DB driver (zhuravljov)
 - Bug #258: Worker in isolated mode fails if PHP_BINARY contains spaces (luke-)
-- Bug #269: Handling of broken messages that are not unserialized correctly (zhuravljov)
 - Bug #267: Fixed symfony/process incompatibility (rob006)
+- Bug #269: Handling of broken messages that are not unserialized correctly (zhuravljov)
+- Bug #299: Queue config param validation (zhuravljov)
+- Enh #248: Reduce roundtrips to beanstalk server when removing job (SamMousa)
+- Enh #318: Added check result call function flock (evaldemar)
 - Enh: Job execution result is now forwarded to the event handler (zhuravljov)
 - Enh: `ErrorEvent` was marked as deprecated (zhuravljov)
-- Enh #318: Added check result call function flock (evaldemar)
-- Bug #299: Queue config param validation (zhuravljov)
-- Bug #220: Fixed deadlock problem of DB driver (zhuravljov)
 
 2.1.0 May 24, 2018
 ------------------
 
-- Bug #210: Worker option to define php bin path to run child process (zhuravljov)
-- Enh: Worker loop event (zhuravljov)
+- Bug #126: Handles a fatal error of the job execution in isolate mode (zhuravljov)
 - Bug #207: Console params validation (zhuravljov)
+- Bug #210: Worker option to define php bin path to run child process (zhuravljov)
 - Bug #224: Invalid identifier "DELAY" (lar-dragon)
 - Enh #192: AWS SQS implementation (elitemaks, manoj-girnar)
-- Bug #126: Handles a fatal error of the job execution in isolate mode (zhuravljov)
+- Enh: Worker loop event (zhuravljov)
 
 2.0.2 December 26, 2017
 -----------------------
@@ -143,9 +143,3 @@ Yii2 Queue Extension Change Log
 - Enh: Add exchange for AMQP driver (airani)
 - Enh: Beanstalk driver (zhuravljov)
 - Enh: Added English docs (samdark)
-
-
-
-
-
-

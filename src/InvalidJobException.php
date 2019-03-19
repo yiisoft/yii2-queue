@@ -24,6 +24,7 @@ class InvalidJobException extends \Exception
      */
     private $serialized;
 
+
     /**
      * @param string $serialized
      * @param string $message
