@@ -1,8 +1,14 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.1.1 under development
+3.0.0 under development
 -----------------------
+
+- no changes in this release.
+
+
+2.2.0 Mar 20, 2019
+------------------
 
 - Bug #220: Fixed deadlock problem of DB driver (zhuravljov)
 - Bug #258: Worker in isolated mode fails if PHP_BINARY contains spaces (luke-)
