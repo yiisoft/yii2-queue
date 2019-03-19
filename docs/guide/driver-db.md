@@ -3,6 +3,13 @@ DB Driver
 
 The DB driver uses a database to store queue data.
 
+It supports:
+
+* priorities
+* delays
+* ttr
+* attempts
+
 Configuration example:
 
 ```php
