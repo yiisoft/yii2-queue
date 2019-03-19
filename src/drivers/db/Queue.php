@@ -243,7 +243,7 @@ class Queue extends CliQueue
             $this->db->createCommand()->update(
                 $this->tableName,
                 ['reserved_at' => null],
-                '[[reserved_at]] < :time - [[ttr]] and [[reserved_at]] is not null and [[done_at]] is null',
+                '[[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
                 [':time' => $this->reserveTime]
             )->execute();
         }
