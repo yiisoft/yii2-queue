@@ -10,6 +10,7 @@ namespace yii\queue;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 use yii\queue\serializers\PhpSerializer;
@@ -88,7 +89,24 @@ abstract class Queue extends Component
     public function init()
     {
         parent::init();
+
         $this->serializer = Instance::ensure($this->serializer, SerializerInterface::class);
+
+        if (!is_numeric($this->ttr)) {
+            throw new InvalidConfigException('Default TTR must be integer.');
+        }
+        $this->ttr = (int) $this->ttr;
+        if ($this->ttr <= 0) {
+            throw new InvalidConfigException('Default TTR must be greater that zero.');
+        }
+
+        if (!is_numeric($this->attempts)) {
+            throw new InvalidConfigException('Default attempts count must be integer.');
+        }
+        $this->attempts = (int) $this->attempts;
+        if ($this->attempts <= 0) {
+            throw new InvalidConfigException('Default attempts count must be greater that zero.');
+        }
     }
 
     /**
@@ -156,6 +174,22 @@ abstract class Queue extends Component
 
         if ($this->strictJobType && !($event->job instanceof JobInterface)) {
             throw new InvalidArgumentException('Job must be instance of JobInterface.');
+        }
+
+        if (!is_numeric($event->ttr)) {
+            throw new InvalidArgumentException('Job TTR must be integer.');
+        }
+        $event->ttr = (int) $event->ttr;
+        if ($event->ttr <= 0) {
+            throw new InvalidArgumentException('Job TTR must be greater that zero.');
+        }
+
+        if (!is_numeric($event->delay)) {
+            throw new InvalidArgumentException('Job delay must be integer.');
+        }
+        $event->delay = (int) $event->delay;
+        if ($event->delay < 0) {
+            throw new InvalidArgumentException('Job delay must be positive.');
         }
 
         $message = $this->serializer->serialize($event->job);
