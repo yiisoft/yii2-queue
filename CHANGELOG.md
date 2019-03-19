@@ -8,10 +8,11 @@ Yii2 Queue Extension Change Log
 - Bug #258: Worker in isolated mode fails if PHP_BINARY contains spaces (luke-)
 - Bug #269: Handling of broken messages that are not unserialized correctly (zhuravljov)
 - Bug #267: Fixed symfony/process incompatibility (rob006)
-- Enh: Job execution result that forwarded to the event handler (zhuravljov)
-- Enh: ErrorEvent mark as deprecated (zhuravljov)
+- Enh: Job execution result is now forwarded to the event handler (zhuravljov)
+- Enh: `ErrorEvent` was marked as deprecated (zhuravljov)
 - Enh #318: Added check result call function flock (evaldemar)
 - Bug #299: Queue config param validation (zhuravljov)
+- Bug #220: Fixed deadlock problem of DB driver (zhuravljov)
 
 2.1.0 May 24, 2018
 ------------------
