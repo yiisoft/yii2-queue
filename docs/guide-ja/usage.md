@@ -60,8 +60,19 @@ Yii::$app->queue->delay(5 * 60)->push(new DownloadJob([
     'file' => '/tmp/image.jpg',
 ]));
 ```
-
 **重要:** 全てのドライバが遅延実行をサポートしている訳ではありません。
+
+ジョブをプッシュするときに優先度を指定することも出来ます。
+
+```php
+Yii::$app->queue->priority(10)->push(new ErrorNotification([
+    'recipient' => 'notifyme@example.com',
+]));
+```
+
+優先度の数値の低いジョブほど先に実行されます。優先度の既定値は `1024` です。
+
+**重要:** 全てのドライバがジョブの優先度をサポートしている訳ではありません。
 
 
 キューの処理
