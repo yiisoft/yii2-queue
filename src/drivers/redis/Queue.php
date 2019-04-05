@@ -165,7 +165,7 @@ class Queue extends CliQueue
         if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
             $this->redis->zremrangebyscore($from, '-inf', $now);
             foreach ($expired as $id) {
-                $this->redis->rpush("$this->channel.waiting", $id);
+                $this->redis->lpush("$this->channel.waiting", $id);
             }
         }
     }
