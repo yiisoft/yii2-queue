@@ -62,6 +62,6 @@ daemonized via [supervisor](worker.md#supervisor) or [systemd](worker.md#systemd
 
 `listen` command has options:
 
-- `--verbose`, `-v`: print executing statuses into console.
-- `--isolate`: verbose mode of a job execute. If enabled, execute result of each job will be printed.
-- `--color`: highlighting for verbose mode.
+- `--verbose`, `-v`: 详细模式执行作业。如果启用，将打印每个作业的执行结果。
+- `--isolate`: 隔离模式。将在子进程中执行作业。
+- `--color`: 在详细模式下高亮显示输出结果。
