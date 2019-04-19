@@ -43,6 +43,6 @@ yii queue/run
 
 `run` and `listen` commands have options:
 
-- `--verbose`, `-v`: print executing statuses into console.
-- `--isolate`: verbose mode of a job execute. If enabled, execute result of each job will be printed.
+- `--verbose`, `-v`: verbose mode of a job execution. If enabled, the execution results of each job will be printed.
+- `--isolate`: isolate mode. It executes a job in a child process.
 - `--color`: highlighting for verbose mode.
