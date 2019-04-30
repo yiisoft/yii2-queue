@@ -8,6 +8,7 @@ Yii2 Queue Extension Change Log
 - Bug #180: Fixed info command of file driver (victorruan)
 - Bug #92: Resolve issue in debug panel (farmani-eigital)
 - Enh: Start and stop events of a worker (zhuravljov)
+- Enh #293: Add `handle` method that provides public access for `handleMessage` which can be useful for handling jobs by webhooks (alexkart)
 
 ## 2.0.1, November 13, 2017
 
