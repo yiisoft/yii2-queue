@@ -19,6 +19,7 @@ Yii2 Queue Extension Change Log
 - Enh #318: Added check result call function flock (evaldemar)
 - Enh: Job execution result is now forwarded to the event handler (zhuravljov)
 - Enh: `ErrorEvent` was marked as deprecated (zhuravljov)
+- Enh: Add AWS SQS FIFO support (kringkaste)
 
 2.1.0 May 24, 2018
 ------------------
