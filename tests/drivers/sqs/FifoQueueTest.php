@@ -59,7 +59,7 @@ class FifoQueueTest extends CliTestCase
 
     public function testClear()
     {
-        if (!getenv('AWS_SQS_CLEAR_TEST_ENABLED')) {
+        if (!getenv('AWS_SQS_FIFO_CLEAR_TEST_ENABLED')) {
             $this->markTestSkipped(__METHOD__ . ' is disabled');
         }
 
@@ -77,7 +77,7 @@ class FifoQueueTest extends CliTestCase
 
     protected function setUp()
     {
-        if (!getenv('AWS_SQS_ENABLED')) {
+        if (!getenv('AWS_SQS_FIFO_ENABLED')) {
             $this->markTestSkipped('AWS SQS tests are disabled');
         }
 
