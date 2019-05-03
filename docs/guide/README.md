@@ -28,3 +28,7 @@ Developer tools
 
 * [Debugging](debug.md)
 * [Code generator Gii](gii.md)
+
+Contributing
+------------
+* [Tests](tests.md)
