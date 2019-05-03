@@ -42,8 +42,6 @@ class FifoQueueTest extends CliTestCase
 
         $this->setExpectedException('\Aws\Sqs\Exception\SqsException');
         $this->getQueue()->delay(2)->push($job);
-
-        $this->assertSimpleJobLaterDone($job, 2);
     }
 
     public function testRetry()
@@ -78,7 +76,7 @@ class FifoQueueTest extends CliTestCase
     protected function setUp()
     {
         if (!getenv('AWS_SQS_FIFO_ENABLED')) {
-            $this->markTestSkipped('AWS SQS tests are disabled');
+            $this->markTestSkipped('AWS SQS FIFO tests are disabled');
         }
 
         parent::setUp();
