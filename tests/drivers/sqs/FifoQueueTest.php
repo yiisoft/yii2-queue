@@ -13,9 +13,7 @@ use Yii;
 use yii\queue\sqs\Queue;
 
 /**
- * SQS Queue Test.
- *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * SQS FIFO Queue Test.
  */
 class FifoQueueTest extends CliTestCase
 {
