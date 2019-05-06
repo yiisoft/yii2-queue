@@ -19,3 +19,4 @@ composer.lock
 
 # Env variables
 .env
+php.env

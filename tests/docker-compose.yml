@@ -12,6 +12,8 @@ services:
     dns: &php_dns
     - 8.8.8.8
     - 4.4.4.4
+    env_file: &php_environment_file
+      - ./.env
     environment: &php_environment
       MYSQL_HOST: mysql
       MYSQL_USER: yii2_queue_test
@@ -45,6 +47,7 @@ services:
     volumes:
       - ./runtime/.composer72:/root/.composer
     dns: *php_dns
+    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
@@ -56,6 +59,7 @@ services:
     volumes:
     - ./runtime/.composer71:/root/.composer
     dns: *php_dns
+    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
@@ -67,6 +71,7 @@ services:
     volumes:
     - ./runtime/.composer70:/root/.composer
     dns: *php_dns
+    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
@@ -78,6 +83,7 @@ services:
     volumes:
     - ./runtime/.composer56:/root/.composer
     dns: *php_dns
+    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
