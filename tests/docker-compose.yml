@@ -13,7 +13,7 @@ services:
     - 8.8.8.8
     - 4.4.4.4
     env_file: &php_environment_file
-      - ./.env
+      - ./php.env
     environment: &php_environment
       MYSQL_HOST: mysql
       MYSQL_USER: yii2_queue_test
