@@ -12,8 +12,6 @@ services:
     dns: &php_dns
     - 8.8.8.8
     - 4.4.4.4
-    env_file: &php_environment_file
-      - ./php.env
     environment: &php_environment
       MYSQL_HOST: mysql
       MYSQL_USER: yii2_queue_test
@@ -31,6 +29,13 @@ services:
       BEANSTALK_HOST: beanstalk
       GEARMAN_HOST: gearmand
       COMPOSER_ALLOW_SUPERUSER: 1
+      AWS_SQS_ENABLED: ${AWS_SQS_ENABLED}
+      AWS_KEY: ${AWS_KEY}
+      AWS_SECRET: ${AWS_SECRET}
+      AWS_REGION: ${AWS_REGION}
+      AWS_SQS_URL: ${AWS_SQS_URL}
+      AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL}
+      AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID}
     depends_on: &php_depends_on
     - mysql
     - postgres
@@ -47,7 +52,6 @@ services:
     volumes:
       - ./runtime/.composer72:/root/.composer
     dns: *php_dns
-    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
@@ -59,7 +63,6 @@ services:
     volumes:
     - ./runtime/.composer71:/root/.composer
     dns: *php_dns
-    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
@@ -71,7 +74,6 @@ services:
     volumes:
     - ./runtime/.composer70:/root/.composer
     dns: *php_dns
-    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:
@@ -83,7 +85,6 @@ services:
     volumes:
     - ./runtime/.composer56:/root/.composer
     dns: *php_dns
-    env_file: *php_environment_file
     environment: *php_environment
     depends_on: *php_depends_on
     networks:

@@ -4,23 +4,23 @@ COMPOSE_FILE=tests/docker-compose.yml
 test: test73 test72 test71 test70 test56
 test73:
 	docker-compose build --pull php73
-	docker-compose run php73 vendor/bin/phpunit ${PHPUNIT_ARGS}
+	docker-compose run php73 vendor/bin/phpunit
 	docker-compose down
 test72:
 	docker-compose build --pull php72
-	docker-compose run php72 vendor/bin/phpunit ${PHPUNIT_ARGS}
+	docker-compose run php72 vendor/bin/phpunit
 	docker-compose down
 test71:
 	docker-compose build --pull php71
-	docker-compose run php71 vendor/bin/phpunit ${PHPUNIT_ARGS}
+	docker-compose run php71 vendor/bin/phpunit
 	docker-compose down
 test70:
 	docker-compose build --pull php70
-	docker-compose run php70 vendor/bin/phpunit ${PHPUNIT_ARGS}
+	docker-compose run php70 vendor/bin/phpunit
 	docker-compose down
 test56:
 	docker-compose build --pull php56
-	docker-compose run php56 vendor/bin/phpunit ${PHPUNIT_ARGS}
+	docker-compose run php56 vendor/bin/phpunit
 	docker-compose down
 
 benchmark: benchmark73 benchmark72 benchmark71 benchmark70 benchmark56
