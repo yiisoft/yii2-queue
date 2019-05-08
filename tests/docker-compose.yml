@@ -34,6 +34,9 @@ services:
       AWS_SECRET: ${AWS_SECRET}
       AWS_REGION: ${AWS_REGION}
       AWS_SQS_URL: ${AWS_SQS_URL}
+      AWS_SQS_FIFO_ENABLED: ${AWS_SQS_FIFO_ENABLED}
+      AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL}
+      AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID}
     depends_on: &php_depends_on
     - mysql
     - postgres
