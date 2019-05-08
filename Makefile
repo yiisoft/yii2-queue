@@ -1,6 +1,11 @@
 COMPOSE_PROJECT_NAME=yii2-queue
 COMPOSE_FILE=tests/docker-compose.yml
 
+build:
+	@cp -n .env.example .env
+	docker-compose pull
+	docker-compose build --pull
+
 test: test73 test72 test71 test70 test56
 test73:
 	docker-compose build --pull php73
@@ -44,10 +49,6 @@ benchmark56:
 	docker-compose build --pull php56
 	docker-compose run php56 tests/yii benchmark/waiting
 	docker-compose down
-
-build:
-	docker-compose pull
-	docker-compose build --pull
 
 check-cs:
 	docker-compose build php72
