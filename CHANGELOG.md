@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 3.0.0 under development
 -----------------------
 
-- Enh: Add AWS SQS FIFO support (kringkaste, alexkart)
+- Enh #332: Add AWS SQS FIFO support (kringkaste, alexkart)
 
 
 2.2.0 Mar 20, 2019
