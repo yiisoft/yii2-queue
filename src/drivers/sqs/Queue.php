@@ -49,7 +49,7 @@ class Queue extends CliQueue
     /**
      * Message Group ID for FIFO queues.
      * @var string
-     * @since 3.0.0
+     * @since 2.2.1
      */
     public $messageGroupId = 'default';
     /**
