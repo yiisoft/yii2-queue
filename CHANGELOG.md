@@ -1,11 +1,11 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-3.0.0 under development
+2.2.1 under development
 -----------------------
 
-- no changes in this release.
-
+- Enh #293: Add `handle` method to `\yii\queue\sqs\Queue` that provides public access for `handleMessage` which can be 
+useful for handling jobs by webhooks (alexkart)
 
 2.2.0 Mar 20, 2019
 ------------------
@@ -40,7 +40,6 @@ Yii2 Queue Extension Change Log
 - Enh #185: Loop object instead of Signal helper (zhuravljov)
 - Enh #188: Configurable verbose mode (zhuravljov)
 - Enh: Start and stop events of a worker (zhuravljov)
-- Enh #293: Add `handle` method that provides public access for `handleMessage` which can be useful for handling jobs by webhooks (alexkart)
 
 2.0.1 November 13, 2017
 -----------------------

@@ -148,21 +148,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     }
 
     /**
-     * Provides public access for `handleMessage`
-     *
-     * @param $id string
-     * @param $message string
-     * @param $ttr int
-     * @param $attempt int
-     * @return bool
-     * @since 2.0.2
-     */
-    public function handle($id, $message, $ttr, $attempt)
-    {
-        return $this->handleMessage($id, $message, $ttr, $attempt);
-    }
-
-    /**
      * @param string $id of a message
      * @param string $message
      * @param int $ttr time to reserve
