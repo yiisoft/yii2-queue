@@ -1,11 +1,10 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-3.0.0 under development
+2.2.1 under development
 -----------------------
 
-- no changes in this release.
-
+- Bug #220: Updated to the latest amqp-lib (alexkart)
 
 2.2.0 Mar 20, 2019
 ------------------
