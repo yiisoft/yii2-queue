@@ -170,6 +170,21 @@ class Queue extends CliQueue
     }
 
     /**
+     * Provides public access for `handleMessage`
+     *
+     * @param $id string
+     * @param $message string
+     * @param $ttr int
+     * @param $attempt int
+     * @return bool
+     * @since 2.2.1
+     */
+    public function handle($id, $message, $ttr, $attempt)
+    {
+        return $this->handleMessage($id, $message, $ttr, $attempt);
+    }
+
+    /**
      * @inheritdoc
      */
     protected function pushMessage($message, $ttr, $delay, $priority)

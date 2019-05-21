@@ -4,6 +4,8 @@ Yii2 Queue Extension Change Log
 2.2.1 under development
 -----------------------
 
+- Enh #293: Add `handle` method to `\yii\queue\sqs\Queue` that provides public access for `handleMessage` which can be 
+useful for handling jobs by webhooks (alexkart)
 - Enh #332: Add AWS SQS FIFO support (kringkaste, alexkart)
 - Bug #220: Updated to the latest amqp-lib (alexkart)
 
@@ -40,7 +42,6 @@ Yii2 Queue Extension Change Log
 - Enh #185: Loop object instead of Signal helper (zhuravljov)
 - Enh #188: Configurable verbose mode (zhuravljov)
 - Enh: Start and stop events of a worker (zhuravljov)
-- Enh #293: Add `handle` method that provides public access for `handleMessage` which can be useful for handling jobs by webhooks (alexkart)
 
 2.0.1 November 13, 2017
 -----------------------
