@@ -4,6 +4,7 @@ Yii2 Queue Extension Change Log
 2.2.1 under development
 -----------------------
 
+- Enh #332: Add AWS SQS FIFO support (kringkaste, alexkart)
 - Bug #220: Updated to the latest amqp-lib (alexkart)
 
 2.2.0 Mar 20, 2019

@@ -122,4 +122,16 @@ if (getenv('AWS_SQS_ENABLED')) {
     ];
 }
 
+if (getenv('AWS_SQS_FIFO_ENABLED')) {
+    $config['bootstrap'][] = 'sqsFifoQueue';
+    $config['components']['sqsFifoQueue'] = [
+        'class' => \yii\queue\sqs\Queue::class,
+        'url' => getenv('AWS_SQS_FIFO_URL'),
+        'key' => getenv('AWS_KEY'),
+        'secret' => getenv('AWS_SECRET'),
+        'region' => getenv('AWS_REGION'),
+        'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
+    ];
+}
+
 return $config;

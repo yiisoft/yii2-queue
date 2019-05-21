@@ -62,7 +62,7 @@ abstract class CliTestCase extends TestCase
 
         return strtr($cmd, [
             'php' => PHP_BINARY,
-            'yii' => 'tests/yii',
+            'yii' => __DIR__ . '/../yii',
             'queue' => $method->invoke($this->getQueue()),
         ]);
     }
