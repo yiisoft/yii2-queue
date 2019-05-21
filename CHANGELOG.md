@@ -1,13 +1,14 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.2.1 under development
------------------------
+2.2.1 May 21, 2019
+------------------
 
+- Bug #220: Updated to the latest amqp-lib (alexkart)
 - Enh #293: Add `handle` method to `\yii\queue\sqs\Queue` that provides public access for `handleMessage` which can be 
 useful for handling jobs by webhooks (alexkart)
 - Enh #332: Add AWS SQS FIFO support (kringkaste, alexkart)
-- Bug #220: Updated to the latest amqp-lib (alexkart)
+
 
 2.2.0 Mar 20, 2019
 ------------------
