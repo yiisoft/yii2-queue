@@ -17,6 +17,7 @@ Yii::setAlias('@yii/queue/gearman', dirname(__DIR__) . '/src/drivers/gearman');
 Yii::setAlias('@yii/queue/redis', dirname(__DIR__) . '/src/drivers/redis');
 Yii::setAlias('@yii/queue/sync', dirname(__DIR__) . '/src/drivers/sync');
 Yii::setAlias('@yii/queue/sqs', dirname(__DIR__) . '/src/drivers/sqs');
+Yii::setAlias('@yii/queue/stomp', dirname(__DIR__) . '/src/drivers/stomp');
 Yii::setAlias('@tests', __DIR__);
 
 $config = require(__DIR__ . '/app/config/main.php');

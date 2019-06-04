@@ -1,10 +1,10 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.2.2 under development
+2.3.0 under development
 -----------------------
 
-- no changes in this release.
+- Enh #260: Added STOMP driver (versh23)
 
 
 2.2.1 May 21, 2019

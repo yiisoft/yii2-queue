@@ -29,7 +29,8 @@
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
         "phpunit/phpunit": "~4.4",
-        "aws/aws-sdk-php": ">=2.4"
+        "aws/aws-sdk-php": ">=2.4",
+        "enqueue/stomp": "^0.8.39"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
@@ -38,7 +39,8 @@
         "php-amqplib/php-amqplib": "Need for AMQP queue.",
         "enqueue/amqp-lib": "Need for AMQP interop queue.",
         "ext-gearman": "Need for Gearman queue.",
-        "aws/aws-sdk-php": "Need for aws SQS."
+        "aws/aws-sdk-php": "Need for aws SQS.",
+        "enqueue/stomp": "Need for Stomp queue."
     },
     "autoload": {
         "psr-4": {
@@ -51,7 +53,8 @@
             "yii\\queue\\gearman\\": "src/drivers/gearman",
             "yii\\queue\\redis\\": "src/drivers/redis",
             "yii\\queue\\sync\\": "src/drivers/sync",
-            "yii\\queue\\sqs\\": "src/drivers/sqs"
+            "yii\\queue\\sqs\\": "src/drivers/sqs",
+            "yii\\queue\\stomp\\": "src/drivers/stomp"
         }
     },
     "autoload-dev": {

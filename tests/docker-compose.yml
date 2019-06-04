@@ -34,6 +34,7 @@ services:
       AWS_SECRET: ${AWS_SECRET}
       AWS_REGION: ${AWS_REGION}
       AWS_SQS_URL: ${AWS_SQS_URL}
+      ACTIVEMQ_HOST: activemq
       AWS_SQS_FIFO_ENABLED: ${AWS_SQS_FIFO_ENABLED}
       AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL}
       AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID}
@@ -44,6 +45,7 @@ services:
     - rabbitmq
     - beanstalk
     - gearmand
+    - activemq
     networks:
       net: {}
   php72:
@@ -145,6 +147,14 @@ services:
     image: artefactual/gearmand
     ports:
     - 4731:4730
+    networks:
+      net: {}
+
+  #  https://hub.docker.com/r/webcenter/activemq/
+  activemq:
+    image: webcenter/activemq
+    ports:
+      - 61613:61613
     networks:
       net: {}
 

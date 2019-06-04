@@ -75,7 +75,7 @@ class QueueTest extends CliTestCase
         if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
             $this->markTestSkipped('Amqp tests are disabled for php 5.5');
         }
-
+        
         parent::setUp();
     }
 }

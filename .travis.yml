@@ -10,7 +10,9 @@ php:
 matrix:
   include:
     - php: 5.5
-      env: EXCLUDE_AMQP_INTEROP=true
+      env:
+        - EXCLUDE_AMQP_INTEROP=true
+        - EXCLUDE_STOMP=true
   fast_finish: true
 
 
@@ -19,6 +21,7 @@ services:
   - postgresql
   - redis-server
   - rabbitmq
+  - docker
 
 # cache vendor dirs
 cache:
@@ -30,12 +33,15 @@ before_install:
   - sudo apt-get install -qq beanstalkd
   - sudo beanstalkd -v
   - sudo service beanstalkd start
+  - docker pull webcenter/activemq
+  - docker run -d -p 61613:61613 webcenter/activemq
   - if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then pecl install igbinary-2.0.8; else pecl install igbinary; fi
 
 install:
   - travis_retry composer self-update && composer --version
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - if [ "$EXCLUDE_AMQP_INTEROP" = true ]; then travis_retry composer remove "enqueue/amqp-lib" "enqueue/amqp-tools" --dev --no-interaction  --no-update; fi
+  - if [ "$EXCLUDE_STOMP" = true ]; then travis_retry composer remove "enqueue/stomp" --dev --no-interaction  --no-update; fi
   - travis_retry composer install --prefer-dist --no-interaction
 
 before_script:

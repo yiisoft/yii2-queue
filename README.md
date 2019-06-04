@@ -8,7 +8,7 @@
 
 An extension for running tasks asynchronously via queues.
 
-It supports queues based on **DB**, **Redis**, **RabbitMQ**, **AMQP**, **Beanstalk** and **Gearman**.
+It supports queues based on **DB**, **Redis**, **RabbitMQ**, **AMQP**, **Beanstalk**, **ActiveMQ** and **Gearman**.
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
