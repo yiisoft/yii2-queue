@@ -14,7 +14,7 @@ use yii\queue\cli\Command as CliCommand;
  * Manages application stomp-queue.
  *
  * @author Sergey Vershinin <versh23@gmail.com>
- * @since 2.1.1
+ * @since 2.3.0
  */
 class Command extends CliCommand
 {
