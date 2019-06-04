@@ -92,7 +92,6 @@ class Queue extends CliQueue
      * @var string command class name
      */
     public $commandClass = Command::class;
-
     /**
      * Set the read timeout.
      * @var int
@@ -103,6 +102,7 @@ class Queue extends CliQueue
      * @var StompContext
      */
     protected $context;
+
 
     /**
      * @inheritdoc
