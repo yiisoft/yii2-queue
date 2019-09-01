@@ -33,7 +33,9 @@ return [
 ];
 ```
 
-You have to add a table to the database. Example schema for MySQL:
+You have to add a table to the database. Example schema for:
+
+MySQL:
 
 ```SQL
 CREATE TABLE `queue` (
@@ -53,8 +55,33 @@ CREATE TABLE `queue` (
   KEY `priority` (`priority`)
 ) ENGINE=InnoDB
 ```
+and Postgresql
 
-Migrations are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
+```SQL
+-- Necessary for creating Autoincrement field
+CREATE SEQUENCE queue_seq; 
+
+CREATE TABLE queue (
+  id bigint NOT NULL DEFAULT NEXTVAL ('queue_seq'),
+  channel varchar(255) NOT NULL,
+  job bytea NOT NULL,
+  pushed_at bigint NOT NULL,
+  ttr bigint NOT NULL,
+  delay bigint NOT NULL DEFAULT 0,
+  priority bigint check (priority > 0) NOT NULL DEFAULT 1024,
+  reserved_at bigint ,
+  attempt bigint,
+  done_at bigint,
+  PRIMARY KEY (id)
+);
+-- Optional but good for speeding up queries
+CREATE INDEX channel ON queue (channel); 
+CREATE INDEX reserved_at ON queue (reserved_at);
+CREATE INDEX priority ON queue (priority);
+```
+
+
+You can use migrations which are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
 To add migrations to your application, edit the console config file to configure
 [a namespaced migration](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations):
