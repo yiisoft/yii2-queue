@@ -33,7 +33,9 @@ return [
 ];
 ```
 
-データベースにテーブルを追加する必要があります。MySQL のためのスキーマ例:
+データベースにテーブルを追加する必要があります。スキーマ例:
+
+MySQL:
 
 ```SQL
 CREATE TABLE `queue` (
@@ -53,8 +55,33 @@ CREATE TABLE `queue` (
   KEY `priority` (`priority`)
 ) ENGINE=InnoDB
 ```
+Postgresql:
 
-マイグレーションが [src/drivers/db/migrations](../../src/drivers/db/migrations) から取得できます。
+```SQL
+-- オートインクリメント・フィールドを作成するために必要
+CREATE SEQUENCE queue_seq; 
+
+CREATE TABLE queue (
+  id bigint NOT NULL DEFAULT NEXTVAL ('queue_seq'),
+  channel varchar(255) NOT NULL,
+  job bytea NOT NULL,
+  pushed_at bigint NOT NULL,
+  ttr bigint NOT NULL,
+  delay bigint NOT NULL DEFAULT 0,
+  priority bigint check (priority > 0) NOT NULL DEFAULT 1024,
+  reserved_at bigint ,
+  attempt bigint,
+  done_at bigint,
+  PRIMARY KEY (id)
+);
+-- 必須ではないが、クエリを高速化するのに良い
+CREATE INDEX channel ON queue (channel); 
+CREATE INDEX reserved_at ON queue (reserved_at);
+CREATE INDEX priority ON queue (priority);
+```
+
+
+マイグレーションが [src/drivers/db/migrations](../../src/drivers/db/migrations) にありますので、利用して下さい。
 
 アプリケーションにマイグレーションを追加するためには、コンソールの構成ファイルを編集して、
 [名前空間化されたマイグレーション](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations) を構成して下さい。

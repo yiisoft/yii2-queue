@@ -24,6 +24,30 @@ return [
 ];
 ```
 
+FIFO キューのための構成例:
+
+```php
+return [
+    'bootstrap' => [
+        'queue', // コンポーネントが自身のコンソール・コマンドを登録します
+    ],
+    'components' => [
+        'queue' => [
+            'class' => \yii\queue\sqs\Queue::class,
+            'url' => '<sqs url>',
+            'key' => '<key>',
+            'secret' => '<secret>',
+            'region' => '<region>',
+            'messageGroupId' => '<Group ID>',
+        ],
+    ],
+];
+```
+
+SQS では、FIFO キューのためにはメッセージ・グループ ID が必要です。自分自身で構成するか、"default" という値を使って下さい。
+
+重複回避 ID が自動的に生成されます。そのため、SQS キューでコンテント・ベースの重複回避を有効にしていたとしても、この ID が使われることになります。
+
 コンソール
 ----------
 
