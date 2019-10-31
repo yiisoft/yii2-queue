@@ -73,10 +73,6 @@ class Queue extends CliQueue
      */
     public function status($id)
     {
-        if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidArgumentException("Unknown message ID: $id.");
-        }
-
         if ($this->redis->hexists("$this->channel.attempts", $id)) {
             return self::STATUS_RESERVED;
         }
