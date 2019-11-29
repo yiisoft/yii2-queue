@@ -219,17 +219,29 @@ class Queue extends CliQueue
      */
     protected function release($payload)
     {
-        if ($this->deleteReleased) {
-            $this->db->createCommand()->delete(
-                $this->tableName,
-                ['id' => $payload['id']]
-            )->execute();
-        } else {
-            $this->db->createCommand()->update(
-                $this->tableName,
-                ['done_at' => time()],
-                ['id' => $payload['id']]
-            )->execute();
+        $mutex = $this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout);
+
+        try {
+            if ($this->deleteReleased) {
+                $this->db->createCommand()->delete(
+                    $this->tableName,
+                    ['id' => $payload['id']]
+                )->execute();
+            } else {
+                $this->db->createCommand()->update(
+                    $this->tableName,
+                    ['done_at' => time()],
+                    ['id' => $payload['id']]
+                )->execute();
+            }
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+        } finally {
+            if ($mutex) {
+                $this->mutex->release(__CLASS__ . $this->channel);
+            } else {
+                \Yii::warning('Queue->release() Has not waited the lock');
+            }
         }
     }
 
@@ -243,7 +255,7 @@ class Queue extends CliQueue
             $this->db->createCommand()->update(
                 $this->tableName,
                 ['reserved_at' => null],
-                '[[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
+                '[[reserved_at]] < :time - [[ttr]] and [[reserved_at]] is not null and [[done_at]] is null',
                 [':time' => $this->reserveTime]
             )->execute();
         }
