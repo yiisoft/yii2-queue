@@ -108,6 +108,11 @@ class Queue extends CliQueue
      */
     public $persisted;
     /**
+     *
+     * @var bool send keep-alive packets for a socket connection
+     */
+    public $keepalive;
+    /**
      * The connection will be established as later as possible if set true.
      *
      * @var bool|null
@@ -351,6 +356,7 @@ class Queue extends CliQueue
             'connection_timeout' => $this->connectionTimeout,
             'heartbeat' => $this->heartbeat,
             'persisted' => $this->persisted,
+            'keepalive' => $this->keepalive,
             'lazy' => $this->lazy,
             'qos_global' => $this->qosGlobal,
             'qos_prefetch_size' => $this->qosPrefetchSize,
