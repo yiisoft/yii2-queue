@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 2.3.1 under development
 -----------------------
 
-- no changes in this release.
+- Bug #363,#371: Ensure compatibility with symfony/process >= 5.0 (HenryVolkmer)
 
 
 2.3.0 June 04, 2019
