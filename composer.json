@@ -23,7 +23,7 @@
     "require-dev": {
         "yiisoft/yii2-redis": "*",
         "php-amqplib/php-amqplib": "*",
-        "enqueue/amqp-lib": "^0.8",
+        "enqueue/amqp-lib": "*",
         "pda/pheanstalk": "v3.*",
         "jeremeamia/superclosure": "*",
         "yiisoft/yii2-debug": "*",
