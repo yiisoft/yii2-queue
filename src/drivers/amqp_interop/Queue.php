@@ -110,6 +110,7 @@ class Queue extends CliQueue
     /**
      *
      * @var bool send keep-alive packets for a socket connection
+     * @since 2.3.1
      */
     public $keepalive;
     /**

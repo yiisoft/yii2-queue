@@ -31,7 +31,15 @@ class Queue extends CliQueue
     public $queueName = 'queue';
     public $exchangeName = 'exchange';
     public $vhost = '/';
+    /**
+     * @var int The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds.
+     * @since 2.3.1
+     */
     public $heartbeat = 0;
+    /**
+     * @var bool send keep-alive packets for a socket connection
+     * @since 2.3.1
+     */
     public $keepalive = false;
     /**
      * @var string command class name
