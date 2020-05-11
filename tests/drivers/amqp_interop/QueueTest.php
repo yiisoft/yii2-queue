@@ -63,6 +63,28 @@ class QueueTest extends CliTestCase
     }
 
     /**
+     * @requires extension pcntl
+     */
+    public function testSignals()
+    {
+        $signals = [
+            1 => 129, // SIGHUP
+            2 => 130, // SIGINT
+            3 => 131, // SIGQUIT
+            15 => 143, // SIGTERM
+        ];
+
+        foreach ($signals as $signal => $exitCode) {
+            $process = $this->startProcess('php yii queue/listen');
+            $this->assertTrue($process->isRunning());
+            $process->signal($signal);
+            $process->wait();
+            $this->assertFalse($process->isRunning());
+            $this->assertEquals($exitCode, $process->getExitCode());
+        }
+    }
+
+    /**
      * @return Queue
      */
     protected function getQueue()
