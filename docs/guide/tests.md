@@ -25,7 +25,7 @@ make test73
 If you need to pass options to `phpunit` use the following commands (for example, to run only one test file):
 ```bash
 docker-compose build --pull php73
-docker-compose run php73 vendor/bin/phpunit tests\\drivers\\sqs\\QueueTest /vagrant/yii2-queue/tests/drivers/sqs/QueueTest.php
+docker-compose run php73 vendor/bin/phpunit tests\\drivers\\sqs\\QueueTest /code/tests/drivers/sqs/QueueTest.php
 docker-compose down
 ```
 
