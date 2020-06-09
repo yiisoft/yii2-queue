@@ -235,7 +235,7 @@ class Queue extends CliQueue
                     $oldHandler = pcntl_signal_get_handler($signal);
                 }
 
-                pcntl_signal ($signal, static function ($signal) use ($oldHandler) {
+                pcntl_signal($signal, static function ($signal) use ($oldHandler) {
                     if ($oldHandler && is_callable($oldHandler)) {
                         $oldHandler($signal);
                     }
