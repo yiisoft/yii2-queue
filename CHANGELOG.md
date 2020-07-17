@@ -5,7 +5,7 @@ Yii2 Queue Extension Change Log
 -----------------------
 
 - Bug #380: Fixed amqp-interop queue/listen signal handling (tarinu)
-
+- Bug #388: `symfony/process 5.0` compatibility (leandrogehlen)
 
 2.3.0 June 04, 2019
 -------------------
@@ -17,7 +17,7 @@ Yii2 Queue Extension Change Log
 ------------------
 
 - Bug #220: Updated to the latest amqp-lib (alexkart)
-- Enh #293: Add `handle` method to `\yii\queue\sqs\Queue` that provides public access for `handleMessage` which can be 
+- Enh #293: Add `handle` method to `\yii\queue\sqs\Queue` that provides public access for `handleMessage` which can be
 useful for handling jobs by webhooks (alexkart)
 - Enh #332: Add AWS SQS FIFO support (kringkaste, alexkart)
 
