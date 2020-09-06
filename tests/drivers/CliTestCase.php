@@ -38,6 +38,7 @@ abstract class CliTestCase extends TestCase
 
     /**
      * @param string $cmd
+     * @return Process
      */
     protected function startProcess($cmd)
     {
@@ -48,6 +49,7 @@ abstract class CliTestCase extends TestCase
             throw new ProcessFailedException($process);
         }
         $this->processes[] = $process;
+        return $process;
     }
 
     /**
