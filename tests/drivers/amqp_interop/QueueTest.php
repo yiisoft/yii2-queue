@@ -22,7 +22,7 @@ class QueueTest extends CliTestCase
 {
     public function testListen()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
 
@@ -31,7 +31,7 @@ class QueueTest extends CliTestCase
 
     public function testLater()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(2)->push($job);
 
@@ -40,7 +40,7 @@ class QueueTest extends CliTestCase
 
     public function testRetry()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = new RetryJob(['uid' => uniqid()]);
         $this->getQueue()->push($job);
         sleep(6);
@@ -56,7 +56,7 @@ class QueueTest extends CliTestCase
         $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 3]));
         $this->getQueue()->priority(2)->push(new PriorityJob(['number' => 4]));
         $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 2]));
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         sleep(3);
 
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
@@ -75,7 +75,7 @@ class QueueTest extends CliTestCase
         ];
 
         foreach ($signals as $signal => $exitCode) {
-            $process = $this->startProcess('php yii queue/listen');
+            $process = $this->startProcess(['php', 'yii', 'queue/listen']);
             $this->assertTrue($process->isRunning());
             $process->signal($signal);
             $process->wait();
@@ -97,7 +97,7 @@ class QueueTest extends CliTestCase
         if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
             $this->markTestSkipped('Amqp tests are disabled for php 5.5');
         }
-        
+
         parent::setUp();
     }
 }

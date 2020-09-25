@@ -28,7 +28,7 @@ class QueueTest extends CliTestCase
 
     public function testListen()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
 

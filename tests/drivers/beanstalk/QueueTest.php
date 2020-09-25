@@ -26,7 +26,7 @@ class QueueTest extends CliTestCase
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
 
         $this->assertSimpleJobDone($job);
     }
@@ -36,7 +36,7 @@ class QueueTest extends CliTestCase
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
         $isWaiting = $this->getQueue()->isWaiting($id);
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
         $isDone = $this->getQueue()->isDone($id);
 
         $this->assertTrue($isWaiting);
@@ -50,14 +50,14 @@ class QueueTest extends CliTestCase
         $this->getQueue()->priority(200)->push(new PriorityJob(['number' => 3]));
         $this->getQueue()->priority(200)->push(new PriorityJob(['number' => 4]));
         $this->getQueue()->priority(100)->push(new PriorityJob(['number' => 2]));
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
 
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
     }
 
     public function testListen()
     {
-        $this->startProcess('php yii queue/listen 1');
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
 
@@ -66,7 +66,7 @@ class QueueTest extends CliTestCase
 
     public function testLater()
     {
-        $this->startProcess('php yii queue/listen 1');
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(2)->push($job);
 
@@ -75,7 +75,7 @@ class QueueTest extends CliTestCase
 
     public function testRetry()
     {
-        $this->startProcess('php yii queue/listen 1');
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = new RetryJob(['uid' => uniqid()]);
         $this->getQueue()->push($job);
         sleep(6);
@@ -88,7 +88,7 @@ class QueueTest extends CliTestCase
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->assertTrue($this->jobIsExists($id));
-        $this->runProcess("php yii queue/remove $id");
+        $this->runProcess(['php', 'yii', 'queue/remove', $id]);
 
         $this->assertFalse($this->jobIsExists($id));
     }

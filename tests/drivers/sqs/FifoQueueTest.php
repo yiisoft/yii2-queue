@@ -21,14 +21,14 @@ class FifoQueueTest extends CliTestCase
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
 
         $this->assertSimpleJobDone($job);
     }
 
     public function testListen()
     {
-        $this->startProcess('php yii queue/listen 1');
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
 
@@ -37,7 +37,7 @@ class FifoQueueTest extends CliTestCase
 
     public function testFifoQueueDoesNotSupportPerMessageDelays()
     {
-        $this->startProcess('php yii queue/listen 1');
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
 
         $this->setExpectedException('\Aws\Sqs\Exception\SqsException');
@@ -46,7 +46,7 @@ class FifoQueueTest extends CliTestCase
 
     public function testRetry()
     {
-        $this->startProcess('php yii queue/listen 1');
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = new RetryJob(['uid' => uniqid()]);
         $this->getQueue()->push($job);
         sleep(6);
@@ -62,7 +62,7 @@ class FifoQueueTest extends CliTestCase
         }
 
         $this->getQueue()->push($this->createSimpleJob());
-        $this->runProcess('php yii queue/clear --interactive=0');
+        $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
     }
 
     /**
