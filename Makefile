@@ -1,6 +1,3 @@
-COMPOSE_PROJECT_NAME=yii2-queue
-COMPOSE_FILE=tests/docker-compose.yml
-
 build:
 	@cp -n .env.example .env
 	docker-compose pull

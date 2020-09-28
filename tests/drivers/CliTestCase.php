@@ -24,7 +24,7 @@ abstract class CliTestCase extends TestCase
     private $processes = [];
 
     /**
-     * @param string $cmd
+     * @param array $cmd
      */
     protected function runProcess($cmd)
     {
@@ -37,12 +37,12 @@ abstract class CliTestCase extends TestCase
     }
 
     /**
-     * @param string $cmd
+     * @param array $cmd
      * @return Process
      */
     protected function startProcess($cmd)
     {
-        $process = new Process('exec ' . $this->prepareCmd($cmd));
+        $process = new Process($this->prepareCmd($cmd));
         $process->start();
         sleep(2);
         if ($process->getExitCode() !== null) {
@@ -53,8 +53,8 @@ abstract class CliTestCase extends TestCase
     }
 
     /**
-     * @param string $cmd
-     * @return string
+     * @param array $cmd
+     * @return array
      */
     private function prepareCmd($cmd)
     {
@@ -62,11 +62,20 @@ abstract class CliTestCase extends TestCase
         $method = $class->getMethod('getCommandId');
         $method->setAccessible(true);
 
-        return strtr($cmd, [
+        $replace = [
             'php' => PHP_BINARY,
             'yii' => __DIR__ . '/../yii',
             'queue' => $method->invoke($this->getQueue()),
-        ]);
+        ];
+
+        array_walk(
+            $cmd,
+            static function (&$v) use ($replace) {
+                $v = strtr($v, $replace);
+            }
+        );
+
+        return $cmd;
     }
 
     /**

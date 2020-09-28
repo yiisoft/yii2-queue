@@ -26,25 +26,25 @@ class Action extends \yii\base\Action
     public $modes = [
         // Worker will be run in fast mode
         'fast' => [
-            'gearmanQueue'     => 'gearman-queue/listen      --isolate=0',
-            'beanstalkQueue'   => 'beanstalk-queue/listen    --isolate=0',
-            'redisQueue'       => 'redis-queue/listen        --isolate=0',
-            'amqpQueue'        => 'amqp-queue/listen         --isolate=0',
-            'amqpInteropQueue' => 'amqp-interop-queue/listen --isolate=0',
-            'mysqlQueue'       => 'mysql-queue/listen 1      --isolate=0',
-            'fileQueue'        => 'file-queue/listen 1       --isolate=0',
-            'stompQueue'       => 'stomp-queue/listen        --isolate=0',
+            'gearmanQueue'     => ['gearman-queue/listen'      ,'--isolate=0'],
+            'beanstalkQueue'   => ['beanstalk-queue/listen'    ,'--isolate=0'],
+            'redisQueue'       => ['redis-queue/listen'        ,'--isolate=0'],
+            'amqpQueue'        => ['amqp-queue/listen'         ,'--isolate=0'],
+            'amqpInteropQueue' => ['amqp-interop-queue/listen' ,'--isolate=0'],
+            'mysqlQueue'       => ['mysql-queue/listen', '1'   ,'--isolate=0'],
+            'fileQueue'        => ['file-queue/listen' , '1'   ,'--isolate=0'],
+            'stompQueue'       => ['stomp-queue/listen'        ,'--isolate=0'],
         ],
         // Worker will be run in isolate mode
         'isolate' => [
-            'gearmanQueue'     => 'gearman-queue/listen      --isolate=1',
-            'beanstalkQueue'   => 'beanstalk-queue/listen    --isolate=1',
-            'redisQueue'       => 'redis-queue/listen        --isolate=1',
-            'amqpQueue'        => 'amqp-queue/listen         --isolate=1',
-            'amqpInteropQueue' => 'amqp-interop-queue/listen --isolate=1',
-            'mysqlQueue'       => 'mysql-queue/listen 1      --isolate=1',
-            'fileQueue'        => 'file-queue/listen 1       --isolate=1',
-            'stompQueue'       => 'stomp-queue/listen 1      --isolate=1',
+            'gearmanQueue'     => ['gearman-queue/listen'      ,'--isolate=1'],
+            'beanstalkQueue'   => ['beanstalk-queue/listen'    ,'--isolate=1'],
+            'redisQueue'       => ['redis-queue/listen'        ,'--isolate=1'],
+            'amqpQueue'        => ['amqp-queue/listen'         ,'--isolate=1'],
+            'amqpInteropQueue' => ['amqp-interop-queue/listen' ,'--isolate=1'],
+            'mysqlQueue'       => ['mysql-queue/listen', '1'   ,'--isolate=1'],
+            'fileQueue'        => ['file-queue/listen' , '1'   ,'--isolate=1'],
+            'stompQueue'       => ['stomp-queue/listen', '1'   ,'--isolate=1'],
         ],
     ];
     /**
@@ -137,14 +137,14 @@ class Action extends \yii\base\Action
     /**
      * Starts few workers.
      *
-     * @param string $command
+     * @param array $command
      * @param int $count
      * @param callable $callback
      */
     private function startWorkers($command, $count, callable $callback)
     {
         for ($i = 0; $i < $count; $i++) {
-            $this->workers[] = $worker = new Process("exec php tests/yii $command");
+            $this->workers[] = $worker = new Process(array_merge(['php', 'tests/yii'], $command));
             $worker->start($callback);
         }
     }

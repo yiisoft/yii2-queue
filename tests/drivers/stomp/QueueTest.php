@@ -7,7 +7,6 @@
 
 namespace tests\drivers\stomp;
 
-use tests\app\PriorityJob;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
@@ -18,7 +17,7 @@ class QueueTest extends CliTestCase
 {
     public function testListen()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
 
@@ -27,7 +26,7 @@ class QueueTest extends CliTestCase
 
     public function testRetry()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = new RetryJob(['uid' => uniqid()]);
         $this->getQueue()->push($job);
         sleep(6);

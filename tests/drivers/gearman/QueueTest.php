@@ -23,7 +23,7 @@ class QueueTest extends CliTestCase
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
 
         $this->assertSimpleJobDone($job);
     }
@@ -35,7 +35,7 @@ class QueueTest extends CliTestCase
         $this->getQueue()->priority('norm')->push(new PriorityJob(['number' => 3]));
         $this->getQueue()->priority('norm')->push(new PriorityJob(['number' => 4]));
         $this->getQueue()->priority('high')->push(new PriorityJob(['number' => 2]));
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
 
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
     }
@@ -45,7 +45,7 @@ class QueueTest extends CliTestCase
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
         $isWaiting = $this->getQueue()->isWaiting($id);
-        $this->runProcess('php yii queue/run');
+        $this->runProcess(['php', 'yii', 'queue/run']);
         $isDone = $this->getQueue()->isDone($id);
 
         $this->assertTrue($isWaiting);
@@ -54,7 +54,7 @@ class QueueTest extends CliTestCase
 
     public function testListen()
     {
-        $this->startProcess('php yii queue/listen');
+        $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
 
