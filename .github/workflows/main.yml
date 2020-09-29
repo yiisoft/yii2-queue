@@ -1,4 +1,4 @@
-name: CI
+name: build
 
 on: [push, workflow_dispatch, pull_request]
 
@@ -14,12 +14,15 @@ env:
     AWS_SQS_FIFO_URL: ${{ secrets.AWS_SQS_FIFO_URL }}
     AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${{ secrets.AWS_SQS_FIFO_MESSAGE_GROUP_ID }}
 jobs:
-    test:
+    phpunit:
+        name: PHP ${{ matrix.php }}
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
                 php: [ 56, 70, 71, 72, 73 ]
         steps:
-            -   uses: actions/checkout@v2
-            -   run: make test${{ matrix.php }}
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: PHP Unit tests for PHP ${{ matrix.php }}
+                run: make test${{ matrix.php }}
