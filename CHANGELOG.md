@@ -1,11 +1,12 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.1 under development
+2.3.1 December 23, 2020
 -----------------------
 
 - Bug #380: Fixed amqp-interop queue/listen signal handling (tarinu)
 - Enh #388: `symfony/process 5.0` compatibility (leandrogehlen)
+
 
 2.3.0 June 04, 2019
 -------------------
