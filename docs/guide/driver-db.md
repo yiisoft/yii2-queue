@@ -89,7 +89,7 @@ To add migrations to your application, edit the console config file to configure
 ```php
 'controllerMap' => [
     // ...
-    'migrate' => [
+    'migrate-queue' => [
         'class' => 'yii\console\controllers\MigrateController',
         'migrationPath' => null,
         'migrationNamespaces' => [
@@ -100,10 +100,10 @@ To add migrations to your application, edit the console config file to configure
 ],
 ```
 
-Then issue the `migrate/up` command:
+Then issue the `migrate-queue/up` command:
 
 ```sh
-yii migrate/up
+yii migrate-queue/up
 ```
 
 Console
