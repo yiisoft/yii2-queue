@@ -162,9 +162,11 @@ abstract class Command extends Controller
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        // Child process command: php yii queue/exec "id" "ttr" "attempt" "pid"
+        // Child process command: php -c <PATH_TO_INI_FILE> yii queue/exec "id" "ttr" "attempt" "pid"
         $cmd = [
             $this->phpBinary,
+            '-c',
+            get_cfg_var('cfg_file_path'),
             $_SERVER['SCRIPT_FILENAME'],
             $this->uniqueId . '/exec',
             $id,
