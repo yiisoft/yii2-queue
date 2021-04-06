@@ -168,7 +168,7 @@ abstract class Command extends Controller
         ];
 
         $config = get_cfg_var('cfg_file_path');
-        if(is_string($config)) {
+        if (is_string($config)) {
             $cmd[] = '-c';
             $cmd[] = $config;
         }
