@@ -69,7 +69,7 @@ class SignalLoop extends BaseObject implements LoopInterface
     public function init()
     {
         parent::init();
-        if (extension_loaded('pcntl')) {
+        if (extension_loaded('pcntl') && function_exists('pcntl_signal')) {
             foreach ($this->exitSignals as $signal) {
                 pcntl_signal($signal, function () {
                     self::$exit = true;
@@ -95,7 +95,7 @@ class SignalLoop extends BaseObject implements LoopInterface
      */
     public function canContinue()
     {
-        if (extension_loaded('pcntl')) {
+        if (extension_loaded('pcntl') && function_exists('pcntl_signal_dispatch')) {
             pcntl_signal_dispatch();
             // Wait for resume signal until loop is suspended
             while (self::$pause && !self::$exit) {
