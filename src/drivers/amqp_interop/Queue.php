@@ -224,7 +224,7 @@ class Queue extends CliQueue
             $this->close();
         });
 
-        if (extension_loaded('pcntl') && PHP_MAJOR_VERSION >= 7) {
+        if (extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
             
