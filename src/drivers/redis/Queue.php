@@ -162,10 +162,10 @@ class Queue extends CliQueue
     protected function moveExpired($from)
     {
         $now = time();
-        if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
+        if ($expired = $this->redis->zrangebyscore($from, '-inf', $now)) {
             $this->redis->zremrangebyscore($from, '-inf', $now);
             foreach ($expired as $id) {
-                $this->redis->rpush("$this->channel.waiting", $id);
+                $this->redis->lpush("$this->channel.waiting", $id);
             }
         }
     }
