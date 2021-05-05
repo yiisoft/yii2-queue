@@ -1,8 +1,8 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.2 under development
------------------------
+2.3.2 May 05, 2021
+------------------
 
 - Bug #414: Fixed PHP errors when PCNTL functions were disallowed (brandonkelly)
 
