@@ -372,6 +372,7 @@ class Queue extends CliQueue
             'write_timeout' => $this->writeTimeout,
             'connection_timeout' => $this->connectionTimeout,
             'heartbeat' => $this->heartbeat,
+            'heartbeat_on_tick' => (bool) $this->heartbeat,
             'persisted' => $this->persisted,
             'lazy' => $this->lazy,
             'qos_global' => $this->qosGlobal,
