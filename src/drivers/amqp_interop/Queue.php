@@ -175,6 +175,12 @@ class Queue extends CliQueue
      */
     public $exchangeName = 'exchange';
     /**
+     * Routing key for publishing messages. Default is NULL.
+     *
+     * @var string|null
+     */
+    public $routingKey;
+    /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
      * @var string
@@ -227,7 +233,7 @@ class Queue extends CliQueue
         if (extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
-            
+
             foreach ($signals as $signal) {
                 $oldHandler = null;
                 // This got added in php 7.1 and might not exist on all supported versions
@@ -325,6 +331,10 @@ class Queue extends CliQueue
             $producer->setPriority($priority);
         }
 
+        if ($this->routingKey) {
+            $message->setRoutingKey($this->routingKey);
+        }
+
         $producer->send($topic, $message);
 
         return $message->getMessageId();
@@ -414,7 +424,7 @@ class Queue extends CliQueue
         $topic->addFlag(AmqpTopic::FLAG_DURABLE);
         $this->context->declareTopic($topic);
 
-        $this->context->bind(new AmqpBind($queue, $topic));
+        $this->context->bind(new AmqpBind($queue, $topic, $this->routingKey));
 
         $this->setupBrokerDone = true;
     }
