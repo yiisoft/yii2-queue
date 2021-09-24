@@ -175,6 +175,11 @@ class Queue extends CliQueue
      */
     public $exchangeName = 'exchange';
     /**
+     * The exchange type. Can take values: direct, fanout, topic, headers
+     * @var string
+     */
+    public $exchangeType = AmqpTopic::TYPE_DIRECT;
+    /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
      * @var string
@@ -227,7 +232,7 @@ class Queue extends CliQueue
         if (extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
-            
+
             foreach ($signals as $signal) {
                 $oldHandler = null;
                 // This got added in php 7.1 and might not exist on all supported versions
@@ -410,7 +415,7 @@ class Queue extends CliQueue
         $this->context->declareQueue($queue);
 
         $topic = $this->context->createTopic($this->exchangeName);
-        $topic->setType(AmqpTopic::TYPE_DIRECT);
+        $topic->setType($this->exchangeType);
         $topic->addFlag(AmqpTopic::FLAG_DURABLE);
         $this->context->declareTopic($topic);
 
