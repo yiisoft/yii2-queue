@@ -177,6 +177,7 @@ class Queue extends CliQueue
     /**
      * The exchange type. Can take values: direct, fanout, topic, headers
      * @var string
+     * @since 2.3.3
      */
     public $exchangeType = AmqpTopic::TYPE_DIRECT;
     /**
