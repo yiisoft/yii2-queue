@@ -98,6 +98,10 @@ class VerboseBehavior extends Behavior
         $message = explode("\n", ltrim($event->error->getMessage()), 2)[0]; // First line
         $this->command->stdout($message, Console::FG_GREY);
         $this->command->stdout(PHP_EOL);
+        $this->command->stdout('Stack trace:', Console::FG_GREY);
+        $this->command->stdout(PHP_EOL);
+        $this->command->stdout($event->error->getTraceAsString(), Console::FG_GREY);
+        $this->command->stdout(PHP_EOL);
     }
 
     /**
