@@ -5,6 +5,7 @@ Yii2 Queue Extension Change Log
 -----------------------
 
 - Enh #430: Added configurable AMQP Exchange type (s1lver)
+- Enh #394: Added stack trace on error in verbose mode (germanow)
 
 
 2.3.2 May 05, 2021
