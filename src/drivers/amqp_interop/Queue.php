@@ -169,6 +169,13 @@ class Queue extends CliQueue
      */
     public $queueName = 'interop_queue';
     /**
+     * Setting optional arguments for the queue
+     * @var array
+     * @since 2.3.3
+     * @see https://www.rabbitmq.com/queues.html#optional-arguments
+     */
+    public $queueOptionalArguments = [];
+    /**
      * The exchange used to publish messages to.
      *
      * @var string
@@ -412,7 +419,10 @@ class Queue extends CliQueue
 
         $queue = $this->context->createQueue($this->queueName);
         $queue->addFlag(AmqpQueue::FLAG_DURABLE);
-        $queue->setArguments(['x-max-priority' => $this->maxPriority]);
+        $queue->setArguments(array_merge(
+            ['x-max-priority' => $this->maxPriority],
+            $this->queueOptionalArguments
+        ));
         $this->context->declareQueue($queue);
 
         $topic = $this->context->createTopic($this->exchangeName);
