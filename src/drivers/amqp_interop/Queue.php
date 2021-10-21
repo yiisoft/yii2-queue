@@ -169,7 +169,14 @@ class Queue extends CliQueue
      */
     public $queueName = 'interop_queue';
     /**
-     * Setting optional arguments for the queue
+     * Setting optional arguments for the queue (key-value pairs)
+     * ```php
+     * [
+     *    'x-expires' => 300000,
+     *    'x-max-priority' => 10
+     * ]
+     * ```
+     *
      * @var array
      * @since 2.3.3
      * @see https://www.rabbitmq.com/queues.html#optional-arguments
