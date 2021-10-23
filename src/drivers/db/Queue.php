@@ -236,7 +236,7 @@ class Queue extends CliQueue
     /**
      * Moves expired messages into waiting list.
      */
-    private function moveExpired()
+    protected function moveExpired()
     {
         if ($this->reserveTime !== time()) {
             $this->reserveTime = time();
@@ -249,5 +249,5 @@ class Queue extends CliQueue
         }
     }
 
-    private $reserveTime;
+    protected $reserveTime;
 }
