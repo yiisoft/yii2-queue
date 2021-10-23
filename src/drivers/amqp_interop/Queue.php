@@ -169,11 +169,31 @@ class Queue extends CliQueue
      */
     public $queueName = 'interop_queue';
     /**
+     * Setting optional arguments for the queue (key-value pairs)
+     * ```php
+     * [
+     *    'x-expires' => 300000,
+     *    'x-max-priority' => 10
+     * ]
+     * ```
+     *
+     * @var array
+     * @since 2.3.3
+     * @see https://www.rabbitmq.com/queues.html#optional-arguments
+     */
+    public $queueOptionalArguments = [];
+    /**
      * The exchange used to publish messages to.
      *
      * @var string
      */
     public $exchangeName = 'exchange';
+    /**
+     * The exchange type. Can take values: direct, fanout, topic, headers
+     * @var string
+     * @since 2.3.3
+     */
+    public $exchangeType = AmqpTopic::TYPE_DIRECT;
     /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
@@ -224,10 +244,10 @@ class Queue extends CliQueue
             $this->close();
         });
 
-        if (extension_loaded('pcntl') && PHP_MAJOR_VERSION >= 7) {
+        if (extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
-            
+
             foreach ($signals as $signal) {
                 $oldHandler = null;
                 // This got added in php 7.1 and might not exist on all supported versions
@@ -406,11 +426,14 @@ class Queue extends CliQueue
 
         $queue = $this->context->createQueue($this->queueName);
         $queue->addFlag(AmqpQueue::FLAG_DURABLE);
-        $queue->setArguments(['x-max-priority' => $this->maxPriority]);
+        $queue->setArguments(array_merge(
+            ['x-max-priority' => $this->maxPriority],
+            $this->queueOptionalArguments
+        ));
         $this->context->declareQueue($queue);
 
         $topic = $this->context->createTopic($this->exchangeName);
-        $topic->setType(AmqpTopic::TYPE_DIRECT);
+        $topic->setType($this->exchangeType);
         $topic->addFlag(AmqpTopic::FLAG_DURABLE);
         $this->context->declareTopic($topic);
 
