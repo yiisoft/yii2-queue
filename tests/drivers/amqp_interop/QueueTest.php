@@ -111,6 +111,7 @@ class QueueTest extends CliTestCase
             }
         );
         $subscription->consume(2000);
+        sleep(2);
 
         $this->assertEquals($queue->routingKey, $receivedRoutingKey);
     }
