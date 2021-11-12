@@ -7,6 +7,10 @@
 
 namespace tests\drivers\amqp_interop;
 
+use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Enqueue\AmqpLib\AmqpConsumer;
+use Interop\Amqp\AmqpMessage;
+use Interop\Amqp\Impl\AmqpQueue;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
@@ -82,6 +86,33 @@ class QueueTest extends CliTestCase
             $this->assertFalse($process->isRunning());
             $this->assertEquals($exitCode, $process->getExitCode());
         }
+    }
+
+    public function testSendMessageWithRoutingKey()
+    {
+        $receivedRoutingKey = null;
+
+        $queue = $this->getQueue();
+        $queue->routingKey = 'test';
+        $queue->push($this->createSimpleJob());
+
+        $factory = new AmqpConnectionFactory([
+            'host' => $queue->host,
+        ]);
+        $context = $factory->createContext();
+        $testConsumer = $context->createConsumer(new AmqpQueue($queue->queueName));
+        $subscription = $context->createSubscriptionConsumer();
+        $subscription->subscribe(
+            $testConsumer,
+            function(AmqpMessage $message, AmqpConsumer $consumer) use (&$receivedRoutingKey) {
+                $receivedRoutingKey = $message->getRoutingKey();
+
+                return true;
+            }
+        );
+        $subscription->consume(2000);
+
+        $this->assertEquals($queue->routingKey, $receivedRoutingKey);
     }
 
     /**

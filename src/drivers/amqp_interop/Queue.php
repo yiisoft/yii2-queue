@@ -189,17 +189,17 @@ class Queue extends CliQueue
      */
     public $exchangeName = 'exchange';
     /**
-     * Routing key for publishing messages. Default is NULL.
-     *
-     * @var string|null
-     */
-    public $routingKey;  
-    /**
      * The exchange type. Can take values: direct, fanout, topic, headers
      * @var string
      * @since 2.3.3
      */
     public $exchangeType = AmqpTopic::TYPE_DIRECT;
+    /**
+     * Routing key for publishing messages. Default is NULL.
+     *
+     * @var string|null
+     */
+    public $routingKey;
 
     /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
