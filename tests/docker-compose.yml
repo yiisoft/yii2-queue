@@ -75,7 +75,7 @@ services:
       context: ..
       dockerfile: tests/docker/php/7.0/Dockerfile
     volumes:
-    - ./runtime/.composer70:/root/.composer
+      - ./runtime/.composer70:/root/.composer
     dns: *php_dns
     environment: *php_environment
     depends_on: *php_depends_on
