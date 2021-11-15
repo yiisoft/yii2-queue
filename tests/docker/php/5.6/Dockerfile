@@ -1,5 +1,11 @@
 FROM php:5.6-cli
 
+RUN apt update -qq \
+    && apt install -y ca-certificates \
+    && sed -i '/^mozilla\/DST_Root_CA_X3.crt$/ s/^/!/' /etc/ca-certificates.conf \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
