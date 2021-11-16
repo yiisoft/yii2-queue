@@ -3,7 +3,11 @@ build:
 	docker-compose pull
 	docker-compose build --pull
 
-test: test73 test72 test71 test70 test56
+test: test74 test73 test72 test71 test70 test56
+test74:
+	docker-compose build --pull php74
+	docker-compose run php74 vendor/bin/phpunit --colors=always -v --debug
+	docker-compose down
 test73:
 	docker-compose build --pull php73
 	docker-compose run php73 vendor/bin/phpunit --colors=always -v --debug
@@ -25,7 +29,11 @@ test56:
 	docker-compose run php56 vendor/bin/phpunit --colors=always -v --debug
 	docker-compose down
 
-benchmark: benchmark73 benchmark72 benchmark71 benchmark70 benchmark56
+benchmark: benchmark74 benchmark73 benchmark72 benchmark71 benchmark70 benchmark56
+benchmark74:
+	docker-compose build --pull php74
+	docker-compose run php74 tests/yii benchmark/waiting
+	docker-compose down
 benchmark73:
 	docker-compose build --pull php73
 	docker-compose run php73 tests/yii benchmark/waiting
