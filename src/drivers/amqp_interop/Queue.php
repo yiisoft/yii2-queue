@@ -352,7 +352,7 @@ class Queue extends CliQueue
             $producer->setPriority($priority);
         }
 
-        if ($this->routingKey) {
+        if (null !== $this->routingKey) {
             $message->setRoutingKey($this->routingKey);
         }
 
