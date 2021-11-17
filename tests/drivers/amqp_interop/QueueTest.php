@@ -75,7 +75,6 @@ class QueueTest extends CliTestCase
         $subscriptionConsumer = $context->createSubscriptionConsumer();
         $subscriptionConsumer->subscribe($consumer, $callback);
         $subscriptionConsumer->consume(1000);
-        var_dump($queue->routingKey, $receivedRoutingKey);
 
         $this->assertSame($queue->routingKey, $receivedRoutingKey);
     }
