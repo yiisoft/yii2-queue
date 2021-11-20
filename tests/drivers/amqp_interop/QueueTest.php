@@ -134,7 +134,7 @@ class QueueTest extends CliTestCase
         ];
 
         foreach ($signals as $signal => $exitCode) {
-            $process = $this->startProcess(['php', 'yii', 'amqp-interop-queue/listen', '--verbose']);
+            $process = $this->startProcess(['php', 'yii', 'queue/listen']);
             $this->assertTrue($process->isRunning());
             $process->signal($signal);
             $process->wait();
