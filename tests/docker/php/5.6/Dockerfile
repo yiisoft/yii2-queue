@@ -7,6 +7,7 @@ RUN apt update -qq \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
+    && apt install unzip \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
     && docker-php-ext-install zip \
