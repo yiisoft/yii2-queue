@@ -13,7 +13,8 @@ test73:
 	docker-compose run php73 vendor/bin/phpunit --colors=always -v --debug
 	docker-compose down
 test72:
-	docker-compose build --pull php72
+	make clean
+	docker-compose build --no-cache --pull php72
 	docker-compose run php72 vendor/bin/phpunit --colors=always -v --debug
 	docker-compose down
 test71:
@@ -62,10 +63,10 @@ check-cs:
 
 clean:
 	docker-compose down
-	sudo rm -rf tests/runtime/*
-	sudo rm -f .php_cs.cache
-	sudo rm -rf composer.lock
-	sudo rm -rf vendor/
+	rm -rf tests/runtime/*
+	rm -f .php_cs.cache
+	rm -rf composer.lock
+	rm -rf vendor/
 
 clean-all: clean
 	sudo rm -rf tests/runtime/.composer*

@@ -7,7 +7,6 @@ RUN apt update -qq \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
-    && apt-get install -y apt-utils \
     && apt-get install unzip \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
