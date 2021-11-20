@@ -134,11 +134,12 @@ class QueueTest extends CliTestCase
         ];
 
         foreach ($signals as $signal => $exitCode) {
-            $process = $this->startProcess(['php', 'yii', 'queue/listen']);
+            $process = $this->startProcess(['php', 'yii', 'queue/listen --verbose']);
             $this->assertTrue($process->isRunning());
             $process->signal($signal);
             $process->wait();
             $this->assertFalse($process->isRunning());
+            var_dump($exitCode, $process->getExitCode());
             $this->assertEquals($exitCode, $process->getExitCode());
         }
     }
