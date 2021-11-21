@@ -195,6 +195,13 @@ class Queue extends CliQueue
      */
     public $exchangeType = AmqpTopic::TYPE_DIRECT;
     /**
+     * Routing key for publishing messages. Default is NULL.
+     *
+     * @var string|null
+     */
+    public $routingKey;
+
+    /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
      * @var string
@@ -345,6 +352,10 @@ class Queue extends CliQueue
             $producer->setPriority($priority);
         }
 
+        if (null !== $this->routingKey) {
+            $message->setRoutingKey($this->routingKey);
+        }
+
         $producer->send($topic, $message);
 
         return $message->getMessageId();
@@ -437,7 +448,7 @@ class Queue extends CliQueue
         $topic->addFlag(AmqpTopic::FLAG_DURABLE);
         $this->context->declareTopic($topic);
 
-        $this->context->bind(new AmqpBind($queue, $topic));
+        $this->context->bind(new AmqpBind($queue, $topic, $this->routingKey));
 
         $this->setupBrokerDone = true;
     }

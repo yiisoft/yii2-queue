@@ -7,6 +7,13 @@
 
 namespace tests\drivers\amqp_interop;
 
+use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Enqueue\AmqpLib\AmqpConsumer;
+use Interop\Amqp\AmqpMessage;
+use Interop\Amqp\Impl\AmqpMessage as InteropAmqpMessage;
+use Interop\Amqp\AmqpTopic;
+use Interop\Amqp\Impl\AmqpBind;
+use Interop\Amqp\AmqpQueue;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
@@ -20,6 +27,58 @@ use yii\queue\amqp_interop\Queue;
  */
 class QueueTest extends CliTestCase
 {
+    /**
+     * Test working setter routing key
+     */
+    public function testNativeSettingRoutingKey()
+    {
+        $uniqRoutingKey = Yii::$app->security->generateRandomString(12);
+        $message = new InteropAmqpMessage();
+        $message->setRoutingKey($uniqRoutingKey);
+
+        $this->assertSame($uniqRoutingKey, $message->getRoutingKey());
+    }
+
+    /**
+     * Sending a message to a queue using RoutingKey
+     */
+    public function testSendMessageWithRoutingKey()
+    {
+        $uniqKey = Yii::$app->security->generateRandomString(12);
+        $receivedRoutingKey = null;
+
+        $queue = $this->getQueue();
+        $queue->routingKey = $uniqKey;
+        $queue->push($this->createSimpleJob());
+
+        $factory = new AmqpConnectionFactory([
+            'host' => $queue->host,
+        ]);
+        $context = $factory->createContext();
+
+        $queue1 = $context->createQueue($queue->queueName);
+        $queue1->addFlag(AmqpQueue::FLAG_DURABLE);
+        $queue1->setArguments(['x-max-priority' => 10]);
+        $context->declareQueue($queue1);
+        $topic = $context->createTopic($queue->exchangeName);
+        $topic->setType($queue->exchangeType);
+        $topic->addFlag(AmqpTopic::FLAG_DURABLE);
+        $context->declareTopic($topic);
+        $context->bind(new AmqpBind($queue1, $topic, $queue->routingKey));
+
+        $queue2 = $context->createQueue($queue->queueName);
+        $consumer = $context->createConsumer($queue2);
+        $callback = function (AmqpMessage $message) use (&$receivedRoutingKey) {
+            $receivedRoutingKey = $message->getRoutingKey();
+            return true;
+        };
+        $subscriptionConsumer = $context->createSubscriptionConsumer();
+        $subscriptionConsumer->subscribe($consumer, $callback);
+        $subscriptionConsumer->consume(1000);
+
+        $this->assertSame($queue->routingKey, $receivedRoutingKey);
+    }
+
     public function testListen()
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
@@ -80,6 +139,7 @@ class QueueTest extends CliTestCase
             $process->signal($signal);
             $process->wait();
             $this->assertFalse($process->isRunning());
+            var_dump($exitCode, $process->getExitCode());
             $this->assertEquals($exitCode, $process->getExitCode());
         }
     }

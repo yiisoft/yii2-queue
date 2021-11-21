@@ -1,6 +1,7 @@
 FROM php:7.1-cli
 
 RUN apt-get update \
+    && apt-get install unzip \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
     && docker-php-ext-install zip \

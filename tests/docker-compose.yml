@@ -75,7 +75,7 @@ services:
       context: ..
       dockerfile: tests/docker/php/7.0/Dockerfile
     volumes:
-    - ./runtime/.composer70:/root/.composer
+      - ./runtime/.composer70:/root/.composer
     dns: *php_dns
     environment: *php_environment
     depends_on: *php_depends_on
@@ -92,6 +92,17 @@ services:
     depends_on: *php_depends_on
     networks:
       net: {}
+  php74:
+    build:
+      context: ..
+      dockerfile: tests/docker/php/7.4/Dockerfile
+    volumes:
+      - ./runtime/.composer74:/root/.composer
+    dns: *php_dns
+    environment: *php_environment
+    depends_on: *php_depends_on
+    networks:
+      net: { }
 
   # https://docs.docker.com/samples/library/mysql/
   mysql:
@@ -126,9 +137,9 @@ services:
     networks:
       net: {}
 
-  # https://docs.docker.com/samples/library/rabbitmq/
+  # https://hub.docker.com/_/rabbitmq/
   rabbitmq:
-    image: rabbitmq:3.7
+    image: rabbitmq:3.9.10
     ports:
     - 5673:5672
     networks:

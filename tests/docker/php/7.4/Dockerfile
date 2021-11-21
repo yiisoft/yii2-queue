@@ -1,15 +1,10 @@
-FROM php:7.0-cli
-
-RUN apt update -qq \
-    && apt install -y ca-certificates \
-    && sed -i '/^mozilla\/DST_Root_CA_X3.crt$/ s/^/!/' /etc/ca-certificates.conf \
-    && update-ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+FROM php:7.4-cli
 
 RUN apt-get update \
     && apt-get install unzip \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
+    && apt-get install -y libzip-dev \
     && docker-php-ext-install zip \
     && apt-get install -y libicu-dev \
     && docker-php-ext-configure intl \
@@ -23,15 +18,7 @@ RUN apt-get update \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo_pgsql \
     && apt-get -y install libgearman-dev \
-    && TMPDIR=$(mktemp -d) \
-    && cd $TMPDIR \
-    && curl -L https://github.com/wcgallego/pecl-gearman/archive/gearman-2.0.3.tar.gz | tar xzv --strip 1 \
-    && phpize \
-    && ./configure \
-    && make -j$(nproc) \
-    && make install \
-    && cd - \
-    && rm -r $TMPDIR \
+    && pecl install gearman \
     && docker-php-ext-enable gearman \
     && rm -rf /var/lib/apt/lists/* \
     && curl -L -o /tmp/composer-setup.php https://getcomposer.org/installer \

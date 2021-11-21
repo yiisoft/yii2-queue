@@ -1,6 +1,7 @@
 FROM php:7.3-cli
 
 RUN apt-get update \
+    && apt-get install unzip \
     && apt-get install -y curl \
     && apt-get install -y zlib1g-dev \
     && apt-get install -y libzip-dev \
