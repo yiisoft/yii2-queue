@@ -77,7 +77,7 @@ class VerboseBehavior extends Behavior
         $this->command->stdout('Done', Console::FG_GREEN);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
         $memory = round(memory_get_peak_usage(false)/1024/1024, 2);
-        $this->command->stdout(" ($duration s, $memory memory)", Console::FG_YELLOW);
+        $this->command->stdout(" ($duration s, $memory MiB)", Console::FG_YELLOW);
         $this->command->stdout(PHP_EOL);
     }
 
