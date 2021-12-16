@@ -9,7 +9,7 @@ Yii2 Queue Extension Change Log
 - Enh #435: Added the ability to set optional arguments for the AMQP queue (s1lver)
 - Enh #405: Change access modifier of `moveExpired` in DB drivers (matiosfree)
 - Enh #427: Added configurable AMQP `routingKey` options (alisin, s1lver)
-
+- Enh #445: Display memory peak usage when verbose output is enabled (nadar)
 
 2.3.2 May 05, 2021
 ------------------
