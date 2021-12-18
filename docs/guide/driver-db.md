@@ -41,7 +41,7 @@ MySQL:
 CREATE TABLE `queue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `channel` varchar(255) NOT NULL,
-  `job` blob NOT NULL,
+  `job` longblob NOT NULL,
   `pushed_at` int(11) NOT NULL,
   `ttr` int(11) NOT NULL,
   `delay` int(11) NOT NULL DEFAULT 0,
