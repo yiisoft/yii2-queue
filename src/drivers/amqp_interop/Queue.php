@@ -200,7 +200,6 @@ class Queue extends CliQueue
      * @var string|null
      */
     public $routingKey;
-
     /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
