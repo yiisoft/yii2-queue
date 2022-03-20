@@ -243,7 +243,9 @@ class Queue extends CliQueue
             $this->db->createCommand()->update(
                 $this->tableName,
                 ['reserved_at' => null],
-                '[[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
+                // `reserved_at IS NOT NULL` forces db to use index on column,
+                // otherwise a full scan of the table will be performed
+                '[[reserved_at]] is not null and [[reserved_at]] < :time - [[ttr]] and [[done_at]] is null',
                 [':time' => $this->reserveTime]
             )->execute();
         }
