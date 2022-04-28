@@ -149,7 +149,7 @@ class Queue extends CliQueue
         }
 
         $payload = $this->redis->hget("$this->channel.messages", $id);
-        if ($payload) {
+        if (!$payload) {
             return null;
         }
         list($ttr, $message) = explode(';', $payload, 2);
