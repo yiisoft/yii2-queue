@@ -25,7 +25,7 @@
         "php-amqplib/php-amqplib": "*",
         "enqueue/amqp-lib": "^0.8||^0.9.10",
         "pda/pheanstalk": "v3.*",
-        "jeremeamia/superclosure": "*",
+        "opis/closure": "*",
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
         "phpunit/phpunit": "~4.4",
