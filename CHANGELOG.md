@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 2.3.5 under development
 -----------------------
 
-- Enh: Upgraded `jeremeamia/superclosure` library to `opis/closure`, adding the possibility to have closures as properties of the jobs.
+- Enh: Upgraded `jeremeamia/superclosure` library to `opis/closure`, adding the possibility to have closures as properties of the jobs (mp1509).
 
 
 2.3.4 March 31, 2022
