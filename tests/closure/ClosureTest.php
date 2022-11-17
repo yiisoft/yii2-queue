@@ -39,6 +39,32 @@ class ClosureTest extends TestCase
         $this->assertFileExists($fileName);
     }
 
+    public function testPush3()
+    {
+        $job = new ClosureJob([
+            'closure' => function () {
+                $fileName = Yii::getAlias('@runtime/job-3.lock');
+                file_put_contents($fileName, '');
+            }
+        ]);
+        $this->getQueue()->push($job);
+        $this->getQueue()->run();
+        $this->assertFileExists(Yii::getAlias('@runtime/job-3.lock'));
+    }
+
+    public function testPush4()
+    {
+        $fileName = Yii::getAlias('@runtime/job-4.lock');
+        $job = new ClosureJob([
+            'closure' => function () use ($fileName) {
+                file_put_contents($fileName, '');
+            }
+        ]);
+        $this->getQueue()->push($job);
+        $this->getQueue()->run();
+        $this->assertFileExists($fileName);
+    }
+
     /**
      * @return Queue
      */

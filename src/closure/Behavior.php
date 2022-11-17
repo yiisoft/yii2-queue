@@ -7,7 +7,7 @@
 
 namespace yii\queue\closure;
 
-use SuperClosure\Serializer;
+use function Opis\Closure\serialize as opis_serialize;
 use yii\queue\PushEvent;
 use yii\queue\Queue;
 
@@ -50,11 +50,8 @@ class Behavior extends \yii\base\Behavior
      */
     public function beforePush(PushEvent $event)
     {
-        if ($event->job instanceof \Closure) {
-            $serializer = new Serializer();
-            $serialized = $serializer->serialize($event->job);
-            $event->job = new Job();
-            $event->job->serialized = $serialized;
-        }
+        $serialized = opis_serialize($event->job);
+        $event->job = new Job();
+        $event->job->serialized = $serialized;
     }
 }
