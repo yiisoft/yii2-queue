@@ -15,6 +15,7 @@ use Enqueue\AmqpTools\RabbitMqDlxDelayStrategy;
 use Interop\Amqp\AmqpConnectionFactory;
 use Interop\Amqp\AmqpConsumer;
 use Interop\Amqp\AmqpContext;
+use Interop\Amqp\AmqpDestination;
 use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
@@ -183,6 +184,13 @@ class Queue extends CliQueue
      */
     public $queueOptionalArguments = [];
     /**
+     * Set of flags for the queue
+     * @var int
+     * @since 2.3.5
+     * @see AmqpDestination
+     */
+    public $queueFlags = AmqpQueue::FLAG_DURABLE;
+    /**
      * The exchange used to publish messages to.
      *
      * @var string
@@ -194,6 +202,13 @@ class Queue extends CliQueue
      * @since 2.3.3
      */
     public $exchangeType = AmqpTopic::TYPE_DIRECT;
+    /**
+     * Set of flags for the exchange
+     * @var int
+     * @since 2.3.5
+     * @see AmqpDestination
+     */
+    public $exchangeFlags = AmqpTopic::FLAG_DURABLE;
     /**
      * Routing key for publishing messages. Default is NULL.
      *
@@ -435,7 +450,7 @@ class Queue extends CliQueue
         }
 
         $queue = $this->context->createQueue($this->queueName);
-        $queue->addFlag(AmqpQueue::FLAG_DURABLE);
+        $queue->setFlags($this->queueFlags);
         $queue->setArguments(array_merge(
             ['x-max-priority' => $this->maxPriority],
             $this->queueOptionalArguments
@@ -444,7 +459,7 @@ class Queue extends CliQueue
 
         $topic = $this->context->createTopic($this->exchangeName);
         $topic->setType($this->exchangeType);
-        $topic->addFlag(AmqpTopic::FLAG_DURABLE);
+        $topic->setFlags($this->exchangeFlags);
         $this->context->declareTopic($topic);
 
         $this->context->bind(new AmqpBind($queue, $topic, $this->routingKey));
