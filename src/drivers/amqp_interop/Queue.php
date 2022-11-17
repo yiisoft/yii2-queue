@@ -15,6 +15,7 @@ use Enqueue\AmqpTools\RabbitMqDlxDelayStrategy;
 use Interop\Amqp\AmqpConnectionFactory;
 use Interop\Amqp\AmqpConsumer;
 use Interop\Amqp\AmqpContext;
+use Interop\Amqp\AmqpDestination;
 use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
@@ -182,6 +183,13 @@ class Queue extends CliQueue
      * @see https://www.rabbitmq.com/queues.html#optional-arguments
      */
     public $queueOptionalArguments = [];
+    /**
+     * Set of flags for the queue
+     * @var int
+     * @since 2.3.5
+     * @see AmqpDestination
+     */
+    public $queueFlags = AmqpQueue::FLAG_DURABLE;
     /**
      * The exchange used to publish messages to.
      *
@@ -435,7 +443,7 @@ class Queue extends CliQueue
         }
 
         $queue = $this->context->createQueue($this->queueName);
-        $queue->addFlag(AmqpQueue::FLAG_DURABLE);
+        $queue->setFlags($this->queueFlags);
         $queue->setArguments(array_merge(
             ['x-max-priority' => $this->maxPriority],
             $this->queueOptionalArguments
