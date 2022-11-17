@@ -203,6 +203,13 @@ class Queue extends CliQueue
      */
     public $exchangeType = AmqpTopic::TYPE_DIRECT;
     /**
+     * Set of flags for the exchange
+     * @var int
+     * @since 2.3.5
+     * @see AmqpDestination
+     */
+    public $exchangeFlags = AmqpTopic::FLAG_DURABLE;
+    /**
      * Routing key for publishing messages. Default is NULL.
      *
      * @var string|null
@@ -452,7 +459,7 @@ class Queue extends CliQueue
 
         $topic = $this->context->createTopic($this->exchangeName);
         $topic->setType($this->exchangeType);
-        $topic->addFlag(AmqpTopic::FLAG_DURABLE);
+        $topic->setFlags($this->exchangeFlags);
         $this->context->declareTopic($topic);
 
         $this->context->bind(new AmqpBind($queue, $topic, $this->routingKey));

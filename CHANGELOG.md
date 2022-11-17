@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 2.3.5 under development
 -----------------------
 
-- Enh #459: Added the ability to sets of flags for the AMQP queue (s1lver)
+- Enh #459: Added the ability to sets of flags for the AMQP queue and exchange (s1lver)
 
 
 2.3.4 March 31, 2022
