@@ -7,7 +7,6 @@ Yii2 Queue Extension Change Log
 - Enh #459: Added the ability to sets of flags for the AMQP queue and exchange (s1lver)
 - Enh #457: Upgraded `jeremeamia/superclosure` library to `opis/closure`, adding the possibility to have closures as properties of the jobs (mp1509).
 
-
 2.3.4 March 31, 2022
 --------------------
 
