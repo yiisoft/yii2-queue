@@ -449,12 +449,16 @@ class Queue extends CliQueue
             return;
         }
 
+        if ($this->maxPriority > 0) {
+            $arguments = array_merge(
+                ['x-max-priority' => $this->maxPriority],
+                $this->queueOptionalArguments
+            );
+        }
+
         $queue = $this->context->createQueue($this->queueName);
         $queue->setFlags($this->queueFlags);
-        $queue->setArguments(array_merge(
-            ['x-max-priority' => $this->maxPriority],
-            $this->queueOptionalArguments
-        ));
+        $queue->setArguments($arguments);
         $this->context->declareQueue($queue);
 
         $topic = $this->context->createTopic($this->exchangeName);
@@ -493,8 +497,8 @@ class Queue extends CliQueue
         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
         $this->context->createProducer()->send(
-             $this->context->createQueue($this->queueName),
-             $newMessage
-         );
+            $this->context->createQueue($this->queueName),
+            $newMessage
+        );
     }
 }
