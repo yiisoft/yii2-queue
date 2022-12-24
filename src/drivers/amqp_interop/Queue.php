@@ -222,12 +222,6 @@ class Queue extends CliQueue
      */
     public $driver = self::ENQUEUE_AMQP_LIB;
     /**
-     * This property should be an integer indicating the maximum priority the queue should support. Default is 10.
-     *
-     * @var int
-     */
-    public $maxPriority = 10;
-    /**
      * The property contains a command class which used in cli.
      *
      * @var string command class name
@@ -451,10 +445,7 @@ class Queue extends CliQueue
 
         $queue = $this->context->createQueue($this->queueName);
         $queue->setFlags($this->queueFlags);
-        $queue->setArguments(array_merge(
-            ['x-max-priority' => $this->maxPriority],
-            $this->queueOptionalArguments
-        ));
+        $queue->setArguments($this->queueOptionalArguments);
         $this->context->declareQueue($queue);
 
         $topic = $this->context->createTopic($this->exchangeName);
