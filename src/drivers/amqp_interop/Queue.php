@@ -109,9 +109,9 @@ class Queue extends CliQueue
      */
     public $persisted;
     /**
-     *
-     * @var bool send keep-alive packets for a socket connection
-     * @since 2.3.1
+     * Send keep-alive packets for a socket connection
+     * @var bool
+     * @since 2.3.6
      */
     public $keepalive;
     /**
