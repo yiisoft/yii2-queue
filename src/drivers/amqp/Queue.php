@@ -32,6 +32,17 @@ class Queue extends CliQueue
     public $exchangeName = 'exchange';
     public $vhost = '/';
     /**
+     * @var int The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds.
+     * @since 2.3.1
+     */
+    public $heartbeat = 0;
+    /**
+     * Send keep-alive packets for a socket connection
+     * @var bool
+     * @since 2.3.6
+     */
+    public $keepalive = false;
+    /**
      * @var string command class name
      */
     public $commandClass = Command::class;
@@ -118,7 +129,24 @@ class Queue extends CliQueue
         if ($this->channel) {
             return;
         }
-        $this->connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password, $this->vhost);
+        $this->connection = new AMQPStreamConnection(
+            $this->host,
+            $this->port,
+            $this->user,
+            $this->password,
+            $this->vhost,
+            false,
+            'AMQPLAIN',
+            null,
+            'en_US',
+            3.0,
+            3.0,
+            null,
+            $this->keepalive,
+            $this->heartbeat,
+            0.0,
+            null
+        );
         $this->channel = $this->connection->channel();
         $this->channel->queue_declare($this->queueName, false, true, false, false);
         $this->channel->exchange_declare($this->exchangeName, 'direct', false, true, false);
