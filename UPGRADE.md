@@ -4,6 +4,12 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
+Upgrade to 3.0.0
+----------------
+
+* The [amqp_interop](docs/guide/driver-amqp-interop.md) has been removed property `maxPriority`. 
+  Use property `queueOptionalArguments` argument `x-max-priority`.
+
 Upgrade to 2.1.1
 ----------------
 

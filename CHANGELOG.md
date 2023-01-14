@@ -1,10 +1,11 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.6 under development
+3.0.0 under development
 -----------------------
 
 - Enh #372: Add ability to configure keepalive and heartbeat for AMQP and AMQP interop (vyachin)
+- Enh #464: Delete property `maxPriority` (skolkin-worker)
 
 
 2.3.5 November 18, 2022
