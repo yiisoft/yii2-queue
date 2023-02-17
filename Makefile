@@ -3,7 +3,11 @@ build:
 	docker-compose pull
 	docker-compose build --pull
 
-test: test74 test73 test72 test71 test70 test56
+test: test80 test74 test73 test72 test71 test70 test56
+test80:
+	docker-compose build --pull php80
+	docker-compose run php80 vendor/bin/phpunit --colors=always -v --debug
+	docker-compose down
 test74:
 	docker-compose build --pull php74
 	docker-compose run php74 vendor/bin/phpunit --colors=always -v --debug

@@ -139,7 +139,6 @@ class QueueTest extends CliTestCase
             $process->signal($signal);
             $process->wait();
             $this->assertFalse($process->isRunning());
-            var_dump($exitCode, $process->getExitCode());
             $this->assertEquals($exitCode, $process->getExitCode());
         }
     }

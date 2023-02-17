@@ -103,6 +103,17 @@ services:
     depends_on: *php_depends_on
     networks:
       net: { }
+  php80:
+    build:
+      context: ..
+      dockerfile: tests/docker/php/8.0/Dockerfile
+    volumes:
+      - ./runtime/.composer80:/root/.composer
+    dns: *php_dns
+    environment: *php_environment
+    depends_on: *php_depends_on
+    networks:
+      net: { }
 
   # https://docs.docker.com/samples/library/mysql/
   mysql:

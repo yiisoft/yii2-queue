@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 56, 70, 71, 72, 73, 74 ]
+        php: [ 56, 70, 71, 72, 73, 74, 80 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
