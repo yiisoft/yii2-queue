@@ -21,13 +21,13 @@
         "symfony/process": "^3.3||^4.0||^5.0||^6.0"
     },
     "require-dev": {
-        "yiisoft/yii2-redis": "*",
+        "yiisoft/yii2-redis": "~2.0.0",
         "php-amqplib/php-amqplib": "*",
         "enqueue/amqp-lib": "^0.8||^0.9.10",
-        "pda/pheanstalk": "v3.*",
+        "pda/pheanstalk": "~3.2.1",
         "opis/closure": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-debug": "~2.1.0",
+        "yiisoft/yii2-gii": "~2.2.0",
         "phpunit/phpunit": "~5.0",
         "aws/aws-sdk-php": ">=2.4",
         "enqueue/stomp": "^0.8.39"
