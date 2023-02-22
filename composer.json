@@ -28,7 +28,7 @@
         "opis/closure": "*",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
-        "phpunit/phpunit": "~5.0",
+        "phpunit/phpunit": "4.8.34",
         "aws/aws-sdk-php": ">=2.4",
         "enqueue/stomp": "^0.8.39",
         "cweagans/composer-patches": "^1.7"
