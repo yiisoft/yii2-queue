@@ -166,7 +166,7 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function ($event) {
 イベントのロギング
 ------------------
 
-queue コンポーネントは [Yii の内蔵ロガー](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html)
+queue コンポーネントは [Yii の内蔵ロガー](https://www.yiiframework.com/doc-2.0/guide-runtime-logging.html)
 を使ってキューのイベントを記録する `LogBehavior` を提供しています。
 
 これを有効にするためには、queue コンポーネントを以下のように構成するだけです。

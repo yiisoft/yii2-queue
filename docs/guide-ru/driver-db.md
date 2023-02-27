@@ -50,7 +50,7 @@ CREATE TABLE `queue` (
 Миграции смотрите в [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
 Расширение предлагает использовать
-[миграции с неймспейсами](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations).
+[миграции с неймспейсами](https://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations).
 Чтобы добавить их в ваше приложение отредактируйте консольный конфиг:
 
 ```php

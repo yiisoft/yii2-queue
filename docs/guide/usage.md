@@ -167,7 +167,7 @@ Logging events
 --------------
 
 The component provides the `LogBehavior` to log Queue events using
-[Yii's built-in Logger](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html).
+[Yii's built-in Logger](https://www.yiiframework.com/doc-2.0/guide-runtime-logging.html).
 
 To enable it, simply configure the queue component as follows:
 
