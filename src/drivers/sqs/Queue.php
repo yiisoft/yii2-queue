@@ -230,7 +230,7 @@ class Queue extends CliQueue
             ];
         } else {
             // use default provider if no key and secret passed
-            //see - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
+            //see - https://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles
             $credentials = CredentialProvider::defaultProvider();
         }
 
