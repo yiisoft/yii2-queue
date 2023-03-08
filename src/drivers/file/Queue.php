@@ -120,7 +120,7 @@ class Queue extends CliQueue
     /**
      * Removes a job by ID.
      *
-     * @param int $id of a job
+     * @param string $id of a job
      * @return bool
      * @since 2.0.1
      */
