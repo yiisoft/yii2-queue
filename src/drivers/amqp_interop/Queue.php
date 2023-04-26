@@ -305,6 +305,10 @@ class Queue extends CliQueue
 
                 $this->redeliver($message);
 
+                if (function_exists('pcntl_signal_dispatch') && $consumer instanceof \Enqueue\AmqpExt\AmqpConsumer) {
+                    pcntl_signal_dispatch();
+                }
+
                 return true;
             }
 
@@ -317,6 +321,10 @@ class Queue extends CliQueue
                 $consumer->acknowledge($message);
 
                 $this->redeliver($message);
+            }
+
+            if (function_exists('pcntl_signal_dispatch') && $consumer instanceof \Enqueue\AmqpExt\AmqpConsumer) {
+                pcntl_signal_dispatch();
             }
 
             return true;
