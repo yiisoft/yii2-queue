@@ -6,6 +6,7 @@ Yii2 Queue Extension Change Log
 
 - Enh #372: Add ability to configure keepalive and heartbeat for AMQP and AMQP interop (vyachin)
 - Enh #464: Delete property `maxPriority` (skolkin-worker)
+- Enh #486: `SignalLoop::$exitSignals` now includes `SIGQUIT` (rhertogh)
 
 
 2.3.5 November 18, 2022
