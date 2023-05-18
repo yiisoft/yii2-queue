@@ -9,7 +9,7 @@ timeouts.
 In the latter cases, it's good to be able to retry a job after some time. There are several ways to do this.
 
 > **Note:** The `ttr` feature described below requires the
-> [PHP Process Control (pcntl) extension](http://php.net/manual/en/book.pcntl.php) to be installed
+> [PHP Process Control (pcntl) extension](https://php.net/manual/en/book.pcntl.php) to be installed
 > and the worker command has to use the `--isolate` option (which is enabled by default).
 
 Retry options

@@ -22,6 +22,7 @@ class SignalLoop extends BaseObject implements LoopInterface
      */
     public $exitSignals = [
         15, // SIGTERM
+        3,  // SIGQUIT
         2,  // SIGINT
         1,  // SIGHUP
     ];

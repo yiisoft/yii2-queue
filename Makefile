@@ -26,6 +26,7 @@ test71:
 	docker-compose run php71 vendor/bin/phpunit --colors=always -v --debug
 	docker-compose down
 test70:
+	make clean
 	docker-compose build --pull php70
 	docker-compose run php70 vendor/bin/phpunit --colors=always -v --debug
 	docker-compose down

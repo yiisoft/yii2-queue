@@ -154,7 +154,7 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function ($event) {
 --------------
 
 此组件提供了使用日志 `LogBehavior` 记录队列事件
-[Yii built-in Logger](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html).
+[Yii built-in Logger](https://www.yiiframework.com/doc-2.0/guide-runtime-logging.html).
 
 要使用它，只需按照以下方式配置队列组件:
 
