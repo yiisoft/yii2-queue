@@ -87,6 +87,7 @@ services:
       dockerfile: tests/docker/php/5.6/Dockerfile
     volumes:
     - ./runtime/.composer56:/root/.composer
+    - ..:/code
     dns: *php_dns
     environment: *php_environment
     depends_on: *php_depends_on
@@ -139,9 +140,10 @@ services:
 
   # https://hub.docker.com/_/rabbitmq/
   rabbitmq:
-    image: rabbitmq:3.9.10
+    image: rabbitmq:3.9.13-management-alpine
     ports:
-    - 5673:5672
+    - "5673:5672"
+    - "15673:15672"
     networks:
       net: {}
 

@@ -60,3 +60,20 @@ yii queue/listen
 The `listen` command launches a daemon which infinitely queries the queue. If there are new tasks
 they're immediately obtained and executed. This method is most efficient when the command is properly daemonized via
 [supervisor](worker.md#supervisor) or [systemd](worker.md#systemd).
+
+## Working with headers in messages
+
+The `setMessageHeaders` attribute can be used to send random headers to the queue along with the message.
+
+For example:
+
+```php
+$queue = Yii::$app->queueTest;
+$queue->setMessageHeaders = [
+    'header1' => 'header-value1',
+    'header2' => 'header-value2',
+];
+$queue->push(new TestJob());
+```
+
+> Note! Existing headers will not be overwritten by default.
