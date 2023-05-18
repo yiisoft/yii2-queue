@@ -32,7 +32,7 @@ RUN apt-get update \
     && curl -L -o /usr/local/bin/php-cs-fixer https://cs.symfony.com/download/php-cs-fixer-v2.phar \
     && chmod a+x /usr/local/bin/php-cs-fixer
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:lts /usr/bin/composer /usr/local/bin/composer
 
 COPY . /code
 WORKDIR /code
