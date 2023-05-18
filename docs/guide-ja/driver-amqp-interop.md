@@ -60,3 +60,20 @@ yii queue/listen
 `listen` コマンドが無限にキューを調べ続けるデーモンを起動します。キューに新しいタスクがあると、即座に取得され、実行されます。
 このコマンドを [supervisor](worker.md#supervisor) または [systemd](worker.md#systemd) によって適切にデーモン化するのが、
 最も効率的な方法です。
+
+## Working with headers in messages
+
+The `setMessageHeaders` attribute can be used to send random headers to the queue along with the message.
+
+For example:
+
+```php
+$queue = Yii::$app->queueTest;
+$queue->setMessageHeaders = [
+    'header1' => 'header-value1',
+    'header2' => 'header-value2',
+];
+$queue->push(new TestJob());
+```
+
+> Note! Existing headers will not be overwritten by default.
