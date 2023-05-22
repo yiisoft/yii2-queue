@@ -49,7 +49,7 @@ CREATE TABLE `queue` (
 
 迁移文件存放在 [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
-添加迁移到您的应用程序，编辑控制台配置文件以配置[命名空间迁移](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations):
+添加迁移到您的应用程序，编辑控制台配置文件以配置[命名空间迁移](https://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations):
 
 ```php
 'controllerMap' => [

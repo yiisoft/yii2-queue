@@ -1,14 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace tests\drivers\amqp_interop;
 
 use Enqueue\AmqpLib\AmqpConnectionFactory;
-use Enqueue\AmqpLib\AmqpConsumer;
 use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\Impl\AmqpMessage as InteropAmqpMessage;
 use Interop\Amqp\AmqpTopic;
@@ -47,27 +46,14 @@ class QueueTest extends CliTestCase
         $uniqKey = Yii::$app->security->generateRandomString(12);
         $receivedRoutingKey = null;
 
-        $queue = $this->getQueue();
-        $queue->routingKey = $uniqKey;
-        $queue->push($this->createSimpleJob());
+        $yiiQueue = $this->getQueue();
+        $yiiQueue->routingKey = $uniqKey;
+        $yiiQueue->push($this->createSimpleJob());
 
-        $factory = new AmqpConnectionFactory([
-            'host' => $queue->host,
-        ]);
-        $context = $factory->createContext();
+        $context = $this->getNativeAMQPContext($yiiQueue);
 
-        $queue1 = $context->createQueue($queue->queueName);
-        $queue1->addFlag(AmqpQueue::FLAG_DURABLE);
-        $queue1->setArguments(['x-max-priority' => 10]);
-        $context->declareQueue($queue1);
-        $topic = $context->createTopic($queue->exchangeName);
-        $topic->setType($queue->exchangeType);
-        $topic->addFlag(AmqpTopic::FLAG_DURABLE);
-        $context->declareTopic($topic);
-        $context->bind(new AmqpBind($queue1, $topic, $queue->routingKey));
-
-        $queue2 = $context->createQueue($queue->queueName);
-        $consumer = $context->createConsumer($queue2);
+        $queue = $context->createQueue($yiiQueue->queueName);
+        $consumer = $context->createConsumer($queue);
         $callback = function (AmqpMessage $message) use (&$receivedRoutingKey) {
             $receivedRoutingKey = $message->getRoutingKey();
             return true;
@@ -76,7 +62,53 @@ class QueueTest extends CliTestCase
         $subscriptionConsumer->subscribe($consumer, $callback);
         $subscriptionConsumer->consume(1000);
 
-        $this->assertSame($queue->routingKey, $receivedRoutingKey);
+        sleep(3);
+
+        $this->assertSame($yiiQueue->routingKey, $receivedRoutingKey);
+    }
+
+    /**
+     * Test push message with headers
+     * @return void
+     */
+    public function testPushMessageWithHeaders()
+    {
+        $actualHeaders = [];
+        $messageHeaders = [
+            'header-1' => 'header-value-1',
+            'header-2' => 'header-value-2',
+        ];
+
+        $yiiQueue = $this->getQueue();
+        $yiiQueue->setMessageHeaders = $messageHeaders;
+        $yiiQueue->push($this->createSimpleJob());
+
+        $context = $this->getNativeAMQPContext($yiiQueue);
+
+        $queue = $context->createQueue($yiiQueue->queueName);
+        $consumer = $context->createConsumer($queue);
+        $callback = function (AmqpMessage $message) use (&$actualHeaders) {
+            /**
+             * This not mistake. In original package this function mixed up
+             * getHeaders() => getProperties()
+             */
+            $actualHeaders = $message->getProperties();
+            return true;
+        };
+        $subscriptionConsumer = $context->createSubscriptionConsumer();
+        $subscriptionConsumer->subscribe($consumer, $callback);
+        $subscriptionConsumer->consume(1000);
+
+        sleep(3);
+
+        $expectedHeaders = array_merge(
+            $messageHeaders,
+            [
+                Queue::ATTEMPT => 1,
+                Queue::TTR => 300,
+            ]
+        );
+        $this->assertEquals($expectedHeaders, $actualHeaders);
     }
 
     public function testListen()
@@ -139,7 +171,6 @@ class QueueTest extends CliTestCase
             $process->signal($signal);
             $process->wait();
             $this->assertFalse($process->isRunning());
-            var_dump($exitCode, $process->getExitCode());
             $this->assertEquals($exitCode, $process->getExitCode());
         }
     }
@@ -159,5 +190,31 @@ class QueueTest extends CliTestCase
         }
 
         parent::setUp();
+    }
+
+    /**
+     * @param Queue $yiiQueue
+     * @return mixed
+     */
+    private function getNativeAMQPContext($yiiQueue)
+    {
+        $factory = new AmqpConnectionFactory([
+            'host' => $yiiQueue->host,
+        ]);
+        $context = $factory->createContext();
+
+        $queue = $context->createQueue($yiiQueue->queueName);
+        $queue->addFlag(AmqpQueue::FLAG_DURABLE);
+        $queue->setArguments(['x-max-priority' => 10]);
+        $context->declareQueue($queue);
+
+        $topic = $context->createTopic($yiiQueue->exchangeName);
+        $topic->setType($yiiQueue->exchangeType);
+        $topic->addFlag(AmqpTopic::FLAG_DURABLE);
+        $context->declareTopic($topic);
+
+        $context->bind(new AmqpBind($queue, $topic, $yiiQueue->routingKey));
+
+        return $context;
     }
 }

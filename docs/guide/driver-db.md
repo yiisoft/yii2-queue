@@ -84,7 +84,7 @@ CREATE INDEX priority ON queue (priority);
 You can use migrations which are available from [src/drivers/db/migrations](../../src/drivers/db/migrations).
 
 To add migrations to your application, edit the console config file to configure
-[a namespaced migration](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations):
+[a namespaced migration](https://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations):
 
 ```php
 'controllerMap' => [

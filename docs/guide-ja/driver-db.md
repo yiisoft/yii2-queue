@@ -84,7 +84,7 @@ CREATE INDEX priority ON queue (priority);
 マイグレーションが [src/drivers/db/migrations](../../src/drivers/db/migrations) にありますので、利用して下さい。
 
 アプリケーションにマイグレーションを追加するためには、コンソールの構成ファイルを編集して、
-[名前空間化されたマイグレーション](http://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations) を構成して下さい。
+[名前空間化されたマイグレーション](https://www.yiiframework.com/doc-2.0/guide-db-migrations.html#namespaced-migrations) を構成して下さい。
 
 ```php
 'controllerMap' => [
