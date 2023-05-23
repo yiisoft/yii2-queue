@@ -158,7 +158,7 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function ($event) {
 -------------------
 
 Этот компонент предоставляет `LogBehavior` для логирования событий, используя
-[встроенный в Yii логгер](http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html). 
+[встроенный в Yii логгер](https://www.yiiframework.com/doc-2.0/guide-runtime-logging.html). 
 
 Чтобы использовать его, просто подключите это поведение в конфигурации компонента, как показано в
 примере:

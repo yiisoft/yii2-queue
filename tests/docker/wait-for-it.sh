@@ -52,7 +52,7 @@ wait_for()
 
 wait_for_wrapper()
 {
-    # In order to support SIGINT during timeout: http://unix.stackexchange.com/a/57692
+    # In order to support SIGINT during timeout: https://unix.stackexchange.com/a/57692
     if [[ $QUIET -eq 1 ]]; then
         timeout $BUSYTIMEFLAG $TIMEOUT $0 --quiet --child --host=$HOST --port=$PORT --timeout=$TIMEOUT &
     else

@@ -65,3 +65,20 @@ daemonized via [supervisor](worker.md#supervisor) or [systemd](worker.md#systemd
 - `--verbose`, `-v`: 详细模式执行作业。如果启用，将打印每个作业的执行结果。
 - `--isolate`: 隔离模式。将在子进程中执行作业。
 - `--color`: 在详细模式下高亮显示输出结果。
+
+## Working with headers in messages
+
+The `setMessageHeaders` attribute can be used to send random headers to the queue along with the message.
+
+For example:
+
+```php
+$queue = Yii::$app->queueTest;
+$queue->setMessageHeaders = [
+    'header1' => 'header-value1',
+    'header2' => 'header-value2',
+];
+$queue->push(new TestJob());
+```
+
+> Note! Existing headers will not be overwritten by default.
