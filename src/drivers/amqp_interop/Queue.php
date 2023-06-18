@@ -235,6 +235,20 @@ class Queue extends CliQueue
     public $commandClass = Command::class;
 
     /**
+     * Headers to send along with the message
+     * ```php
+     * [
+     *    'header-1' => 'header-value-1',
+     *    'header-2' => 'header-value-2',
+     * ]
+     * ```
+     *
+     * @var array
+     * @since 3.0.0
+     */
+    public $setMessageHeaders = [];
+
+    /**
      * Amqp interop context.
      *
      * @var AmqpContext
@@ -359,8 +373,13 @@ class Queue extends CliQueue
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
         $message->setTimestamp(time());
-        $message->setProperty(self::ATTEMPT, 1);
-        $message->setProperty(self::TTR, $ttr);
+        $message->setProperties(array_merge(
+            $this->setMessageHeaders,
+            [
+                self::ATTEMPT => 1,
+                self::TTR => $ttr,
+            ]
+        ));
 
         $producer = $this->context->createProducer();
 
