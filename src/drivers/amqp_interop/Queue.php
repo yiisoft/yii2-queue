@@ -325,6 +325,21 @@ class Queue extends CliQueue
                 return true;
             }
 
+            // Ignore signal for amqp extension while job is executing
+            if (
+                extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7 &&
+                $this->driver === self::ENQUEUE_AMQP_EXT
+            ) {
+                $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
+
+                foreach ($signals as $signal) {
+                    pcntl_signal($signal, static function ($signal) {
+                        pcntl_signal($signal, SIG_DFL);
+                        posix_kill(posix_getpid(), $signal);
+                    });
+                }
+            }
+
             $ttr = $message->getProperty(self::TTR);
             $attempt = $message->getProperty(self::ATTEMPT, 1);
 
@@ -334,6 +349,19 @@ class Queue extends CliQueue
                 $consumer->acknowledge($message);
 
                 $this->redeliver($message);
+            }
+
+            // For amqp extension: restore default signal handlers
+            if (
+                extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7 &&
+                $this->driver === self::ENQUEUE_AMQP_EXT
+            ) {
+                pcntl_signal_dispatch();
+
+                $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
+                foreach ($signals as $signal) {
+                    pcntl_signal($signal, SIG_DFL);
+                }
             }
 
             return true;
