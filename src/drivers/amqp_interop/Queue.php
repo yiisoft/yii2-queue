@@ -279,7 +279,10 @@ class Queue extends CliQueue
             $this->close();
         });
 
-        if (extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7) {
+        if (
+            extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7 &&
+            $this->driver !== self::ENQUEUE_AMQP_EXT
+        ) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
 
@@ -319,10 +322,6 @@ class Queue extends CliQueue
 
                 $this->redeliver($message);
 
-                if (function_exists('pcntl_signal_dispatch') && $consumer instanceof \Enqueue\AmqpExt\AmqpConsumer) {
-                    pcntl_signal_dispatch();
-                }
-
                 return true;
             }
 
@@ -335,10 +334,6 @@ class Queue extends CliQueue
                 $consumer->acknowledge($message);
 
                 $this->redeliver($message);
-            }
-
-            if (function_exists('pcntl_signal_dispatch') && $consumer instanceof \Enqueue\AmqpExt\AmqpConsumer) {
-                pcntl_signal_dispatch();
             }
 
             return true;
