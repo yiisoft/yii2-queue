@@ -62,11 +62,6 @@
             "tests\\": "tests"
         }
     },
-    "config": {
-        "allow-plugins": {
-            "yiisoft/yii2-composer": true
-        }
-    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.x-dev"
