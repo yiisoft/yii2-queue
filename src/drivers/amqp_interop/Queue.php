@@ -280,10 +280,7 @@ class Queue extends CliQueue
             $this->close();
         });
 
-        if (
-            extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7 &&
-            $this->driver !== self::ENQUEUE_AMQP_EXT
-        ) {
+        if (extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
 
@@ -317,26 +314,13 @@ class Queue extends CliQueue
         $consumer = $this->context->createConsumer($queue);
 
         $callback = function (AmqpMessage $message, AmqpConsumer $consumer) {
+            pcntl_signal_dispatch();
             if ($message->isRedelivered()) {
                 $consumer->acknowledge($message);
 
                 $this->redeliver($message);
 
                 return true;
-            }
-
-            // Ignore signal for amqp extension while job is executing
-            if (
-                extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7 &&
-                $this->driver === self::ENQUEUE_AMQP_EXT
-            ) {
-                $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
-
-                foreach ($signals as $signal) {
-                    pcntl_signal($signal, static function ($signal) {
-                        Yii::$app->end();
-                    });
-                }
             }
 
             $ttr = $message->getProperty(self::TTR);
@@ -349,19 +333,7 @@ class Queue extends CliQueue
 
                 $this->redeliver($message);
             }
-
-            // For amqp extension: restore default signal handlers
-            if (
-                extension_loaded('pcntl') && function_exists('pcntl_signal') && PHP_MAJOR_VERSION >= 7 &&
-                $this->driver === self::ENQUEUE_AMQP_EXT
-            ) {
-                pcntl_signal_dispatch();
-
-                $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
-                foreach ($signals as $signal) {
-                    pcntl_signal($signal, SIG_DFL);
-                }
-            }
+            pcntl_signal_dispatch();
 
             return true;
         };
