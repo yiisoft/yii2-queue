@@ -42,7 +42,7 @@ class Queue extends CliQueue
     const ENQUEUE_AMQP_BUNNY = 'enqueue/amqp-bunny';
 
     /**
-     * The connection to the borker could be configured as an array of options
+     * The connection to the broker could be configured as an array of options
      * or as a DSN string like amqp:, amqps:, amqps://user:pass@localhost:1000/vhost.
      *
      * @var string
