@@ -3,7 +3,7 @@ FROM --platform=linux/amd64 php:8.0.28-cli
 RUN apt-get update \
    && apt-get install -y unzip curl zlib1g-dev libzip-dev libicu-dev libpq-dev libgearman-dev
 
-RUN docker-php-ext-install zip intl pcntl bcmath pdo_mysql pdo_pgsql sockets
+RUN docker-php-ext-install zip pcntl bcmath pdo_mysql intl pdo_pgsql sockets
 RUN pecl install igbinary gearman
 RUN docker-php-ext-enable igbinary gearman
 
