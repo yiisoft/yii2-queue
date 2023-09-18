@@ -22,15 +22,15 @@
     },
     "require-dev": {
         "yiisoft/yii2-redis": "~2.0.0",
-        "php-amqplib/php-amqplib": "*",
-        "enqueue/amqp-lib": "^0.8||^0.9.10",
+        "php-amqplib/php-amqplib": "^2.8.0||^3.0.0",
+        "enqueue/amqp-lib": "^0.8||^0.9.10||^0.10.0",
         "pda/pheanstalk": "~3.2.1",
         "opis/closure": "*",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
-        "phpunit/phpunit": "~5.0",
+        "phpunit/phpunit": "4.8.34",
         "aws/aws-sdk-php": ">=2.4",
-        "enqueue/stomp": "^0.8.39",
+        "enqueue/stomp": "^0.8.39||^0.10.0",
         "cweagans/composer-patches": "^1.7"
     },
     "suggest": {
@@ -78,13 +78,9 @@
             "phpunit/phpunit-mock-objects": {
                 "Fix PHP 7 and 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_mock_objects.patch"
             },
-            "phpunit/php-file-iterator": {
-                "Fix PHP 8.1 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_path_file_iterator.patch"
-            },
             "phpunit/phpunit": {
                 "Fix PHP 7 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php7.patch",
-                "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch",
-                "Fix PHP 8.1 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php81.patch"
+                "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch"
             }
         }
     },
