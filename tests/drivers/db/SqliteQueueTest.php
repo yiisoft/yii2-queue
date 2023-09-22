@@ -20,7 +20,7 @@ class SqliteQueueTest extends TestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->sqliteQueue;
     }

@@ -19,7 +19,7 @@ use yii\queue\gearman\Queue;
  */
 class QueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -28,7 +28,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testPriority()
+    public function testPriority(): void
     {
         $this->getQueue()->priority('high')->push(new PriorityJob(['number' => 1]));
         $this->getQueue()->priority('low')->push(new PriorityJob(['number' => 5]));
@@ -40,7 +40,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -52,7 +52,7 @@ class QueueTest extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -64,7 +64,7 @@ class QueueTest extends CliTestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->gearmanQueue;
     }

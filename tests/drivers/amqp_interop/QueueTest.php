@@ -29,7 +29,7 @@ class QueueTest extends CliTestCase
     /**
      * Test working setter routing key
      */
-    public function testNativeSettingRoutingKey()
+    public function testNativeSettingRoutingKey(): void
     {
         $uniqRoutingKey = Yii::$app->security->generateRandomString(12);
         $message = new InteropAmqpMessage();
@@ -41,7 +41,7 @@ class QueueTest extends CliTestCase
     /**
      * Sending a message to a queue using RoutingKey
      */
-    public function testSendMessageWithRoutingKey()
+    public function testSendMessageWithRoutingKey(): void
     {
         $uniqKey = Yii::$app->security->generateRandomString(12);
         $receivedRoutingKey = null;
@@ -71,7 +71,7 @@ class QueueTest extends CliTestCase
      * Test push message with headers
      * @return void
      */
-    public function testPushMessageWithHeaders()
+    public function testPushMessageWithHeaders(): void
     {
         $actualHeaders = [];
         $messageHeaders = [
@@ -111,7 +111,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals($expectedHeaders, $actualHeaders);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -120,7 +120,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -129,7 +129,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = new RetryJob(['uid' => uniqid()]);
@@ -140,7 +140,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testPriority()
+    public function testPriority(): void
     {
         $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 1]));
         $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 5]));
@@ -156,7 +156,7 @@ class QueueTest extends CliTestCase
     /**
      * @requires extension pcntl
      */
-    public function testSignals()
+    public function testSignals(): void
     {
         $signals = [
             1 => 129, // SIGHUP
@@ -178,7 +178,7 @@ class QueueTest extends CliTestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->amqpInteropQueue;
     }

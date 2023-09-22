@@ -26,7 +26,7 @@ abstract class CliTestCase extends TestCase
     /**
      * @param array $cmd
      */
-    protected function runProcess($cmd)
+    protected function runProcess($cmd): void
     {
         $cmd = $this->prepareCmd($cmd);
         $process = new Process($cmd);

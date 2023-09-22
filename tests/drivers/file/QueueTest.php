@@ -19,7 +19,7 @@ use yii\queue\file\Queue;
  */
 class QueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -28,7 +28,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -40,7 +40,7 @@ class QueueTest extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -49,7 +49,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -58,7 +58,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = new RetryJob(['uid' => uniqid()]);
@@ -69,7 +69,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
         $this->assertNotEmpty(glob($this->getQueue()->path . '/job*.data'));
@@ -78,19 +78,19 @@ class QueueTest extends CliTestCase
         $this->assertEmpty(glob($this->getQueue()->path . '/job*.data'));
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->assertFileExists($this->getQueue()->path . "/job$id.data");
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
 
-        $this->assertFileNotExists($this->getQueue()->path . "/job$id.data");
+        $this->assertFileDoesNotExist($this->getQueue()->path . "/job$id.data");
     }
 
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->fileQueue;
     }

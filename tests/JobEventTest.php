@@ -21,7 +21,7 @@ use yii\queue\sync\Queue as SyncQueue;
  */
 class JobEventTest extends TestCase
 {
-    public function testInvalidJob()
+    public function testInvalidJob(): void
     {
         $eventCounter = [];
         $eventHandler = function (JobEvent $event) use (&$eventCounter) {
@@ -41,7 +41,7 @@ class JobEventTest extends TestCase
         $this->assertArrayHasKey(Queue::EVENT_AFTER_ERROR, $eventCounter[$jobId]);
     }
 
-    public function testExecResult()
+    public function testExecResult(): void
     {
         $queue = new SyncQueue(['as closure' => ClosureBehavior::class]);
         $isTriggered = false;

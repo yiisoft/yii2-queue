@@ -21,12 +21,12 @@ abstract class TestCase extends \tests\TestCase
     /**
      * @return Queue
      */
-    abstract protected function getQueue();
+    abstract protected function getQueue(): Queue;
 
     /**
      * @return SimpleJob
      */
-    protected function createSimpleJob()
+    protected function createSimpleJob(): SimpleJob
     {
         return new SimpleJob([
             'uid' => uniqid(),
@@ -36,7 +36,7 @@ abstract class TestCase extends \tests\TestCase
     /**
      * @param SimpleJob $job
      */
-    protected function assertSimpleJobDone(SimpleJob $job)
+    protected function assertSimpleJobDone(SimpleJob $job): void
     {
         $timeout = 5000000; // 5 sec
         $step = 50000;
@@ -51,7 +51,7 @@ abstract class TestCase extends \tests\TestCase
      * @param SimpleJob $job
      * @param int $delay
      */
-    protected function assertSimpleJobLaterDone(SimpleJob $job, $delay)
+    protected function assertSimpleJobLaterDone(SimpleJob $job, $delay): void
     {
         $time = time() + $delay;
         sleep($delay);

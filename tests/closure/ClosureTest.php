@@ -19,7 +19,7 @@ use yii\queue\sync\Queue;
  */
 class ClosureTest extends TestCase
 {
-    public function testPush1()
+    public function testPush1(): void
     {
         $this->markTestSkipped('Closure tests are disabled');
 
@@ -31,7 +31,7 @@ class ClosureTest extends TestCase
         $this->assertFileExists(Yii::getAlias('@runtime/job-1.lock'));
     }
 
-    public function testPush2()
+    public function testPush2(): void
     {
         $this->markTestSkipped('Closure tests are disabled');
 
@@ -43,7 +43,7 @@ class ClosureTest extends TestCase
         $this->assertFileExists($fileName);
     }
 
-    public function testPush3()
+    public function testPush3(): void
     {
         $this->markTestSkipped('Closuretests are disabled');
 
@@ -58,7 +58,7 @@ class ClosureTest extends TestCase
         $this->assertFileExists(Yii::getAlias('@runtime/job-3.lock'));
     }
 
-    public function testPush4()
+    public function testPush4(): void
     {
         $this->markTestSkipped('Closure tests are disabled');
 
@@ -76,7 +76,7 @@ class ClosureTest extends TestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         if (!$this->_queue) {
             $this->_queue = new Queue([

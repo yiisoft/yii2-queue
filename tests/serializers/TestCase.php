@@ -21,13 +21,13 @@ abstract class TestCase extends \tests\TestCase
     /**
      * @return SerializerInterface
      */
-    abstract protected function createSerializer();
+    abstract protected function createSerializer(): SerializerInterface;
 
     /**
      * @dataProvider providerSerialize
      * @param mixed $expected
      */
-    public function testSerialize($expected)
+    public function testSerialize($expected): void
     {
         $serializer = $this->createSerializer();
 
@@ -37,7 +37,7 @@ abstract class TestCase extends \tests\TestCase
         $this->assertEquals($expected, $actual, "Payload: $serialized");
     }
 
-    public function providerSerialize()
+    public static function providerSerialize(): array
     {
         return [
             // Job object

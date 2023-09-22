@@ -20,7 +20,7 @@ class MysqlQueueTest extends TestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->mysqlQueue;
     }

@@ -15,7 +15,7 @@ use yii\queue\stomp\Queue;
 
 class QueueTest extends CliTestCase
 {
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -24,7 +24,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = new RetryJob(['uid' => uniqid()]);
@@ -38,7 +38,7 @@ class QueueTest extends CliTestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->stompQueue;
     }
