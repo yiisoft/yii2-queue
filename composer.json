@@ -22,16 +22,15 @@
     },
     "require-dev": {
         "yiisoft/yii2-redis": "~2.0.0",
-        "php-amqplib/php-amqplib": "^2.8.0||^3.0.0",
-        "enqueue/amqp-lib": "^0.8||^0.9.10||^0.10.0",
-        "pda/pheanstalk": "~3.2.1",
-        "opis/closure": "*",
+        "php-amqplib/php-amqplib": "^3.0.0",
+        "enqueue/amqp-lib": "^0.10.0",
+        "pda/pheanstalk": "3.2.1",
+        "opis/closure": "^3.6.0",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
-        "phpunit/phpunit": "4.8.34",
+        "phpunit/phpunit": "^10.3.0",
         "aws/aws-sdk-php": ">=2.4",
-        "enqueue/stomp": "^0.8.39||^0.10.0",
-        "cweagans/composer-patches": "^1.7"
+        "enqueue/stomp": "^0.10.0"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
@@ -65,23 +64,12 @@
     },
     "config": {
         "allow-plugins": {
-            "yiisoft/yii2-composer": true,
-            "cweagans/composer-patches": true
+            "yiisoft/yii2-composer": true
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "2.x-dev"
-        },
-        "composer-exit-on-patch-failure": true,
-        "patches": {
-            "phpunit/phpunit-mock-objects": {
-                "Fix PHP 7 and 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_mock_objects.patch"
-            },
-            "phpunit/phpunit": {
-                "Fix PHP 7 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php7.patch",
-                "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch"
-            }
         }
     },
     "repositories": [

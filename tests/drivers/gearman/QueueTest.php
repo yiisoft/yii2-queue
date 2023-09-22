@@ -69,7 +69,7 @@ class QueueTest extends CliTestCase
         return Yii::$app->gearmanQueue;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!defined('GEARMAN_SUCCESS')) {
             $this->markTestSkipped('Gearman in not installed.');

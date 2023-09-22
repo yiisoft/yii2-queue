@@ -44,7 +44,7 @@ class QueueTest extends CliTestCase
     }
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ('true' == getenv('EXCLUDE_STOMP')) {
             $this->markTestSkipped('Stomp tests are disabled for php 5.5');

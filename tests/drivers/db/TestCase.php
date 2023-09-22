@@ -105,7 +105,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals(0, $actual);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->db->createCommand()
             ->delete($this->getQueue()->tableName)

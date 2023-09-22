@@ -5,8 +5,10 @@ services:
   yii2-queue-php:
     container_name: yii2-queue-php
     build:
-      context: ..
-      dockerfile: tests/docker/php/${PHP_VERSION:-5.6}/Dockerfile
+        context: ..
+        dockerfile: tests/docker/php/Dockerfile
+        args:
+            PHP_VERSION: ${PHP_VERSION:-8.1}
     volumes:
     - ./runtime/.composer:/root/.composer
     - ..:/code

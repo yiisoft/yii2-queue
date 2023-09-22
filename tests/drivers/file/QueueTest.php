@@ -95,7 +95,7 @@ class QueueTest extends CliTestCase
         return Yii::$app->fileQueue;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach (glob(Yii::getAlias("@runtime/queue/*")) as $fileName) {
             unlink($fileName);

@@ -183,7 +183,7 @@ class QueueTest extends CliTestCase
         return Yii::$app->amqpInteropQueue;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
             $this->markTestSkipped('Amqp tests are disabled for php 5.5');

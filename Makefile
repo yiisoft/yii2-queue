@@ -7,7 +7,7 @@ build:			## Build an image from a docker-compose file. Params: {{ v=5.6 }}. Defa
 
 test:			## Run tests. Params: {{ v=5.6 }}. Default latest PHP 5.6
 	PHP_VERSION=$(filter-out $@,$(v)) docker-compose build --pull yii2-queue-php
-	PHP_VERSION=$(filter-out $@,$(v)) docker-compose run yii2-queue-php vendor/bin/phpunit --colors=always -v --debug
+	PHP_VERSION=$(filter-out $@,$(v)) docker-compose run yii2-queue-php vendor/bin/phpunit --colors=always
 	make down
 
 down:			## Stop and remove containers, networks
