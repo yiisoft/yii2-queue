@@ -31,7 +31,7 @@ class JobEventTest extends TestCase
         $queue->on(Queue::EVENT_BEFORE_EXEC, $eventHandler);
         $queue->on(Queue::EVENT_AFTER_ERROR, $eventHandler);
         $queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
-            $this->assertTrue($event->error instanceof InvalidJobException);
+            $this->assertInstanceOf(InvalidJobException::class, $event->error);
             $this->assertFalse($event->retry);
         });
         $jobId = $queue->push('message that cannot be unserialized');

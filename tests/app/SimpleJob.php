@@ -18,14 +18,14 @@ use yii\queue\JobInterface;
  */
 class SimpleJob extends BaseObject implements JobInterface
 {
-    public $uid;
+    public string $uid;
 
     public function execute($queue)
     {
         file_put_contents($this->getFileName(), '');
     }
 
-    public function getFileName()
+    public function getFileName(): bool|string
     {
         return Yii::getAlias("@runtime/job-{$this->uid}.lock");
     }

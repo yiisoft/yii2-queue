@@ -16,7 +16,7 @@
         "docs": "https://github.com/yiisoft/yii2-queue/blob/master/docs/guide"
     },
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.1",
         "yiisoft/yii2": "~2.0.14",
         "symfony/process": "^6.3",
         "laravel/serializable-closure": "^v1.3.0"
@@ -30,7 +30,6 @@
         "enqueue/amqp-lib": "^0.10.0",
         "enqueue/stomp": "^0.10.0",
         "pda/pheanstalk": "3.2.1",
-        "opis/closure": "^3.6.0",
         "aws/aws-sdk-php": ">=2.4"
     },
     "suggest": {
@@ -65,7 +64,8 @@
     },
     "config": {
         "allow-plugins": {
-            "yiisoft/yii2-composer": true
+            "yiisoft/yii2-composer": true,
+            "php-http/discovery": true
         }
     },
     "extra": {

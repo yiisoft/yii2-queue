@@ -18,14 +18,14 @@ use yii\queue\JobInterface;
  */
 class PriorityJob extends BaseObject implements JobInterface
 {
-    public $number;
+    public int $number;
 
     public function execute($queue)
     {
         file_put_contents(self::getFileName(), $this->number, FILE_APPEND);
     }
 
-    public static function getFileName()
+    public static function getFileName(): bool|string
     {
         return Yii::getAlias("@runtime/job-priority.log");
     }

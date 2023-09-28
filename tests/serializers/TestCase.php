@@ -8,6 +8,7 @@
 namespace tests\serializers;
 
 use tests\app\SimpleJob;
+use tests\TestCase as BaseTestCase;
 use yii\base\BaseObject;
 use yii\queue\serializers\SerializerInterface;
 
@@ -16,7 +17,7 @@ use yii\queue\serializers\SerializerInterface;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class TestCase extends \tests\TestCase
+abstract class TestCase extends BaseTestCase
 {
     /**
      * @return SerializerInterface

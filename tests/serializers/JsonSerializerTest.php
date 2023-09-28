@@ -7,6 +7,7 @@
 
 namespace tests\serializers;
 
+use yii\base\InvalidConfigException;
 use yii\queue\serializers\JsonSerializer;
 use yii\queue\serializers\SerializerInterface;
 
@@ -27,7 +28,7 @@ class JsonSerializerTest extends TestCase
 
     public function testInvalidArrayKey(): void
     {
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $this->createSerializer()->serialize([
             'class' => 'failed param',
         ]);
