@@ -1,22 +1,22 @@
 name: build
 
 on:
-    pull_request:
-        paths-ignore:
-            - 'docs/**'
-            - 'README.md'
-            - 'CHANGELOG.md'
-            - '.gitignore'
-            - '.gitattributes'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
 
-    push:
-        branches: [ 'master' ]
-        paths-ignore:
-            - 'docs/**'
-            - 'README.md'
-            - 'CHANGELOG.md'
-            - '.gitignore'
-            - '.gitattributes'
+  push:
+    branches: [ 'master' ]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
 
 env:
   COMPOSE_PROJECT_NAME: yii2-queue
