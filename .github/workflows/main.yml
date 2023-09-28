@@ -1,6 +1,22 @@
 name: build
 
-on: [push, workflow_dispatch, pull_request]
+on:
+    pull_request:
+        paths-ignore:
+            - 'docs/**'
+            - 'README.md'
+            - 'CHANGELOG.md'
+            - '.gitignore'
+            - '.gitattributes'
+
+    push:
+        branches: [ 'master' ]
+        paths-ignore:
+            - 'docs/**'
+            - 'README.md'
+            - 'CHANGELOG.md'
+            - '.gitignore'
+            - '.gitattributes'
 
 env:
   COMPOSE_PROJECT_NAME: yii2-queue
@@ -20,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '8.1' ]
+        php: [ '8.1', '8.2', '8.3' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2

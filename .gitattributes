@@ -11,3 +11,4 @@
 /.travis.yml        export-ignore
 /Makefile           export-ignore
 /phpunit.xml.dist   export-ignore
+/support            export-ignore
