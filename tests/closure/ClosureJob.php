@@ -2,6 +2,8 @@
 
 namespace tests\closure;
 
+use Closure;
+use Laravel\SerializableClosure\Serializers\Native;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
 
@@ -13,7 +15,7 @@ use yii\queue\JobInterface;
 class ClosureJob extends BaseObject implements JobInterface
 {
     /**
-     * @var \Closure
+     * @var Closure
      */
     public $closure;
 

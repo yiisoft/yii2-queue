@@ -21,8 +21,6 @@ class ClosureTest extends TestCase
 {
     public function testPush1(): void
     {
-        $this->markTestSkipped('Closure tests are disabled');
-
         $this->getQueue()->push(function () {
             $fileName = Yii::getAlias('@runtime/job-1.lock');
             file_put_contents($fileName, '');
@@ -33,8 +31,6 @@ class ClosureTest extends TestCase
 
     public function testPush2(): void
     {
-        $this->markTestSkipped('Closure tests are disabled');
-
         $fileName = Yii::getAlias('@runtime/job-2.lock');
         $this->getQueue()->push(function () use ($fileName) {
             file_put_contents($fileName, '');
@@ -45,8 +41,6 @@ class ClosureTest extends TestCase
 
     public function testPush3(): void
     {
-        $this->markTestSkipped('Closuretests are disabled');
-
         $job = new ClosureJob([
             'closure' => function () {
                 $fileName = Yii::getAlias('@runtime/job-3.lock');
@@ -60,8 +54,6 @@ class ClosureTest extends TestCase
 
     public function testPush4(): void
     {
-        $this->markTestSkipped('Closure tests are disabled');
-
         $fileName = Yii::getAlias('@runtime/job-4.lock');
         $job = new ClosureJob([
             'closure' => function () use ($fileName) {

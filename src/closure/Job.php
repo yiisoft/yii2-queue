@@ -7,7 +7,7 @@
 
 namespace yii\queue\closure;
 
-use function Opis\Closure\unserialize as opis_unserialize;
+use Laravel\SerializableClosure\Serializers\Native;
 use yii\queue\JobInterface;
 
 /**
@@ -20,8 +20,7 @@ class Job implements JobInterface
     /**
      * @var string serialized closure
      */
-    public $serialized;
-
+    public string $serialized;
 
     /**
      * Unserializes and executes a closure.
@@ -29,10 +28,13 @@ class Job implements JobInterface
      */
     public function execute($queue)
     {
-        $unserialized = opis_unserialize($this->serialized);
-        if ($unserialized instanceof \Closure) {
-            return $unserialized();
+        $closure = unserialize($this->serialized)->getClosure();
+        $nativeClosure = $closure();
+
+        if ($nativeClosure instanceof Native) {
+            return $nativeClosure();
         }
-        return $unserialized->execute($queue);
+
+        return $nativeClosure->execute($queue);
     }
 }
