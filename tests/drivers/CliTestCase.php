@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +10,7 @@
 
 namespace tests\drivers;
 
+use ReflectionClass;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use tests\app\PriorityJob;
@@ -21,12 +25,12 @@ abstract class CliTestCase extends TestCase
     /**
      * @var Process[] ids of started processes
      */
-    private $processes = [];
+    private array $processes = [];
 
     /**
      * @param array $cmd
      */
-    protected function runProcess($cmd): void
+    protected function runProcess(array $cmd): void
     {
         $cmd = $this->prepareCmd($cmd);
         $process = new Process($cmd);
@@ -43,7 +47,7 @@ abstract class CliTestCase extends TestCase
      * @param array $cmd
      * @return Process
      */
-    protected function startProcess($cmd)
+    protected function startProcess(array $cmd): Process
     {
         $process = new Process($this->prepareCmd($cmd));
         $process->start();
@@ -59,9 +63,9 @@ abstract class CliTestCase extends TestCase
      * @param array $cmd
      * @return array
      */
-    private function prepareCmd($cmd)
+    private function prepareCmd(array $cmd): array
     {
-        $class = new \ReflectionClass($this->getQueue());
+        $class = new ReflectionClass($this->getQueue());
         $method = $class->getMethod('getCommandId');
         $method->setAccessible(true);
 
@@ -74,7 +78,7 @@ abstract class CliTestCase extends TestCase
         array_walk(
             $cmd,
             static function (&$v) use ($replace) {
-                $v = strtr($v, $replace);
+                $v = strtr((string)$v, $replace);
             }
         );
 

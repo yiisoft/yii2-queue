@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\closure;
 
 use Closure;
-use Laravel\SerializableClosure\Serializers\Native;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
 
