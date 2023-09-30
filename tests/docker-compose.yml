@@ -1,18 +1,19 @@
 version: "3.5"
 services:
 
-  # https://docs.docker.com/samples/library/php/
-  php73:
+  # https://hub.docker.com/_/php/
+  yii2-queue-php:
+    container_name: yii2-queue-php
     build:
       context: ..
-      dockerfile: tests/docker/php/7.3/Dockerfile
+      dockerfile: tests/docker/php/${PHP_VERSION:-5.6}/Dockerfile
     volumes:
-    - ./runtime/.composer73:/root/.composer
+    - ./runtime/.composer:/root/.composer
     - ..:/code
-    dns: &php_dns
+    dns:
     - 8.8.8.8
     - 4.4.4.4
-    environment: &php_environment
+    environment:
       MYSQL_HOST: mysql
       MYSQL_USER: yii2_queue_test
       MYSQL_PASSWORD: yii2_queue_test
@@ -38,7 +39,7 @@ services:
       AWS_SQS_FIFO_ENABLED: ${AWS_SQS_FIFO_ENABLED}
       AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL}
       AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID}
-    depends_on: &php_depends_on
+    depends_on:
     - mysql
     - postgres
     - redis
@@ -48,64 +49,8 @@ services:
     - activemq
     networks:
       net: {}
-  php72:
-    build:
-      context: ..
-      dockerfile: tests/docker/php/7.2/Dockerfile
-    volumes:
-      - ./runtime/.composer72:/root/.composer
-    dns: *php_dns
-    environment: *php_environment
-    depends_on: *php_depends_on
-    networks:
-      net: {}
-  php71:
-    build:
-      context: ..
-      dockerfile: tests/docker/php/7.1/Dockerfile
-    volumes:
-    - ./runtime/.composer71:/root/.composer
-    dns: *php_dns
-    environment: *php_environment
-    depends_on: *php_depends_on
-    networks:
-      net: {}
-  php70:
-    build:
-      context: ..
-      dockerfile: tests/docker/php/7.0/Dockerfile
-    volumes:
-      - ./runtime/.composer70:/root/.composer
-    dns: *php_dns
-    environment: *php_environment
-    depends_on: *php_depends_on
-    networks:
-      net: {}
-  php56:
-    build:
-      context: ..
-      dockerfile: tests/docker/php/5.6/Dockerfile
-    volumes:
-    - ./runtime/.composer56:/root/.composer
-    - ..:/code
-    dns: *php_dns
-    environment: *php_environment
-    depends_on: *php_depends_on
-    networks:
-      net: {}
-  php74:
-    build:
-      context: ..
-      dockerfile: tests/docker/php/7.4/Dockerfile
-    volumes:
-      - ./runtime/.composer74:/root/.composer
-    dns: *php_dns
-    environment: *php_environment
-    depends_on: *php_depends_on
-    networks:
-      net: { }
 
-  # https://docs.docker.com/samples/library/mysql/
+  # https://hub.docker.com/_/mysql/
   mysql:
     image: mysql:5.7
     ports:
@@ -118,7 +63,7 @@ services:
     networks:
       net: {}
 
-  # https://docs.docker.com/samples/library/postgres/
+  # https://hub.docker.com/_/postgres/
   postgres:
     image: postgres:10.4
     ports:
@@ -130,7 +75,7 @@ services:
     networks:
       net: {}
 
-  # https://docs.docker.com/samples/library/redis/
+  # https://hub.docker.com/_/redis/
   redis:
     image: redis:4.0
     ports:

@@ -20,9 +20,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 56, 70, 71, 72, 73, 74 ]
+        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: PHP Unit tests for PHP ${{ matrix.php }}
-        run: make test${{ matrix.php }}
+        run: make test v=${{ matrix.php }}
