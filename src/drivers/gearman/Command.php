@@ -21,7 +21,6 @@ class Command extends CliCommand
      */
     public $queue;
 
-
     /**
      * @inheritdoc
      */
@@ -36,7 +35,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -47,7 +46,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionListen()
+    public function actionListen(): ?int
     {
         return $this->queue->run(true);
     }

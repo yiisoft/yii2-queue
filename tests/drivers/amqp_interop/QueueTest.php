@@ -9,10 +9,10 @@ namespace tests\drivers\amqp_interop;
 
 use Enqueue\AmqpLib\AmqpConnectionFactory;
 use Interop\Amqp\AmqpMessage;
-use Interop\Amqp\Impl\AmqpMessage as InteropAmqpMessage;
+use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
 use Interop\Amqp\Impl\AmqpBind;
-use Interop\Amqp\AmqpQueue;
+use Interop\Amqp\Impl\AmqpMessage as InteropAmqpMessage;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
@@ -181,15 +181,6 @@ class QueueTest extends CliTestCase
     protected function getQueue(): Queue
     {
         return Yii::$app->amqpInteropQueue;
-    }
-
-    protected function setUp(): void
-    {
-        if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
-            $this->markTestSkipped('Amqp tests are disabled for php 5.5');
-        }
-
-        parent::setUp();
     }
 
     /**

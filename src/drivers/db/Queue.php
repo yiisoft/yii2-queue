@@ -98,7 +98,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         $payload = (new Query())
             ->from($this->tableName)

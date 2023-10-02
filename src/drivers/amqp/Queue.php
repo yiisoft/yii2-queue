@@ -118,7 +118,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         throw new NotSupportedException('Status is not supported in the driver.');
     }

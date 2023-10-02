@@ -25,7 +25,6 @@ class Command extends CliCommand
      */
     public $queue;
 
-
     /**
      * @inheritdoc
      */

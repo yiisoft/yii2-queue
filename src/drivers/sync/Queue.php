@@ -86,7 +86,7 @@ class Queue extends BaseQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_int($id) || $id <= 0 || $id > $this->pushedId) {
             throw new InvalidArgumentException("Unknown messages ID: $id.");

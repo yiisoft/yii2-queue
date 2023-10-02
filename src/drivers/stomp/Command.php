@@ -23,7 +23,6 @@ class Command extends CliCommand
      */
     public $queue;
 
-
     /**
      * @inheritdoc
      */
@@ -32,14 +31,13 @@ class Command extends CliCommand
         return in_array($actionID, ['run', 'listen']);
     }
 
-
     /**
      * Runs all jobs from stomp-queue.
      * It can be used as cron job.
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -52,7 +50,7 @@ class Command extends CliCommand
      * @throws Exception when params are invalid.
      * @return null|int exit code.
      */
-    public function actionListen($timeout = 3)
+    public function actionListen(int $timeout = 3): ?int
     {
         if (!is_numeric($timeout)) {
             throw new Exception('Timeout must be numeric.');

@@ -71,12 +71,12 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if (($payload = $this->reserve()) !== null) {
-                    list($id, $message, $ttr, $attempt) = $payload;
+                    [$id, $message, $ttr, $attempt] = $payload;
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                         $this->delete($payload);
                     }
@@ -92,7 +92,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_numeric($id) || $id <= 0) {
             throw new InvalidArgumentException("Unknown message ID: $id.");

@@ -48,9 +48,9 @@ class Queue extends CliQueue
      * The connection to the broker could be configured as an array of options
      * or as a DSN string like amqp:, amqps:, amqps://user:pass@localhost:1000/vhost.
      *
-     * @var string
+     * @var string|null
      */
-    public string $dsn;
+    public ?string $dsn = null;
     /**
      * The message queue broker's host.
      *
@@ -62,7 +62,7 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $port;
+    public ?string $port = null;
     /**
      * This is RabbitMQ user which is used to login on the broker.
      *
@@ -80,98 +80,98 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $vhost;
+    public ?string $vhost = null;
     /**
      * The time PHP socket waits for an information while reading. In seconds.
      *
      * @var float|null
      */
-    public ?float $readTimeout;
+    public ?float $readTimeout = null;
     /**
      * The time PHP socket waits for an information while witting. In seconds.
      *
      * @var float|null
      */
-    public ?float $writeTimeout;
+    public ?float $writeTimeout = null;
     /**
      * The time RabbitMQ keeps the connection on idle. In seconds.
      *
      * @var float|null
      */
-    public ?float $connectionTimeout;
+    public ?float $connectionTimeout = null;
     /**
      * The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds.
      *
      * @var float|null
      */
-    public ?float $heartbeat;
+    public ?float $heartbeat = 0;
     /**
      * PHP uses one shared connection if set true.
      *
      * @var bool|null
      */
-    public ?bool $persisted;
+    public ?bool $persisted = null;
     /**
      * Send keep-alive packets for a socket connection
      * @var bool
      * @since 2.3.6
      */
-    public bool $keepalive;
+    public bool $keepalive = false;
     /**
      * The connection will be established as later as possible if set true.
      *
      * @var bool|null
      */
-    public ?bool $lazy;
+    public ?bool $lazy = null;
     /**
      * If false prefetch_count option applied separately to each new consumer on the channel
      * If true prefetch_count option shared across all consumers on the channel.
      *
      * @var bool|null
      */
-    public ?bool $qosGlobal;
+    public ?bool $qosGlobal = null;
     /**
      * Defines number of message pre-fetched in advance on a channel basis.
      *
      * @var int|null
      */
-    public ?int $qosPrefetchSize;
+    public ?int $qosPrefetchSize = null;
     /**
      * Defines number of message pre-fetched in advance per consumer.
      *
      * @var int|null
      */
-    public ?int $qosPrefetchCount;
+    public ?int $qosPrefetchCount = null;
     /**
      * Defines whether secure connection should be used or not.
      *
      * @var bool|null
      */
-    public ?bool $sslOn;
+    public ?bool $sslOn = null;
     /**
      * Require verification of SSL certificate used.
      *
      * @var bool|null
      */
-    public ?bool $sslVerify;
+    public ?bool $sslVerify = null;
     /**
      * Location of Certificate Authority file on local filesystem which should be used with the verify_peer context option to authenticate the identity of the remote peer.
      *
      * @var string|null
      */
-    public ?string $sslCacert;
+    public ?string $sslCacert = null;
     /**
      * Path to local certificate file on filesystem.
      *
      * @var string|null
      */
-    public ?string $sslCert;
+    public ?string $sslCert = null;
     /**
      * Path to local private key file on filesystem in case of separate files for certificate (local_cert) and private key.
      *
      * @var string|null
      */
-    public ?string $sslKey;
+    public ?string $sslKey = null;
     /**
      * The queue used to consume messages from.
      *
@@ -223,7 +223,7 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $routingKey;
+    public ?string $routingKey = null;
     /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
@@ -247,16 +247,16 @@ class Queue extends CliQueue
      * ```
      *
      * @var array
-     * @since 3.0.0
+     * @since 2.3.6
      */
     public array $setMessageHeaders = [];
 
     /**
      * Amqp interop context.
      *
-     * @var AmqpContext
+     * @var AmqpContext|null
      */
-    protected AmqpContext $context;
+    protected ?AmqpContext $context = null;
     /**
      * List of supported amqp interop drivers.
      *
@@ -403,7 +403,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         throw new NotSupportedException('Status is not supported in the driver.');
     }

@@ -30,7 +30,7 @@ class Command extends CliCommand
     /**
      * @inheritdoc
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'info' => InfoAction::class,
@@ -51,7 +51,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -61,10 +61,10 @@ class Command extends CliCommand
      * It can be used as daemon process.
      *
      * @param int $timeout number of seconds to sleep before next reading of the queue.
-     * @throws Exception when params are invalid.
      * @return null|int exit code.
+     *@throws Exception when params are invalid.
      */
-    public function actionListen($timeout = 3)
+    public function actionListen(int $timeout = 3): ?int
     {
         if (!is_numeric($timeout)) {
             throw new Exception('Timeout must be numeric.');
@@ -81,7 +81,7 @@ class Command extends CliCommand
      *
      * @since 2.0.1
      */
-    public function actionClear()
+    public function actionClear(): void
     {
         if ($this->confirm('Are you sure?')) {
             $this->queue->clear();
@@ -95,7 +95,7 @@ class Command extends CliCommand
      * @throws Exception when the job is not found.
      * @since 2.0.1
      */
-    public function actionRemove($id)
+    public function actionRemove(int $id): void
     {
         if (!$this->queue->remove($id)) {
             throw new Exception('The job is not found.');

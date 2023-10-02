@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,14 +26,13 @@ class Command extends CliCommand
      */
     public $queue;
 
-
     /**
      * Runs all jobs from sqs.
      * It can be used as cron job.
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -40,10 +42,10 @@ class Command extends CliCommand
      * It can be used as demon process.
      *
      * @param int $timeout number of seconds to sleep before next reading of the queue.
-     * @throws Exception when params are invalid.
      * @return null|int exit code.
+     * @throws Exception when params are invalid.
      */
-    public function actionListen($timeout = 3)
+    public function actionListen(int $timeout = 3): ?int
     {
         if (!is_numeric($timeout)) {
             throw new Exception('Timeout must be numeric.');
@@ -58,7 +60,7 @@ class Command extends CliCommand
     /**
      * Clears the queue.
      */
-    public function actionClear()
+    public function actionClear(): void
     {
         if ($this->confirm('Are you sure?')) {
             $this->queue->clear();
