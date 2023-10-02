@@ -89,7 +89,7 @@ abstract class Command extends Controller
      * @return bool
      * @since 2.0.2
      */
-    abstract protected function isWorkerAction($actionID);
+    abstract protected function isWorkerAction(string $actionID): bool;
 
     /**
      * @param string $actionID

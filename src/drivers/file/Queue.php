@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,11 +27,11 @@ class Queue extends CliQueue
     /**
      * @var string
      */
-    public $path = '@runtime/queue';
+    public string $path = '@runtime/queue';
     /**
      * @var int
      */
-    public $dirMode = 0755;
+    public int $dirMode = 0755;
     /**
      * @var int|null
      */
@@ -50,7 +53,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->path = Yii::getAlias($this->path);

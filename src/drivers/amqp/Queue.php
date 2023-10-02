@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -56,11 +59,10 @@ class Queue extends CliQueue
      */
     protected $channel;
 
-
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         Event::on(BaseApp::class, BaseApp::EVENT_AFTER_REQUEST, function () {

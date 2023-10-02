@@ -40,7 +40,7 @@ class Command extends CliCommand
     /**
      * @inheritdoc
      */
-    protected function isWorkerAction($actionID)
+    protected function isWorkerAction($actionID): bool
     {
         return in_array($actionID, ['run', 'listen']);
     }

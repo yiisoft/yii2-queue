@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -33,13 +36,13 @@ use yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    const ATTEMPT = 'yii-attempt';
-    const TTR = 'yii-ttr';
-    const DELAY = 'yii-delay';
-    const PRIORITY = 'yii-priority';
-    const ENQUEUE_AMQP_LIB = 'enqueue/amqp-lib';
-    const ENQUEUE_AMQP_EXT = 'enqueue/amqp-ext';
-    const ENQUEUE_AMQP_BUNNY = 'enqueue/amqp-bunny';
+    public const ATTEMPT = 'yii-attempt';
+    public const TTR = 'yii-ttr';
+    public const DELAY = 'yii-delay';
+    public const PRIORITY = 'yii-priority';
+    public const ENQUEUE_AMQP_LIB = 'enqueue/amqp-lib';
+    public const ENQUEUE_AMQP_EXT = 'enqueue/amqp-ext';
+    public const ENQUEUE_AMQP_BUNNY = 'enqueue/amqp-bunny';
 
     /**
      * The connection to the broker could be configured as an array of options
@@ -47,134 +50,134 @@ class Queue extends CliQueue
      *
      * @var string
      */
-    public $dsn;
+    public string $dsn;
     /**
      * The message queue broker's host.
      *
      * @var string|null
      */
-    public $host;
+    public ?string $host;
     /**
      * The message queue broker's port.
      *
      * @var string|null
      */
-    public $port;
+    public ?string $port;
     /**
      * This is RabbitMQ user which is used to login on the broker.
      *
      * @var string|null
      */
-    public $user;
+    public ?string $user;
     /**
      * This is RabbitMQ password which is used to login on the broker.
      *
      * @var string|null
      */
-    public $password;
+    public ?string $password;
     /**
      * Virtual hosts provide logical grouping and separation of resources.
      *
      * @var string|null
      */
-    public $vhost;
+    public ?string $vhost;
     /**
      * The time PHP socket waits for an information while reading. In seconds.
      *
      * @var float|null
      */
-    public $readTimeout;
+    public ?float $readTimeout;
     /**
      * The time PHP socket waits for an information while witting. In seconds.
      *
      * @var float|null
      */
-    public $writeTimeout;
+    public ?float $writeTimeout;
     /**
      * The time RabbitMQ keeps the connection on idle. In seconds.
      *
      * @var float|null
      */
-    public $connectionTimeout;
+    public ?float $connectionTimeout;
     /**
      * The periods of time PHP pings the broker in order to prolong the connection timeout. In seconds.
      *
      * @var float|null
      */
-    public $heartbeat;
+    public ?float $heartbeat;
     /**
      * PHP uses one shared connection if set true.
      *
      * @var bool|null
      */
-    public $persisted;
+    public ?bool $persisted;
     /**
      * Send keep-alive packets for a socket connection
      * @var bool
      * @since 2.3.6
      */
-    public $keepalive;
+    public bool $keepalive;
     /**
      * The connection will be established as later as possible if set true.
      *
      * @var bool|null
      */
-    public $lazy;
+    public ?bool $lazy;
     /**
      * If false prefetch_count option applied separately to each new consumer on the channel
      * If true prefetch_count option shared across all consumers on the channel.
      *
      * @var bool|null
      */
-    public $qosGlobal;
+    public ?bool $qosGlobal;
     /**
      * Defines number of message pre-fetched in advance on a channel basis.
      *
      * @var int|null
      */
-    public $qosPrefetchSize;
+    public ?int $qosPrefetchSize;
     /**
      * Defines number of message pre-fetched in advance per consumer.
      *
      * @var int|null
      */
-    public $qosPrefetchCount;
+    public ?int $qosPrefetchCount;
     /**
      * Defines whether secure connection should be used or not.
      *
      * @var bool|null
      */
-    public $sslOn;
+    public ?bool $sslOn;
     /**
      * Require verification of SSL certificate used.
      *
      * @var bool|null
      */
-    public $sslVerify;
+    public ?bool $sslVerify;
     /**
      * Location of Certificate Authority file on local filesystem which should be used with the verify_peer context option to authenticate the identity of the remote peer.
      *
      * @var string|null
      */
-    public $sslCacert;
+    public ?string $sslCacert;
     /**
      * Path to local certificate file on filesystem.
      *
      * @var string|null
      */
-    public $sslCert;
+    public ?string $sslCert;
     /**
      * Path to local private key file on filesystem in case of separate files for certificate (local_cert) and private key.
      *
      * @var string|null
      */
-    public $sslKey;
+    public ?string $sslKey;
     /**
      * The queue used to consume messages from.
      *
      * @var string
      */
-    public $queueName = 'interop_queue';
+    public string $queueName = 'interop_queue';
     /**
      * Setting optional arguments for the queue (key-value pairs)
      * ```php
@@ -188,45 +191,45 @@ class Queue extends CliQueue
      * @since 2.3.3
      * @see https://www.rabbitmq.com/queues.html#optional-arguments
      */
-    public $queueOptionalArguments = [];
+    public array $queueOptionalArguments = [];
     /**
      * Set of flags for the queue
      * @var int
      * @since 2.3.5
      * @see AmqpDestination
      */
-    public $queueFlags = AmqpQueue::FLAG_DURABLE;
+    public int $queueFlags = AmqpQueue::FLAG_DURABLE;
     /**
      * The exchange used to publish messages to.
      *
      * @var string
      */
-    public $exchangeName = 'exchange';
+    public string $exchangeName = 'exchange';
     /**
      * The exchange type. Can take values: direct, fanout, topic, headers
      * @var string
      * @since 2.3.3
      */
-    public $exchangeType = AmqpTopic::TYPE_DIRECT;
+    public string $exchangeType = AmqpTopic::TYPE_DIRECT;
     /**
      * Set of flags for the exchange
      * @var int
      * @since 2.3.5
      * @see AmqpDestination
      */
-    public $exchangeFlags = AmqpTopic::FLAG_DURABLE;
+    public int $exchangeFlags = AmqpTopic::FLAG_DURABLE;
     /**
      * Routing key for publishing messages. Default is NULL.
      *
      * @var string|null
      */
-    public $routingKey;
+    public ?string $routingKey;
     /**
      * Defines the amqp interop transport being internally used. Currently supports lib, ext and bunny values.
      *
      * @var string
      */
-    public $driver = self::ENQUEUE_AMQP_LIB;
+    public string $driver = self::ENQUEUE_AMQP_LIB;
     /**
      * The property contains a command class which used in cli.
      *
@@ -246,33 +249,36 @@ class Queue extends CliQueue
      * @var array
      * @since 3.0.0
      */
-    public $setMessageHeaders = [];
+    public array $setMessageHeaders = [];
 
     /**
      * Amqp interop context.
      *
      * @var AmqpContext
      */
-    protected $context;
+    protected AmqpContext $context;
     /**
      * List of supported amqp interop drivers.
      *
      * @var string[]
      */
-    protected $supportedDrivers = [self::ENQUEUE_AMQP_LIB, self::ENQUEUE_AMQP_EXT, self::ENQUEUE_AMQP_BUNNY];
+    protected array $supportedDrivers = [
+        self::ENQUEUE_AMQP_LIB,
+        self::ENQUEUE_AMQP_EXT,
+        self::ENQUEUE_AMQP_BUNNY
+    ];
     /**
      * The property tells whether the setupBroker method was called or not.
      * Having it we can do broker setup only once per process.
      *
      * @var bool
      */
-    protected $setupBrokerDone = false;
-
+    protected bool $setupBrokerDone = false;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         Event::on(BaseApp::class, BaseApp::EVENT_AFTER_REQUEST, function () {
@@ -305,7 +311,7 @@ class Queue extends CliQueue
     /**
      * Listens amqp-queue and runs new jobs.
      */
-    public function listen()
+    public function listen(): void
     {
         $this->open();
         $this->setupBroker();
@@ -344,7 +350,7 @@ class Queue extends CliQueue
     /**
      * @return AmqpContext
      */
-    public function getContext()
+    public function getContext(): AmqpContext
     {
         $this->open();
 

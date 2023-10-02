@@ -86,7 +86,7 @@ abstract class Queue extends Component
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -115,7 +115,7 @@ abstract class Queue extends Component
      * @param int|mixed $value
      * @return $this
      */
-    public function ttr($value)
+    public function ttr($value): static
     {
         $this->pushTtr = $value;
         return $this;
@@ -127,7 +127,7 @@ abstract class Queue extends Component
      * @param int|mixed $value
      * @return $this
      */
-    public function delay($value)
+    public function delay($value): static
     {
         $this->pushDelay = $value;
         return $this;
@@ -139,7 +139,7 @@ abstract class Queue extends Component
      * @param mixed $value
      * @return $this
      */
-    public function priority($value)
+    public function priority($value): static
     {
         $this->pushPriority = $value;
         return $this;
@@ -258,11 +258,10 @@ abstract class Queue extends Component
     /**
      * Unserializes.
      *
-     * @param string $id of the job
      * @param string $serialized message
      * @return array pair of a job and error that
      */
-    public function unserializeMessage($serialized)
+    public function unserializeMessage(string $serialized): array
     {
         try {
             $job = $this->serializer->unserialize($serialized);

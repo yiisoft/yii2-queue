@@ -130,7 +130,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return int|null
      * @since 2.0.2
      */
-    public function getWorkerPid()
+    public function getWorkerPid(): ?int
     {
         return $this->_workerPid;
     }

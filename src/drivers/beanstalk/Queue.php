@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -37,7 +40,6 @@ class Queue extends CliQueue
      * @var string command class name
      */
     public $commandClass = Command::class;
-
 
     /**
      * Listens queue and runs each job.
