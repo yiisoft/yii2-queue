@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +20,7 @@ class PushEvent extends JobEvent
     /**
      * @var int
      */
-    public $delay;
+    public int $delay;
     /**
      * @var mixed
      */

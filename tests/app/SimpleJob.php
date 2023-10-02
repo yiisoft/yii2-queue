@@ -10,6 +10,7 @@ namespace tests\app;
 use Yii;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Simple Job.
@@ -20,7 +21,7 @@ class SimpleJob extends BaseObject implements JobInterface
 {
     public string $uid;
 
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         file_put_contents($this->getFileName(), '');
     }

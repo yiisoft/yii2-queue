@@ -12,6 +12,7 @@ namespace yii\queue\closure;
 
 use Laravel\SerializableClosure\Serializers\Native;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Closure Job.
@@ -29,7 +30,7 @@ class Job implements JobInterface
      * Unserializes and executes a closure.
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         $closure = unserialize($this->serialized)->getClosure();
         $nativeClosure = $closure();

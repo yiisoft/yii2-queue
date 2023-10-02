@@ -7,6 +7,7 @@ namespace tests\closure;
 use Closure;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Closure Job.
@@ -20,7 +21,7 @@ class ClosureJob extends BaseObject implements JobInterface
      */
     public $closure;
 
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         call_user_func($this->closure);
     }

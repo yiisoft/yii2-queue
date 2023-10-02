@@ -10,6 +10,7 @@ namespace tests\app;
 use Yii;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Priority Job.
@@ -20,7 +21,7 @@ class PriorityJob extends BaseObject implements JobInterface
 {
     public int $number;
 
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         file_put_contents(self::getFileName(), $this->number, FILE_APPEND);
     }

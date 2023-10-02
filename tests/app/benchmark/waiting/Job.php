@@ -9,6 +9,7 @@ namespace tests\app\benchmark\waiting;
 
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * The job calculates waiting time.
@@ -22,7 +23,7 @@ class Job extends BaseObject implements JobInterface
     public $lockFileName;
     public $payload;
 
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         $waitingTime = microtime(true) - $this->pushedAt;
         if (file_exists($this->lockFileName)) {

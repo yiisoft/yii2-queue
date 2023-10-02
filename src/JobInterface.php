@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,5 +21,5 @@ interface JobInterface
      * @param Queue $queue which pushed and is handling the job
      * @return void|mixed result of the job execution
      */
-    public function execute($queue);
+    public function execute(Queue $queue);
 }

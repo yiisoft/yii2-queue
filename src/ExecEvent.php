@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +23,7 @@ class ExecEvent extends JobEvent
      * @see Queue::EVENT_AFTER_EXEC
      * @see Queue::EVENT_AFTER_ERROR
      */
-    public $attempt;
+    public int $attempt;
     /**
      * @var mixed result of a job execution in case job is done.
      * @see Queue::EVENT_AFTER_EXEC

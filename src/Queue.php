@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +10,6 @@
 
 namespace yii\queue;
 
-use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
@@ -29,42 +31,42 @@ abstract class Queue extends Component
     /**
      * @event PushEvent
      */
-    const EVENT_BEFORE_PUSH = 'beforePush';
+    public const EVENT_BEFORE_PUSH = 'beforePush';
     /**
      * @event PushEvent
      */
-    const EVENT_AFTER_PUSH = 'afterPush';
+    public const EVENT_AFTER_PUSH = 'afterPush';
     /**
      * @event ExecEvent
      */
-    const EVENT_BEFORE_EXEC = 'beforeExec';
+    public const EVENT_BEFORE_EXEC = 'beforeExec';
     /**
      * @event ExecEvent
      */
-    const EVENT_AFTER_EXEC = 'afterExec';
+    public const EVENT_AFTER_EXEC = 'afterExec';
     /**
      * @event ExecEvent
      */
-    const EVENT_AFTER_ERROR = 'afterError';
+    public const EVENT_AFTER_ERROR = 'afterError';
     /**
      * @see Queue::isWaiting()
      */
-    const STATUS_WAITING = 1;
+    public const STATUS_WAITING = 1;
     /**
      * @see Queue::isReserved()
      */
-    const STATUS_RESERVED = 2;
+    public const STATUS_RESERVED = 2;
     /**
      * @see Queue::isDone()
      */
-    const STATUS_DONE = 3;
+    public const STATUS_DONE = 3;
 
     /**
      * @var bool whether to enable strict job type control.
      * Note that in order to enable type control, a pushing job must be [[JobInterface]] instance.
      * @since 2.0.1
      */
-    public $strictJobType = true;
+    public bool $strictJobType = true;
     /**
      * @var SerializerInterface|array
      */
@@ -76,7 +78,7 @@ abstract class Queue extends Component
     /**
      * @var int default attempt count
      */
-    public $attempts = 1;
+    public int $attempts = 1;
 
     private $pushTtr;
     private $pushDelay;
@@ -283,7 +285,7 @@ abstract class Queue extends Component
      * @return bool
      * @internal
      */
-    public function handleError(ExecEvent $event)
+    public function handleError(ExecEvent $event): bool
     {
         $event->retry = $event->attempt < $this->attempts;
         if ($event->error instanceof InvalidJobException) {

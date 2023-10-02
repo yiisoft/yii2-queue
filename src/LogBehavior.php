@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,13 +28,12 @@ class LogBehavior extends Behavior
     /**
      * @var bool
      */
-    public $autoFlush = true;
-
+    public bool $autoFlush = true;
 
     /**
      * @inheritdoc
      */
-    public function events()
+    public function events(): array
     {
         return [
             Queue::EVENT_AFTER_PUSH => 'afterPush',
