@@ -235,7 +235,7 @@ class Queue extends CliQueue
      *
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
 
     /**
      * Headers to send along with the message
@@ -360,7 +360,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($payload, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         $this->open();
         $this->setupBroker();
@@ -417,19 +417,18 @@ class Queue extends CliQueue
             return;
         }
 
-        switch ($this->driver) {
-            case self::ENQUEUE_AMQP_LIB:
-                $connectionClass = AmqpLibConnectionFactory::class;
-                break;
-            case self::ENQUEUE_AMQP_EXT:
-                $connectionClass = AmqpExtConnectionFactory::class;
-                break;
-            case self::ENQUEUE_AMQP_BUNNY:
-                $connectionClass = AmqpBunnyConnectionFactory::class;
-                break;
-            default:
-                throw new \LogicException(sprintf('The given driver "%s" is not supported. Drivers supported are "%s"', $this->driver, implode('", "', $this->supportedDrivers)));
-        }
+        $connectionClass = match ($this->driver) {
+            self::ENQUEUE_AMQP_LIB => AmqpLibConnectionFactory::class,
+            self::ENQUEUE_AMQP_EXT => AmqpExtConnectionFactory::class,
+            self::ENQUEUE_AMQP_BUNNY => AmqpBunnyConnectionFactory::class,
+            default => throw new \LogicException(
+                sprintf(
+                    'The given driver "%s" is not supported. Drivers supported are "%s"',
+                    $this->driver,
+                    implode('", "', $this->supportedDrivers)
+                )
+            ),
+        };
 
         $config = [
             'dsn' => $this->dsn,
@@ -455,7 +454,7 @@ class Queue extends CliQueue
             'ssl_key' => $this->sslKey,
         ];
 
-        $config = array_filter($config, function ($value) {
+        $config = array_filter($config, static function ($value) {
             return null !== $value;
         });
 
@@ -469,7 +468,7 @@ class Queue extends CliQueue
         }
     }
 
-    protected function setupBroker()
+    protected function setupBroker(): void
     {
         if ($this->setupBrokerDone) {
             return;
@@ -493,7 +492,7 @@ class Queue extends CliQueue
     /**
      * Closes connection and channel.
      */
-    protected function close()
+    protected function close(): void
     {
         if (!$this->context) {
             return;
@@ -507,7 +506,7 @@ class Queue extends CliQueue
     /**
      * {@inheritdoc}
      */
-    protected function redeliver(AmqpMessage $message)
+    protected function redeliver(AmqpMessage $message): void
     {
         $attempt = $message->getProperty(self::ATTEMPT, 1);
 

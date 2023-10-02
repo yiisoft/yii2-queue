@@ -33,7 +33,7 @@ abstract class Action extends BaseAction
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -52,7 +52,7 @@ abstract class Action extends BaseAction
      * @param string $string
      * @return string
      */
-    protected function format($string)
+    protected function format(string $string)
     {
         return call_user_func_array([$this->controller, 'ansiFormat'], func_get_args());
     }

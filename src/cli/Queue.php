@@ -44,11 +44,11 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @var array|string
      * @since 2.0.2
      */
-    public $loopConfig = SignalLoop::class;
+    public string|array $loopConfig = SignalLoop::class;
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
     /**
      * @var array of additional options of command
      */
@@ -69,7 +69,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return string command id
      * @throws
      */
-    protected function getCommandId()
+    protected function getCommandId(): string
     {
         foreach (Yii::$app->getComponents(false) as $id => $component) {
             if ($component === $this) {
@@ -82,7 +82,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function bootstrap($app)
+    public function bootstrap($app): void
     {
         if ($app instanceof ConsoleApp) {
             $app->controllerMap[$this->getCommandId()] = [
@@ -99,7 +99,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return null|int exit code
      * @since 2.0.2
      */
-    protected function runWorker(callable $handler)
+    protected function runWorker(callable $handler): ?int
     {
         $this->_workerPid = getmypid();
         /** @var LoopInterface $loop */
@@ -112,7 +112,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
         }
 
         try {
-            call_user_func($handler, function () use ($loop, $event) {
+            $handler(function () use ($loop, $event) {
                 $this->trigger(self::EVENT_WORKER_LOOP, $event);
                 return $event->exitCode === null && $loop->canContinue();
             });
@@ -157,7 +157,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return bool
      * @internal for worker command only
      */
-    public function execute($id, $message, $ttr, $attempt, $workerPid)
+    public function execute(string $id, string $message, int $ttr, int $attempt, ?int $workerPid): bool
     {
         $this->_workerPid = $workerPid;
         return parent::handleMessage($id, $message, $ttr, $attempt);

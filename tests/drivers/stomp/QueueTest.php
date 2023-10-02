@@ -29,7 +29,7 @@ class QueueTest extends CliTestCase
     public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 

@@ -56,7 +56,7 @@ services:
   mysql:
     image: mysql:5.7
     ports:
-    - 3307:3306
+    - "3307:3306"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
       MYSQL_USER: yii2_queue_test
@@ -69,7 +69,7 @@ services:
   postgres:
     image: postgres:10.4
     ports:
-    - 5433:5432
+    - "5433:5432"
     environment:
       POSTGRES_USER: yii2_queue_test
       POSTGRES_PASSWORD: yii2_queue_test
@@ -81,7 +81,7 @@ services:
   redis:
     image: redis:4.0
     ports:
-    - 6380:6379
+    - "6380:6379"
     networks:
       net: {}
 
@@ -98,7 +98,7 @@ services:
   beanstalk:
     image: schickling/beanstalkd
     ports:
-    - 11301:11300
+    - "11301:11300"
     networks:
       net: {}
 
@@ -106,7 +106,7 @@ services:
   gearmand:
     image: artefactual/gearmand
     ports:
-    - 4731:4730
+    - "4731:4730"
     networks:
       net: {}
 
@@ -114,7 +114,7 @@ services:
   activemq:
     image: webcenter/activemq
     ports:
-      - 61613:61613
+      - "61613:61613"
     networks:
       net: {}
 

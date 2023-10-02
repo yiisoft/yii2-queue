@@ -30,16 +30,16 @@ class VerboseBehavior extends Behavior
     /**
      * @var Controller
      */
-    public $command;
+    public Controller $command;
 
     /**
      * @var float timestamp
      */
-    private $jobStartedAt;
+    private float $jobStartedAt;
     /**
      * @var int timestamp
      */
-    private $workerStartedAt;
+    private int $workerStartedAt;
 
     /**
      * @inheritdoc
@@ -58,7 +58,7 @@ class VerboseBehavior extends Behavior
     /**
      * @param ExecEvent $event
      */
-    public function beforeExec(ExecEvent $event)
+    public function beforeExec(ExecEvent $event): void
     {
         $this->jobStartedAt = microtime(true);
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
@@ -71,7 +71,7 @@ class VerboseBehavior extends Behavior
     /**
      * @param ExecEvent $event
      */
-    public function afterExec(ExecEvent $event)
+    public function afterExec(ExecEvent $event): void
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
         $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
@@ -86,7 +86,7 @@ class VerboseBehavior extends Behavior
     /**
      * @param ExecEvent $event
      */
-    public function afterError(ExecEvent $event)
+    public function afterError(ExecEvent $event): void
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
         $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
@@ -112,7 +112,7 @@ class VerboseBehavior extends Behavior
      * @return string
      * @since 2.0.2
      */
-    protected function jobTitle(ExecEvent $event)
+    protected function jobTitle(ExecEvent $event): string
     {
         $name = $event->job instanceof JobInterface ? get_class($event->job) : 'unknown job';
         $extra = "attempt: $event->attempt";
@@ -126,7 +126,7 @@ class VerboseBehavior extends Behavior
      * @param WorkerEvent $event
      * @since 2.0.2
      */
-    public function workerStart(WorkerEvent $event)
+    public function workerStart(WorkerEvent $event): void
     {
         $this->workerStartedAt = time();
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
@@ -139,7 +139,7 @@ class VerboseBehavior extends Behavior
      * @param WorkerEvent $event
      * @since 2.0.2
      */
-    public function workerStop(WorkerEvent $event)
+    public function workerStop(WorkerEvent $event): void
     {
         $this->command->stdout(date('Y-m-d H:i:s'), Console::FG_YELLOW);
         $pid = $event->sender->getWorkerPid();
@@ -154,7 +154,7 @@ class VerboseBehavior extends Behavior
      * @return string
      * @since 2.0.2
      */
-    protected function formatDuration($value)
+    protected function formatDuration($value): string
     {
         $seconds = $value % 60;
         $value = ($value - $seconds) / 60;

@@ -53,11 +53,11 @@ abstract class Command extends Controller
      */
     public bool $isolate = true;
     /**
-     * @var string path to php interpreter that uses to run child processes.
+     * @var string|null path to php interpreter that uses to run child processes.
      * If it is undefined, PHP_BINARY will be used.
      * @since 2.0.3
      */
-    public $phpBinary;
+    public ?string $phpBinary = null;
 
     /**
      * @inheritdoc
@@ -114,7 +114,7 @@ abstract class Command extends Controller
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         if ($this->canVerbose($action->id) && $this->verbose) {
             $this->queue->attachBehavior('verbose', ['command' => $this] + $this->verboseConfig);
@@ -143,7 +143,7 @@ abstract class Command extends Controller
      * @return int exit code
      * @internal It is used with isolate mode.
      */
-    public function actionExec($id, $ttr, $attempt, $pid)
+    public function actionExec(?string $id, int $ttr, int $attempt, int $pid): int
     {
         if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid ?: null)) {
             return self::EXEC_DONE;
@@ -162,7 +162,7 @@ abstract class Command extends Controller
      * @throws
      * @see actionExec()
      */
-    protected function handleMessage(int|string|null $id, string $message, ?int $ttr, int $attempt)
+    protected function handleMessage(int|string|null $id, string $message, ?int $ttr, int $attempt): bool
     {
         // Child process command: php yii queue/exec "id" "ttr" "attempt" "pid"
         $cmd = [

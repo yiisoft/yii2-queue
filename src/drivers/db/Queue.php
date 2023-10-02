@@ -36,23 +36,23 @@ class Queue extends CliQueue
     /**
      * @var int timeout
      */
-    public $mutexTimeout = 3;
+    public int $mutexTimeout = 3;
     /**
      * @var string table name
      */
-    public $tableName = '{{%queue}}';
+    public string $tableName = '{{%queue}}';
     /**
      * @var string
      */
-    public $channel = 'queue';
+    public string $channel = 'queue';
     /**
      * @var bool ability to delete released messages from table
      */
-    public $deleteReleased = true;
+    public bool $deleteReleased = true;
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
 
     /**
      * @inheritdoc
@@ -129,7 +129,7 @@ class Queue extends CliQueue
      *
      * @since 2.0.1
      */
-    public function clear()
+    public function clear(): void
     {
         $this->db->createCommand()
             ->delete($this->tableName, ['channel' => $this->channel])
@@ -153,11 +153,11 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         $this->db->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
-            'job' => $message,
+            'job' => $payload,
             'pushed_at' => time(),
             'ttr' => $ttr,
             'delay' => $delay,

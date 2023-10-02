@@ -201,20 +201,20 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string $message
+     * @param string $payload
      * @param int $ttr time to reserve in seconds
      * @param int $delay
      * @param mixed $priority
-     * @return string id of a job message
+     * @return string|int|null id of a job message
      */
-    abstract protected function pushMessage($message, $ttr, $delay, $priority);
+    abstract protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null;
 
     /**
      * Uses for CLI drivers and gets process ID of a worker.
      *
      * @since 2.0.2
      */
-    public function getWorkerPid()
+    public function getWorkerPid(): ?int
     {
         return null;
     }

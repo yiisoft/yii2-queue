@@ -74,17 +74,17 @@ class SignalLoop extends BaseObject implements LoopInterface
         parent::init();
         if (extension_loaded('pcntl') && function_exists('pcntl_signal')) {
             foreach ($this->exitSignals as $signal) {
-                pcntl_signal($signal, function () {
+                pcntl_signal($signal, static function () {
                     self::$exit = true;
                 });
             }
             foreach ($this->suspendSignals as $signal) {
-                pcntl_signal($signal, function () {
+                pcntl_signal($signal, static function () {
                     self::$pause = true;
                 });
             }
             foreach ($this->resumeSignals as $signal) {
-                pcntl_signal($signal, function () {
+                pcntl_signal($signal, static function () {
                     self::$pause = false;
                 });
             }

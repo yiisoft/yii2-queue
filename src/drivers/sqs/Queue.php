@@ -59,7 +59,7 @@ class Queue extends CliQueue
      * @var string command class name
      * @inheritdoc
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
     /**
      * Json serializer by default.
      * @inheritdoc
@@ -181,7 +181,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($priority) {
             throw new NotSupportedException('Priority is not supported in this driver');
@@ -189,7 +189,7 @@ class Queue extends CliQueue
 
         $request = [
             'QueueUrl' => $this->url,
-            'MessageBody' => $message,
+            'MessageBody' => $payload,
             'DelaySeconds' => $delay,
             'MessageAttributes' => [
                 'TTR' => [
@@ -199,9 +199,9 @@ class Queue extends CliQueue
             ],
         ];
 
-        if (substr($this->url, -5) === '.fifo') {
+        if (str_ends_with($this->url, '.fifo')) {
             $request['MessageGroupId'] = $this->messageGroupId;
-            $request['MessageDeduplicationId'] = hash('sha256', $message);
+            $request['MessageDeduplicationId'] = hash('sha256', $payload);
         }
 
         $response = $this->getClient()->sendMessage($request);

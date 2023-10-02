@@ -34,7 +34,7 @@ class Queue extends CliQueue
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
 
     /**
      * @inheritdoc
@@ -95,7 +95,7 @@ class Queue extends CliQueue
      *
      * @since 2.0.1
      */
-    public function clear()
+    public function clear(): void
     {
         while (!$this->redis->set("$this->channel.moving_lock", true, 'NX')) {
             usleep(10000);
@@ -161,7 +161,7 @@ class Queue extends CliQueue
     /**
      * @param string $from
      */
-    protected function moveExpired($from)
+    protected function moveExpired($from): void
     {
         $now = time();
         if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
@@ -177,7 +177,7 @@ class Queue extends CliQueue
      *
      * @param int $id of a message
      */
-    protected function delete($id)
+    protected function delete($id): void
     {
         $this->redis->zrem("$this->channel.reserved", $id);
         $this->redis->hdel("$this->channel.attempts", $id);
@@ -187,14 +187,14 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
         $id = $this->redis->incr("$this->channel.message_id");
-        $this->redis->hset("$this->channel.messages", $id, "$ttr;$message");
+        $this->redis->hset("$this->channel.messages", $id, "$ttr;$payload");
         if (!$delay) {
             $this->redis->lpush("$this->channel.waiting", $id);
         } else {

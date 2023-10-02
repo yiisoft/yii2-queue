@@ -26,7 +26,7 @@ class Queue extends CliQueue
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
 
     /**
      * Listens queue and runs each job.
@@ -58,20 +58,17 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($delay) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
         }
 
-        switch ($priority) {
-            case 'high':
-                return $this->getClient()->doHighBackground($this->channel, "$ttr;$message");
-            case 'low':
-                return $this->getClient()->doLowBackground($this->channel, "$ttr;$message");
-            default:
-                return $this->getClient()->doBackground($this->channel, "$ttr;$message");
-        }
+        return match ($priority) {
+            'high' => $this->getClient()->doHighBackground($this->channel, "$ttr;$payload"),
+            'low' => $this->getClient()->doLowBackground($this->channel, "$ttr;$payload"),
+            default => $this->getClient()->doBackground($this->channel, "$ttr;$payload"),
+        };
     }
 
     /**
@@ -94,7 +91,7 @@ class Queue extends CliQueue
     /**
      * @return \GearmanClient
      */
-    protected function getClient()
+    protected function getClient(): \GearmanClient
     {
         if (!$this->_client) {
             $this->_client = new \GearmanClient();
