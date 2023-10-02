@@ -1,7 +1,7 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-3.0.0 under development
+2.3.6 under development
 -----------------------
 
 - Enh #372: Add ability to configure keepalive and heartbeat for AMQP and AMQP interop (vyachin)
