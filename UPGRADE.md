@@ -4,7 +4,7 @@ Upgrading Instructions
 This file contains the upgrade notes. These notes highlight changes that could break your
 application when you upgrade the package from one version to another.
 
-Upgrade to 3.0.0
+Upgrade to 2.3.6
 ----------------
 
 * The `maxPriority` property was removed from [amqp_interop](docs/guide/driver-amqp-interop.md). 
