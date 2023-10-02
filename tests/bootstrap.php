@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 define('YII_DEBUG', true);
 $_SERVER['SCRIPT_NAME'] = '/' . __DIR__;
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;

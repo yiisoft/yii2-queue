@@ -12,6 +12,7 @@ namespace yii\queue\db;
 
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application db-queue.
@@ -23,7 +24,7 @@ class Command extends CliCommand
     /**
      * @var Queue
      */
-    public \yii\queue\cli\Queue $queue;
+    public CliQueue $queue;
     /**
      * @var string
      */

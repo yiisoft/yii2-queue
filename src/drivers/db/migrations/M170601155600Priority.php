@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,16 +19,19 @@ use yii\db\Migration;
  */
 class M170601155600Priority extends Migration
 {
-    public $tableName = '{{%queue}}';
+    public string $tableName = '{{%queue}}';
 
-
-    public function up()
+    public function up(): void
     {
-        $this->addColumn($this->tableName, 'priority', $this->integer()->unsigned()->notNull()->defaultValue(1024)->after('delay'));
+        $this->addColumn(
+            $this->tableName,
+            'priority',
+            $this->integer()->unsigned()->notNull()->defaultValue(1024)->after('delay')
+        );
         $this->createIndex('priority', $this->tableName, 'priority');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->dropIndex('priority', $this->tableName);
         $this->dropColumn($this->tableName, 'priority');

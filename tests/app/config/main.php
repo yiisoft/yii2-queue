@@ -1,4 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
+use yii\db\Connection;
+use yii\mutex\FileMutex;
+use yii\mutex\MysqlMutex;
+use yii\mutex\PgsqlMutex;
+use yii\queue\amqp_interop\Queue as AmqpInteropQueue;
+use yii\queue\beanstalk\Queue as BeanstalkQueue;
+use yii\queue\db\Queue as DbQueue;
+use yii\queue\file\Queue as FileQueue;
+use yii\queue\gearman\Queue as GearmanQueue;
+use yii\queue\redis\Queue as RedisQueue;
+use yii\queue\sqs\Queue as SqsQueue;
+use yii\queue\stomp\Queue as StompQueue;
+use yii\queue\sync\Queue as SyncQueue;
+use yii\redis\Connection as RedisConnection;
+
 $config = [
     'id' => 'yii2-queue-app',
     'basePath' => dirname(__DIR__),
@@ -16,13 +34,13 @@ $config = [
     ],
     'components' => [
         'syncQueue' => [
-            'class' => \yii\queue\sync\Queue::class,
+            'class' => SyncQueue::class,
         ],
         'fileQueue' => [
-            'class' => \yii\queue\file\Queue::class,
+            'class' => FileQueue::class,
         ],
         'mysql' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => sprintf(
                 'mysql:host=%s;dbname=%s',
                 getenv('MYSQL_HOST') ?: 'localhost',
@@ -36,24 +54,24 @@ $config = [
             ],
         ],
         'mysqlQueue' => [
-            'class' => \yii\queue\db\Queue::class,
+            'class' => DbQueue::class,
             'db' => 'mysql',
             'mutex' => [
-                'class' => \yii\mutex\MysqlMutex::class,
+                'class' => MysqlMutex::class,
                 'db' => 'mysql',
             ],
         ],
         'sqlite' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => 'sqlite:@runtime/yii2_queue_test.db',
         ],
         'sqliteQueue' => [
-            'class' => \yii\queue\db\Queue::class,
+            'class' => DbQueue::class,
             'db' => 'sqlite',
-            'mutex' => \yii\mutex\FileMutex::class,
+            'mutex' => FileMutex::class,
         ],
         'pgsql' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => sprintf(
                 'pgsql:host=%s;dbname=%s',
                 getenv('POSTGRES_HOST') ?: 'localhost',
@@ -64,24 +82,24 @@ $config = [
             'charset' => 'utf8',
         ],
         'pgsqlQueue' => [
-            'class' => \yii\queue\db\Queue::class,
+            'class' => DbQueue::class,
             'db' => 'pgsql',
             'mutex' => [
-                'class' => \yii\mutex\PgsqlMutex::class,
+                'class' => PgsqlMutex::class,
                 'db' => 'pgsql',
             ],
             'mutexTimeout' => 0,
         ],
         'redis' => [
-            'class' => \yii\redis\Connection::class,
+            'class' => RedisConnection::class,
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
             'database' => getenv('REDIS_DB') ?: 1,
         ],
         'redisQueue' => [
-            'class' => \yii\queue\redis\Queue::class,
+            'class' => RedisQueue::class,
         ],
         'amqpInteropQueue' => [
-            'class' => \yii\queue\amqp_interop\Queue::class,
+            'class' => AmqpInteropQueue::class,
             'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
             'user' => getenv('RABBITMQ_USER') ?: 'guest',
             'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
@@ -90,11 +108,11 @@ $config = [
             'exchangeName' => 'exchange-interop',
         ],
         'beanstalkQueue' => [
-            'class' => \yii\queue\beanstalk\Queue::class,
+            'class' => BeanstalkQueue::class,
             'host' => getenv('BEANSTALK_HOST') ?: 'localhost',
         ],
         'stompQueue' => [
-            'class' => \yii\queue\stomp\Queue::class,
+            'class' => StompQueue::class,
             'host' => getenv('ACTIVEMQ_HOST') ?: 'localhost',
         ],
     ],
@@ -103,7 +121,7 @@ $config = [
 if (defined('GEARMAN_SUCCESS')) {
     $config['bootstrap'][] = 'gearmanQueue';
     $config['components']['gearmanQueue'] = [
-        'class' => \yii\queue\gearman\Queue::class,
+        'class' => GearmanQueue::class,
         'host' => getenv('GEARMAN_HOST') ?: 'localhost',
     ];
 }
@@ -111,7 +129,7 @@ if (defined('GEARMAN_SUCCESS')) {
 if (getenv('AWS_SQS_ENABLED')) {
     $config['bootstrap'][] = 'sqsQueue';
     $config['components']['sqsQueue'] = [
-        'class' => \yii\queue\sqs\Queue::class,
+        'class' => SqsQueue::class,
         'url' => getenv('AWS_SQS_URL'),
         'key' => getenv('AWS_KEY'),
         'secret' => getenv('AWS_SECRET'),
@@ -122,7 +140,7 @@ if (getenv('AWS_SQS_ENABLED')) {
 if (getenv('AWS_SQS_FIFO_ENABLED')) {
     $config['bootstrap'][] = 'sqsFifoQueue';
     $config['components']['sqsFifoQueue'] = [
-        'class' => \yii\queue\sqs\Queue::class,
+        'class' => SqsQueue::class,
         'url' => getenv('AWS_SQS_FIFO_URL'),
         'key' => getenv('AWS_KEY'),
         'secret' => getenv('AWS_SECRET'),

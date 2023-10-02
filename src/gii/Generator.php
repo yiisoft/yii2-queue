@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +28,6 @@ class Generator extends \yii\gii\Generator
     public $retryable = false;
     public $ns = 'app\jobs';
     public $baseClass = BaseObject::class;
-
 
     /**
      * @inheritdoc

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,15 +19,18 @@ use yii\db\Migration;
  */
 class M170307170300Later extends Migration
 {
-    public $tableName = '{{%queue}}';
+    public string $tableName = '{{%queue}}';
 
-
-    public function up()
+    public function up(): void
     {
-        $this->addColumn($this->tableName, 'timeout', $this->integer()->defaultValue(0)->notNull()->after('created_at'));
+        $this->addColumn(
+            $this->tableName,
+            'timeout',
+            $this->integer()->defaultValue(0)->notNull()->after('created_at')
+        );
     }
 
-    public function down()
+    public function down(): void
     {
         $this->dropColumn($this->tableName, 'timeout');
     }

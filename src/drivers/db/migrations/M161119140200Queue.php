@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,11 +19,10 @@ use yii\db\Migration;
  */
 class M161119140200Queue extends Migration
 {
-    public $tableName = '{{%queue}}';
+    public string $tableName = '{{%queue}}';
     public $tableOptions;
 
-
-    public function up()
+    public function up(): void
     {
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
@@ -35,7 +37,7 @@ class M161119140200Queue extends Migration
         $this->createIndex('started_at', $this->tableName, 'started_at');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->dropTable($this->tableName);
     }
