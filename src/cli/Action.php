@@ -24,7 +24,7 @@ abstract class Action extends BaseAction
     /**
      * @var Queue
      */
-    public $queue;
+    public Queue $queue;
     /**
      * @var Command|ConsoleController
      */

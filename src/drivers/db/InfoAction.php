@@ -13,6 +13,7 @@ namespace yii\queue\db;
 use yii\db\Query;
 use yii\helpers\Console;
 use yii\queue\cli\Action;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Info about queue status.
@@ -24,7 +25,7 @@ class InfoAction extends Action
     /**
      * @var Queue
      */
-    public $queue;
+    public CliQueue $queue;
 
     /**
      * Info about queue status.

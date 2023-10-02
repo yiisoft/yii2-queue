@@ -38,6 +38,7 @@ class Yii extends BaseYii
  * @property StompQueue $stompQueue
  * @property SyncQueue $syncQueue
  * @property SqsQueue $sqsQueue
+ * @property SqsQueue $sqsFifoQueue
  */
 abstract class BaseApplication extends yii\base\Application
 {
