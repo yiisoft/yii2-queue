@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,5 +21,5 @@ interface LoopInterface
     /**
      * @return bool whether to continue listening of the queue.
      */
-    public function canContinue();
+    public function canContinue(): bool;
 }

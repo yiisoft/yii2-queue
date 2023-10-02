@@ -23,7 +23,7 @@ class Command extends CliCommand
     /**
      * @var Queue
      */
-    public $queue;
+    public \yii\queue\cli\Queue $queue;
     /**
      * @var string
      */

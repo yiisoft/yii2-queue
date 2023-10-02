@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,17 +28,17 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @event WorkerEvent that is triggered when the worker is started.
      * @since 2.0.2
      */
-    const EVENT_WORKER_START = 'workerStart';
+    public const EVENT_WORKER_START = 'workerStart';
     /**
      * @event WorkerEvent that is triggered each iteration between requests to queue.
      * @since 2.0.3
      */
-    const EVENT_WORKER_LOOP = 'workerLoop';
+    public const EVENT_WORKER_LOOP = 'workerLoop';
     /**
      * @event WorkerEvent that is triggered when the worker is stopped.
      * @since 2.0.2
      */
-    const EVENT_WORKER_STOP = 'workerStop';
+    public const EVENT_WORKER_STOP = 'workerStop';
 
     /**
      * @var array|string
@@ -49,7 +52,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @var array of additional options of command
      */
-    public $commandOptions = [];
+    public array $commandOptions = [];
     /**
      * @var callable|null
      * @internal for worker command only
@@ -61,7 +64,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @since 2.0.2
      */
     private $_workerPid;
-
 
     /**
      * @return string command id
@@ -109,7 +111,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
             return $event->exitCode;
         }
 
-        $exitCode = null;
         try {
             call_user_func($handler, function () use ($loop, $event) {
                 $this->trigger(self::EVENT_WORKER_LOOP, $event);

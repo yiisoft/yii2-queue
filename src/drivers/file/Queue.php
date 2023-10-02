@@ -190,7 +190,7 @@ class Queue extends CliQueue
             if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
                 list($id, $ttr, $time) = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
-                list($id, $ttr) = array_shift($data['waiting']);
+                [$id, $ttr] = array_shift($data['waiting']);
             }
             if ($id) {
                 $attempt = 1;

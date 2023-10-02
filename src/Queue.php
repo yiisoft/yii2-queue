@@ -72,7 +72,7 @@ abstract class Queue extends Component
     /**
      * @var int default time to reserve a job
      */
-    public $ttr = 300;
+    public int $ttr = 300;
     /**
      * @var int default attempt count
      */
@@ -81,7 +81,6 @@ abstract class Queue extends Component
     private $pushTtr;
     private $pushDelay;
     private $pushPriority;
-
 
     /**
      * @inheritdoc
@@ -149,9 +148,9 @@ abstract class Queue extends Component
      * Pushes job into queue.
      *
      * @param JobInterface|mixed $job
-     * @return string|null id of a job message
+     * @return int|string|null id of a job message
      */
-    public function push($job)
+    public function push($job): int|string|null
     {
         $event = new PushEvent([
             'job' => $job,
@@ -227,7 +226,7 @@ abstract class Queue extends Component
      */
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
-        list($job, $error) = $this->unserializeMessage($message);
+        [$job, $error] = $this->unserializeMessage($message);
         $event = new ExecEvent([
             'id' => $id,
             'job' => $job,
@@ -297,35 +296,35 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @return bool
      */
-    public function isWaiting($id)
+    public function isWaiting(int|string $id): bool
     {
         return $this->status($id) === self::STATUS_WAITING;
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @return bool
      */
-    public function isReserved($id)
+    public function isReserved(int|string $id): bool
     {
         return $this->status($id) === self::STATUS_RESERVED;
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @return bool
      */
-    public function isDone($id)
+    public function isDone(int|string $id): bool
     {
         return $this->status($id) === self::STATUS_DONE;
     }
 
     /**
-     * @param string $id of a job message
+     * @param string|int $id of a job message
      * @return int status code
      */
-    abstract public function status(string $id): int;
+    abstract public function status(int|string $id): int;
 }
