@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,14 +20,13 @@ use yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    public $host = 'localhost';
-    public $port = 4730;
-    public $channel = 'queue';
+    public string $host = 'localhost';
+    public int $port = 4730;
+    public string $channel = 'queue';
     /**
      * @var string command class name
      */
     public $commandClass = Command::class;
-
 
     /**
      * Listens queue and runs each job.
@@ -34,7 +36,7 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat)
+    public function run(bool $repeat): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat) {
             $worker = new \GearmanWorker();

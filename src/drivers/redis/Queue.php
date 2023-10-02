@@ -54,12 +54,12 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
-                    list($id, $message, $ttr, $attempt) = $payload;
+                    [$id, $message, $ttr, $attempt] = $payload;
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                         $this->delete($id);
                     }
@@ -131,7 +131,7 @@ class Queue extends CliQueue
      * @param int $timeout timeout
      * @return array|null payload
      */
-    protected function reserve($timeout)
+    protected function reserve(int $timeout)
     {
         // Moves delayed and reserved jobs into waiting list with lock for one second
         if ($this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {

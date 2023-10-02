@@ -25,25 +25,23 @@ class Queue extends BaseQueue
     /**
      * @var bool
      */
-    public $handle = false;
-
+    public bool $handle = false;
     /**
      * @var array of payloads
      */
-    private $payloads = [];
+    private array $payloads = [];
     /**
      * @var int last pushed ID
      */
-    private $pushedId = 0;
+    private int $pushedId = 0;
     /**
      * @var int started ID
      */
-    private $startedId = 0;
+    private int $startedId = 0;
     /**
      * @var int last finished ID
      */
-    private $finishedId = 0;
-
+    private int $finishedId = 0;
 
     /**
      * @inheritdoc
@@ -66,7 +64,7 @@ class Queue extends BaseQueue
     public function run()
     {
         while (($payload = array_shift($this->payloads)) !== null) {
-            list($ttr, $message) = $payload;
+            [$ttr, $message] = $payload;
             $this->startedId = $this->finishedId + 1;
             $this->handleMessage($this->startedId, $message, $ttr, 1);
             $this->finishedId = $this->startedId;

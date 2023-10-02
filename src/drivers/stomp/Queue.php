@@ -25,8 +25,8 @@ use yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    const ATTEMPT = 'yii-attempt';
-    const TTR = 'yii-ttr';
+    public const ATTEMPT = 'yii-attempt';
+    public const TTR = 'yii-ttr';
 
     /**
      * The message queue broker's host.
@@ -106,7 +106,6 @@ class Queue extends CliQueue
      */
     protected $context;
 
-
     /**
      * @inheritdoc
      */
@@ -152,11 +151,11 @@ class Queue extends CliQueue
     /**
      * Listens queue and runs each job.
      *
-     * @param $repeat
+     * @param bool $repeat
      * @param int $timeout
      * @return int|null
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             $this->open();

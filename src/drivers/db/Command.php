@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +28,6 @@ class Command extends CliCommand
      * @var string
      */
     public $defaultAction = 'info';
-
 
     /**
      * @inheritdoc

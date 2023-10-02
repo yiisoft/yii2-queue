@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,11 +25,10 @@ class InfoAction extends Action
      */
     public $queue;
 
-
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
         Console::output($this->format('Statistical information about the tube:', Console::FG_GREEN));
 

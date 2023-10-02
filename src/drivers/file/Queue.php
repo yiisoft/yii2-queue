@@ -49,7 +49,6 @@ class Queue extends CliQueue
      */
     public $commandClass = Command::class;
 
-
     /**
      * @inheritdoc
      */

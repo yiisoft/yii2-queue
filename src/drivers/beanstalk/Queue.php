@@ -50,7 +50,7 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
