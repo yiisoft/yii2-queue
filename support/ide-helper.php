@@ -5,6 +5,7 @@ declare(strict_types = 1);
 use yii\BaseYii;
 use yii\queue\amqp_interop\Queue as AmqpInteropQueue;
 use yii\queue\beanstalk\Queue as BeanstalkQueue;
+use yii\queue\db\Queue as DbQueue;
 use yii\queue\file\Queue as FileQueue;
 use yii\queue\gearman\Queue as GearmanQueue;
 use yii\queue\redis\Queue as RedisQueue;
@@ -39,6 +40,9 @@ class Yii extends BaseYii
  * @property SyncQueue $syncQueue
  * @property SqsQueue $sqsQueue
  * @property SqsQueue $sqsFifoQueue
+ * @property DbQueue $mysqlQueue
+ * @property DbQueue $pgsqlQueue
+ * @property DbQueue $sqliteQueue
  */
 abstract class BaseApplication extends yii\base\Application
 {

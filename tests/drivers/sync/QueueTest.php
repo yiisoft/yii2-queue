@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace tests\drivers\sync;
 
-use Yii;
 use tests\drivers\TestCase;
+use Yii;
 use yii\queue\sync\Queue;
 
 /**

@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace tests\drivers;
 
-use Yii;
 use tests\app\SimpleJob;
+use Yii;
 use yii\queue\Queue;
 
 /**

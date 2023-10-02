@@ -105,22 +105,22 @@ class QueueTest extends CliTestCase
     }
 
     /**
-     * @param int $id of a job
+     * @param int|string|null $id of a job
      * @return bool
      * @throws
      */
-    protected function jobIsExists($id)
+    protected function jobIsExists(int|string|null $id): bool
     {
         $connection = new Pheanstalk($this->getQueue()->host, $this->getQueue()->port);
         try {
             $connection->peek($id);
             return true;
         } catch (ServerException $e) {
-            if (strpos($e->getMessage(), 'NOT_FOUND') === 0) {
+            if (str_starts_with($e->getMessage(), 'NOT_FOUND')) {
                 return false;
-            } else {
-                throw $e;
             }
+
+            throw $e;
         }
     }
 }

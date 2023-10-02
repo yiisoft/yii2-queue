@@ -45,14 +45,4 @@ class QueueTest extends CliTestCase
         return Yii::$app->stompQueue;
     }
 
-
-    protected function setUp(): void
-    {
-        if ('true' == getenv('EXCLUDE_STOMP')) {
-            $this->markTestSkipped('Stomp tests are disabled for php 5.5');
-        }
-
-        parent::setUp();
-    }
-
 }
