@@ -2,15 +2,14 @@
 $config = [
     'id' => 'yii2-queue-app',
     'basePath' => dirname(__DIR__),
-    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-    'runtimePath' => dirname(dirname(__DIR__)) . '/runtime',
+    'vendorPath' => dirname(__DIR__, 2) . '/vendor',
+    'runtimePath' => dirname(__DIR__, 2) . '/runtime',
     'bootstrap' => [
         'fileQueue',
         'mysqlQueue',
         'sqliteQueue',
         'pgsqlQueue',
         'redisQueue',
-        'amqpQueue',
         'amqpInteropQueue',
         'beanstalkQueue',
         'stompQueue',
@@ -80,14 +79,6 @@ $config = [
         ],
         'redisQueue' => [
             'class' => \yii\queue\redis\Queue::class,
-        ],
-        'amqpQueue' => [
-            'class' => \yii\queue\amqp\Queue::class,
-            'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
-            'user' => getenv('RABBITMQ_USER') ?: 'guest',
-            'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
-            'queueName' => 'queue-basic',
-            'exchangeName' => 'exchange-basic',
         ],
         'amqpInteropQueue' => [
             'class' => \yii\queue\amqp_interop\Queue::class,

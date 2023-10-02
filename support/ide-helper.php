@@ -3,7 +3,6 @@
 declare(strict_types = 1);
 
 use yii\BaseYii;
-use yii\queue\amqp\Queue as AmqpQueue;
 use yii\queue\amqp_interop\Queue as AmqpInteropQueue;
 use yii\queue\beanstalk\Queue as BeanstalkQueue;
 use yii\queue\file\Queue as FileQueue;
@@ -31,7 +30,6 @@ class Yii extends BaseYii
  * Class BaseApplication
  * Used for properties that are identical for both WebApplication and ConsoleApplication
  *
- * @property AmqpQueue $amqpQueue
  * @property AmqpInteropQueue $amqpInteropQueue
  * @property BeanstalkQueue $beanstalkQueue
  * @property FileQueue $fileQueue
