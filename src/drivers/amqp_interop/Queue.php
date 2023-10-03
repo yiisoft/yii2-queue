@@ -28,6 +28,8 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Amqp Queue.
  *
+ * @property-read AmqpContext $context
+ *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  * @since 2.0.2
  */
@@ -233,7 +235,6 @@ class Queue extends CliQueue
      * @var string command class name
      */
     public $commandClass = Command::class;
-
     /**
      * Headers to send along with the message
      * ```php

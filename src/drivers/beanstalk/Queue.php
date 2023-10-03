@@ -17,6 +17,8 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Beanstalk Queue.
  *
+ * @property-read object $statsTube Tube statistics.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Queue extends CliQueue
