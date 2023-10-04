@@ -60,7 +60,7 @@ class Queue extends CliQueue
             while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
                     [$id, $message, $ttr, $attempt] = $payload;
-                    if ($this->handleMessage($id, $message, $ttr, $attempt)) {
+                    if ($this->handleMessage($id, $message, (int)$ttr, (int)$attempt)) {
                         $this->delete($id);
                     }
                 } elseif (!$repeat) {

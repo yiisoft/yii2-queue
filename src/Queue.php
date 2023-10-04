@@ -217,13 +217,13 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number
      * @return bool
      */
-    protected function handleMessage($id, $message, $ttr, $attempt)
+    protected function handleMessage(int|string $id, string $message, int $ttr, int $attempt): bool
     {
         [$job, $error] = $this->unserializeMessage($message);
         $event = new ExecEvent([

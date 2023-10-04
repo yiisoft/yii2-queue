@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="6"
+    errorLevel="5"
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,7 +11,9 @@
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>
+            <directory name="vendor" />
             <directory name="src/debug" />
+            <directory name="src/drivers/db/migrations" />
         </ignoreFiles>
     </projectFiles>
     <extraFiles>

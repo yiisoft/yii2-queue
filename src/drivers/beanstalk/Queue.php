@@ -62,8 +62,8 @@ class Queue extends CliQueue
                     if ($this->handleMessage(
                         $payload->getId(),
                         $payload->getData(),
-                        $info->ttr,
-                        $info->reserves
+                        (int)$info->ttr,
+                        (int)$info->reserves
                     )) {
                         $this->getPheanstalk()->delete($payload);
                     }

@@ -46,7 +46,7 @@ class Queue extends CliQueue
             $worker->addServer($this->host, $this->port);
             $worker->addFunction($this->channel, function (GearmanJob $payload) {
                 [$ttr, $message] = explode(';', $payload->workload(), 2);
-                $this->handleMessage($payload->handle(), $message, $ttr, 1);
+                $this->handleMessage($payload->handle(), $message, (int)$ttr, 1);
             });
             $worker->setTimeout($repeat ? 1000 : 1);
             while ($canContinue()) {

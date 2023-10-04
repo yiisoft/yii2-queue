@@ -11,3 +11,4 @@
 /Makefile           export-ignore
 /phpunit.xml.dist   export-ignore
 /support            export-ignore
+/psalm.xml          export-ignore

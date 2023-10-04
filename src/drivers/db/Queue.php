@@ -81,8 +81,8 @@ class Queue extends CliQueue
                     if ($this->handleMessage(
                         $payload['id'],
                         $payload['job'],
-                        $payload['ttr'],
-                        $payload['attempt']
+                        (int)$payload['ttr'],
+                        (int)$payload['attempt']
                     )) {
                         $this->release($payload);
                     }
