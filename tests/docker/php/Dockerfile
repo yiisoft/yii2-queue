@@ -10,8 +10,8 @@ RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositorie
 RUN apk add git icu-dev libpq-dev gearman-dev libcrypto3 openssl-dev autoconf g++ make linux-headers
 
 RUN docker-php-ext-install pcntl bcmath pdo_mysql intl pdo_pgsql sockets
-RUN pecl install igbinary
-RUN docker-php-ext-enable igbinary
+RUN pecl install igbinary pcov
+RUN docker-php-ext-enable igbinary pcov
 
 # Official gearman package not supported PHP 8.1 now
 RUN TMPDIR=$(mktemp -d) \
