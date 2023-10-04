@@ -12,7 +12,11 @@ namespace yii\queue\stomp;
 
 use Enqueue\Stomp\StompConnectionFactory;
 use Enqueue\Stomp\StompContext;
+use Enqueue\Stomp\StompDestination;
 use Enqueue\Stomp\StompMessage;
+use Interop\Queue\Exception as QueueException;
+use Interop\Queue\Message;
+use Interop\Queue\Queue as InteropQueue;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -163,7 +167,8 @@ class Queue extends CliQueue
             $consumer = $this->context->createConsumer($queue);
 
             while ($canContinue()) {
-                if ($message = ($this->readTimeOut > 0 ? $consumer->receive($this->readTimeOut) : $consumer->receiveNoWait())) {
+                $message = $this->readTimeOut > 0 ? $consumer->receive($this->readTimeOut) : $consumer->receiveNoWait();
+                if ($message) {
                     $messageId = $message->getMessageId();
                     if (!$messageId) {
                         $message = $this->setMessageId($message);
@@ -191,7 +196,7 @@ class Queue extends CliQueue
                     break;
                 } elseif ($timeout) {
                     sleep($timeout);
-                    $this->context->getStomp()->getConnection()->sendAlive();
+                    $this->context->getStomp()->getConnection()?->sendAlive();
                 }
             }
         });
@@ -200,9 +205,8 @@ class Queue extends CliQueue
     /**
      * @param StompMessage $message
      * @return StompMessage
-     * @throws \Interop\Queue\Exception
      */
-    protected function setMessageId(StompMessage $message)
+    protected function setMessageId(Message $message): StompMessage
     {
         $message->setMessageId(uniqid('', true));
         return $message;
@@ -210,7 +214,7 @@ class Queue extends CliQueue
 
     /**
      * @inheritdoc
-     * @throws \Interop\Queue\Exception
+     * @throws QueueException
      * @throws NotSupportedException
      */
     protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
@@ -263,13 +267,17 @@ class Queue extends CliQueue
 
     /**
      * @param StompMessage $message
-     * @throws \Interop\Queue\Exception
+     * @throws QueueException
      */
-    protected function redeliver(StompMessage $message)
+    protected function redeliver(StompMessage $message): void
     {
         $attempt = $message->getProperty(self::ATTEMPT, 1);
 
-        $newMessage = $this->context->createMessage($message->getBody(), $message->getProperties(), $message->getHeaders());
+        $newMessage = $this->context->createMessage(
+            $message->getBody(),
+            $message->getProperties(),
+            $message->getHeaders()
+        );
         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
         $this->context->createProducer()->send(
@@ -279,10 +287,10 @@ class Queue extends CliQueue
     }
 
     /**
-     * @param $name
-     * @return \Enqueue\Stomp\StompDestination
+     * @param string $name
+     * @return InteropQueue|StompDestination
      */
-    private function createQueue($name)
+    private function createQueue(string $name): InteropQueue|StompDestination
     {
         $queue = $this->context->createQueue($name);
         $queue->setDurable(true);
