@@ -7,11 +7,11 @@ RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositorie
     && echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories \
     && apk update
 
-RUN apk add git icu-dev libpq-dev gearman-dev libcrypto3 openssl-dev autoconf g++ make linux-headers
+RUN apk add git icu-dev libpq-dev gearman-dev libcrypto3 openssl-dev autoconf g++ make linux-headers rabbitmq-c-dev
 
-RUN docker-php-ext-install pcntl bcmath pdo_mysql intl pdo_pgsql sockets
-RUN pecl install igbinary pcov
-RUN docker-php-ext-enable igbinary pcov
+RUN docker-php-ext-install pcntl bcmath pdo_mysql intl pdo_pgsql sockets opcache
+RUN pecl install igbinary pcov amqp-1.11.0
+RUN docker-php-ext-enable igbinary pcov amqp
 
 # Official gearman package not supported PHP 8.1 now
 RUN TMPDIR=$(mktemp -d) \

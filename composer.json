@@ -28,9 +28,12 @@
         "yiisoft/yii2-gii": "~2.2.0",
         "php-amqplib/php-amqplib": "^3.0.0",
         "enqueue/amqp-lib": "^0.10.0",
+        "enqueue/amqp-bunny": "^0.10.0",
+        "enqueue/amqp-ext": "^0.10.8",
         "enqueue/stomp": "^0.10.0",
         "pda/pheanstalk": "3.2.1",
-        "aws/aws-sdk-php": ">=2.4"
+        "aws/aws-sdk-php": ">=2.4",
+        "vimeo/psalm": "^5.8"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
