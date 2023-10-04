@@ -1,9 +1,16 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.6 under development
+2.3.7 under development
 -----------------------
 
+- no changes in this release.
+
+
+2.3.6 October 03, 2023
+----------------------
+
+- Bug #373: Fixed error if payload in Redis is null (sanwv, magarzon)
 - Enh #372: Add ability to configure keepalive and heartbeat for AMQP and AMQP interop (vyachin)
 - Enh #464: Delete property `maxPriority` (skolkin-worker)
 - Enh #486: `SignalLoop::$exitSignals` now includes `SIGQUIT` (rhertogh)
