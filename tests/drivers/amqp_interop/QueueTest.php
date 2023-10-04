@@ -11,11 +11,14 @@ declare(strict_types=1);
 namespace tests\drivers\amqp_interop;
 
 use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Enqueue\AmqpLib\AmqpContext;
 use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
 use Interop\Amqp\Impl\AmqpBind;
 use Interop\Amqp\Impl\AmqpMessage as InteropAmqpMessage;
+use Interop\Queue\Context;
+use Interop\Queue\Exception\Exception;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
@@ -135,7 +138,7 @@ class QueueTest extends CliTestCase
     public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -188,9 +191,10 @@ class QueueTest extends CliTestCase
 
     /**
      * @param Queue $yiiQueue
-     * @return mixed
+     * @return Context|AmqpContext
+     * @throws Exception
      */
-    private function getNativeAMQPContext($yiiQueue)
+    private function getNativeAMQPContext(Queue $yiiQueue): Context|AmqpContext
     {
         $factory = new AmqpConnectionFactory([
             'host' => $yiiQueue->host,

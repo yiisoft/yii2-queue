@@ -7,7 +7,7 @@ build:			## Build an image from a docker-compose file. Params: {{ v=8.1 }}. Defa
 
 test:			## Run tests. Params: {{ v=8.1 }}. Default latest PHP 8.1
 	PHP_VERSION=$(filter-out $@,$(v)) docker-compose build --pull yii2-queue-php
-	PHP_VERSION=$(filter-out $@,$(v)) docker-compose run yii2-queue-php vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml
+	PHP_VERSION=$(filter-out $@,$(v)) docker-compose run yii2-queue-php vendor/bin/phpunit --colors=always --coverage-clover coverage.xml
 	make down
 
 down:			## Stop and remove containers, networks

@@ -67,7 +67,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
 
     /**
      * @return string command id
-     * @throws
      */
     protected function getCommandId(): string
     {

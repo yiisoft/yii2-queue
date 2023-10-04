@@ -159,7 +159,6 @@ abstract class Command extends Controller
      * @param int|null $ttr time to reserve
      * @param int $attempt number
      * @return bool
-     * @throws
      * @see actionExec()
      */
     protected function handleMessage(int|string|null $id, string $message, ?int $ttr, int $attempt): bool
