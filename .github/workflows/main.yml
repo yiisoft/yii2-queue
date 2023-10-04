@@ -6,6 +6,7 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'CHANGELOG.md'
+      - 'UPGRADE.md'
       - '.gitignore'
       - '.gitattributes'
 
@@ -15,6 +16,7 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'CHANGELOG.md'
+      - 'UPGRADE.md'
       - '.gitignore'
       - '.gitattributes'
 

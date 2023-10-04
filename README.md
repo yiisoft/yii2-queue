@@ -16,6 +16,10 @@ Documentation is at [docs/guide/README.md](docs/guide/README.md).
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2-queue/downloads.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
 [![Build Status](https://github.com/yiisoft/yii2-queue/workflows/build/badge.svg)](https://github.com/yiisoft/yii2-queue/actions)
 
+## Requirements
+
+- PHP 8.1 or higher.
+
 Installation
 ------------
 
