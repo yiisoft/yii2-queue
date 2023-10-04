@@ -26,7 +26,7 @@ class Queue extends CliQueue
     /**
      * @var Connection|array|string
      */
-    public $redis = 'redis';
+    public Connection|string|array $redis = 'redis';
     /**
      * @var string
      */
@@ -110,7 +110,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove(int $id): bool
     {
         while (!$this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
             usleep(10000);
@@ -131,7 +131,7 @@ class Queue extends CliQueue
      * @param int $timeout timeout
      * @return array|null payload
      */
-    protected function reserve(int $timeout)
+    protected function reserve(int $timeout): ?array
     {
         // Moves delayed and reserved jobs into waiting list with lock for one second
         if ($this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
@@ -155,7 +155,7 @@ class Queue extends CliQueue
             return null;
         }
 
-        list($ttr, $message) = explode(';', $payload, 2);
+        [$ttr, $message] = explode(';', $payload, 2);
         $this->redis->zadd("$this->channel.reserved", time() + $ttr, $id);
         $attempt = $this->redis->hincrby("$this->channel.attempts", $id, 1);
 
@@ -165,7 +165,7 @@ class Queue extends CliQueue
     /**
      * @param string $from
      */
-    protected function moveExpired($from): void
+    protected function moveExpired(string $from): void
     {
         $now = time();
         if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
@@ -179,9 +179,9 @@ class Queue extends CliQueue
     /**
      * Deletes message by ID.
      *
-     * @param int $id of a message
+     * @param int|string $id of a message
      */
-    protected function delete($id): void
+    protected function delete(int|string $id): void
     {
         $this->redis->zrem("$this->channel.reserved", $id);
         $this->redis->hdel("$this->channel.attempts", $id);

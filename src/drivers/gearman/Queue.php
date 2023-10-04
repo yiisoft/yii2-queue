@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace yii\queue\gearman;
 
+use GearmanClient;
+use GearmanJob;
+use GearmanWorker;
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 
@@ -39,10 +42,10 @@ class Queue extends CliQueue
     public function run(bool $repeat): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat) {
-            $worker = new \GearmanWorker();
+            $worker = new GearmanWorker();
             $worker->addServer($this->host, $this->port);
-            $worker->addFunction($this->channel, function (\GearmanJob $payload) {
-                list($ttr, $message) = explode(';', $payload->workload(), 2);
+            $worker->addFunction($this->channel, function (GearmanJob $payload) {
+                [$ttr, $message] = explode(';', $payload->workload(), 2);
                 $this->handleMessage($payload->handle(), $message, $ttr, 1);
             });
             $worker->setTimeout($repeat ? 1000 : 1);
@@ -89,12 +92,12 @@ class Queue extends CliQueue
     }
 
     /**
-     * @return \GearmanClient
+     * @return GearmanClient
      */
-    protected function getClient(): \GearmanClient
+    protected function getClient(): GearmanClient
     {
         if (!$this->_client) {
-            $this->_client = new \GearmanClient();
+            $this->_client = new GearmanClient();
             $this->_client->addServer($this->host, $this->port);
         }
         return $this->_client;

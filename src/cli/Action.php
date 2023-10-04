@@ -52,7 +52,7 @@ abstract class Action extends BaseAction
      * @param string $string
      * @return string
      */
-    protected function format(string $string)
+    protected function format(string $string): string
     {
         return call_user_func_array([$this->controller, 'ansiFormat'], func_get_args());
     }

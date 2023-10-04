@@ -29,7 +29,7 @@ class InfoAction extends Action
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
         $prefix = $this->queue->channel;
         $waiting = $this->queue->redis->llen("$prefix.waiting");

@@ -412,7 +412,7 @@ class Queue extends CliQueue
     /**
      * Opens connection and channel.
      */
-    protected function open()
+    protected function open(): void
     {
         if ($this->context) {
             return;
@@ -504,14 +504,15 @@ class Queue extends CliQueue
         $this->setupBrokerDone = false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function redeliver(AmqpMessage $message): void
     {
         $attempt = $message->getProperty(self::ATTEMPT, 1);
 
-        $newMessage = $this->context->createMessage($message->getBody(), $message->getProperties(), $message->getHeaders());
+        $newMessage = $this->context->createMessage(
+            $message->getBody(),
+            $message->getProperties(),
+            $message->getHeaders()
+        );
         $newMessage->setDeliveryMode($message->getDeliveryMode());
         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 

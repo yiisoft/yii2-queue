@@ -173,7 +173,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.2.1
      */
-    public function handle($id, $message, $ttr, $attempt)
+    public function handle(string $id, string $message, int $ttr, int $attempt)
     {
         return $this->handleMessage($id, $message, $ttr, $attempt);
     }

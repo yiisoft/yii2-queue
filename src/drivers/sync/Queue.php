@@ -61,7 +61,7 @@ class Queue extends BaseQueue
     /**
      * Runs all jobs from queue.
      */
-    public function run()
+    public function run(): void
     {
         while (($payload = array_shift($this->payloads)) !== null) {
             [$ttr, $message] = $payload;

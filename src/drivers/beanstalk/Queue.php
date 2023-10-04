@@ -14,6 +14,7 @@ use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Job;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
+use Pheanstalk\Response;
 use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
 
@@ -105,7 +106,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id): bool
+    public function remove(int $id): bool
     {
         try {
             $this->getPheanstalk()->delete(new Job($id, null));
@@ -136,7 +137,7 @@ class Queue extends CliQueue
     /**
      * @return object tube statistics
      */
-    public function getStatsTube()
+    public function getStatsTube(): object
     {
         return $this->getPheanstalk()->statsTube($this->tube);
     }
@@ -144,7 +145,7 @@ class Queue extends CliQueue
     /**
      * @return Pheanstalk
      */
-    protected function getPheanstalk()
+    protected function getPheanstalk(): Pheanstalk
     {
         if (!$this->_pheanstalk) {
             $this->_pheanstalk = new Pheanstalk($this->host, $this->port);

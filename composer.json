@@ -45,7 +45,6 @@
     "autoload": {
         "psr-4": {
             "yii\\queue\\": "src",
-            "yii\\queue\\amqp\\": "src/drivers/amqp",
             "yii\\queue\\amqp_interop\\": "src/drivers/amqp_interop",
             "yii\\queue\\beanstalk\\": "src/drivers/beanstalk",
             "yii\\queue\\db\\": "src/drivers/db",

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yii\queue\gearman;
 
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application gearman-queue.
@@ -22,7 +23,7 @@ class Command extends CliCommand
     /**
      * @var Queue
      */
-    public \yii\queue\cli\Queue $queue;
+    public CliQueue $queue;
 
     /**
      * @inheritdoc
