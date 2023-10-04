@@ -64,7 +64,7 @@ class Queue extends CliQueue
      * Json serializer by default.
      * @inheritdoc
      */
-    public $serializer = JsonSerializer::class;
+    public string|array|\yii\queue\serializers\SerializerInterface $serializer = JsonSerializer::class;
 
     /**
      * @var SqsClient

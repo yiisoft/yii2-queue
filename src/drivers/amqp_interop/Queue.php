@@ -349,9 +349,9 @@ class Queue extends CliQueue
     }
 
     /**
-     * @return AmqpContext
+     * @return AmqpContext|null
      */
-    public function getContext(): AmqpContext
+    public function getContext(): ?AmqpContext
     {
         $this->open();
 
@@ -368,6 +368,7 @@ class Queue extends CliQueue
 
         $topic = $this->context->createTopic($this->exchangeName);
 
+        /** @var AmqpMessage $message */
         $message = $this->context->createMessage($payload);
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
@@ -475,11 +476,13 @@ class Queue extends CliQueue
             return;
         }
 
+        /** @var AmqpQueue $queue */
         $queue = $this->context->createQueue($this->queueName);
         $queue->setFlags($this->queueFlags);
         $queue->setArguments($this->queueOptionalArguments);
         $this->context->declareQueue($queue);
 
+        /** @var AmqpTopic $topic */
         $topic = $this->context->createTopic($this->exchangeName);
         $topic->setType($this->exchangeType);
         $topic->setFlags($this->exchangeFlags);
@@ -508,6 +511,7 @@ class Queue extends CliQueue
     {
         $attempt = $message->getProperty(self::ATTEMPT, 1);
 
+        /** @var AmqpMessage $newMessage */
         $newMessage = $this->context->createMessage(
             $message->getBody(),
             $message->getProperties(),

@@ -65,9 +65,9 @@ abstract class Queue extends Component
      */
     public bool $strictJobType = true;
     /**
-     * @var SerializerInterface|array
+     * @var SerializerInterface|array|string
      */
-    public $serializer = PhpSerializer::class;
+    public string|array|SerializerInterface $serializer = PhpSerializer::class;
     /**
      * @var int default time to reserve a job
      */
