@@ -22,6 +22,7 @@ sh:			## Enter the container with the application
 	docker exec -it yii2-queue-php sh
 
 static-analyze:		## Run code static analyze. Params: {{ v=8.1 }}. Default latest PHP 8.1
+	PHP_VERSION=$(filter-out $@,$(v)) docker-compose build --pull yii2-queue-php
 	PHP_VERSION=$(filter-out $@,$(v)) docker-compose run yii2-queue-php vendor/bin/psalm --config=psalm.xml --shepherd --stats --php-version=$(v)
 	make down
 
