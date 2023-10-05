@@ -22,7 +22,7 @@ class PushEvent extends JobEvent
      */
     public int $delay;
     /**
-     * @var mixed
+     * @var int|string|null
      */
-    public $priority;
+    public string|int|null $priority;
 }

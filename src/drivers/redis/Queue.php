@@ -156,7 +156,7 @@ class Queue extends CliQueue
         }
 
         [$ttr, $message] = explode(';', $payload, 2);
-        $this->redis->zadd("$this->channel.reserved", time() + $ttr, $id);
+        $this->redis->zadd("$this->channel.reserved", time() + (int)$ttr, $id);
         $attempt = $this->redis->hincrby("$this->channel.attempts", $id, 1);
 
         return [$id, $message, $ttr, $attempt];

@@ -84,6 +84,7 @@ class Queue extends CliQueue
             return self::STATUS_WAITING;
         }
 
+        /** @psalm-suppress RedundantCondition */
         if ($status[0] && $status[1]) {
             return self::STATUS_RESERVED;
         }

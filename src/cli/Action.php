@@ -37,7 +37,7 @@ abstract class Action extends BaseAction
     {
         parent::init();
 
-        if (!$this->queue && ($this->controller instanceof Command)) {
+        if ($this->controller instanceof Command) {
             $this->queue = $this->controller->queue;
         }
         if (!($this->controller instanceof ConsoleController)) {

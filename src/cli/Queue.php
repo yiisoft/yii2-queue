@@ -63,13 +63,14 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @var int|null current process ID of a worker.
      * @since 2.0.2
      */
-    private $_workerPid;
+    private ?int $_workerPid = null;
 
     /**
      * @return string command id
      */
     protected function getCommandId(): string
     {
+        /** @psalm-suppress UndefinedClass */
         foreach (Yii::$app->getComponents(false) as $id => $component) {
             if ($component === $this) {
                 return Inflector::camel2id($id);
@@ -102,6 +103,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     {
         $this->_workerPid = getmypid();
         /** @var LoopInterface $loop */
+        /** @psalm-suppress UndefinedClass */
         $loop = Yii::createObject($this->loopConfig, [$this]);
 
         $event = new WorkerEvent(['loop' => $loop]);

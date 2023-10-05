@@ -56,9 +56,6 @@ class Command extends CliCommand
      */
     public function actionListen(int $timeout = 3): ?int
     {
-        if (!is_numeric($timeout)) {
-            throw new Exception('Timeout must be numeric.');
-        }
         if ($timeout < 1) {
             throw new Exception('Timeout must be greater that zero.');
         }

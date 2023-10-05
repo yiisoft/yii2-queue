@@ -77,9 +77,9 @@ abstract class Queue extends Component
      */
     public int $attempts = 1;
 
-    private $pushTtr;
-    private $pushDelay;
-    private $pushPriority;
+    private ?int $pushTtr = null;
+    private ?int $pushDelay = null;
+    private int|string|null $pushPriority = null;
 
     /**
      * @inheritdoc
@@ -90,16 +90,10 @@ abstract class Queue extends Component
 
         $this->serializer = Instance::ensure($this->serializer, SerializerInterface::class);
 
-        if (!is_numeric($this->ttr)) {
-            throw new InvalidConfigException('Default TTR must be integer.');
-        }
         if ($this->ttr <= 0) {
             throw new InvalidConfigException('Default TTR must be greater that zero.');
         }
 
-        if (!is_numeric($this->attempts)) {
-            throw new InvalidConfigException('Default attempts count must be integer.');
-        }
         if ($this->attempts <= 0) {
             throw new InvalidConfigException('Default attempts count must be greater that zero.');
         }
@@ -108,10 +102,10 @@ abstract class Queue extends Component
     /**
      * Sets TTR for job execute.
      *
-     * @param int|mixed $value
+     * @param int|null $value
      * @return $this
      */
-    public function ttr($value): static
+    public function ttr(?int $value): static
     {
         $this->pushTtr = $value;
         return $this;
@@ -120,10 +114,10 @@ abstract class Queue extends Component
     /**
      * Sets delay for later execute.
      *
-     * @param int|mixed $value
+     * @param int|null $value
      * @return $this
      */
-    public function delay($value): static
+    public function delay(?int $value): static
     {
         $this->pushDelay = $value;
         return $this;
@@ -132,10 +126,10 @@ abstract class Queue extends Component
     /**
      * Sets job priority.
      *
-     * @param mixed $value
+     * @param int|string|null $value
      * @return $this
      */
-    public function priority($value): static
+    public function priority(int|string|null $value): static
     {
         $this->pushPriority = $value;
         return $this;
@@ -172,16 +166,10 @@ abstract class Queue extends Component
             throw new InvalidArgumentException('Job must be instance of JobInterface.');
         }
 
-        if (!is_numeric($event->ttr)) {
-            throw new InvalidArgumentException('Job TTR must be integer.');
-        }
         if ($event->ttr <= 0) {
             throw new InvalidArgumentException('Job TTR must be greater that zero.');
         }
 
-        if (!is_numeric($event->delay)) {
-            throw new InvalidArgumentException('Job delay must be integer.');
-        }
         if ($event->delay < 0) {
             throw new InvalidArgumentException('Job delay must be positive.');
         }
@@ -238,10 +226,7 @@ abstract class Queue extends Component
         }
         try {
             $event->result = $event->job->execute($this);
-        } catch (\Exception $error) {
-            $event->error = $error;
-            return $this->handleError($event);
-        } catch (\Throwable $error) {
+        } catch (\Exception|\Throwable $error) {
             $event->error = $error;
             return $this->handleError($event);
         }
