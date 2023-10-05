@@ -32,6 +32,7 @@ use yii\queue\cli\Queue as CliQueue;
  * Amqp Queue.
  *
  * @property-read AmqpContext $context
+ * @property-read AmqpQueue $queue
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  * @since 2.0.2
@@ -275,6 +276,12 @@ class Queue extends CliQueue
      * @var bool
      */
     protected bool $setupBrokerDone = false;
+    /**
+     * Created AmqpQueue instance
+     *
+     * @var AmqpQueue
+     */
+    protected AmqpQueue $queue;
 
     /**
      * @inheritdoc
@@ -476,11 +483,10 @@ class Queue extends CliQueue
             return;
         }
 
-        /** @var AmqpQueue $queue */
-        $queue = $this->context->createQueue($this->queueName);
-        $queue->setFlags($this->queueFlags);
-        $queue->setArguments($this->queueOptionalArguments);
-        $this->context->declareQueue($queue);
+        $this->queue = $this->createQueue();
+        $this->queue->setFlags($this->queueFlags);
+        $this->queue->setArguments($this->queueOptionalArguments);
+        $this->context->declareQueue($this->queue);
 
         /** @var AmqpTopic $topic */
         $topic = $this->context->createTopic($this->exchangeName);
@@ -488,7 +494,7 @@ class Queue extends CliQueue
         $topic->setFlags($this->exchangeFlags);
         $this->context->declareTopic($topic);
 
-        $this->context->bind(new AmqpBind($queue, $topic, $this->routingKey));
+        $this->context->bind(new AmqpBind($this->queue, $topic, $this->routingKey));
 
         $this->setupBrokerDone = true;
     }
@@ -524,5 +530,10 @@ class Queue extends CliQueue
              $this->context->createQueue($this->queueName),
              $newMessage
          );
+    }
+
+    private function createQueue(): AmqpQueue
+    {
+        return $this->context->createQueue($this->queueName);
     }
 }

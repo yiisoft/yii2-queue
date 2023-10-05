@@ -21,7 +21,6 @@ use Interop\Queue\Context;
 use Interop\Queue\Exception\Exception;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
-use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\amqp_interop\Queue;
 
@@ -30,13 +29,15 @@ use yii\queue\amqp_interop\Queue;
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */
-class QueueTest extends CliTestCase
+class QueueTest extends AmqpTestCase
 {
     /**
      * Test working setter routing key
      */
     public function testNativeSettingRoutingKey(): void
     {
+        $this->activeQueue = false;
+
         $uniqRoutingKey = Yii::$app->security->generateRandomString(12);
         $message = new InteropAmqpMessage();
         $message->setRoutingKey($uniqRoutingKey);
@@ -179,14 +180,6 @@ class QueueTest extends CliTestCase
             $this->assertFalse($process->isRunning());
             $this->assertEquals($exitCode, $process->getExitCode());
         }
-    }
-
-    /**
-     * @return Queue
-     */
-    protected function getQueue(): Queue
-    {
-        return Yii::$app->amqpInteropQueue;
     }
 
     /**

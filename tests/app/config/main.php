@@ -103,6 +103,7 @@ $config = [
             'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
             'user' => getenv('RABBITMQ_USER') ?: 'guest',
             'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
+            'port' => getenv('RABBITMQ_PORT') ?: 5672,
             'queueOptionalArguments' => ['x-max-priority' => 10],
             'queueName' => 'queue-interop',
             'exchangeName' => 'exchange-interop',
