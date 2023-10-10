@@ -1,3 +1,4 @@
+# Important! Do not use this image in production!
 ARG PHP_VERSION
 
 FROM --platform=linux/amd64 php:${PHP_VERSION}-cli-alpine
@@ -10,8 +11,8 @@ RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositorie
 RUN apk add git icu-dev libpq-dev gearman-dev libcrypto3 openssl-dev autoconf g++ make linux-headers rabbitmq-c-dev
 
 RUN docker-php-ext-install pcntl bcmath pdo_mysql intl pdo_pgsql sockets opcache
-RUN pecl install igbinary pcov amqp-1.11.0
-RUN docker-php-ext-enable igbinary pcov amqp
+RUN pecl install igbinary pcov amqp-1.11.0 xdebug
+RUN docker-php-ext-enable igbinary pcov amqp xdebug
 
 # Official gearman package not supported PHP 8.1 now
 RUN TMPDIR=$(mktemp -d) \

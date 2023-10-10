@@ -6,6 +6,8 @@
     stopOnFailure="false"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
     cacheDirectory=".phpunit.cache"
+    displayDetailsOnIncompleteTests="true"
+    displayDetailsOnSkippedTests="true"
 >
   <testsuites>
     <testsuite name="Test Suite">

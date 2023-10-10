@@ -23,6 +23,7 @@ use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
 use Interop\Amqp\Impl\AmqpBind;
+use Interop\Queue\Context;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -59,7 +60,7 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $host;
+    public ?string $host = null;
     /**
      * The message queue broker's port.
      *
@@ -71,13 +72,13 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $user;
+    public ?string $user = null;
     /**
      * This is RabbitMQ password which is used to login on the broker.
      *
      * @var string|null
      */
-    public ?string $password;
+    public ?string $password = null;
     /**
      * Virtual hosts provide logical grouping and separation of resources.
      *
@@ -256,9 +257,9 @@ class Queue extends CliQueue
     /**
      * Amqp interop context.
      *
-     * @var AmqpContext|null
+     * @var AmqpContext|Context|null
      */
-    protected ?AmqpContext $context = null;
+    protected AmqpContext|null|Context $context = null;
     /**
      * List of supported amqp interop drivers.
      *

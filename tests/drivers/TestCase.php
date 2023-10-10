@@ -32,7 +32,7 @@ abstract class TestCase extends \tests\TestCase
     protected function createSimpleJob(): SimpleJob
     {
         return new SimpleJob([
-            'uid' => uniqid(),
+            'uid' => uniqid('', true),
         ]);
     }
 
@@ -54,7 +54,7 @@ abstract class TestCase extends \tests\TestCase
      * @param SimpleJob $job
      * @param int $delay
      */
-    protected function assertSimpleJobLaterDone(SimpleJob $job, $delay): void
+    protected function assertSimpleJobLaterDone(SimpleJob $job, int $delay): void
     {
         $time = time() + $delay;
         sleep($delay);
