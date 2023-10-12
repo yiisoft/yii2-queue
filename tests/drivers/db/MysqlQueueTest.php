@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +23,7 @@ class MysqlQueueTest extends TestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->mysqlQueue;
     }

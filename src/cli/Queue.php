@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,31 +28,31 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @event WorkerEvent that is triggered when the worker is started.
      * @since 2.0.2
      */
-    const EVENT_WORKER_START = 'workerStart';
+    public const EVENT_WORKER_START = 'workerStart';
     /**
      * @event WorkerEvent that is triggered each iteration between requests to queue.
      * @since 2.0.3
      */
-    const EVENT_WORKER_LOOP = 'workerLoop';
+    public const EVENT_WORKER_LOOP = 'workerLoop';
     /**
      * @event WorkerEvent that is triggered when the worker is stopped.
      * @since 2.0.2
      */
-    const EVENT_WORKER_STOP = 'workerStop';
+    public const EVENT_WORKER_STOP = 'workerStop';
 
     /**
      * @var array|string
      * @since 2.0.2
      */
-    public $loopConfig = SignalLoop::class;
+    public string|array $loopConfig = SignalLoop::class;
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
     /**
      * @var array of additional options of command
      */
-    public $commandOptions = [];
+    public array $commandOptions = [];
     /**
      * @var callable|null
      * @internal for worker command only
@@ -60,15 +63,14 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @var int|null current process ID of a worker.
      * @since 2.0.2
      */
-    private $_workerPid;
-
+    private ?int $_workerPid = null;
 
     /**
      * @return string command id
-     * @throws
      */
-    protected function getCommandId()
+    protected function getCommandId(): string
     {
+        /** @psalm-suppress UndefinedClass */
         foreach (Yii::$app->getComponents(false) as $id => $component) {
             if ($component === $this) {
                 return Inflector::camel2id($id);
@@ -80,7 +82,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function bootstrap($app)
+    public function bootstrap($app): void
     {
         if ($app instanceof ConsoleApp) {
             $app->controllerMap[$this->getCommandId()] = [
@@ -97,10 +99,11 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return null|int exit code
      * @since 2.0.2
      */
-    protected function runWorker(callable $handler)
+    protected function runWorker(callable $handler): ?int
     {
         $this->_workerPid = getmypid();
         /** @var LoopInterface $loop */
+        /** @psalm-suppress UndefinedClass */
         $loop = Yii::createObject($this->loopConfig, [$this]);
 
         $event = new WorkerEvent(['loop' => $loop]);
@@ -109,9 +112,8 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
             return $event->exitCode;
         }
 
-        $exitCode = null;
         try {
-            call_user_func($handler, function () use ($loop, $event) {
+            $handler(function () use ($loop, $event) {
                 $this->trigger(self::EVENT_WORKER_LOOP, $event);
                 return $event->exitCode === null && $loop->canContinue();
             });
@@ -130,7 +132,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return int|null
      * @since 2.0.2
      */
-    public function getWorkerPid()
+    public function getWorkerPid(): ?int
     {
         return $this->_workerPid;
     }
@@ -138,7 +140,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    protected function handleMessage($id, $message, $ttr, $attempt)
+    protected function handleMessage(int|string $id, string $message, int $ttr, int $attempt): bool
     {
         if ($this->messageHandler) {
             return call_user_func($this->messageHandler, $id, $message, $ttr, $attempt);
@@ -156,7 +158,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @return bool
      * @internal for worker command only
      */
-    public function execute($id, $message, $ttr, $attempt, $workerPid)
+    public function execute(string $id, string $message, int $ttr, int $attempt, ?int $workerPid): bool
     {
         $this->_workerPid = $workerPid;
         return parent::handleMessage($id, $message, $ttr, $attempt);

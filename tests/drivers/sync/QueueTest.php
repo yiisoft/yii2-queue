@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,8 +10,8 @@
 
 namespace tests\drivers\sync;
 
-use Yii;
 use tests\drivers\TestCase;
+use Yii;
 use yii\queue\sync\Queue;
 
 /**
@@ -21,12 +24,12 @@ class QueueTest extends TestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->syncQueue;
     }
 
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -35,7 +38,7 @@ class QueueTest extends TestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);

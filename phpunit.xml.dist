@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit bootstrap="./tests/bootstrap.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Test Suite">
-            <directory>./tests</directory>
-            <exclude>./tests/app</exclude>
-            <exclude>./tests/docker</exclude>
-            <exclude>./tests/runtime</exclude>
-        </testsuite>
-    </testsuites>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    bootstrap="./tests/bootstrap.php"
+    colors="true"
+    stopOnFailure="false"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
+    cacheDirectory=".phpunit.cache"
+    displayDetailsOnIncompleteTests="true"
+    displayDetailsOnSkippedTests="true"
+>
+  <testsuites>
+    <testsuite name="Yii2-Queue">
+      <directory>./tests</directory>
+      <exclude>./tests/app</exclude>
+      <exclude>./tests/docker</exclude>
+      <exclude>./tests/runtime</exclude>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>./src</directory>
+    </include>
+  </source>
 </phpunit>

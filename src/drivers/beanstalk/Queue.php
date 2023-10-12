@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -11,6 +14,7 @@ use Pheanstalk\Exception\ServerException;
 use Pheanstalk\Job;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
+use Pheanstalk\Response;
 use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
 
@@ -26,20 +30,19 @@ class Queue extends CliQueue
     /**
      * @var string connection host
      */
-    public $host = 'localhost';
+    public string $host = 'localhost';
     /**
      * @var int connection port
      */
-    public $port = PheanstalkInterface::DEFAULT_PORT;
+    public int $port = PheanstalkInterface::DEFAULT_PORT;
     /**
      * @var string beanstalk tube
      */
-    public $tube = 'queue';
+    public string $tube = 'queue';
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
-
+    public string $commandClass = Command::class;
 
     /**
      * Listens queue and runs each job.
@@ -50,7 +53,7 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
@@ -59,8 +62,8 @@ class Queue extends CliQueue
                     if ($this->handleMessage(
                         $payload->getId(),
                         $payload->getData(),
-                        $info->ttr,
-                        $info->reserves
+                        (int)$info->ttr,
+                        (int)$info->reserves
                     )) {
                         $this->getPheanstalk()->delete($payload);
                     }
@@ -74,7 +77,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_numeric($id) || $id <= 0) {
             throw new InvalidArgumentException("Unknown message ID: $id.");
@@ -103,13 +106,13 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove(int $id): bool
     {
         try {
             $this->getPheanstalk()->delete(new Job($id, null));
             return true;
         } catch (ServerException $e) {
-            if (strpos($e->getMessage(), 'NOT_FOUND') === 0) {
+            if (str_starts_with($e->getMessage(), 'NOT_FOUND')) {
                 return false;
             }
 
@@ -120,11 +123,11 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         return $this->getPheanstalk()->putInTube(
             $this->tube,
-            $message,
+            $payload,
             $priority ?: PheanstalkInterface::DEFAULT_PRIORITY,
             $delay,
             $ttr
@@ -134,7 +137,7 @@ class Queue extends CliQueue
     /**
      * @return object tube statistics
      */
-    public function getStatsTube()
+    public function getStatsTube(): object
     {
         return $this->getPheanstalk()->statsTube($this->tube);
     }
@@ -142,7 +145,7 @@ class Queue extends CliQueue
     /**
      * @return Pheanstalk
      */
-    protected function getPheanstalk()
+    protected function getPheanstalk(): Pheanstalk
     {
         if (!$this->_pheanstalk) {
             $this->_pheanstalk = new Pheanstalk($this->host, $this->port);

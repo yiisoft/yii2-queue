@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,57 +28,48 @@ class Queue extends CliQueue
      * The SQS url.
      * @var string
      */
-    public $url;
+    public string $url;
     /**
      * aws access key.
      * @var string|null
      */
-    public $key;
+    public ?string $key;
     /**
      * aws secret.
      * @var string|null
      */
-    public $secret;
+    public ?string $secret;
     /**
      * region where queue is hosted.
      * @var string
      */
-    public $region = '';
+    public string $region = '';
     /**
      * API version.
      * @var string
      */
-    public $version = 'latest';
+    public string $version = 'latest';
     /**
      * Message Group ID for FIFO queues.
      * @var string
      * @since 2.2.1
      */
-    public $messageGroupId = 'default';
+    public string $messageGroupId = 'default';
     /**
      * @var string command class name
      * @inheritdoc
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
     /**
      * Json serializer by default.
      * @inheritdoc
      */
-    public $serializer = JsonSerializer::class;
+    public string|array|\yii\queue\serializers\SerializerInterface $serializer = JsonSerializer::class;
 
     /**
      * @var SqsClient
      */
-    private $_client;
-
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-    }
+    private SqsClient $_client;
 
     /**
      * Listens queue and runs each job.
@@ -85,7 +79,7 @@ class Queue extends CliQueue
      * @return null|int exit code.
      * @internal for worker command only
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
@@ -110,7 +104,7 @@ class Queue extends CliQueue
      * @param int $timeout number of seconds for long polling. Must be between 0 and 20.
      * @return null|array payload.
      */
-    protected function reserve($timeout)
+    protected function reserve(int $timeout): ?array
     {
         $response = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
@@ -127,7 +121,7 @@ class Queue extends CliQueue
         $payload = reset($response['Messages']);
 
         $ttr = (int) $payload['MessageAttributes']['TTR']['StringValue'];
-        if ($ttr != $this->ttr) {
+        if ($ttr !== $this->ttr) {
             $this->getClient()->changeMessageVisibility([
                 'QueueUrl' => $this->url,
                 'ReceiptHandle' => $payload['ReceiptHandle'],
@@ -143,7 +137,7 @@ class Queue extends CliQueue
      *
      * @param array $payload
      */
-    protected function delete($payload)
+    protected function delete(array $payload): void
     {
         $this->getClient()->deleteMessage([
             'QueueUrl' => $this->url,
@@ -154,7 +148,7 @@ class Queue extends CliQueue
     /**
      * Clears the queue.
      */
-    public function clear()
+    public function clear(): void
     {
         $this->getClient()->purgeQueue([
             'QueueUrl' => $this->url,
@@ -164,7 +158,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         throw new NotSupportedException('Status is not supported in the driver.');
     }
@@ -179,7 +173,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.2.1
      */
-    public function handle($id, $message, $ttr, $attempt)
+    public function handle(string $id, string $message, int $ttr, int $attempt)
     {
         return $this->handleMessage($id, $message, $ttr, $attempt);
     }
@@ -187,7 +181,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($priority) {
             throw new NotSupportedException('Priority is not supported in this driver');
@@ -195,7 +189,7 @@ class Queue extends CliQueue
 
         $request = [
             'QueueUrl' => $this->url,
-            'MessageBody' => $message,
+            'MessageBody' => $payload,
             'DelaySeconds' => $delay,
             'MessageAttributes' => [
                 'TTR' => [
@@ -205,9 +199,9 @@ class Queue extends CliQueue
             ],
         ];
 
-        if (substr($this->url, -5) === '.fifo') {
+        if (str_ends_with($this->url, '.fifo')) {
             $request['MessageGroupId'] = $this->messageGroupId;
-            $request['MessageDeduplicationId'] = hash('sha256', $message);
+            $request['MessageDeduplicationId'] = hash('sha256', $payload);
         }
 
         $response = $this->getClient()->sendMessage($request);
@@ -215,9 +209,9 @@ class Queue extends CliQueue
     }
 
     /**
-     * @return \Aws\Sqs\SqsClient
+     * @return SqsClient
      */
-    protected function getClient()
+    protected function getClient(): SqsClient
     {
         if ($this->_client) {
             return $this->_client;

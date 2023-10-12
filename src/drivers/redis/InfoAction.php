@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +12,7 @@ namespace yii\queue\redis;
 
 use yii\helpers\Console;
 use yii\queue\cli\Action;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Info about queue status.
@@ -20,13 +24,12 @@ class InfoAction extends Action
     /**
      * @var Queue
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
         $prefix = $this->queue->channel;
         $waiting = $this->queue->redis->llen("$prefix.waiting");

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,21 +26,20 @@ class Queue extends CliQueue
     /**
      * @var Connection|array|string
      */
-    public $redis = 'redis';
+    public Connection|string|array $redis = 'redis';
     /**
      * @var string
      */
-    public $channel = 'queue';
+    public string $channel = 'queue';
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
-
+    public string $commandClass = Command::class;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->redis = Instance::ensure($this->redis, Connection::class);
@@ -52,13 +54,13 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
-                    list($id, $message, $ttr, $attempt) = $payload;
-                    if ($this->handleMessage($id, $message, $ttr, $attempt)) {
+                    [$id, $message, $ttr, $attempt] = $payload;
+                    if ($this->handleMessage($id, $message, (int)$ttr, (int)$attempt)) {
                         $this->delete($id);
                     }
                 } elseif (!$repeat) {
@@ -71,7 +73,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_numeric($id) || $id <= 0) {
             throw new InvalidArgumentException("Unknown message ID: $id.");
@@ -93,7 +95,7 @@ class Queue extends CliQueue
      *
      * @since 2.0.1
      */
-    public function clear()
+    public function clear(): void
     {
         while (!$this->redis->set("$this->channel.moving_lock", true, 'NX')) {
             usleep(10000);
@@ -108,7 +110,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove(int $id): bool
     {
         while (!$this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
             usleep(10000);
@@ -129,7 +131,7 @@ class Queue extends CliQueue
      * @param int $timeout timeout
      * @return array|null payload
      */
-    protected function reserve($timeout)
+    protected function reserve(int $timeout): ?array
     {
         // Moves delayed and reserved jobs into waiting list with lock for one second
         if ($this->redis->set("$this->channel.moving_lock", true, 'NX', 'EX', 1)) {
@@ -153,8 +155,8 @@ class Queue extends CliQueue
             return null;
         }
 
-        list($ttr, $message) = explode(';', $payload, 2);
-        $this->redis->zadd("$this->channel.reserved", time() + $ttr, $id);
+        [$ttr, $message] = explode(';', $payload, 2);
+        $this->redis->zadd("$this->channel.reserved", time() + (int)$ttr, $id);
         $attempt = $this->redis->hincrby("$this->channel.attempts", $id, 1);
 
         return [$id, $message, $ttr, $attempt];
@@ -163,7 +165,7 @@ class Queue extends CliQueue
     /**
      * @param string $from
      */
-    protected function moveExpired($from)
+    protected function moveExpired(string $from): void
     {
         $now = time();
         if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
@@ -177,9 +179,9 @@ class Queue extends CliQueue
     /**
      * Deletes message by ID.
      *
-     * @param int $id of a message
+     * @param int|string $id of a message
      */
-    protected function delete($id)
+    protected function delete(int|string $id): void
     {
         $this->redis->zrem("$this->channel.reserved", $id);
         $this->redis->hdel("$this->channel.attempts", $id);
@@ -189,14 +191,14 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
         $id = $this->redis->incr("$this->channel.message_id");
-        $this->redis->hset("$this->channel.messages", $id, "$ttr;$message");
+        $this->redis->hset("$this->channel.messages", $id, "$ttr;$payload");
         if (!$delay) {
             $this->redis->lpush("$this->channel.waiting", $id);
         } else {

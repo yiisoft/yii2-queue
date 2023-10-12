@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,44 +26,43 @@ abstract class Command extends Controller
     /**
      * The exit code of the exec action which is returned when job was done.
      */
-    const EXEC_DONE = 0;
+    public const EXEC_DONE = 0;
     /**
      * The exit code of the exec action which is returned when job wasn't done and wanted next attempt.
      */
-    const EXEC_RETRY = 3;
+    public const EXEC_RETRY = 3;
 
     /**
      * @var Queue
      */
-    public $queue;
+    public Queue $queue;
     /**
      * @var bool verbose mode of a job execute. If enabled, execute result of each job
      * will be printed.
      */
-    public $verbose = false;
+    public bool $verbose = false;
     /**
      * @var array additional options to the verbose behavior.
      * @since 2.0.2
      */
-    public $verboseConfig = [
+    public array $verboseConfig = [
         'class' => VerboseBehavior::class,
     ];
     /**
      * @var bool isolate mode. It executes a job in a child process.
      */
-    public $isolate = true;
+    public bool $isolate = true;
     /**
-     * @var string path to php interpreter that uses to run child processes.
+     * @var string|null path to php interpreter that uses to run child processes.
      * If it is undefined, PHP_BINARY will be used.
      * @since 2.0.3
      */
-    public $phpBinary;
-
+    public ?string $phpBinary = null;
 
     /**
      * @inheritdoc
      */
-    public function options($actionID)
+    public function options($actionID): array
     {
         $options = parent::options($actionID);
         if ($this->canVerbose($actionID)) {
@@ -77,7 +79,7 @@ abstract class Command extends Controller
     /**
      * @inheritdoc
      */
-    public function optionAliases()
+    public function optionAliases(): array
     {
         return array_merge(parent::optionAliases(), [
             'v' => 'verbose',
@@ -89,13 +91,13 @@ abstract class Command extends Controller
      * @return bool
      * @since 2.0.2
      */
-    abstract protected function isWorkerAction($actionID);
+    abstract protected function isWorkerAction(string $actionID): bool;
 
     /**
      * @param string $actionID
      * @return bool
      */
-    protected function canVerbose($actionID)
+    protected function canVerbose(string $actionID): bool
     {
         return $actionID === 'exec' || $this->isWorkerAction($actionID);
     }
@@ -104,7 +106,7 @@ abstract class Command extends Controller
      * @param string $actionID
      * @return bool
      */
-    protected function canIsolate($actionID)
+    protected function canIsolate(string $actionID): bool
     {
         return $this->isWorkerAction($actionID);
     }
@@ -112,7 +114,7 @@ abstract class Command extends Controller
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         if ($this->canVerbose($action->id) && $this->verbose) {
             $this->queue->attachBehavior('verbose', ['command' => $this] + $this->verboseConfig);
@@ -123,7 +125,7 @@ abstract class Command extends Controller
                 $this->phpBinary = PHP_BINARY;
             }
             $this->queue->messageHandler = function ($id, $message, $ttr, $attempt) {
-                return $this->handleMessage($id, $message, $ttr, $attempt);
+                return $this->handleMessage($id, $message, (int)$ttr, (int)$attempt);
             };
         }
 
@@ -141,7 +143,7 @@ abstract class Command extends Controller
      * @return int exit code
      * @internal It is used with isolate mode.
      */
-    public function actionExec($id, $ttr, $attempt, $pid)
+    public function actionExec(?string $id, int $ttr, int $attempt, int $pid): int
     {
         if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid ?: null)) {
             return self::EXEC_DONE;
@@ -152,15 +154,14 @@ abstract class Command extends Controller
     /**
      * Handles message using child process.
      *
-     * @param string|null $id of a message
+     * @param int|string|null $id of a message
      * @param string $message
-     * @param int $ttr time to reserve
+     * @param int|null $ttr time to reserve
      * @param int $attempt number
      * @return bool
-     * @throws
      * @see actionExec()
      */
-    protected function handleMessage($id, $message, $ttr, $attempt)
+    protected function handleMessage(int|string|null $id, string $message, ?int $ttr, int $attempt): bool
     {
         // Child process command: php yii queue/exec "id" "ttr" "attempt" "pid"
         $cmd = [
@@ -196,7 +197,7 @@ abstract class Command extends Controller
             }
             return $result === self::EXEC_DONE;
         } catch (ProcessRuntimeException $error) {
-            list($job) = $this->queue->unserializeMessage($message);
+            [$job] = $this->queue->unserializeMessage($message);
             return $this->queue->handleError(new ExecEvent([
                 'id' => $id,
                 'job' => $job,

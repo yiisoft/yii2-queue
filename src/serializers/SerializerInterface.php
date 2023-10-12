@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +23,7 @@ interface SerializerInterface
      * @param JobInterface|mixed $job
      * @return string
      */
-    public function serialize($job);
+    public function serialize($job): string;
 
     /**
      * @param string $serialized

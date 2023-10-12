@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,9 +28,9 @@ class WorkerEvent extends Event
     /**
      * @var LoopInterface
      */
-    public $loop;
+    public LoopInterface $loop;
     /**
      * @var null|int exit code
      */
-    public $exitCode;
+    public ?int $exitCode = null;
 }

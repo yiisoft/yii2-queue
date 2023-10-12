@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +22,7 @@ use yii\queue\redis\Queue;
  */
 class QueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -28,7 +31,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -40,7 +43,7 @@ class QueueTest extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -49,7 +52,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -58,7 +61,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = new RetryJob(['uid' => uniqid()]);
@@ -69,7 +72,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
         $this->assertNotEmpty($this->getQueue()->redis->keys($this->getQueue()->channel . '.*'));
@@ -78,7 +81,7 @@ class QueueTest extends CliTestCase
         $this->assertEmpty($this->getQueue()->redis->keys($this->getQueue()->channel . '.*'));
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->assertTrue((bool) $this->getQueue()->redis->hexists($this->getQueue()->channel . '.messages', $id));
@@ -90,12 +93,12 @@ class QueueTest extends CliTestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->redisQueue;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->redis->flushdb();
         parent::tearDown();

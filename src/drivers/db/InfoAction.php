@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +13,7 @@ namespace yii\queue\db;
 use yii\db\Query;
 use yii\helpers\Console;
 use yii\queue\cli\Action;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Info about queue status.
@@ -21,13 +25,12 @@ class InfoAction extends Action
     /**
      * @var Queue
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
         Console::output($this->format('Jobs', Console::FG_GREEN));
 

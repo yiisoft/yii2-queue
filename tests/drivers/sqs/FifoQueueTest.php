@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +20,7 @@ use yii\queue\sqs\Queue;
  */
 class FifoQueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -26,7 +29,7 @@ class FifoQueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -35,7 +38,7 @@ class FifoQueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testFifoQueueDoesNotSupportPerMessageDelays()
+    public function testFifoQueueDoesNotSupportPerMessageDelays(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -44,7 +47,7 @@ class FifoQueueTest extends CliTestCase
         $this->getQueue()->delay(2)->push($job);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = new RetryJob(['uid' => uniqid()]);
@@ -55,7 +58,7 @@ class FifoQueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         if (!getenv('AWS_SQS_FIFO_CLEAR_TEST_ENABLED')) {
             $this->markTestSkipped(__METHOD__ . ' is disabled');
@@ -68,12 +71,12 @@ class FifoQueueTest extends CliTestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->sqsFifoQueue;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!getenv('AWS_SQS_FIFO_ENABLED')) {
             $this->markTestSkipped('AWS SQS FIFO tests are disabled');

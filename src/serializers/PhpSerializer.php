@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +22,7 @@ class PhpSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function serialize($job)
+    public function serialize($job): string
     {
         return serialize($job);
     }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +11,7 @@
 namespace yii\queue\amqp_interop;
 
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application amqp-queue.
@@ -20,13 +24,12 @@ class Command extends CliCommand
     /**
      * @var Queue
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * @inheritdoc
      */
-    protected function isWorkerAction($actionID)
+    protected function isWorkerAction($actionID): bool
     {
         return $actionID === 'listen';
     }
@@ -35,7 +38,7 @@ class Command extends CliCommand
      * Listens amqp-queue and runs new jobs.
      * It can be used as daemon process.
      */
-    public function actionListen()
+    public function actionListen(): void
     {
         $this->queue->listen();
     }

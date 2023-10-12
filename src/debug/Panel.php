@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +26,6 @@ use yii\queue\Queue;
 class Panel extends \yii\debug\Panel implements ViewContextInterface
 {
     private $_jobs = [];
-
 
     /**
      * @inheritdoc

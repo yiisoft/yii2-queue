@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,15 +27,15 @@ class Queue extends CliQueue
     /**
      * @var string
      */
-    public $path = '@runtime/queue';
+    public string $path = '@runtime/queue';
     /**
      * @var int
      */
-    public $dirMode = 0755;
+    public int $dirMode = 0755;
     /**
      * @var int|null
      */
-    public $fileMode;
+    public ?int $fileMode = null;
     /**
      * @var callable
      */
@@ -44,13 +47,12 @@ class Queue extends CliQueue
     /**
      * @var string
      */
-    public $commandClass = Command::class;
-
+    public string $commandClass = Command::class;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->path = Yii::getAlias($this->path);
@@ -68,12 +70,12 @@ class Queue extends CliQueue
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if (($payload = $this->reserve()) !== null) {
-                    list($id, $message, $ttr, $attempt) = $payload;
+                    [$id, $message, $ttr, $attempt] = $payload;
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                         $this->delete($payload);
                     }
@@ -89,7 +91,7 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_numeric($id) || $id <= 0) {
             throw new InvalidArgumentException("Unknown message ID: $id.");
@@ -107,7 +109,7 @@ class Queue extends CliQueue
      *
      * @since 2.0.1
      */
-    public function clear()
+    public function clear(): void
     {
         $this->touchIndex(function (&$data) {
             $data = [];
@@ -188,7 +190,7 @@ class Queue extends CliQueue
             if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
                 list($id, $ttr, $time) = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
-                list($id, $ttr) = array_shift($data['waiting']);
+                [$id, $ttr] = array_shift($data['waiting']);
             }
             if ($id) {
                 $attempt = 1;
@@ -208,7 +210,7 @@ class Queue extends CliQueue
      *
      * @param array $payload
      */
-    protected function delete($payload)
+    protected function delete(array $payload): void
     {
         $id = $payload[0];
         $this->touchIndex(function (&$data) use ($id) {
@@ -225,19 +227,19 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
-        $this->touchIndex(function (&$data) use ($message, $ttr, $delay, &$id) {
+        $this->touchIndex(function (&$data) use ($payload, $ttr, $delay, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
             $fileName = "$this->path/job$id.data";
-            file_put_contents($fileName, $message);
+            file_put_contents($fileName, $payload);
             if ($this->fileMode !== null) {
                 chmod($fileName, $this->fileMode);
             }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +22,7 @@ use yii\queue\sync\Queue;
  */
 class ClosureTest extends TestCase
 {
-    public function testPush1()
+    public function testPush1(): void
     {
         $this->getQueue()->push(function () {
             $fileName = Yii::getAlias('@runtime/job-1.lock');
@@ -29,7 +32,7 @@ class ClosureTest extends TestCase
         $this->assertFileExists(Yii::getAlias('@runtime/job-1.lock'));
     }
 
-    public function testPush2()
+    public function testPush2(): void
     {
         $fileName = Yii::getAlias('@runtime/job-2.lock');
         $this->getQueue()->push(function () use ($fileName) {
@@ -39,7 +42,7 @@ class ClosureTest extends TestCase
         $this->assertFileExists($fileName);
     }
 
-    public function testPush3()
+    public function testPush3(): void
     {
         $job = new ClosureJob([
             'closure' => function () {
@@ -52,7 +55,7 @@ class ClosureTest extends TestCase
         $this->assertFileExists(Yii::getAlias('@runtime/job-3.lock'));
     }
 
-    public function testPush4()
+    public function testPush4(): void
     {
         $fileName = Yii::getAlias('@runtime/job-4.lock');
         $job = new ClosureJob([
@@ -68,7 +71,7 @@ class ClosureTest extends TestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         if (!$this->_queue) {
             $this->_queue = new Queue([
@@ -84,7 +87,7 @@ class ClosureTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach (glob(Yii::getAlias("@runtime/job-*.lock")) as $fileName) {
             unlink($fileName);

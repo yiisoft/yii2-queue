@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @var \yii\web\View $this
  * @var \yii\queue\gii\Generator $generator
  * @var string $jobClass
- * @var string $$ns
+ * @var string $ns
  * @var string $baseClass
  * @var string[] $interfaces
  * @var string[] $properties

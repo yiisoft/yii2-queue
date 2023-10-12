@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,16 +10,18 @@
 
 namespace tests\app\benchmark;
 
+use yii\console\Controller as ConsoleController;
+
 /**
  * Benchmark commands.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Controller extends \yii\console\Controller
+class Controller extends ConsoleController
 {
-    private $startedAt;
+    private int $startedAt;
 
-    public function actions()
+    public function actions(): array
     {
         return [
             'waiting' => waiting\Action::class,
@@ -26,7 +31,7 @@ class Controller extends \yii\console\Controller
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         $this->startedAt = time();
         return parent::beforeAction($action);

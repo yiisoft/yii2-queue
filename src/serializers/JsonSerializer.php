@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,11 +31,10 @@ class JsonSerializer extends BaseObject implements SerializerInterface
      */
     public $options = 0;
 
-
     /**
      * @inheritdoc
      */
-    public function serialize($job)
+    public function serialize($job): string
     {
         return Json::encode($this->toArray($job), $this->options);
     }

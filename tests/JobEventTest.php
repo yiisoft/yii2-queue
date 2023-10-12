@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +24,7 @@ use yii\queue\sync\Queue as SyncQueue;
  */
 class JobEventTest extends TestCase
 {
-    public function testInvalidJob()
+    public function testInvalidJob(): void
     {
         $eventCounter = [];
         $eventHandler = function (JobEvent $event) use (&$eventCounter) {
@@ -31,7 +34,7 @@ class JobEventTest extends TestCase
         $queue->on(Queue::EVENT_BEFORE_EXEC, $eventHandler);
         $queue->on(Queue::EVENT_AFTER_ERROR, $eventHandler);
         $queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
-            $this->assertTrue($event->error instanceof InvalidJobException);
+            $this->assertInstanceOf(InvalidJobException::class, $event->error);
             $this->assertFalse($event->retry);
         });
         $jobId = $queue->push('message that cannot be unserialized');
@@ -41,7 +44,7 @@ class JobEventTest extends TestCase
         $this->assertArrayHasKey(Queue::EVENT_AFTER_ERROR, $eventCounter[$jobId]);
     }
 
-    public function testExecResult()
+    public function testExecResult(): void
     {
         $queue = new SyncQueue(['as closure' => ClosureBehavior::class]);
         $isTriggered = false;

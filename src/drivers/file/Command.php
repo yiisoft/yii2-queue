@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +12,7 @@ namespace yii\queue\file;
 
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application file-queue.
@@ -20,17 +24,16 @@ class Command extends CliCommand
     /**
      * @var Queue
      */
-    public $queue;
+    public CliQueue $queue;
     /**
      * @var string
      */
     public $defaultAction = 'info';
 
-
     /**
      * @inheritdoc
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'info' => InfoAction::class,
@@ -40,7 +43,7 @@ class Command extends CliCommand
     /**
      * @inheritdoc
      */
-    protected function isWorkerAction($actionID)
+    protected function isWorkerAction($actionID): bool
     {
         return in_array($actionID, ['run', 'listen']);
     }
@@ -51,7 +54,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -64,11 +67,8 @@ class Command extends CliCommand
      * @throws Exception when params are invalid.
      * @return null|int exit code.
      */
-    public function actionListen($timeout = 3)
+    public function actionListen(int $timeout = 3): ?int
     {
-        if (!is_numeric($timeout)) {
-            throw new Exception('Timeout must be numeric.');
-        }
         if ($timeout < 1) {
             throw new Exception('Timeout must be greater than zero.');
         }
@@ -81,7 +81,7 @@ class Command extends CliCommand
      *
      * @since 2.0.1
      */
-    public function actionClear()
+    public function actionClear(): void
     {
         if ($this->confirm('Are you sure?')) {
             $this->queue->clear();

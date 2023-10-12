@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +10,6 @@
 
 namespace yii\queue;
 
-use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
@@ -26,81 +28,72 @@ abstract class Queue extends Component
     /**
      * @event PushEvent
      */
-    const EVENT_BEFORE_PUSH = 'beforePush';
+    public const EVENT_BEFORE_PUSH = 'beforePush';
     /**
      * @event PushEvent
      */
-    const EVENT_AFTER_PUSH = 'afterPush';
+    public const EVENT_AFTER_PUSH = 'afterPush';
     /**
      * @event ExecEvent
      */
-    const EVENT_BEFORE_EXEC = 'beforeExec';
+    public const EVENT_BEFORE_EXEC = 'beforeExec';
     /**
      * @event ExecEvent
      */
-    const EVENT_AFTER_EXEC = 'afterExec';
+    public const EVENT_AFTER_EXEC = 'afterExec';
     /**
      * @event ExecEvent
      */
-    const EVENT_AFTER_ERROR = 'afterError';
+    public const EVENT_AFTER_ERROR = 'afterError';
     /**
      * @see Queue::isWaiting()
      */
-    const STATUS_WAITING = 1;
+    public const STATUS_WAITING = 1;
     /**
      * @see Queue::isReserved()
      */
-    const STATUS_RESERVED = 2;
+    public const STATUS_RESERVED = 2;
     /**
      * @see Queue::isDone()
      */
-    const STATUS_DONE = 3;
+    public const STATUS_DONE = 3;
 
     /**
      * @var bool whether to enable strict job type control.
      * Note that in order to enable type control, a pushing job must be [[JobInterface]] instance.
      * @since 2.0.1
      */
-    public $strictJobType = true;
+    public bool $strictJobType = true;
     /**
-     * @var SerializerInterface|array
+     * @var SerializerInterface|array|string
      */
-    public $serializer = PhpSerializer::class;
+    public string|array|SerializerInterface $serializer = PhpSerializer::class;
     /**
      * @var int default time to reserve a job
      */
-    public $ttr = 300;
+    public int $ttr = 300;
     /**
      * @var int default attempt count
      */
-    public $attempts = 1;
+    public int $attempts = 1;
 
-    private $pushTtr;
-    private $pushDelay;
-    private $pushPriority;
-
+    private ?int $pushTtr = null;
+    private ?int $pushDelay = null;
+    private int|string|null $pushPriority = null;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
         $this->serializer = Instance::ensure($this->serializer, SerializerInterface::class);
 
-        if (!is_numeric($this->ttr)) {
-            throw new InvalidConfigException('Default TTR must be integer.');
-        }
-        $this->ttr = (int) $this->ttr;
         if ($this->ttr <= 0) {
             throw new InvalidConfigException('Default TTR must be greater that zero.');
         }
 
-        if (!is_numeric($this->attempts)) {
-            throw new InvalidConfigException('Default attempts count must be integer.');
-        }
-        $this->attempts = (int) $this->attempts;
         if ($this->attempts <= 0) {
             throw new InvalidConfigException('Default attempts count must be greater that zero.');
         }
@@ -109,10 +102,10 @@ abstract class Queue extends Component
     /**
      * Sets TTR for job execute.
      *
-     * @param int|mixed $value
+     * @param int|null $value
      * @return $this
      */
-    public function ttr($value)
+    public function ttr(?int $value): static
     {
         $this->pushTtr = $value;
         return $this;
@@ -121,10 +114,10 @@ abstract class Queue extends Component
     /**
      * Sets delay for later execute.
      *
-     * @param int|mixed $value
+     * @param int|null $value
      * @return $this
      */
-    public function delay($value)
+    public function delay(?int $value): static
     {
         $this->pushDelay = $value;
         return $this;
@@ -133,10 +126,10 @@ abstract class Queue extends Component
     /**
      * Sets job priority.
      *
-     * @param mixed $value
+     * @param int|string|null $value
      * @return $this
      */
-    public function priority($value)
+    public function priority(int|string|null $value): static
     {
         $this->pushPriority = $value;
         return $this;
@@ -146,9 +139,9 @@ abstract class Queue extends Component
      * Pushes job into queue.
      *
      * @param JobInterface|mixed $job
-     * @return string|null id of a job message
+     * @return int|string|null id of a job message
      */
-    public function push($job)
+    public function push($job): int|string|null
     {
         $event = new PushEvent([
             'job' => $job,
@@ -173,18 +166,10 @@ abstract class Queue extends Component
             throw new InvalidArgumentException('Job must be instance of JobInterface.');
         }
 
-        if (!is_numeric($event->ttr)) {
-            throw new InvalidArgumentException('Job TTR must be integer.');
-        }
-        $event->ttr = (int) $event->ttr;
         if ($event->ttr <= 0) {
             throw new InvalidArgumentException('Job TTR must be greater that zero.');
         }
 
-        if (!is_numeric($event->delay)) {
-            throw new InvalidArgumentException('Job delay must be integer.');
-        }
-        $event->delay = (int) $event->delay;
         if ($event->delay < 0) {
             throw new InvalidArgumentException('Job delay must be positive.');
         }
@@ -197,34 +182,34 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string $message
+     * @param string $payload
      * @param int $ttr time to reserve in seconds
      * @param int $delay
      * @param mixed $priority
-     * @return string id of a job message
+     * @return string|int|null id of a job message
      */
-    abstract protected function pushMessage($message, $ttr, $delay, $priority);
+    abstract protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null;
 
     /**
      * Uses for CLI drivers and gets process ID of a worker.
      *
      * @since 2.0.2
      */
-    public function getWorkerPid()
+    public function getWorkerPid(): ?int
     {
         return null;
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @param string $message
      * @param int $ttr time to reserve
      * @param int $attempt number
      * @return bool
      */
-    protected function handleMessage($id, $message, $ttr, $attempt)
+    protected function handleMessage(int|string $id, string $message, int $ttr, int $attempt): bool
     {
-        list($job, $error) = $this->unserializeMessage($message);
+        [$job, $error] = $this->unserializeMessage($message);
         $event = new ExecEvent([
             'id' => $id,
             'job' => $job,
@@ -241,10 +226,7 @@ abstract class Queue extends Component
         }
         try {
             $event->result = $event->job->execute($this);
-        } catch (\Exception $error) {
-            $event->error = $error;
-            return $this->handleError($event);
-        } catch (\Throwable $error) {
+        } catch (\Exception|\Throwable $error) {
             $event->error = $error;
             return $this->handleError($event);
         }
@@ -255,11 +237,10 @@ abstract class Queue extends Component
     /**
      * Unserializes.
      *
-     * @param string $id of the job
      * @param string $serialized message
      * @return array pair of a job and error that
      */
-    public function unserializeMessage($serialized)
+    public function unserializeMessage(string $serialized): array
     {
         try {
             $job = $this->serializer->unserialize($serialized);
@@ -282,7 +263,7 @@ abstract class Queue extends Component
      * @return bool
      * @internal
      */
-    public function handleError(ExecEvent $event)
+    public function handleError(ExecEvent $event): bool
     {
         $event->retry = $event->attempt < $this->attempts;
         if ($event->error instanceof InvalidJobException) {
@@ -295,35 +276,35 @@ abstract class Queue extends Component
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @return bool
      */
-    public function isWaiting($id)
+    public function isWaiting(int|string $id): bool
     {
         return $this->status($id) === self::STATUS_WAITING;
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @return bool
      */
-    public function isReserved($id)
+    public function isReserved(int|string $id): bool
     {
         return $this->status($id) === self::STATUS_RESERVED;
     }
 
     /**
-     * @param string $id of a job message
+     * @param int|string $id of a job message
      * @return bool
      */
-    public function isDone($id)
+    public function isDone(int|string $id): bool
     {
         return $this->status($id) === self::STATUS_DONE;
     }
 
     /**
-     * @param string $id of a job message
+     * @param string|int $id of a job message
      * @return int status code
      */
-    abstract public function status($id);
+    abstract public function status(int|string $id): int;
 }

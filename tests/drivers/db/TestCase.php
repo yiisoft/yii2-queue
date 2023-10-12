@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +22,7 @@ use yii\db\Query;
  */
 abstract class TestCase extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -28,7 +31,7 @@ abstract class TestCase extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -40,7 +43,7 @@ abstract class TestCase extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testPriority()
+    public function testPriority(): void
     {
         $this->getQueue()->priority(100)->push(new PriorityJob(['number' => 1]));
         $this->getQueue()->priority(300)->push(new PriorityJob(['number' => 5]));
@@ -52,7 +55,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -61,7 +64,7 @@ abstract class TestCase extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -70,7 +73,7 @@ abstract class TestCase extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = new RetryJob(['uid' => uniqid()]);
@@ -81,7 +84,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
@@ -93,7 +96,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals(0, $actual);
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
@@ -105,7 +108,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals(0, $actual);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->db->createCommand()
             ->delete($this->getQueue()->tableName)

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +12,7 @@ namespace tests\app;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\queue\Queue;
 use yii\queue\RetryableJobInterface;
 
 /**
@@ -20,23 +24,23 @@ class RetryJob extends BaseObject implements RetryableJobInterface
 {
     public $uid;
 
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         file_put_contents($this->getFileName(), 'a', FILE_APPEND);
         throw new \Exception('Planned error.');
     }
 
-    public function getFileName()
+    public function getFileName(): bool|string
     {
         return Yii::getAlias("@runtime/job-{$this->uid}.lock");
     }
 
-    public function getTtr()
+    public function getTtr(): int
     {
         return 2;
     }
 
-    public function canRetry($attempt, $error)
+    public function canRetry($attempt, $error): bool
     {
         return $attempt < 2;
     }

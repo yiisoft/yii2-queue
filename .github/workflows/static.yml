@@ -1,5 +1,3 @@
-name: build
-
 on:
   pull_request:
     paths-ignore:
@@ -9,6 +7,7 @@ on:
       - 'UPGRADE.md'
       - '.gitignore'
       - '.gitattributes'
+      - 'phpunit.xml.dist'
 
   push:
     branches: [ 'master' ]
@@ -19,6 +18,9 @@ on:
       - 'UPGRADE.md'
       - '.gitignore'
       - '.gitattributes'
+      - 'phpunit.xml.dist'
+
+name: static analysis
 
 env:
   COMPOSE_PROJECT_NAME: yii2-queue
@@ -32,7 +34,7 @@ env:
   AWS_SQS_FIFO_URL: ${{ secrets.AWS_SQS_FIFO_URL }}
   AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${{ secrets.AWS_SQS_FIFO_MESSAGE_GROUP_ID }}
 jobs:
-  phpunit:
+  psalm:
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     strategy:
@@ -43,10 +45,5 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v2
 
-      - name: PHP Unit tests for PHP ${{ matrix.php }}
-        run: make test v=${{ matrix.php }}
-
-      - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage.xml
+      - name: Run static analyzes for PHP ${{ matrix.php }}
+        run: make static-analyze v=${{ matrix.php }}
