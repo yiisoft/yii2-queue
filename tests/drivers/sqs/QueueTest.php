@@ -52,7 +52,7 @@ class QueueTest extends CliTestCase
     public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -62,10 +62,6 @@ class QueueTest extends CliTestCase
 
     public function testClear(): void
     {
-        if (!getenv('AWS_SQS_CLEAR_TEST_ENABLED')) {
-            $this->markTestSkipped(__METHOD__ . ' is disabled');
-        }
-
         $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
     }
@@ -76,14 +72,5 @@ class QueueTest extends CliTestCase
     protected function getQueue(): Queue
     {
         return Yii::$app->sqsQueue;
-    }
-
-    protected function setUp(): void
-    {
-        if (!getenv('AWS_SQS_ENABLED')) {
-            $this->markTestSkipped('AWS SQS tests are disabled');
-        }
-
-        parent::setUp();
     }
 }

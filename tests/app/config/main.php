@@ -31,6 +31,8 @@ $config = [
         'amqpInteropQueue',
         'beanstalkQueue',
         'stompQueue',
+        'sqsQueue',
+        'sqsFifoQueue',
     ],
     'components' => [
         'syncQueue' => [
@@ -116,6 +118,21 @@ $config = [
             'class' => StompQueue::class,
             'host' => getenv('ACTIVEMQ_HOST') ?: 'localhost',
         ],
+        'sqsQueue' => [
+            'class' => SqsQueue::class,
+            'url' => getenv('AWS_SQS_URL'),
+            'key' => getenv('AWS_KEY'),
+            'secret' => getenv('AWS_SECRET'),
+            'region' => getenv('AWS_REGION'),
+        ],
+        'sqsFifoQueue' => [
+            'class' => SqsQueue::class,
+            'url' => getenv('AWS_SQS_FIFO_URL'),
+            'key' => getenv('AWS_KEY'),
+            'secret' => getenv('AWS_SECRET'),
+            'region' => getenv('AWS_REGION'),
+            'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
+        ],
     ],
 ];
 
@@ -124,29 +141,6 @@ if (defined('GEARMAN_SUCCESS')) {
     $config['components']['gearmanQueue'] = [
         'class' => GearmanQueue::class,
         'host' => getenv('GEARMAN_HOST') ?: 'localhost',
-    ];
-}
-
-if (getenv('AWS_SQS_ENABLED')) {
-    $config['bootstrap'][] = 'sqsQueue';
-    $config['components']['sqsQueue'] = [
-        'class' => SqsQueue::class,
-        'url' => getenv('AWS_SQS_URL'),
-        'key' => getenv('AWS_KEY'),
-        'secret' => getenv('AWS_SECRET'),
-        'region' => getenv('AWS_REGION'),
-    ];
-}
-
-if (getenv('AWS_SQS_FIFO_ENABLED')) {
-    $config['bootstrap'][] = 'sqsFifoQueue';
-    $config['components']['sqsFifoQueue'] = [
-        'class' => SqsQueue::class,
-        'url' => getenv('AWS_SQS_FIFO_URL'),
-        'key' => getenv('AWS_KEY'),
-        'secret' => getenv('AWS_SECRET'),
-        'region' => getenv('AWS_REGION'),
-        'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
     ];
 }
 

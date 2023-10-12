@@ -15,6 +15,7 @@ use Aws\Sqs\SqsClient;
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
 use yii\queue\serializers\JsonSerializer;
+use yii\queue\serializers\SerializerInterface;
 
 /**
  * SQS Queue.
@@ -64,12 +65,12 @@ class Queue extends CliQueue
      * Json serializer by default.
      * @inheritdoc
      */
-    public string|array|\yii\queue\serializers\SerializerInterface $serializer = JsonSerializer::class;
+    public string|array|SerializerInterface $serializer = JsonSerializer::class;
 
     /**
-     * @var SqsClient
+     * @var SqsClient|null
      */
-    private SqsClient $_client;
+    private ?SqsClient $client = null;
 
     /**
      * Listens queue and runs each job.
@@ -173,7 +174,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.2.1
      */
-    public function handle(string $id, string $message, int $ttr, int $attempt)
+    public function handle(string $id, string $message, int $ttr, int $attempt): bool
     {
         return $this->handleMessage($id, $message, $ttr, $attempt);
     }
@@ -213,8 +214,8 @@ class Queue extends CliQueue
      */
     protected function getClient(): SqsClient
     {
-        if ($this->_client) {
-            return $this->_client;
+        if (null !== $this->client) {
+            return $this->client;
         }
 
         if ($this->key !== null && $this->secret !== null) {
@@ -228,11 +229,11 @@ class Queue extends CliQueue
             $credentials = CredentialProvider::defaultProvider();
         }
 
-        $this->_client = new SqsClient([
+        $this->client = new SqsClient([
             'credentials' => $credentials,
             'region' => $this->region,
             'version' => $this->version,
         ]);
-        return $this->_client;
+        return $this->client;
     }
 }

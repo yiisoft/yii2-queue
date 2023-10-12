@@ -8,6 +8,7 @@
     cacheDirectory=".phpunit.cache"
     displayDetailsOnIncompleteTests="true"
     displayDetailsOnSkippedTests="true"
+    executionOrder="random"
 >
   <testsuites>
     <testsuite name="Yii2-Queue">

@@ -16,7 +16,6 @@
             <directory name="src/gii" />
             <directory name="src/drivers/db/migrations" />
             <directory name="src/drivers/beanstalk" />
-            <directory name="src/drivers/sqs" />
         </ignoreFiles>
     </projectFiles>
     <extraFiles>
