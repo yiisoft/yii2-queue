@@ -10,7 +10,7 @@
     displayDetailsOnSkippedTests="true"
 >
   <testsuites>
-    <testsuite name="Test Suite">
+    <testsuite name="Yii2-Queue">
       <directory>./tests</directory>
       <exclude>./tests/app</exclude>
       <exclude>./tests/docker</exclude>
