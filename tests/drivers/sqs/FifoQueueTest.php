@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace tests\drivers\sqs;
 
+use Aws\Sqs\Exception\SqsException;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
@@ -40,17 +41,17 @@ class FifoQueueTest extends CliTestCase
 
     public function testFifoQueueDoesNotSupportPerMessageDelays(): void
     {
+        $this->expectException(SqsException::class);
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
 
-        $this->setExpectedException('\Aws\Sqs\Exception\SqsException');
         $this->getQueue()->delay(2)->push($job);
     }
 
     public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -60,10 +61,6 @@ class FifoQueueTest extends CliTestCase
 
     public function testClear(): void
     {
-        if (!getenv('AWS_SQS_FIFO_CLEAR_TEST_ENABLED')) {
-            $this->markTestSkipped(__METHOD__ . ' is disabled');
-        }
-
         $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
     }
@@ -74,14 +71,5 @@ class FifoQueueTest extends CliTestCase
     protected function getQueue(): Queue
     {
         return Yii::$app->sqsFifoQueue;
-    }
-
-    protected function setUp(): void
-    {
-        if (!getenv('AWS_SQS_FIFO_ENABLED')) {
-            $this->markTestSkipped('AWS SQS FIFO tests are disabled');
-        }
-
-        parent::setUp();
     }
 }

@@ -4,9 +4,11 @@ help:			## Display help information
 build:			## Build an image from a docker-compose file. Params: {{ v=8.1 }}. Default latest PHP 8.1
 	@cp -n .env.example .env
 	PHP_VERSION=$(filter-out $@,$(v)) docker-compose up -d --build
+	make create-sqs-queue
+	make create-sqs-fifo-queue
 
 test:			## Run tests. Params: {{ v=8.1 }}. Default latest PHP 8.1
-	PHP_VERSION=$(filter-out $@,$(v)) docker-compose build --pull yii2-queue-php
+	make build
 	PHP_VERSION=$(filter-out $@,$(v)) docker-compose run yii2-queue-php vendor/bin/phpunit --coverage-clover coverage.xml
 	make down
 
@@ -35,3 +37,9 @@ clean:
 
 clean-all: clean
 	sudo rm -rf tests/runtime/.composer*
+
+create-sqs-queue:	## Create SQS queue
+	docker exec yii2-queue-localstack sh -c "awslocal sqs create-queue --queue-name yii2-queue"
+
+create-sqs-fifo-queue:	## Create SQS FIFO queue
+	docker exec yii2-queue-localstack sh -c 'awslocal sqs create-queue --queue-name yii2-queue.fifo --attributes "FifoQueue=true"'
