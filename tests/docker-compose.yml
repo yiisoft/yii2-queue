@@ -93,9 +93,9 @@ services:
     networks:
       net: {}
 
-  # https://hub.docker.com/r/schickling/beanstalkd/
+  # https://hub.docker.com/r/rayyounghong/beanstalkd/
   beanstalk:
-    image: schickling/beanstalkd
+    image: rayyounghong/beanstalkd
     ports:
     - "11301:11300"
     networks:

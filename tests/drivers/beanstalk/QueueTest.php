@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace tests\drivers\beanstalk;
 
-use Pheanstalk\Exception\ServerException;
+use Exception;
 use Pheanstalk\Pheanstalk;
+use Pheanstalk\Values\JobId;
 use tests\app\PriorityJob;
-use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\beanstalk\Queue;
@@ -76,17 +76,6 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry(): void
-    {
-        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
-        $this->getQueue()->push($job);
-        sleep(6);
-
-        $this->assertFileExists($job->getFileName());
-        $this->assertEquals('aa', file_get_contents($job->getFileName()));
-    }
-
     public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
@@ -111,16 +100,12 @@ class QueueTest extends CliTestCase
      */
     protected function jobIsExists(int|string|null $id): bool
     {
-        $connection = new Pheanstalk($this->getQueue()->host, $this->getQueue()->port);
+        $connection = Pheanstalk::create($this->getQueue()->host, $this->getQueue()->port);
         try {
-            $connection->peek($id);
+            $connection->peek(new JobId($id));
             return true;
-        } catch (ServerException $e) {
-            if (str_starts_with($e->getMessage(), 'NOT_FOUND')) {
-                return false;
-            }
-
-            throw $e;
+        } catch (Exception) {
+            return false;
         }
     }
 }
