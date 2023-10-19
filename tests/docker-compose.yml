@@ -17,7 +17,7 @@ services:
     - 4.4.4.4
     environment:
       COMPOSER_ALLOW_SUPERUSER: 1
-      XDEBUG_MODE: ${XDEBUG_MODE:-debug} # Setup "off" to disable debugging
+      XDEBUG_MODE: ${XDEBUG_MODE:-off} # Setup "debug" to enable debugging
       XDEBUG_CONFIG: "client_host=host.docker.internal"
       XDEBUG_TRIGGER: ${XDEBUG_TRIGGER:-yes}
       PHP_IDE_CONFIG: "serverName=yii2-queue"
@@ -53,8 +53,7 @@ services:
     - activemq
     - localstack
     networks:
-      net:
-        ipv4_address: 172.18.0.10
+      net: {}
     extra_hosts:
       - host.docker.internal:${HOST_IP:-host-gateway}
 
