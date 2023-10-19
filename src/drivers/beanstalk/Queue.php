@@ -114,7 +114,7 @@ class Queue extends CliQueue
             }
 
             return self::STATUS_WAITING;
-        } catch (Exception) {
+        } catch (\Throwable) {
             return self::STATUS_DONE;
         }
     }
