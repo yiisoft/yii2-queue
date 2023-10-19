@@ -134,7 +134,7 @@ class QueueTest extends CliTestCase
         try {
             $connection->peek(new JobId($id));
             return true;
-        } catch (Exception) {
+        } catch (\Throwable) {
             return false;
         }
     }
