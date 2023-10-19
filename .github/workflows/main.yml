@@ -11,6 +11,7 @@ on:
       - '.gitattributes'
 
   push:
+    branches: [ 'master' ]
     paths-ignore:
       - 'docs/**'
       - 'README.md'
@@ -24,7 +25,6 @@ env:
   COMPOSE_FILE: tests/docker-compose.yml
 jobs:
   phpunit:
-    if: github.event.repository.fork == true || github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     strategy:
