@@ -131,7 +131,7 @@ class Queue extends CliQueue
         try {
             $this->getPheanstalk()->delete(new JobId($id));
             return true;
-        } catch (Exception) {
+        } catch (\Throwable) {
             return false;
         }
     }
