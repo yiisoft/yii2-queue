@@ -62,7 +62,7 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $timeout number of seconds to wait for next message.
+     * @param int<0, max> $timeout number of seconds to wait for next message.
      * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
@@ -75,8 +75,8 @@ class Queue extends CliQueue
                 $pheanstalk->watch($this->getTubeName());
 
                 $job = $pheanstalk->reserveWithTimeout($timeout);
-                try {
-                    if (null !== $job) {
+                if (null !== $job) {
+                    try {
                         $info = $pheanstalk->statsJob($job);
 
                         if ($this->handleMessage(
@@ -87,11 +87,11 @@ class Queue extends CliQueue
                         )) {
                             $pheanstalk->delete($job);
                         }
-                    } elseif (!$repeat) {
-                        break;
+                    } catch (Exception) {
+                        $pheanstalk->release($job);
                     }
-                } catch (Exception) {
-                    $pheanstalk->release($job);
+                } elseif (!$repeat) {
+                    break;
                 }
             }
         });
