@@ -83,6 +83,36 @@ class QueueTest extends CliTestCase
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
 
         $this->assertFalse($this->jobIsExists($id));
+
+        $queue = $this->getQueue();
+        $jobId = $queue->push($this->createSimpleJob());
+
+        $this->assertTrue($queue->remove($jobId));
+        $this->assertFalse($queue->remove('007'));
+    }
+
+    public function testConnect(): void
+    {
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+
+        $job = $this->createSimpleJob();
+
+        $queue = new Queue(['host' => getenv('BEANSTALK_HOST') ?: 'localhost']);
+        $queue->receiveTimeout = 1;
+        $queue->connectTimeout = 5;
+        $queue->push($job);
+
+        $this->assertSimpleJobDone($job);
+    }
+
+    public function testStatusTube(): void
+    {
+        $queue = $this->getQueue();
+        $queue->push($this->createSimpleJob());
+
+        $statusTube = $queue->getStatsTube();
+
+        $this->assertEquals('queue', $statusTube->name->value);
     }
 
     /**

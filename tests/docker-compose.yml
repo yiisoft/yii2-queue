@@ -15,11 +15,9 @@ services:
     dns:
     - 8.8.8.8
     - 4.4.4.4
-    ports:
-      - "8080:8080"
     environment:
       COMPOSER_ALLOW_SUPERUSER: 1
-      XDEBUG_MODE: "debug"
+      XDEBUG_MODE: ${XDEBUG_MODE:-debug} # Setup "off" to disable debugging
       XDEBUG_CONFIG: "client_host=host.docker.internal"
       XDEBUG_TRIGGER: ${XDEBUG_TRIGGER:-yes}
       PHP_IDE_CONFIG: "serverName=yii2-queue"

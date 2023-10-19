@@ -13,6 +13,7 @@ namespace yii\queue\beanstalk;
 use Exception;
 use Pheanstalk\Contract\PheanstalkPublisherInterface;
 use Pheanstalk\Contract\SocketFactoryInterface;
+use Pheanstalk\Exception\JobNotFoundException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Values\JobId;
 use Pheanstalk\Values\Timeout;
@@ -122,11 +123,11 @@ class Queue extends CliQueue
     /**
      * Removes a job by ID.
      *
-     * @param int $id of a job
+     * @param int|string $id of a job
      * @return bool
      * @since 2.0.1
      */
-    public function remove(int $id): bool
+    public function remove(int|string $id): bool
     {
         try {
             $this->getPheanstalk()->delete(new JobId($id));
