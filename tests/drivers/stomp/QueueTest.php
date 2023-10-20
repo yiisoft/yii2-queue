@@ -11,11 +11,9 @@ declare(strict_types=1);
 namespace tests\drivers\stomp;
 
 use tests\app\RetryJob;
-use tests\drivers\CliTestCase;
-use Yii;
-use yii\queue\stomp\Queue;
+use yii\base\NotSupportedException;
 
-class QueueTest extends CliTestCase
+final class QueueTest extends TestCase
 {
     public function testListen(): void
     {
@@ -37,12 +35,11 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    /**
-     * @return Queue
-     */
-    protected function getQueue(): Queue
+    public function testStatus(): void
     {
-        return Yii::$app->stompQueue;
-    }
+        $this->expectException(NotSupportedException::class);
 
+        $id = $this->getQueue()->push($this->createSimpleJob());
+        $this->getQueue()->isWaiting($id);
+    }
 }

@@ -14,6 +14,7 @@ use Enqueue\Stomp\StompConnectionFactory;
 use Enqueue\Stomp\StompContext;
 use Enqueue\Stomp\StompDestination;
 use Enqueue\Stomp\StompMessage;
+use Interop\Queue\Context;
 use Interop\Queue\Exception as QueueException;
 use Interop\Queue\Message;
 use Interop\Queue\Queue as InteropQueue;
@@ -37,7 +38,7 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $host;
+    public ?string $host = null;
     /**
      * The message queue broker's port.
      *
@@ -106,9 +107,9 @@ class Queue extends CliQueue
     public int $readTimeOut = 0;
 
     /**
-     * @var StompContext|null
+     * @var StompContext|Context|null
      */
-    protected ?StompContext $context = null;
+    protected StompContext|Context|null $context = null;
 
     /**
      * @inheritdoc
