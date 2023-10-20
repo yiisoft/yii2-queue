@@ -42,7 +42,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function unserialize($serialized)
+    public function unserialize(string $serialized)
     {
         return $this->fromArray(Json::decode($serialized));
     }
@@ -82,10 +82,10 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @return mixed
      */
-    protected function fromArray($data)
+    protected function fromArray(mixed $data)
     {
         if (!is_array($data)) {
             return $data;
@@ -106,6 +106,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
             $config[$property] = $this->fromArray($value);
         }
 
+        /** @psalm-suppress UndefinedClass */
         return Yii::createObject($config);
     }
 }

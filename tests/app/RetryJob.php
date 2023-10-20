@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace tests\app;
 
 use Exception;
+use Throwable;
 use Yii;
 use yii\base\BaseObject;
 use yii\queue\Queue;
@@ -41,7 +42,7 @@ class RetryJob extends BaseObject implements RetryableJobInterface
         return 2;
     }
 
-    public function canRetry($attempt, $error): bool
+    public function canRetry($attempt, ?Throwable $error): bool
     {
         return $attempt < 2;
     }

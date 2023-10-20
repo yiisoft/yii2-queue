@@ -21,14 +21,19 @@ use yii\base\Event;
 abstract class JobEvent extends Event
 {
     /**
-     * @var Queue
      * @inheritdoc
+     */
+    public $name = '';
+    /**
+     * @var Queue|null|object
+     * @inheritdoc
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public $sender;
     /**
      * @var int|string|null unique id of a job
      */
-    public string|int|null $id;
+    public string|int|null $id = null;
     /**
      * @var Closure|JobInterface|null|mixed
      */
@@ -36,5 +41,5 @@ abstract class JobEvent extends Event
     /**
      * @var int time to reserve in seconds of the job
      */
-    public int $ttr;
+    public int $ttr = 0;
 }

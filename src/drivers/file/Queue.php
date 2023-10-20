@@ -57,7 +57,7 @@ class Queue extends CliQueue
         parent::init();
         $this->path = Yii::getAlias($this->path);
         if (!is_dir($this->path)) {
-            FileHelper::createDirectory($this->path, $this->dirMode, true);
+            FileHelper::createDirectory($this->path, $this->dirMode);
         }
     }
 
@@ -126,7 +126,7 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove($id): bool
     {
         $removed = false;
         $this->touchIndex(function (&$data) use ($id, &$removed) {
@@ -179,7 +179,7 @@ class Queue extends CliQueue
             if (!empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
                     if ($payload[1] + $payload[3] < time()) {
-                        list($id, $ttr, $attempt, $time) = $payload;
+                        [$id, $ttr, $attempt, $time] = $payload;
                         $data['reserved'][$key][2] = ++$attempt;
                         $data['reserved'][$key][3] = time();
                         return;
@@ -188,7 +188,7 @@ class Queue extends CliQueue
             }
 
             if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
-                list($id, $ttr, $time) = array_shift($data['delayed']);
+                [$id, $ttr, $time] = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
                 [$id, $ttr] = array_shift($data['waiting']);
             }

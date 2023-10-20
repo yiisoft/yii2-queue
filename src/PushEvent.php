@@ -20,9 +20,9 @@ class PushEvent extends JobEvent
     /**
      * @var int
      */
-    public int $delay;
+    public int $delay = 0;
     /**
      * @var int|string|null
      */
-    public string|int|null $priority;
+    public string|int|null $priority = null;
 }

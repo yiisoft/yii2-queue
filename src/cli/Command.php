@@ -124,8 +124,9 @@ abstract class Command extends Controller
             if ($this->phpBinary === null) {
                 $this->phpBinary = PHP_BINARY;
             }
-            $this->queue->messageHandler = function ($id, $message, $ttr, $attempt) {
-                return $this->handleMessage($id, $message, (int)$ttr, (int)$attempt);
+            /** @psalm-suppress MissingClosureReturnType */
+            $this->queue->messageHandler = function (int|string|null $id, string $message, int $ttr, int $attempt) {
+                return $this->handleMessage($id, $message, $ttr, $attempt);
             };
         }
 
@@ -136,14 +137,14 @@ abstract class Command extends Controller
      * Executes a job.
      * The command is internal, and used to isolate a job execution. Manual usage is not provided.
      *
-     * @param string|null $id of a message
+     * @param string $id of a message
      * @param int $ttr time to reserve
      * @param int $attempt number
      * @param int $pid of a worker
      * @return int exit code
      * @internal It is used with isolate mode.
      */
-    public function actionExec(?string $id, int $ttr, int $attempt, int $pid): int
+    public function actionExec(string $id, int $ttr, int $attempt, int $pid): int
     {
         if ($this->queue->execute($id, file_get_contents('php://stdin'), $ttr, $attempt, $pid ?: null)) {
             return self::EXEC_DONE;
@@ -164,6 +165,7 @@ abstract class Command extends Controller
     protected function handleMessage(int|string|null $id, string $message, ?int $ttr, int $attempt): bool
     {
         // Child process command: php yii queue/exec "id" "ttr" "attempt" "pid"
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         $cmd = [
             $this->phpBinary,
             $_SERVER['SCRIPT_FILENAME'],
@@ -185,7 +187,7 @@ abstract class Command extends Controller
 
         $process = new Process($cmd, null, null, $message, $ttr);
         try {
-            $result = $process->run(function ($type, $buffer) {
+            $result = $process->run(function (string $type, string $buffer) {
                 if ($type === Process::ERR) {
                     $this->stderr($buffer);
                 } else {

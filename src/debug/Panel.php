@@ -108,7 +108,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function getDetail()
     {
-        $jobs = isset($this->data['jobs']) ? $this->data['jobs'] : [];
+        $jobs = $this->data['jobs'] ?? [];
         foreach ($jobs as &$job) {
             $job['status'] = 'unknown';
             /** @var Queue $queue */

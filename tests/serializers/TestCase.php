@@ -31,7 +31,7 @@ abstract class TestCase extends BaseTestCase
      * @dataProvider providerSerialize
      * @param mixed $expected
      */
-    public function testSerialize($expected): void
+    public function testSerialize(mixed $expected): void
     {
         $serializer = $this->createSerializer();
 
@@ -80,6 +80,6 @@ abstract class TestCase extends BaseTestCase
 
 class TestObject extends BaseObject
 {
-    public $foo;
-    public $bar;
+    public int $foo;
+    public array $bar;
 }

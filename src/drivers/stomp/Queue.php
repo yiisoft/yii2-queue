@@ -156,7 +156,7 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat
-     * @param int $timeout
+     * @param int<0, max> $timeout
      * @return int|null
      */
     public function run(bool $repeat, int $timeout = 0): ?int

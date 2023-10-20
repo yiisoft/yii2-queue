@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yii\queue;
 
+use Throwable;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
@@ -81,14 +82,19 @@ abstract class Queue extends Component
     private ?int $pushDelay = null;
     private int|string|null $pushPriority = null;
 
+    private function getSerializer(): SerializerInterface
+    {
+        /** @var SerializerInterface $object */
+        $object = Instance::ensure($this->serializer, SerializerInterface::class);
+        return $object;
+    }
+
     /**
      * @inheritdoc
      */
     public function init(): void
     {
         parent::init();
-
-        $this->serializer = Instance::ensure($this->serializer, SerializerInterface::class);
 
         if ($this->ttr <= 0) {
             throw new InvalidConfigException('Default TTR must be greater that zero.');
@@ -141,7 +147,7 @@ abstract class Queue extends Component
      * @param JobInterface|mixed $job
      * @return int|string|null id of a job message
      */
-    public function push($job): int|string|null
+    public function push(mixed $job): int|string|null
     {
         $event = new PushEvent([
             'job' => $job,
@@ -174,7 +180,7 @@ abstract class Queue extends Component
             throw new InvalidArgumentException('Job delay must be positive.');
         }
 
-        $message = $this->serializer->serialize($event->job);
+        $message = $this->getSerializer()->serialize($event->job);
         $event->id = $this->pushMessage($message, $event->ttr, $event->delay, $event->priority);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
@@ -225,8 +231,9 @@ abstract class Queue extends Component
             return $this->handleError($event);
         }
         try {
-            $event->result = $event->job->execute($this);
-        } catch (\Exception|\Throwable $error) {
+            /** @psalm-suppress PossiblyUndefinedMethod */
+            $event->result = $event->job?->execute($this);
+        } catch (Throwable $error) {
             $event->error = $error;
             return $this->handleError($event);
         }
@@ -243,7 +250,7 @@ abstract class Queue extends Component
     public function unserializeMessage(string $serialized): array
     {
         try {
-            $job = $this->serializer->unserialize($serialized);
+            $job = $this->getSerializer()->unserialize($serialized);
         } catch (\Exception $e) {
             return [null, new InvalidJobException($serialized, $e->getMessage(), 0, $e)];
         }
