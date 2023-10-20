@@ -82,13 +82,6 @@ abstract class Queue extends Component
     private ?int $pushDelay = null;
     private int|string|null $pushPriority = null;
 
-    private function getSerializer(): SerializerInterface
-    {
-        /** @var SerializerInterface $object */
-        $object = Instance::ensure($this->serializer, SerializerInterface::class);
-        return $object;
-    }
-
     /**
      * @inheritdoc
      */
@@ -314,4 +307,11 @@ abstract class Queue extends Component
      * @return int status code
      */
     abstract public function status(int|string $id): int;
+
+    private function getSerializer(): SerializerInterface
+    {
+        /** @var SerializerInterface $object */
+        $object = Instance::ensure($this->serializer, SerializerInterface::class);
+        return $object;
+    }
 }

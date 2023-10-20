@@ -10,12 +10,11 @@ declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
-use Pheanstalk\Values\TubeStats;
+use Throwable;
 use yii\helpers\BaseConsole;
 use yii\helpers\Console;
 use yii\queue\cli\Action;
 use yii\queue\cli\Queue as CliQueue;
-use Throwable;
 
 /**
  * Info about queue status.
@@ -40,9 +39,8 @@ class InfoAction extends Action
         );
 
         try {
-            /** @var TubeStats[] $statsTube */
-            $statsTube = $this->queue->getStatsTube();
-            foreach ($statsTube as $key => $value) {
+            /** @psalm-suppress RawObjectIteration */
+            foreach ($this->queue->getStatsTube() as $key => $value) {
                 Console::stdout($this->format("- $key: ", BaseConsole::FG_YELLOW));
                 Console::output($value);
             }

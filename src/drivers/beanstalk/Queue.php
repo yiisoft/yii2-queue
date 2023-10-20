@@ -18,6 +18,7 @@ use Pheanstalk\Values\JobId;
 use Pheanstalk\Values\Timeout;
 use Pheanstalk\Values\TubeName;
 use Pheanstalk\Values\TubeStats;
+use Throwable;
 use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
 
@@ -114,7 +115,7 @@ class Queue extends CliQueue
             }
 
             return self::STATUS_WAITING;
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return self::STATUS_DONE;
         }
     }
@@ -131,7 +132,7 @@ class Queue extends CliQueue
         try {
             $this->getPheanstalk()->delete(new JobId($id));
             return true;
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return false;
         }
     }
