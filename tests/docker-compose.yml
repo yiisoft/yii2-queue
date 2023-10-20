@@ -16,6 +16,11 @@ services:
     - 8.8.8.8
     - 4.4.4.4
     environment:
+      COMPOSER_ALLOW_SUPERUSER: 1
+      XDEBUG_MODE: ${XDEBUG_MODE:-off} # Setup "debug" to enable debugging
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
+      XDEBUG_TRIGGER: ${XDEBUG_TRIGGER:-yes}
+      PHP_IDE_CONFIG: "serverName=yii2-queue"
       MYSQL_HOST: mysql
       MYSQL_USER: yii2_queue_test
       MYSQL_PASSWORD: yii2_queue_test
@@ -31,7 +36,6 @@ services:
       RABBITMQ_PASSWORD: guest
       BEANSTALK_HOST: beanstalk
       GEARMAN_HOST: gearmand
-      COMPOSER_ALLOW_SUPERUSER: 1
       ACTIVEMQ_HOST: activemq
       AWS_KEY: ${AWS_KEY:-admin}
       AWS_SECRET: ${AWS_SECRET:-admin}
@@ -50,6 +54,8 @@ services:
     - localstack
     networks:
       net: {}
+    extra_hosts:
+      - host.docker.internal:${HOST_IP:-host-gateway}
 
   # https://hub.docker.com/_/mysql/
   mysql:
@@ -93,9 +99,9 @@ services:
     networks:
       net: {}
 
-  # https://hub.docker.com/r/schickling/beanstalkd/
+  # https://hub.docker.com/r/rayyounghong/beanstalkd/
   beanstalk:
-    image: schickling/beanstalkd
+    image: rayyounghong/beanstalkd
     ports:
     - "11301:11300"
     networks:
@@ -135,4 +141,8 @@ services:
 
 networks:
   net:
+    driver: bridge
     name: yii2_queue_net
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

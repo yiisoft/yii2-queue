@@ -10,17 +10,21 @@ declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
-use Pheanstalk\Exception\ServerException;
-use Pheanstalk\Job;
+use Exception;
+use Pheanstalk\Contract\PheanstalkPublisherInterface;
+use Pheanstalk\Contract\SocketFactoryInterface;
 use Pheanstalk\Pheanstalk;
-use Pheanstalk\PheanstalkInterface;
-use Pheanstalk\Response;
+use Pheanstalk\Values\JobId;
+use Pheanstalk\Values\Timeout;
+use Pheanstalk\Values\TubeName;
+use Pheanstalk\Values\TubeStats;
 use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Beanstalk Queue.
  *
+ * @property-read TubeName $tubeName
  * @property-read object $statsTube Tube statistics.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
@@ -34,7 +38,15 @@ class Queue extends CliQueue
     /**
      * @var int connection port
      */
-    public int $port = PheanstalkInterface::DEFAULT_PORT;
+    public int $port = SocketFactoryInterface::DEFAULT_PORT;
+    /**
+     * @var int|null connection timeout in seconds
+     */
+    public ?int $connectTimeout = null;
+    /**
+     * @var int|null receive timeout in seconds
+     */
+    public ?int $receiveTimeout = null;
     /**
      * @var string beanstalk tube
      */
@@ -44,11 +56,13 @@ class Queue extends CliQueue
      */
     public string $commandClass = Command::class;
 
+    private ?Pheanstalk $pheanstalk = null;
+
     /**
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $timeout number of seconds to wait for next message.
+     * @param int<0, max> $timeout number of seconds to wait for next message.
      * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
@@ -57,15 +71,24 @@ class Queue extends CliQueue
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
-                if ($payload = $this->getPheanstalk()->reserveFromTube($this->tube, $timeout)) {
-                    $info = $this->getPheanstalk()->statsJob($payload);
-                    if ($this->handleMessage(
-                        $payload->getId(),
-                        $payload->getData(),
-                        (int)$info->ttr,
-                        (int)$info->reserves
-                    )) {
-                        $this->getPheanstalk()->delete($payload);
+                $pheanstalk = $this->getPheanstalk();
+                $pheanstalk->watch($this->getTubeName());
+
+                $job = $pheanstalk->reserveWithTimeout($timeout);
+                if (null !== $job) {
+                    try {
+                        $info = $pheanstalk->statsJob($job);
+
+                        if ($this->handleMessage(
+                            $job->getId(),
+                            $job->getData(),
+                            $info->timeToRelease,
+                            $info->reserves
+                        )) {
+                            $pheanstalk->delete($job);
+                        }
+                    } catch (Exception) {
+                        $pheanstalk->release($job);
                     }
                 } elseif (!$repeat) {
                     break;
@@ -84,39 +107,32 @@ class Queue extends CliQueue
         }
 
         try {
-            $stats = $this->getPheanstalk()->statsJob($id);
-            if ($stats['state'] === 'reserved') {
+            $stats = $this->getPheanstalk()->statsJob(new JobId($id));
+
+            if ($stats->state->value === 'reserved') {
                 return self::STATUS_RESERVED;
             }
 
             return self::STATUS_WAITING;
-        } catch (ServerException $e) {
-            if ($e->getMessage() === 'Server reported NOT_FOUND') {
-                return self::STATUS_DONE;
-            }
-
-            throw $e;
+        } catch (\Throwable) {
+            return self::STATUS_DONE;
         }
     }
 
     /**
      * Removes a job by ID.
      *
-     * @param int $id of a job
+     * @param int|string $id of a job
      * @return bool
      * @since 2.0.1
      */
-    public function remove(int $id): bool
+    public function remove(int|string $id): bool
     {
         try {
-            $this->getPheanstalk()->delete(new Job($id, null));
+            $this->getPheanstalk()->delete(new JobId($id));
             return true;
-        } catch (ServerException $e) {
-            if (str_starts_with($e->getMessage(), 'NOT_FOUND')) {
-                return false;
-            }
-
-            throw $e;
+        } catch (\Throwable) {
+            return false;
         }
     }
 
@@ -125,33 +141,58 @@ class Queue extends CliQueue
      */
     protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
-        return $this->getPheanstalk()->putInTube(
-            $this->tube,
-            $payload,
-            $priority ?: PheanstalkInterface::DEFAULT_PRIORITY,
-            $delay,
-            $ttr
-        );
+        $pheanstalk = $this->getPheanstalk();
+        $pheanstalk->useTube($this->getTubeName());
+
+        $result = $pheanstalk
+            ->put(
+                $payload,
+                $priority ?: PheanstalkPublisherInterface::DEFAULT_PRIORITY,
+                $delay, // Seconds to wait before job becomes ready
+                $ttr // Time To Run: seconds a job can be reserved for
+            );
+        return $result->getId();
     }
 
     /**
-     * @return object tube statistics
+     * @return TubeStats tube statistics
      */
-    public function getStatsTube(): object
+    public function getStatsTube(): TubeStats
     {
-        return $this->getPheanstalk()->statsTube($this->tube);
+        return $this->getPheanstalk()->statsTube($this->getTubeName());
     }
 
-    /**
-     * @return Pheanstalk
-     */
     protected function getPheanstalk(): Pheanstalk
     {
-        if (!$this->_pheanstalk) {
-            $this->_pheanstalk = new Pheanstalk($this->host, $this->port);
+        if (null === $this->pheanstalk) {
+            $this->pheanstalk = Pheanstalk::create(
+                $this->host,
+                $this->port,
+                $this->getConnectTimeout(),
+                $this->getReceiveTimeout()
+            );
         }
-        return $this->_pheanstalk;
+        return $this->pheanstalk;
     }
 
-    private $_pheanstalk;
+    protected function getTubeName(): TubeName
+    {
+        return new TubeName($this->tube);
+    }
+
+    private function getConnectTimeout(): ?Timeout
+    {
+        if (null === $this->connectTimeout) {
+            return null;
+        }
+        return new Timeout($this->connectTimeout);
+    }
+
+    private function getReceiveTimeout(): ?Timeout
+    {
+        if (null === $this->receiveTimeout) {
+            return null;
+        }
+        return new Timeout($this->receiveTimeout);
+    }
 }

@@ -67,7 +67,6 @@ abstract class CliTestCase extends TestCase
     {
         $class = new ReflectionClass($this->getQueue());
         $method = $class->getMethod('getCommandId');
-        $method->setAccessible(true);
 
         $replace = [
             'php' => PHP_BINARY,

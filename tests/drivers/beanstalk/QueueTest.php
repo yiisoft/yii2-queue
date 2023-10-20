@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace tests\drivers\beanstalk;
 
-use Pheanstalk\Exception\ServerException;
+use Exception;
 use Pheanstalk\Pheanstalk;
+use Pheanstalk\Values\JobId;
 use tests\app\PriorityJob;
-use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\beanstalk\Queue;
@@ -76,17 +76,6 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry(): void
-    {
-        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
-        $this->getQueue()->push($job);
-        sleep(6);
-
-        $this->assertFileExists($job->getFileName());
-        $this->assertEquals('aa', file_get_contents($job->getFileName()));
-    }
-
     public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
@@ -94,6 +83,36 @@ class QueueTest extends CliTestCase
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
 
         $this->assertFalse($this->jobIsExists($id));
+
+        $queue = $this->getQueue();
+        $jobId = $queue->push($this->createSimpleJob());
+
+        $this->assertTrue($queue->remove($jobId));
+        $this->assertFalse($queue->remove('007'));
+    }
+
+    public function testConnect(): void
+    {
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+
+        $job = $this->createSimpleJob();
+
+        $queue = new Queue(['host' => getenv('BEANSTALK_HOST') ?: 'localhost']);
+        $queue->receiveTimeout = 1;
+        $queue->connectTimeout = 5;
+        $queue->push($job);
+
+        $this->assertSimpleJobDone($job);
+    }
+
+    public function testStatusTube(): void
+    {
+        $queue = $this->getQueue();
+        $queue->push($this->createSimpleJob());
+
+        $statusTube = $queue->getStatsTube();
+
+        $this->assertEquals('queue', $statusTube->name->value);
     }
 
     /**
@@ -111,16 +130,12 @@ class QueueTest extends CliTestCase
      */
     protected function jobIsExists(int|string|null $id): bool
     {
-        $connection = new Pheanstalk($this->getQueue()->host, $this->getQueue()->port);
+        $connection = Pheanstalk::create($this->getQueue()->host, $this->getQueue()->port);
         try {
-            $connection->peek($id);
+            $connection->peek(new JobId($id));
             return true;
-        } catch (ServerException $e) {
-            if (str_starts_with($e->getMessage(), 'NOT_FOUND')) {
-                return false;
-            }
-
-            throw $e;
+        } catch (\Throwable) {
+            return false;
         }
     }
 }

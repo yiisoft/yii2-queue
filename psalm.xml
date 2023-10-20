@@ -15,7 +15,6 @@
             <directory name="src/debug" />
             <directory name="src/gii" />
             <directory name="src/drivers/db/migrations" />
-            <directory name="src/drivers/beanstalk" />
         </ignoreFiles>
     </projectFiles>
     <extraFiles>
