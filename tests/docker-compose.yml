@@ -37,6 +37,9 @@ services:
       BEANSTALK_HOST: beanstalk
       GEARMAN_HOST: gearmand
       ACTIVEMQ_HOST: activemq
+      ACTIVEMQ_USER: artemis
+      ACTIVEMQ_PASSWORD: artemis
+      ACTIVEMQ_PORT: 61616
       AWS_KEY: ${AWS_KEY:-admin}
       AWS_SECRET: ${AWS_SECRET:-admin}
       AWS_REGION: ${AWS_REGION:-us-east-1}
@@ -115,11 +118,12 @@ services:
     networks:
       net: {}
 
-  #  https://hub.docker.com/r/webcenter/activemq/
+  #  https://hub.docker.com/r/apache/activemq-artemis
   activemq:
-    image: webcenter/activemq
+    image: apache/activemq-artemis:latest-alpine
     ports:
-      - "61613:61613"
+      - "61616:61616"
+      - "8161:8161"
     networks:
       net: {}
 

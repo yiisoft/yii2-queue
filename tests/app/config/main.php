@@ -117,6 +117,9 @@ $config = [
         'stompQueue' => [
             'class' => StompQueue::class,
             'host' => getenv('ACTIVEMQ_HOST') ?: 'localhost',
+            'port' => getenv('ACTIVEMQ_PORT'),
+            'user' => getenv('ACTIVEMQ_USER'),
+            'password' => getenv('ACTIVEMQ_PASSWORD'),
         ],
         'sqsQueue' => [
             'class' => SqsQueue::class,
