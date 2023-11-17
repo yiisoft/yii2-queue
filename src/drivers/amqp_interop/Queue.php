@@ -357,12 +357,13 @@ class Queue extends CliQueue
     }
 
     /**
-     * @return AmqpContext|null
+     * @return AmqpContext
      */
-    public function getContext(): ?AmqpContext
+    public function getContext(): AmqpContext
     {
         $this->open();
 
+        /** @psalm-var AmqpContext */
         return $this->context;
     }
 
@@ -535,6 +536,7 @@ class Queue extends CliQueue
 
     private function createQueue(): AmqpQueue
     {
-        return $this->context->createQueue($this->queueName);
+        /** @psalm-var AmqpQueue */
+        return $this->getContext()->createQueue($this->queueName);
     }
 }
