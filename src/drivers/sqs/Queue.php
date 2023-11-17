@@ -195,7 +195,7 @@ class Queue extends CliQueue
             'MessageAttributes' => [
                 'TTR' => [
                     'DataType' => 'Number',
-                    'StringValue' => $ttr,
+                    'StringValue' => (string) $ttr,
                 ],
             ],
         ];
