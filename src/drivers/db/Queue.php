@@ -28,11 +28,11 @@ class Queue extends CliQueue
     /**
      * @var Connection|array|string
      */
-    public $db = 'db';
+    public Connection|string|array $db = 'db';
     /**
      * @var Mutex|array|string
      */
-    public $mutex = 'mutex';
+    public Mutex|string|array $mutex = 'mutex';
     /**
      * @var int timeout
      */
@@ -54,13 +54,17 @@ class Queue extends CliQueue
      */
     public string $commandClass = Command::class;
 
+    protected int $reserveTime = 0;
+
     /**
      * @inheritdoc
      */
     public function init(): void
     {
         parent::init();
+        /** @psalm-suppress PropertyTypeCoercion */
         $this->db = Instance::ensure($this->db, Connection::class);
+        /** @psalm-suppress PropertyTypeCoercion */
         $this->mutex = Instance::ensure($this->mutex, Mutex::class);
     }
 
@@ -68,7 +72,7 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $timeout number of seconds to sleep before next iteration.
+     * @param int<0, max> $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only
      * @since 2.0.2
@@ -98,12 +102,12 @@ class Queue extends CliQueue
     /**
      * @inheritdoc
      */
-    public function status($id): int
+    public function status(int|string $id): int
     {
         $payload = (new Query())
             ->from($this->tableName)
             ->where(['id' => $id])
-            ->one($this->db);
+            ->one($this->getDb());
 
         if (!$payload) {
             if ($this->deleteReleased) {
@@ -113,11 +117,11 @@ class Queue extends CliQueue
             throw new InvalidArgumentException("Unknown message ID: $id.");
         }
 
-        if (!$payload['reserved_at']) {
+        if (!isset($payload['reserved_at'])) {
             return self::STATUS_WAITING;
         }
 
-        if (!$payload['done_at']) {
+        if (!isset($payload['done_at'])) {
             return self::STATUS_RESERVED;
         }
 
@@ -131,7 +135,7 @@ class Queue extends CliQueue
      */
     public function clear(): void
     {
-        $this->db->createCommand()
+        $this->getDb()->createCommand()
             ->delete($this->tableName, ['channel' => $this->channel])
             ->execute();
     }
@@ -143,9 +147,9 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove(int $id): bool
     {
-        return (bool) $this->db->createCommand()
+        return (bool) $this->getDb()->createCommand()
             ->delete($this->tableName, ['channel' => $this->channel, 'id' => $id])
             ->execute();
     }
@@ -155,7 +159,7 @@ class Queue extends CliQueue
      */
     protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
-        $this->db->createCommand()->insert($this->tableName, [
+        $this->getDb()->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
             'job' => $payload,
             'pushed_at' => time(),
@@ -163,8 +167,11 @@ class Queue extends CliQueue
             'delay' => $delay,
             'priority' => $priority ?: 1024,
         ])->execute();
-        $tableSchema = $this->db->getTableSchema($this->tableName);
-        return $this->db->getLastInsertID($tableSchema->sequenceName);
+        $tableSchema = $this->getDb()->getTableSchema($this->tableName);
+        if (null === $tableSchema) {
+            return null;
+        }
+        return $this->getDb()->getLastInsertID($tableSchema->sequenceName??'');
     }
 
     /**
@@ -173,10 +180,10 @@ class Queue extends CliQueue
      * @return array|false payload
      * @throws Exception in case it hasn't waited the lock
      */
-    protected function reserve()
+    protected function reserve(): bool|array
     {
-        return $this->db->useMaster(function () {
-            if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
+        return $this->getDb()->useMaster(function () {
+            if (!$this->getMutex()->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
                 throw new Exception('Has not waited the lock.');
             }
 
@@ -190,11 +197,11 @@ class Queue extends CliQueue
                     ->andWhere('[[pushed_at]] <= :time - [[delay]]', [':time' => time()])
                     ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
                     ->limit(1)
-                    ->one($this->db);
+                    ->one($this->getDb());
                 if (is_array($payload)) {
                     $payload['reserved_at'] = time();
                     $payload['attempt'] = (int) $payload['attempt'] + 1;
-                    $this->db->createCommand()->update($this->tableName, [
+                    $this->getDb()->createCommand()->update($this->tableName, [
                         'reserved_at' => $payload['reserved_at'],
                         'attempt' => $payload['attempt'],
                     ], [
@@ -207,27 +214,25 @@ class Queue extends CliQueue
                     }
                 }
             } finally {
-                $this->mutex->release(__CLASS__ . $this->channel);
+                $this->getMutex()->release(__CLASS__ . $this->channel);
             }
 
             return $payload;
         });
     }
 
-
-
     /**
      * @param array $payload
      */
-    protected function release($payload)
+    protected function release(array $payload): void
     {
         if ($this->deleteReleased) {
-            $this->db->createCommand()->delete(
+            $this->getDb()->createCommand()->delete(
                 $this->tableName,
                 ['id' => $payload['id']]
             )->execute();
         } else {
-            $this->db->createCommand()->update(
+            $this->getDb()->createCommand()->update(
                 $this->tableName,
                 ['done_at' => time()],
                 ['id' => $payload['id']]
@@ -238,11 +243,11 @@ class Queue extends CliQueue
     /**
      * Moves expired messages into waiting list.
      */
-    protected function moveExpired()
+    protected function moveExpired(): void
     {
         if ($this->reserveTime !== time()) {
             $this->reserveTime = time();
-            $this->db->createCommand()->update(
+            $this->getDb()->createCommand()->update(
                 $this->tableName,
                 ['reserved_at' => null],
                 // `reserved_at IS NOT NULL` forces db to use index on column,
@@ -253,5 +258,25 @@ class Queue extends CliQueue
         }
     }
 
-    protected $reserveTime;
+    private function getDb(): Connection
+    {
+        /** @var Connection $dbConnection */
+        $dbConnection = $this->db;
+        if (is_string($this->db) || is_array($this->db)) {
+            /** @psalm-suppress PropertyTypeCoercion */
+            $this->db = Instance::ensure($this->db, Connection::class);
+        }
+        return $dbConnection;
+    }
+
+    private function getMutex(): Mutex
+    {
+        /** @var Mutex $mutex */
+        $mutex = $this->mutex;
+        if (is_string($this->mutex) || is_array($this->mutex)) {
+            /** @psalm-suppress PropertyTypeCoercion */
+            $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+        }
+        return $mutex;
+    }
 }
