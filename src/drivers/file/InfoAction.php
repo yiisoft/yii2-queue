@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yii\queue\file;
 
+use yii\helpers\BaseConsole;
 use yii\helpers\Console;
 use yii\queue\cli\Action;
 use yii\queue\cli\Queue as CliQueue;
@@ -23,6 +24,8 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public CliQueue $queue;
 
@@ -31,18 +34,18 @@ class InfoAction extends Action
      */
     public function run(): void
     {
-        Console::output($this->format('Jobs', Console::FG_GREEN));
+        Console::output($this->format('Jobs', BaseConsole::FG_GREEN));
 
-        Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
+        Console::stdout($this->format('- waiting: ', BaseConsole::FG_YELLOW));
         Console::output((string)$this->getWaitingCount());
 
-        Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
+        Console::stdout($this->format('- delayed: ', BaseConsole::FG_YELLOW));
         Console::output((string)$this->getDelayedCount());
 
-        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
+        Console::stdout($this->format('- reserved: ', BaseConsole::FG_YELLOW));
         Console::output((string)$this->getReservedCount());
 
-        Console::stdout($this->format('- done: ', Console::FG_YELLOW));
+        Console::stdout($this->format('- done: ', BaseConsole::FG_YELLOW));
         Console::output((string)$this->getDoneCount());
     }
 
@@ -83,7 +86,10 @@ class InfoAction extends Action
         return $total - $this->getDelayedCount() - $this->getWaitingCount();
     }
 
-    protected function getIndexData()
+    /**
+     * @return array|mixed
+     */
+    protected function getIndexData(): mixed
     {
         static $data;
         if ($data === null) {

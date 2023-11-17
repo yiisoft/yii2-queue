@@ -55,7 +55,11 @@ class Queue extends CliQueue
     public function init(): void
     {
         parent::init();
-        $this->path = Yii::getAlias($this->path);
+        /** @psalm-suppress UndefinedClass */
+        $alias = Yii::getAlias($this->path);
+        if (false !== $alias) {
+            $this->path = $alias;
+        }
         if (!is_dir($this->path)) {
             FileHelper::createDirectory($this->path, $this->dirMode);
         }
@@ -65,7 +69,7 @@ class Queue extends CliQueue
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $timeout number of seconds to sleep before next iteration.
+     * @param int<0, max> $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
@@ -111,8 +115,7 @@ class Queue extends CliQueue
      */
     public function clear(): void
     {
-        $this->touchIndex(function (&$data) {
-            $data = [];
+        $this->touchIndex(function () {
             foreach (glob("$this->path/job*.data") as $fileName) {
                 unlink($fileName);
             }
@@ -126,10 +129,10 @@ class Queue extends CliQueue
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id): bool
+    public function remove(int $id): bool
     {
         $removed = false;
-        $this->touchIndex(function (&$data) use ($id, &$removed) {
+        $this->touchIndex(function (array &$data) use ($id, &$removed) {
             if (!empty($data['waiting'])) {
                 foreach ($data['waiting'] as $key => $payload) {
                     if ($payload[0] === $id) {
@@ -170,12 +173,12 @@ class Queue extends CliQueue
      *
      * @return array|null payload
      */
-    protected function reserve()
+    protected function reserve(): ?array
     {
         $id = null;
         $ttr = null;
         $attempt = null;
-        $this->touchIndex(function (&$data) use (&$id, &$ttr, &$attempt) {
+        $this->touchIndex(function (array &$data) use (&$id, &$ttr, &$attempt) {
             if (!empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
                     if ($payload[1] + $payload[3] < time()) {
@@ -213,7 +216,7 @@ class Queue extends CliQueue
     protected function delete(array $payload): void
     {
         $id = $payload[0];
-        $this->touchIndex(function (&$data) use ($id) {
+        $this->touchIndex(function (array &$data) use ($id) {
             foreach ($data['reserved'] as $key => $payload) {
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
@@ -233,7 +236,7 @@ class Queue extends CliQueue
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
-        $this->touchIndex(function (&$data) use ($payload, $ttr, $delay, &$id) {
+        $this->touchIndex(function (array &$data) use ($payload, $ttr, $delay, &$id) {
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
@@ -272,7 +275,7 @@ class Queue extends CliQueue
      * @param callable $callback
      * @throws InvalidConfigException
      */
-    private function touchIndex($callback)
+    private function touchIndex(callable $callback): void
     {
         $fileName = "$this->path/index.data";
         $isNew = !file_exists($fileName);
