@@ -52,7 +52,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
      * @return array|mixed
      * @throws InvalidConfigException
      */
-    protected function toArray($data)
+    protected function toArray(mixed $data)
     {
         if (is_object($data)) {
             $result = [$this->classKey => get_class($data)];

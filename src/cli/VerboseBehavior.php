@@ -159,7 +159,7 @@ class VerboseBehavior extends Behavior
      * @return string
      * @since 2.0.2
      */
-    protected function formatDuration($value): string
+    protected function formatDuration(int $value): string
     {
         $seconds = $value % 60;
         $value = ($value - $seconds) / 60;

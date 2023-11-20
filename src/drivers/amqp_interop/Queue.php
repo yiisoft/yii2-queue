@@ -514,7 +514,6 @@ class Queue extends CliQueue
     {
         /**
          * @psalm-suppress DocblockTypeContradiction
-         * @psalm-suppress DocblockTypeContradiction
          */
         if (!$this->context) {
             return;
