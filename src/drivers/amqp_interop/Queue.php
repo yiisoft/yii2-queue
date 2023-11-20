@@ -325,9 +325,10 @@ class Queue extends CliQueue
         $this->open();
         $this->setupBroker();
 
-        $queue = $this->context->createQueue($this->queueName);
-        $consumer = $this->context->createConsumer($queue);
+        $queue = $this->getContext()->createQueue($this->queueName);
+        $consumer = $this->getContext()->createConsumer($queue);
 
+        /** @psalm-suppress MissingClosureReturnType */
         $callback = function (AmqpMessage $message, AmqpConsumer $consumer) {
             if ($message->isRedelivered()) {
                 $consumer->acknowledge($message);
@@ -339,8 +340,12 @@ class Queue extends CliQueue
 
             $ttr = $message->getProperty(self::TTR);
             $attempt = $message->getProperty(self::ATTEMPT, 1);
+            $messageId = $message->getMessageId();
 
-            if ($this->handleMessage($message->getMessageId(), $message->getBody(), $ttr, $attempt)) {
+            if (
+                null !== $messageId
+                && $this->handleMessage($messageId, $message->getBody(), $ttr, $attempt)
+            ) {
                 $consumer->acknowledge($message);
             } else {
                 $consumer->acknowledge($message);
@@ -351,7 +356,7 @@ class Queue extends CliQueue
             return true;
         };
 
-        $subscriptionConsumer = $this->context->createSubscriptionConsumer();
+        $subscriptionConsumer = $this->getContext()->createSubscriptionConsumer();
         $subscriptionConsumer->subscribe($consumer, $callback);
         $subscriptionConsumer->consume();
     }
@@ -375,10 +380,10 @@ class Queue extends CliQueue
         $this->open();
         $this->setupBroker();
 
-        $topic = $this->context->createTopic($this->exchangeName);
+        $topic = $this->getContext()->createTopic($this->exchangeName);
 
         /** @var AmqpMessage $message */
-        $message = $this->context->createMessage($payload);
+        $message = $this->getContext()->createMessage($payload);
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
         $message->setTimestamp(time());
@@ -390,7 +395,7 @@ class Queue extends CliQueue
             ]
         ));
 
-        $producer = $this->context->createProducer();
+        $producer = $this->getContext()->createProducer();
 
         if ($delay) {
             $message->setProperty(self::DELAY, $delay);
@@ -424,6 +429,7 @@ class Queue extends CliQueue
      */
     protected function open(): void
     {
+        /** @psalm-suppress RedundantConditionGivenDocblockType */
         if ($this->context) {
             return;
         }
@@ -506,6 +512,10 @@ class Queue extends CliQueue
      */
     protected function close(): void
     {
+        /**
+         * @psalm-suppress DocblockTypeContradiction
+         * @psalm-suppress DocblockTypeContradiction
+         */
         if (!$this->context) {
             return;
         }
