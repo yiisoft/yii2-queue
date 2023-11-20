@@ -106,7 +106,6 @@ class JsonSerializer extends BaseObject implements SerializerInterface
             $config[$property] = $this->fromArray($value);
         }
 
-        /** @psalm-suppress UndefinedClass */
         return Yii::createObject($config);
     }
 }

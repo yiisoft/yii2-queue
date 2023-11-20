@@ -84,12 +84,9 @@ class LogBehavior extends Behavior
     public function afterError(ExecEvent $event): void
     {
         $title = $this->getExecTitle($event);
-        /** @psalm-suppress UndefinedClass */
         Yii::endProfile($title, Queue::class);
-        /** @psalm-suppress UndefinedClass */
         Yii::error("$title is finished with error: $event->error.", Queue::class);
         if ($this->autoFlush) {
-            /** @psalm-suppress UndefinedClass */
             Yii::getLogger()->flush(true);
         }
     }
@@ -101,12 +98,9 @@ class LogBehavior extends Behavior
     public function workerStart(cli\WorkerEvent $event): void
     {
         $title = 'Worker ' . $event->sender->getWorkerPid();
-        /** @psalm-suppress UndefinedClass */
         Yii::info("$title is started.", Queue::class);
-        /** @psalm-suppress UndefinedClass */
         Yii::beginProfile($title, Queue::class);
         if ($this->autoFlush) {
-            /** @psalm-suppress UndefinedClass */
             Yii::getLogger()->flush(true);
         }
     }
@@ -118,12 +112,9 @@ class LogBehavior extends Behavior
     public function workerStop(cli\WorkerEvent $event): void
     {
         $title = 'Worker ' . $event->sender->getWorkerPid();
-        /** @psalm-suppress UndefinedClass */
         Yii::endProfile($title, Queue::class);
-        /** @psalm-suppress UndefinedClass */
         Yii::info("$title is stopped.", Queue::class);
         if ($this->autoFlush) {
-            /** @psalm-suppress UndefinedClass */
             Yii::getLogger()->flush(true);
         }
     }

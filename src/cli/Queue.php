@@ -70,7 +70,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     protected function getCommandId(): string
     {
-        /** @psalm-suppress UndefinedClass */
         foreach (Yii::$app->getComponents(false) as $id => $component) {
             if ($component === $this) {
                 return Inflector::camel2id($id);
@@ -103,7 +102,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     {
         $this->_workerPid = getmypid();
         /** @var LoopInterface $loop */
-        /** @psalm-suppress UndefinedClass */
         $loop = Yii::createObject($this->loopConfig, [$this]);
 
         $event = new WorkerEvent(['loop' => $loop]);

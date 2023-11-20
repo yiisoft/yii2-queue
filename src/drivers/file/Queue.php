@@ -55,7 +55,6 @@ class Queue extends CliQueue
     public function init(): void
     {
         parent::init();
-        /** @psalm-suppress UndefinedClass */
         $alias = Yii::getAlias($this->path);
         if (false !== $alias) {
             $this->path = $alias;
@@ -250,7 +249,7 @@ class Queue extends CliQueue
                 $data['waiting'][] = [$id, $ttr, 0];
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
-                usort($data['delayed'], function ($a, $b) {
+                usort($data['delayed'], static function ($a, $b) {
                     if ($a[2] < $b[2]) {
                         return -1;
                     }

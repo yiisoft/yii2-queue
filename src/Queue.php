@@ -310,8 +310,7 @@ abstract class Queue extends Component
 
     private function getSerializer(): SerializerInterface
     {
-        /** @var SerializerInterface $object */
-        $object = Instance::ensure($this->serializer, SerializerInterface::class);
-        return $object;
+        /** @psalm-var SerializerInterface */
+        return Instance::ensure($this->serializer, SerializerInterface::class);
     }
 }

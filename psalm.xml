@@ -20,4 +20,8 @@
     <extraFiles>
         <directory name="vendor"/>
     </extraFiles>
+    <stubs>
+        <file name="stubs/psalm/BaseYii.php" preloadClasses="true"/>
+        <file name="support/ide-helper.php"/>
+    </stubs>
 </psalm>
