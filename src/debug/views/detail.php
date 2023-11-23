@@ -18,7 +18,7 @@ $styles = [
 <h1>Pushed <?= count($jobs) ?> jobs</h1>
 
 <?php foreach ($jobs as $job): ?>
-    <div class="panel panel-<?= isset($styles[$job['status']]) ? $styles[$job['status']] : 'danger' ?>">
+    <div class="panel panel-<?= $styles[$job['status']] ?? 'danger' ?>">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <?php if (is_string($job['id'])): ?>

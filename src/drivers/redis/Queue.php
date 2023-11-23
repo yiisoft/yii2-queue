@@ -25,6 +25,8 @@ class Queue extends CliQueue
 {
     /**
      * @var Connection|array|string
+     * @psalm-var Connection
+     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public Connection|string|array $redis = 'redis';
     /**
@@ -42,6 +44,7 @@ class Queue extends CliQueue
     public function init(): void
     {
         parent::init();
+        /** @psalm-suppress PropertyTypeCoercion */
         $this->redis = Instance::ensure($this->redis, Connection::class);
     }
 
@@ -155,6 +158,7 @@ class Queue extends CliQueue
             return null;
         }
 
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         [$ttr, $message] = explode(';', $payload, 2);
         $this->redis->zadd("$this->channel.reserved", time() + (int)$ttr, $id);
         $attempt = $this->redis->hincrby("$this->channel.attempts", $id, 1);

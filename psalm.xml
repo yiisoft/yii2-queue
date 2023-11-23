@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="4"
+    errorLevel="2"
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -20,4 +20,8 @@
     <extraFiles>
         <directory name="vendor"/>
     </extraFiles>
+    <stubs>
+        <file name="stubs/psalm/BaseYii.php" preloadClasses="true"/>
+        <file name="support/ide-helper.php"/>
+    </stubs>
 </psalm>

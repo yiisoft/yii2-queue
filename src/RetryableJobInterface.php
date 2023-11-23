@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yii\queue;
 
-use Exception;
 use Throwable;
 
 /**
@@ -27,8 +26,8 @@ interface RetryableJobInterface extends JobInterface
 
     /**
      * @param int $attempt number
-     * @param Exception|Throwable $error from last execute of the job
+     * @param Throwable|null $error from last execute of the job
      * @return bool
      */
-    public function canRetry(int $attempt, $error): bool;
+    public function canRetry(int $attempt, ?Throwable $error): bool;
 }

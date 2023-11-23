@@ -24,7 +24,7 @@ class Job implements JobInterface
     /**
      * @var string serialized closure
      */
-    public string $serialized;
+    public string $serialized = '';
 
     /**
      * Unserializes and executes a closure.

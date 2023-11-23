@@ -10,11 +10,11 @@ declare(strict_types=1);
 
 namespace tests\drivers\beanstalk;
 
-use Exception;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Values\JobId;
 use tests\app\PriorityJob;
 use tests\drivers\CliTestCase;
+use Throwable;
 use Yii;
 use yii\queue\beanstalk\Queue;
 
@@ -134,7 +134,7 @@ class QueueTest extends CliTestCase
         try {
             $connection->peek(new JobId($id));
             return true;
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return false;
         }
     }

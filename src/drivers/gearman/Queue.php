@@ -31,6 +31,8 @@ class Queue extends CliQueue
      */
     public string $commandClass = Command::class;
 
+    private ?GearmanClient $client = null;
+
     /**
      * Listens queue and runs each job.
      *
@@ -45,6 +47,7 @@ class Queue extends CliQueue
             $worker = new GearmanWorker();
             $worker->addServer($this->host, $this->port);
             $worker->addFunction($this->channel, function (GearmanJob $payload) {
+                /** @psalm-suppress PossiblyUndefinedArrayOffset */
                 [$ttr, $message] = explode(';', $payload->workload(), 2);
                 $this->handleMessage($payload->handle(), $message, (int)$ttr, 1);
             });
@@ -79,7 +82,7 @@ class Queue extends CliQueue
      */
     public function status($id): int
     {
-        $status = $this->getClient()->jobStatus($id);
+        $status = $this->getClient()->jobStatus((string)$id);
         if ($status[0] && !$status[1]) {
             return self::STATUS_WAITING;
         }
@@ -97,12 +100,10 @@ class Queue extends CliQueue
      */
     protected function getClient(): GearmanClient
     {
-        if (!$this->_client) {
-            $this->_client = new GearmanClient();
-            $this->_client->addServer($this->host, $this->port);
+        if (!$this->client) {
+            $this->client = new GearmanClient();
+            $this->client->addServer($this->host, $this->port);
         }
-        return $this->_client;
+        return $this->client;
     }
-
-    private $_client;
 }

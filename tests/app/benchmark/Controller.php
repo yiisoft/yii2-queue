@@ -43,7 +43,7 @@ class Controller extends ConsoleController
     public function afterAction($action, $result)
     {
         $duration = time() - $this->startedAt;
-        $this->stdout("\nCompleted in {$duration} s.\n");
+        $this->stdout("\nCompleted in $duration s.\n");
         return parent::afterAction($action, $result);
     }
 }

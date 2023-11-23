@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
+use Throwable;
+use yii\helpers\BaseConsole;
 use yii\helpers\Console;
 use yii\queue\cli\Action;
 use yii\queue\cli\Queue as CliQueue;
@@ -23,6 +25,7 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public CliQueue $queue;
 
@@ -31,11 +34,20 @@ class InfoAction extends Action
      */
     public function run(): void
     {
-        Console::output($this->format('Statistical information about the tube:', Console::FG_GREEN));
+        Console::output(
+            $this->format('Statistical information about the tube:', BaseConsole::FG_GREEN)
+        );
 
-        foreach ($this->queue->getStatsTube() as $key => $value) {
-            Console::stdout($this->format("- $key: ", Console::FG_YELLOW));
-            Console::output($value);
+        try {
+            /** @psalm-suppress RawObjectIteration */
+            foreach ($this->queue->getStatsTube() as $key => $value) {
+                Console::stdout($this->format("- $key: ", BaseConsole::FG_YELLOW));
+                Console::output($value);
+            }
+        } catch (Throwable) {
+            Console::stdout(
+                $this->format('Tube not found or empty', BaseConsole::FG_RED)
+            );
         }
     }
 }

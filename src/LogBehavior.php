@@ -12,6 +12,7 @@ namespace yii\queue;
 
 use Yii;
 use yii\base\Behavior;
+use yii\base\Component;
 
 /**
  * Log Behavior.
@@ -21,7 +22,7 @@ use yii\base\Behavior;
 class LogBehavior extends Behavior
 {
     /**
-     * @var Queue
+     * @var Queue|null|Component
      * @inheritdoc
      */
     public $owner;
@@ -138,7 +139,7 @@ class LogBehavior extends Behavior
     {
         $title = $this->getJobTitle($event);
         $extra = "attempt: $event->attempt";
-        if ($pid = $event->sender->getWorkerPid()) {
+        if ($pid = $event->sender?->getWorkerPid()) {
             $extra .= ", PID: $pid";
         }
         return "$title ($extra)";

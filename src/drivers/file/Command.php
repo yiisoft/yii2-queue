@@ -23,6 +23,8 @@ class Command extends CliCommand
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public CliQueue $queue;
     /**
@@ -95,9 +97,9 @@ class Command extends CliCommand
      * @throws Exception when the job is not found.
      * @since 2.0.1
      */
-    public function actionRemove($id)
+    public function actionRemove(int $id): void
     {
-        if (!$this->queue->remove((int) $id)) {
+        if (!$this->queue->remove($id)) {
             throw new Exception('The job is not found.');
         }
     }

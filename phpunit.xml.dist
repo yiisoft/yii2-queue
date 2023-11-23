@@ -10,17 +10,21 @@
     displayDetailsOnSkippedTests="true"
     executionOrder="random"
 >
-  <testsuites>
-    <testsuite name="Yii2-Queue">
-      <directory>./tests</directory>
-      <exclude>./tests/app</exclude>
-      <exclude>./tests/docker</exclude>
-      <exclude>./tests/runtime</exclude>
-    </testsuite>
-  </testsuites>
-  <source>
-    <include>
-      <directory>./src</directory>
-    </include>
-  </source>
+    <testsuites>
+        <testsuite name="Yii2-Queue">
+            <directory>./tests</directory>
+            <exclude>./tests/app</exclude>
+            <exclude>./tests/docker</exclude>
+            <exclude>./tests/runtime</exclude>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>./src</directory>
+        </include>
+        <exclude>
+            <directory>./src/debug</directory>
+            <directory>./src/gii</directory>
+        </exclude>
+    </source>
 </phpunit>

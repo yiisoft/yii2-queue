@@ -31,6 +31,6 @@ class SimpleJob extends BaseObject implements JobInterface
 
     public function getFileName(): bool|string
     {
-        return Yii::getAlias("@runtime/job-{$this->uid}.lock");
+        return Yii::getAlias("@runtime/job-$this->uid.lock");
     }
 }

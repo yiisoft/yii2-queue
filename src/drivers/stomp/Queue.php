@@ -16,7 +16,7 @@ use Enqueue\Stomp\StompDestination;
 use Enqueue\Stomp\StompMessage;
 use Interop\Queue\Exception as QueueException;
 use Interop\Queue\Message;
-use Interop\Queue\Queue as InteropQueue;
+use Stomp\Network\Connection;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -37,7 +37,7 @@ class Queue extends CliQueue
      *
      * @var string|null
      */
-    public ?string $host;
+    public ?string $host = null;
     /**
      * The message queue broker's port.
      *
@@ -124,12 +124,8 @@ class Queue extends CliQueue
     /**
      * Opens connection.
      */
-    protected function open(): void
+    protected function open(): StompContext
     {
-        if ($this->context) {
-            return;
-        }
-
         $config = [
             'host' => $this->host,
             'port' => $this->port,
@@ -147,16 +143,14 @@ class Queue extends CliQueue
             return null !== $value;
         });
 
-        $factory = new StompConnectionFactory($config);
-
-        $this->context = $factory->createContext();
+        return (new StompConnectionFactory($config))->createContext();
     }
 
     /**
      * Listens queue and runs each job.
      *
      * @param bool $repeat
-     * @param int $timeout
+     * @param int<0, max> $timeout
      * @return int|null
      */
     public function run(bool $repeat, int $timeout = 0): ?int
@@ -164,11 +158,12 @@ class Queue extends CliQueue
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             $this->open();
             $queue = $this->createQueue($this->queueName);
-            $consumer = $this->context->createConsumer($queue);
+            $consumer = $this->getContext()->createConsumer($queue);
 
             while ($canContinue()) {
+                /** @var StompMessage|null $message */
                 $message = $this->readTimeOut > 0 ? $consumer->receive($this->readTimeOut) : $consumer->receiveNoWait();
-                if ($message) {
+                if (null !== $message) {
                     $messageId = $message->getMessageId();
                     if (!$messageId) {
                         $message = $this->setMessageId($message);
@@ -184,8 +179,9 @@ class Queue extends CliQueue
 
                     $ttr = $message->getProperty(self::TTR, $this->ttr);
                     $attempt = $message->getProperty(self::ATTEMPT, 1);
+                    $messageId = $message->getMessageId();
 
-                    if ($this->handleMessage($message->getMessageId(), $message->getBody(), $ttr, $attempt)) {
+                    if (null !== $messageId && $this->handleMessage($messageId, $message->getBody(), $ttr, $attempt)) {
                         $consumer->acknowledge($message);
                     } else {
                         $consumer->acknowledge($message);
@@ -196,7 +192,7 @@ class Queue extends CliQueue
                     break;
                 } elseif ($timeout) {
                     sleep($timeout);
-                    $this->context->getStomp()->getConnection()?->sendAlive();
+                    $this->getConnection()->sendAlive();
                 }
             }
         });
@@ -222,13 +218,13 @@ class Queue extends CliQueue
         $this->open();
 
         $queue = $this->createQueue($this->queueName);
-        $message = $this->context->createMessage($payload);
+        $message = $this->getContext()->createMessage($payload);
         $message = $this->setMessageId($message);
         $message->setPersistent(true);
         $message->setProperty(self::ATTEMPT, 1);
         $message->setProperty(self::TTR, $ttr);
 
-        $producer = $this->context->createProducer();
+        $producer = $this->getContext()->createProducer();
 
         if ($delay) {
             throw new NotSupportedException('Delayed work is not supported in the driver.');
@@ -273,14 +269,14 @@ class Queue extends CliQueue
     {
         $attempt = $message->getProperty(self::ATTEMPT, 1);
 
-        $newMessage = $this->context->createMessage(
+        $newMessage = $this->getContext()->createMessage(
             $message->getBody(),
             $message->getProperties(),
             $message->getHeaders()
         );
         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
-        $this->context->createProducer()->send(
+        $this->getContext()->createProducer()->send(
             $this->createQueue($this->queueName),
             $newMessage
         );
@@ -288,15 +284,29 @@ class Queue extends CliQueue
 
     /**
      * @param string $name
-     * @return InteropQueue|StompDestination
+     * @return StompDestination
      */
-    private function createQueue(string $name): InteropQueue|StompDestination
+    private function createQueue(string $name): StompDestination
     {
-        $queue = $this->context->createQueue($name);
+        $queue = $this->getContext()->createQueue($name);
         $queue->setDurable(true);
         $queue->setAutoDelete(false);
         $queue->setExclusive(false);
 
         return $queue;
+    }
+
+    private function getContext(): StompContext
+    {
+        if (null === $this->context) {
+            $this->context = $this->open();
+        }
+
+        return $this->context;
+    }
+
+    private function getConnection(): Connection
+    {
+        return $this->getContext()->getStomp()->getConnection();
     }
 }

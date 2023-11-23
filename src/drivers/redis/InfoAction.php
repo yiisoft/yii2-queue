@@ -23,6 +23,8 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public CliQueue $queue;
 

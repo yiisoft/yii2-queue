@@ -26,7 +26,7 @@ abstract class Action extends BaseAction
      */
     public Queue $queue;
     /**
-     * @var Command|ConsoleController
+     * @inheritdoc
      */
     public $controller;
 

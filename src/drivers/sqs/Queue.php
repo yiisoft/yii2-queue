@@ -29,17 +29,17 @@ class Queue extends CliQueue
      * The SQS url.
      * @var string
      */
-    public string $url;
+    public string $url = 'localhost';
     /**
      * aws access key.
      * @var string|null
      */
-    public ?string $key;
+    public ?string $key = null;
     /**
      * aws secret.
      * @var string|null
      */
-    public ?string $secret;
+    public ?string $secret = null;
     /**
      * region where queue is hosted.
      * @var string
@@ -195,7 +195,7 @@ class Queue extends CliQueue
             'MessageAttributes' => [
                 'TTR' => [
                     'DataType' => 'Number',
-                    'StringValue' => $ttr,
+                    'StringValue' => (string) $ttr,
                 ],
             ],
         ];

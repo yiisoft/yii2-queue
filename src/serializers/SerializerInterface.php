@@ -29,5 +29,5 @@ interface SerializerInterface
      * @param string $serialized
      * @return JobInterface
      */
-    public function unserialize($serialized);
+    public function unserialize(string $serialized);
 }

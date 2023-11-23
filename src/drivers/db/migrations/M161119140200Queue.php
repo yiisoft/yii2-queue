@@ -20,7 +20,6 @@ use yii\db\Migration;
 class M161119140200Queue extends Migration
 {
     public string $tableName = '{{%queue}}';
-    public $tableOptions;
 
     public function up(): void
     {
@@ -31,7 +30,7 @@ class M161119140200Queue extends Migration
             'created_at' => $this->integer()->notNull(),
             'started_at' => $this->integer(),
             'finished_at' => $this->integer(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createIndex('channel', $this->tableName, 'channel');
         $this->createIndex('started_at', $this->tableName, 'started_at');

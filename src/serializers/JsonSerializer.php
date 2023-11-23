@@ -42,7 +42,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function unserialize($serialized)
+    public function unserialize(string $serialized)
     {
         return $this->fromArray(Json::decode($serialized));
     }
@@ -52,7 +52,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
      * @return array|mixed
      * @throws InvalidConfigException
      */
-    protected function toArray($data)
+    protected function toArray(mixed $data)
     {
         if (is_object($data)) {
             $result = [$this->classKey => get_class($data)];
@@ -82,10 +82,10 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @return mixed
      */
-    protected function fromArray($data)
+    protected function fromArray(mixed $data)
     {
         if (!is_array($data)) {
             return $data;

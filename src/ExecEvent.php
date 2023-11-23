@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace yii\queue;
 
+use Throwable;
+
 /**
  * Exec Event.
  *
@@ -23,23 +25,23 @@ class ExecEvent extends JobEvent
      * @see Queue::EVENT_AFTER_EXEC
      * @see Queue::EVENT_AFTER_ERROR
      */
-    public int $attempt;
+    public int $attempt = 0;
     /**
      * @var mixed result of a job execution in case job is done.
      * @see Queue::EVENT_AFTER_EXEC
      * @since 2.1.1
      */
-    public $result;
+    public mixed $result = null;
     /**
-     * @var null|\Exception|\Throwable
+     * @var null|Throwable
      * @see Queue::EVENT_AFTER_ERROR
      * @since 2.1.1
      */
-    public $error;
+    public ?Throwable $error = null;
     /**
-     * @var null|bool
+     * @var bool
      * @see Queue::EVENT_AFTER_ERROR
      * @since 2.1.1
      */
-    public $retry;
+    public bool $retry = true;
 }

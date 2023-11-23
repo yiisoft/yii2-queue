@@ -21,12 +21,18 @@ use yii\base\Event;
 class WorkerEvent extends Event
 {
     /**
+     * @inheritdoc
+     */
+    public $name;
+    /**
      * @var Queue
      * @inheritdoc
+     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
      */
     public $sender;
     /**
      * @var LoopInterface
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     public LoopInterface $loop;
     /**

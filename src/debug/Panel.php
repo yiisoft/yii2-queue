@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yii\queue\debug;
 
+use Exception;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\base\ViewContextInterface;
@@ -25,12 +26,12 @@ use yii\queue\Queue;
  */
 class Panel extends \yii\debug\Panel implements ViewContextInterface
 {
-    private $_jobs = [];
+    private array $_jobs = [];
 
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Queue';
     }
@@ -38,7 +39,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         PushEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (PushEvent $event) {
@@ -50,7 +51,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      * @param PushEvent $event
      * @return array
      */
-    protected function getPushData(PushEvent $event)
+    protected function getPushData(PushEvent $event): array
     {
         $data = [];
         foreach (Yii::$app->getComponents(false) as $id => $component) {
@@ -87,7 +88,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function getViewPath()
+    public function getViewPath(): string
     {
         return __DIR__ . '/views';
     }
@@ -95,7 +96,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function getSummary()
+    public function getSummary(): string
     {
         return Yii::$app->view->render('summary', [
             'url' => $this->getUrl(),
@@ -106,9 +107,9 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function getDetail()
+    public function getDetail(): string
     {
-        $jobs = isset($this->data['jobs']) ? $this->data['jobs'] : [];
+        $jobs = $this->data['jobs'] ?? [];
         foreach ($jobs as &$job) {
             $job['status'] = 'unknown';
             /** @var Queue $queue */
@@ -121,8 +122,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
                     } elseif ($queue->isDone($job['id'])) {
                         $job['status'] = 'done';
                     }
-                } catch (NotSupportedException $e) {
-                } catch (\Exception $e) {
+                } catch (NotSupportedException|Exception $e) {
                     $job['status'] = $e->getMessage();
                 }
             }
