@@ -21,7 +21,7 @@ use yii\base\BaseObject;
 class SignalLoop extends BaseObject implements LoopInterface
 {
     /**
-     * @var array of signals to exit from listening of the queue.
+     * @var array<int> of signals to exit from listening of the queue.
      */
     public array $exitSignals = [
         15, // SIGTERM
@@ -30,12 +30,12 @@ class SignalLoop extends BaseObject implements LoopInterface
         1,  // SIGHUP
     ];
     /**
-     * @var array of signals to suspend listening of the queue.
+     * @var array<int> of signals to suspend listening of the queue.
      * For example: SIGTSTP
      */
     public array $suspendSignals = [];
     /**
-     * @var array of signals to resume listening of the queue.
+     * @var array<int> of signals to resume listening of the queue.
      * For example: SIGCONT
      */
     public array $resumeSignals = [];

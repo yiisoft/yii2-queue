@@ -178,6 +178,7 @@ abstract class Command extends Controller
 
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'), true)) {
+                /** @psalm-suppress MixedOperand */
                 $cmd[] = '--' . $name . '=' . $this->$name;
             }
         }

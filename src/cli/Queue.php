@@ -72,7 +72,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     {
         foreach (Yii::$app->getComponents(false) as $id => $component) {
             if ($component === $this) {
-                return Inflector::camel2id($id);
+                return Inflector::camel2id((string)$id);
             }
         }
         throw new InvalidConfigException('Queue must be an application component.');
@@ -137,6 +137,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
 
     /**
      * @inheritdoc
+     * @psalm-suppress MixedReturnStatement, MixedInferredReturnType
      */
     protected function handleMessage(int|string $id, string $message, int $ttr, int $attempt): bool
     {

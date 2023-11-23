@@ -27,7 +27,7 @@ interface SerializerInterface
 
     /**
      * @param string $serialized
-     * @return JobInterface
+     * @return JobInterface|array|mixed
      */
     public function unserialize(string $serialized);
 }
