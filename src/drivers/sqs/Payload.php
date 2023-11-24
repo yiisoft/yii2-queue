@@ -20,14 +20,21 @@ class Payload
     public int $attempt = 0;
 
     /**
-     * @param array $response
-     * @psalm-suppress MixedArrayAccess, MixedArgument
+     * @param array{Messages: array} $response
      */
     public function __construct(array $response)
     {
         $this->messages = $response['Messages']??[];
         if (!empty($this->messages)) {
             $messages = $this->messages;
+            /** @var array{
+             *     MessageAttributes: array<array>,
+             *     Body: string,
+             *     MessageId: string|int,
+             *     ReceiptHandle: mixed,
+             *     Attributes: array
+             * } $message
+             */
             $message = reset($messages);
 
             $this->ttr = (int)$message['MessageAttributes']['TTR']['StringValue'];

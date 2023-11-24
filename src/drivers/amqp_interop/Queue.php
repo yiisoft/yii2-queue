@@ -329,8 +329,7 @@ class Queue extends CliQueue
         $queue = $this->getContext()->createQueue($this->queueName);
         $consumer = $this->getContext()->createConsumer($queue);
 
-        /** @psalm-suppress MissingClosureReturnType */
-        $callback = function (AmqpMessage $message, AmqpConsumer $consumer) {
+        $callback = function (AmqpMessage $message, AmqpConsumer $consumer): callable|bool {
             if ($message->isRedelivered()) {
                 $consumer->acknowledge($message);
 

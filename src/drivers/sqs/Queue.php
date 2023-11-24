@@ -110,6 +110,7 @@ class Queue extends CliQueue
      */
     protected function reserve(int $timeout): ?Payload
     {
+        /** @var array{Messages: array} $response */
         $response = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
             'AttributeNames' => ['ApproximateReceiveCount'],
