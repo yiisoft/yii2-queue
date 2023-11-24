@@ -42,7 +42,7 @@ class InfoAction extends Action
             /** @psalm-suppress RawObjectIteration */
             foreach ($this->queue->getStatsTube() as $key => $value) {
                 Console::stdout($this->format("- $key: ", BaseConsole::FG_YELLOW));
-                Console::output($value);
+                Console::output((string)$value);
             }
         } catch (Throwable) {
             Console::stdout(
