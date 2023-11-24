@@ -13,7 +13,8 @@
         <ignoreFiles>
             <directory name="vendor" />
             <directory name="src/debug" />
-            <directory name="src/gii" />
+            <directory name="src/gii/default" />
+            <file name="src/gii/form.php" />
             <directory name="src/drivers/db/migrations" />
         </ignoreFiles>
     </projectFiles>
