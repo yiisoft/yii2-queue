@@ -24,8 +24,7 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
-     * @psalm-suppress NonInvariantDocblockPropertyType
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @psalm-suppress NonInvariantDocblockPropertyType, PropertyNotSetInConstructor
      */
     public CliQueue $queue;
 
@@ -54,6 +53,7 @@ class InfoAction extends Action
      */
     protected function getWaitingCount(): int
     {
+        /** @var array{waiting: array} $data */
         $data = $this->getIndexData();
         return !empty($data['waiting']) ? count($data['waiting']) : 0;
     }
@@ -63,6 +63,7 @@ class InfoAction extends Action
      */
     protected function getDelayedCount(): int
     {
+        /** @var array{delayed: array} $data */
         $data = $this->getIndexData();
         return !empty($data['delayed']) ? count($data['delayed']) : 0;
     }
@@ -72,6 +73,7 @@ class InfoAction extends Action
      */
     protected function getReservedCount(): int
     {
+        /** @var array{reserved: array} $data */
         $data = $this->getIndexData();
         return !empty($data['reserved']) ? count($data['reserved']) : 0;
     }
@@ -81,6 +83,7 @@ class InfoAction extends Action
      */
     protected function getDoneCount(): int
     {
+        /** @var array{lastId: int} $data */
         $data = $this->getIndexData();
         $total = $data['lastId'] ?? 0;
         return $total - $this->getDelayedCount() - $this->getWaitingCount();

@@ -79,6 +79,12 @@ class Queue extends CliQueue
             while ($canContinue()) {
                 if (($payload = $this->reserve()) !== null) {
                     [$id, $message, $ttr, $attempt] = $payload;
+                    /**
+                     * @var int|string $id
+                     * @var string $message
+                     * @var int $ttr
+                     * @var int $attempt
+                     */
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                         $this->delete($payload);
                     }
@@ -127,13 +133,16 @@ class Queue extends CliQueue
      * @param int $id of a job
      * @return bool
      * @since 2.0.1
+     * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
      */
     public function remove(int $id): bool
     {
         $removed = false;
         $this->touchIndex(function (array &$data) use ($id, &$removed) {
+            /** @var array{waiting: array, delayed: array, reserved: array} $data */
             if (!empty($data['waiting'])) {
                 foreach ($data['waiting'] as $key => $payload) {
+                    /** @psalm-var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['waiting'][$key]);
                         $removed = true;
@@ -143,6 +152,7 @@ class Queue extends CliQueue
             }
             if (!$removed && !empty($data['delayed'])) {
                 foreach ($data['delayed'] as $key => $payload) {
+                    /** @psalm-var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['delayed'][$key]);
                         $removed = true;
@@ -152,6 +162,7 @@ class Queue extends CliQueue
             }
             if (!$removed && !empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
+                    /** @psalm-var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['reserved'][$key]);
                         $removed = true;
@@ -178,20 +189,30 @@ class Queue extends CliQueue
         $ttr = null;
         $attempt = null;
         $this->touchIndex(function (array &$data) use (&$id, &$ttr, &$attempt) {
+            /** @var array{reserved: array, delayed: array, waiting: array} $data */
             if (!empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
-                    if ($payload[1] + $payload[3] < time()) {
+                    /** @psalm-var array $payload */
+                    if ((int)$payload[1] + (int)$payload[3] < time()) {
+                        /**
+                         * @psalm-var int $attempt
+                         */
                         [$id, $ttr, $attempt, $time] = $payload;
+                        /** @psalm-suppress MixedArrayAssignment */
                         $data['reserved'][$key][2] = ++$attempt;
+                        /** @psalm-suppress MixedArrayAssignment */
                         $data['reserved'][$key][3] = time();
                         return;
                     }
                 }
             }
 
-            if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
+            /** @psalm-suppress MixedArrayAssignment, MixedArrayAccess */
+            if (!empty($data['delayed']) && (int)$data['delayed'][0][2] <= time()) {
+                /** @psalm-suppress MixedArrayAssignment, MixedArrayAccess */
                 [$id, $ttr, $time] = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
+                /** @psalm-suppress MixedArrayAssignment, MixedArrayAccess */
                 [$id, $ttr] = array_shift($data['waiting']);
             }
             if ($id) {
@@ -216,7 +237,9 @@ class Queue extends CliQueue
     {
         $id = $payload[0];
         $this->touchIndex(function (array &$data) use ($id) {
+            /** @var array{reserved: array} $data */
             foreach ($data['reserved'] as $key => $payload) {
+                /** @psalm-var array $payload */
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
                     break;
@@ -236,6 +259,7 @@ class Queue extends CliQueue
         }
 
         $this->touchIndex(function (array &$data) use ($payload, $ttr, $delay, &$id) {
+            /** @var array{lastId: int, waiting: array, delayed: array} $data */
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
@@ -249,7 +273,8 @@ class Queue extends CliQueue
                 $data['waiting'][] = [$id, $ttr, 0];
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
-                usort($data['delayed'], static function ($a, $b) {
+                /** @psalm-suppress MixedArgumentTypeCoercion */
+                usort($data['delayed'], static function (array $a, array $b) {
                     if ($a[2] < $b[2]) {
                         return -1;
                     }
@@ -267,6 +292,7 @@ class Queue extends CliQueue
             }
         });
 
+        /** @psalm-var int|string|null $id */
         return $id;
     }
 
@@ -296,6 +322,7 @@ class Queue extends CliQueue
         }
         try {
             $callback($data);
+            /** @var string $newContent */
             $newContent = call_user_func($this->indexSerializer, $data);
             if ($newContent !== $content) {
                 ftruncate($file, 0);
