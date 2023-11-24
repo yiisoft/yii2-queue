@@ -63,6 +63,10 @@ class Queue extends CliQueue
             while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
                     [$id, $message, $ttr, $attempt] = $payload;
+                    /**
+                     * @psalm-var int|string $id
+                     * @psalm-var string $message
+                     */
                     if ($this->handleMessage($id, $message, (int)$ttr, (int)$attempt)) {
                         $this->delete($id);
                     }
@@ -103,6 +107,7 @@ class Queue extends CliQueue
         while (!$this->redis->set("$this->channel.moving_lock", true, 'NX')) {
             usleep(10000);
         }
+        /** @psalm-suppress MixedArgument */
         $this->redis->executeCommand('DEL', $this->redis->keys("$this->channel.*"));
     }
 
@@ -147,6 +152,7 @@ class Queue extends CliQueue
         if (!$timeout) {
             $id = $this->redis->rpop("$this->channel.waiting");
         } elseif ($result = $this->redis->brpop("$this->channel.waiting", $timeout)) {
+            /** @psalm-var array $result */
             $id = $result[1];
         }
         if (!$id) {
@@ -158,7 +164,10 @@ class Queue extends CliQueue
             return null;
         }
 
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
+        /**
+         * @psalm-suppress PossiblyUndefinedArrayOffset
+         * @psalm-var string $payload
+         */
         [$ttr, $message] = explode(';', $payload, 2);
         $this->redis->zadd("$this->channel.reserved", time() + (int)$ttr, $id);
         $attempt = $this->redis->hincrby("$this->channel.attempts", $id, 1);
@@ -201,6 +210,7 @@ class Queue extends CliQueue
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
+        /** @var string|int $id */
         $id = $this->redis->incr("$this->channel.message_id");
         $this->redis->hset("$this->channel.messages", $id, "$ttr;$payload");
         if (!$delay) {
