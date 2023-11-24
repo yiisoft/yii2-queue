@@ -14,6 +14,7 @@ use Exception;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\base\ViewContextInterface;
+use yii\debug\Panel as BasePanel;
 use yii\helpers\VarDumper;
 use yii\queue\JobInterface;
 use yii\queue\PushEvent;
@@ -23,10 +24,11 @@ use yii\queue\Queue;
  * Debug Panel.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ * @psalm-suppress PropertyNotSetInConstructor
  */
-class Panel extends \yii\debug\Panel implements ViewContextInterface
+class Panel extends BasePanel implements ViewContextInterface
 {
-    private array $_jobs = [];
+    private array $jobs = [];
 
     /**
      * @inheritdoc
@@ -43,7 +45,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     {
         parent::init();
         PushEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (PushEvent $event) {
-            $this->_jobs[] = $this->getPushData($event);
+            $this->jobs[] = $this->getPushData($event);
         });
     }
 
@@ -82,7 +84,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function save()
     {
-        return ['jobs' => $this->_jobs];
+        return ['jobs' => $this->jobs];
     }
 
     /**
@@ -98,6 +100,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function getSummary(): string
     {
+        /** @psalm-var array{jobs: array} $this->data */
         return Yii::$app->view->render('summary', [
             'url' => $this->getUrl(),
             'count' => isset($this->data['jobs']) ? count($this->data['jobs']) : 0,
@@ -109,12 +112,15 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function getDetail(): string
     {
+        /** @psalm-var array{jobs: array} $this->data */
         $jobs = $this->data['jobs'] ?? [];
         foreach ($jobs as &$job) {
+            /** @psalm-var array{sender: string, id: string|int} $job */
             $job['status'] = 'unknown';
             /** @var Queue $queue */
             if ($queue = Yii::$app->get($job['sender'], false)) {
                 try {
+                    /** @psalm-var Queue $queue */
                     if ($queue->isWaiting($job['id'])) {
                         $job['status'] = 'waiting';
                     } elseif ($queue->isReserved($job['id'])) {

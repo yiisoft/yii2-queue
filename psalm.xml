@@ -12,7 +12,7 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
-            <directory name="src/debug" />
+            <directory name="src/debug/views" />
             <directory name="src/gii/default" />
             <file name="src/gii/form.php" />
             <directory name="src/drivers/db/migrations" />
