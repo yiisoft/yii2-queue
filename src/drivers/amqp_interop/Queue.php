@@ -24,6 +24,7 @@ use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
 use Interop\Amqp\Impl\AmqpBind;
 use Interop\Queue\Context;
+use LogicException;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -338,8 +339,8 @@ class Queue extends CliQueue
                 return true;
             }
 
-            $ttr = $message->getProperty(self::TTR);
-            $attempt = $message->getProperty(self::ATTEMPT, 1);
+            $ttr = (int)$message->getProperty(self::TTR);
+            $attempt = (int)$message->getProperty(self::ATTEMPT, 1);
             $messageId = $message->getMessageId();
 
             if (
@@ -382,7 +383,7 @@ class Queue extends CliQueue
 
         $topic = $this->getContext()->createTopic($this->exchangeName);
 
-        /** @var AmqpMessage $message */
+        /** @psalm-var AmqpMessage $message */
         $message = $this->getContext()->createMessage($payload);
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
@@ -402,6 +403,7 @@ class Queue extends CliQueue
             $producer->setDeliveryDelay($delay * 1000);
         }
 
+        /** @var int|null $priority */
         if ($priority) {
             $message->setProperty(self::PRIORITY, $priority);
             $producer->setPriority($priority);
@@ -438,7 +440,7 @@ class Queue extends CliQueue
             self::ENQUEUE_AMQP_LIB => AmqpLibConnectionFactory::class,
             self::ENQUEUE_AMQP_EXT => AmqpExtConnectionFactory::class,
             self::ENQUEUE_AMQP_BUNNY => AmqpBunnyConnectionFactory::class,
-            default => throw new \LogicException(
+            default => throw new LogicException(
                 sprintf(
                     'The given driver "%s" is not supported. Drivers supported are "%s"',
                     $this->driver,
@@ -526,6 +528,7 @@ class Queue extends CliQueue
 
     protected function redeliver(AmqpMessage $message): void
     {
+        /** @var int $attempt */
         $attempt = $message->getProperty(self::ATTEMPT, 1);
 
         /** @var AmqpMessage $newMessage */
