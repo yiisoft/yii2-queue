@@ -25,9 +25,9 @@ abstract class JobEvent extends Event
      */
     public $name = '';
     /**
-     * @var Queue|null|object
+     * @var Queue
      * @inheritdoc
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
      */
     public $sender;
     /**

@@ -148,7 +148,7 @@ class Queue extends CliQueue
         $result = $pheanstalk
             ->put(
                 $payload,
-                $priority ?: PheanstalkPublisherInterface::DEFAULT_PRIORITY,
+                (int)$priority ?: PheanstalkPublisherInterface::DEFAULT_PRIORITY,
                 $delay, // Seconds to wait before job becomes ready
                 $ttr // Time To Run: seconds a job can be reserved for
             );

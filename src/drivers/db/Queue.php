@@ -82,6 +82,7 @@ class Queue extends CliQueue
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if ($payload = $this->reserve()) {
+                    /** @psalm-var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
                     if ($this->handleMessage(
                         $payload['id'],
                         $payload['job'],
@@ -177,7 +178,8 @@ class Queue extends CliQueue
     /**
      * Takes one message from waiting list and reserves it for handling.
      *
-     * @return array|false payload
+     * @return array|false
+     * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
      * @throws Exception in case it hasn't waited the lock
      */
     protected function reserve(): bool|array

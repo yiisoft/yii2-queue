@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 /**
- * @var \yii\web\View $this
+ * @var View $this
  * @var array $jobs
  */
+
 use yii\helpers\Html;
+use yii\web\View;
 
 $styles = [
     'unknown' => 'default',

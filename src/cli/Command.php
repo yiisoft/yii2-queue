@@ -124,8 +124,12 @@ abstract class Command extends Controller
             if ($this->phpBinary === null) {
                 $this->phpBinary = PHP_BINARY;
             }
-            /** @psalm-suppress MissingClosureReturnType */
-            $this->queue->messageHandler = function (int|string|null $id, string $message, int $ttr, int $attempt) {
+            $this->queue->messageHandler = function (
+                int|string|null $id,
+                string $message,
+                int $ttr,
+                int $attempt
+            ): bool {
                 return $this->handleMessage($id, $message, $ttr, $attempt);
             };
         }
@@ -178,6 +182,7 @@ abstract class Command extends Controller
 
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'), true)) {
+                /** @psalm-suppress MixedOperand */
                 $cmd[] = '--' . $name . '=' . $this->$name;
             }
         }

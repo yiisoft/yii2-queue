@@ -42,7 +42,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function unserialize(string $serialized)
+    public function unserialize(string $serialized): mixed
     {
         return $this->fromArray(Json::decode($serialized));
     }

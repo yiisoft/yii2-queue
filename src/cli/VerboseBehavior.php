@@ -36,13 +36,13 @@ class VerboseBehavior extends Behavior
     public Controller $command;
 
     /**
-     * @var float|null timestamp
+     * @var float timestamp
      */
-    private ?float $jobStartedAt = null;
+    private float $jobStartedAt = 0;
     /**
-     * @var int|null timestamp
+     * @var int timestamp
      */
-    private ?int $workerStartedAt = null;
+    private int $workerStartedAt = 0;
 
     /**
      * @inheritdoc
@@ -121,7 +121,8 @@ class VerboseBehavior extends Behavior
     {
         $name = $event->job instanceof JobInterface ? get_class($event->job) : 'unknown job';
         $extra = "attempt: $event->attempt";
-        if ($pid = $event->sender?->getWorkerPid()) {
+        $pid = $event->sender->getWorkerPid();
+        if (null !== $pid) {
             $extra .= ", pid: $pid";
         }
         return " [$event->id] $name ($extra)";

@@ -3,14 +3,18 @@
 declare(strict_types=1);
 
 /**
- * @var \yii\web\View $this
- * @var \yii\queue\gii\Generator $generator
+ * @var View $this
+ * @var Generator $generator
  * @var string $jobClass
  * @var string $ns
  * @var string $baseClass
  * @var string[] $interfaces
  * @var string[] $properties
  */
+
+use yii\web\View;
+use yii\queue\gii\Generator;
+
 if ($interfaces) {
     $implements = 'implements ' . implode(', ', $interfaces);
 } else {

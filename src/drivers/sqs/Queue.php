@@ -85,11 +85,14 @@ class Queue extends CliQueue
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if (($payload = $this->reserve($timeout)) !== null) {
-                    $id = $payload['MessageId'];
-                    $message = $payload['Body'];
-                    $ttr = (int) $payload['MessageAttributes']['TTR']['StringValue'];
-                    $attempt = (int) $payload['Attributes']['ApproximateReceiveCount'];
-                    if ($this->handleMessage($id, $message, $ttr, $attempt)) {
+                    if (
+                        $this->handleMessage(
+                            $payload->messageId,
+                            $payload->body,
+                            $payload->ttr,
+                            $payload->attempt
+                        )
+                    ) {
                         $this->delete($payload);
                     }
                 } elseif (!$repeat) {
@@ -103,10 +106,11 @@ class Queue extends CliQueue
      * Gets a single message from SQS queue and sets the visibility to reserve message.
      *
      * @param int $timeout number of seconds for long polling. Must be between 0 and 20.
-     * @return null|array payload.
+     * @return Payload|null
      */
-    protected function reserve(int $timeout): ?array
+    protected function reserve(int $timeout): ?Payload
     {
+        /** @var array{Messages: array} $response */
         $response = $this->getClient()->receiveMessage([
             'QueueUrl' => $this->url,
             'AttributeNames' => ['ApproximateReceiveCount'],
@@ -114,18 +118,18 @@ class Queue extends CliQueue
             'MaxNumberOfMessages' => 1,
             'VisibilityTimeout' => $this->ttr,
             'WaitTimeSeconds' => $timeout,
-        ]);
-        if (!$response['Messages']) {
+        ])->toArray();
+
+        $payload = new Payload($response);
+        if (empty($payload->messages)) {
             return null;
         }
 
-        $payload = reset($response['Messages']);
-
-        $ttr = (int) $payload['MessageAttributes']['TTR']['StringValue'];
+        $ttr = $payload->ttr;
         if ($ttr !== $this->ttr) {
             $this->getClient()->changeMessageVisibility([
                 'QueueUrl' => $this->url,
-                'ReceiptHandle' => $payload['ReceiptHandle'],
+                'ReceiptHandle' => $payload->receiptHandle,
                 'VisibilityTimeout' => $ttr,
             ]);
         }
@@ -136,13 +140,13 @@ class Queue extends CliQueue
     /**
      * Deletes the message after successfully handling.
      *
-     * @param array $payload
+     * @param Payload $payload
      */
-    protected function delete(array $payload): void
+    protected function delete(Payload $payload): void
     {
         $this->getClient()->deleteMessage([
             'QueueUrl' => $this->url,
-            'ReceiptHandle' => $payload['ReceiptHandle'],
+            'ReceiptHandle' => $payload->receiptHandle,
         ]);
     }
 
@@ -206,7 +210,7 @@ class Queue extends CliQueue
         }
 
         $response = $this->getClient()->sendMessage($request);
-        return $response['MessageId'];
+        return null === $response['MessageId']?null:(string)$response['MessageId'];
     }
 
     /**

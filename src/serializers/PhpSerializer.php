@@ -30,7 +30,7 @@ class PhpSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function unserialize(string $serialized)
+    public function unserialize(string $serialized): mixed
     {
         return unserialize($serialized);
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="2"
+    errorLevel="1"
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,8 +12,9 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
-            <directory name="src/debug" />
-            <directory name="src/gii" />
+            <directory name="src/debug/views" />
+            <directory name="src/gii/default" />
+            <file name="src/gii/form.php" />
             <directory name="src/drivers/db/migrations" />
         </ignoreFiles>
     </projectFiles>
@@ -24,4 +25,7 @@
         <file name="stubs/psalm/BaseYii.php" preloadClasses="true"/>
         <file name="support/ide-helper.php"/>
     </stubs>
+    <issueHandlers>
+        <MixedAssignment errorLevel="suppress"/>
+    </issueHandlers>
 </psalm>
