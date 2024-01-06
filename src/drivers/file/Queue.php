@@ -257,6 +257,7 @@ class Queue extends CliQueue
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
+        $id = 0;
 
         $this->touchIndex(function (array &$data) use ($payload, $ttr, $delay, &$id) {
             /** @var array{lastId: int, waiting: array, delayed: array} $data */
