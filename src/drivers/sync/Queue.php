@@ -27,7 +27,7 @@ class Queue extends BaseQueue
      */
     public bool $handle = false;
     /**
-     * @var array of payloads
+     * @var array $payloads of payloads
      */
     private array $payloads = [];
     /**
@@ -64,6 +64,11 @@ class Queue extends BaseQueue
     public function run(): void
     {
         while (($payload = array_shift($this->payloads)) !== null) {
+            /**
+             * @var int $ttr
+             * @var string $message
+             * @psalm-suppress MixedArrayAccess
+             */
             [$ttr, $message] = $payload;
             $this->startedId = $this->finishedId + 1;
             $this->handleMessage($this->startedId, $message, $ttr, 1);

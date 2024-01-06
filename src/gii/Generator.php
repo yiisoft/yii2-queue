@@ -24,11 +24,11 @@ use yii\queue\RetryableJobInterface;
  */
 class Generator extends BaseGenerator
 {
-    public $jobClass;
-    public $properties;
-    public $retryable = false;
-    public $ns = 'app\jobs';
-    public $baseClass = BaseObject::class;
+    public string $jobClass = '';
+    public string $properties = '';
+    public bool $retryable = false;
+    public string $ns = 'app\jobs';
+    public string $baseClass = BaseObject::class;
 
     /**
      * @inheritdoc
@@ -128,8 +128,12 @@ class Generator extends BaseGenerator
         }
         $params['properties'] = array_unique(preg_split('/[\s,]+/', $this->properties, -1, PREG_SPLIT_NO_EMPTY));
 
+        $alias = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
+        if (false === $alias) {
+            return [];
+        }
         $jobFile = new CodeFile(
-            Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $this->jobClass . '.php',
+             $alias . '/' . $this->jobClass . '.php',
             $this->render('job.php', $params)
         );
 
@@ -143,6 +147,7 @@ class Generator extends BaseGenerator
      */
     public function validateJobClass(string $attribute): void
     {
+        /** @psalm-suppress MixedArgument */
         if ($this->isReservedKeyword($this->$attribute)) {
             $this->addError($attribute, 'Class name cannot be a reserved PHP keyword.');
         }
@@ -155,6 +160,7 @@ class Generator extends BaseGenerator
      */
     public function validateNamespace(string $attribute): void
     {
+        /** @psalm-var string $value */
         $value = $this->$attribute;
         $value = ltrim($value, '\\');
         $path = Yii::getAlias('@' . str_replace('\\', '/', $value), false);

@@ -23,8 +23,7 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
-     * @psalm-suppress NonInvariantDocblockPropertyType
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
      */
     public CliQueue $queue;
 
@@ -38,20 +37,20 @@ class InfoAction extends Action
         $delayed = $this->queue->redis->zcount("$prefix.delayed", '-inf', '+inf');
         $reserved = $this->queue->redis->zcount("$prefix.reserved", '-inf', '+inf');
         $total = $this->queue->redis->get("$prefix.message_id");
-        $done = $total - $waiting - $delayed - $reserved;
+        $done = (int)$total - (int)$waiting - (int)$delayed - (int)$reserved;
 
         Console::output($this->format('Jobs', Console::FG_GREEN));
 
         Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
-        Console::output($waiting);
+        Console::output((string)$waiting);
 
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
-        Console::output($delayed);
+        Console::output((string)$delayed);
 
         Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
-        Console::output($reserved);
+        Console::output((string)$reserved);
 
         Console::stdout($this->format('- done: ', Console::FG_YELLOW));
-        Console::output($done);
+        Console::output((string)$done);
     }
 }

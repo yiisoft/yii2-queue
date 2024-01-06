@@ -63,7 +63,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      * @var int|null current process ID of a worker.
      * @since 2.0.2
      */
-    private ?int $_workerPid = null;
+    private ?int $workerPid = null;
 
     /**
      * @return string command id
@@ -72,7 +72,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
     {
         foreach (Yii::$app->getComponents(false) as $id => $component) {
             if ($component === $this) {
-                return Inflector::camel2id($id);
+                return Inflector::camel2id((string)$id);
             }
         }
         throw new InvalidConfigException('Queue must be an application component.');
@@ -100,7 +100,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     protected function runWorker(callable $handler): ?int
     {
-        $this->_workerPid = getmypid();
+        $this->workerPid = getmypid();
         /** @var LoopInterface $loop */
         $loop = Yii::createObject($this->loopConfig, [$this]);
 
@@ -117,7 +117,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
             });
         } finally {
             $this->trigger(self::EVENT_WORKER_STOP, $event);
-            $this->_workerPid = null;
+            $this->workerPid = null;
         }
 
         return $event->exitCode;
@@ -132,11 +132,12 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     public function getWorkerPid(): ?int
     {
-        return $this->_workerPid;
+        return $this->workerPid;
     }
 
     /**
      * @inheritdoc
+     * @psalm-suppress MixedReturnStatement, MixedInferredReturnType
      */
     protected function handleMessage(int|string $id, string $message, int $ttr, int $attempt): bool
     {
@@ -158,7 +159,7 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
      */
     public function execute(string $id, string $message, int $ttr, int $attempt, ?int $workerPid): bool
     {
-        $this->_workerPid = $workerPid;
+        $this->workerPid = $workerPid;
         return parent::handleMessage($id, $message, $ttr, $attempt);
     }
 }

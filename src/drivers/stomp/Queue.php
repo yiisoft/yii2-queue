@@ -177,8 +177,8 @@ class Queue extends CliQueue
                         continue;
                     }
 
-                    $ttr = $message->getProperty(self::TTR, $this->ttr);
-                    $attempt = $message->getProperty(self::ATTEMPT, 1);
+                    $ttr = (int)$message->getProperty(self::TTR, $this->ttr);
+                    $attempt = (int)$message->getProperty(self::ATTEMPT, 1);
                     $messageId = $message->getMessageId();
 
                     if (null !== $messageId && $this->handleMessage($messageId, $message->getBody(), $ttr, $attempt)) {
@@ -267,7 +267,7 @@ class Queue extends CliQueue
      */
     protected function redeliver(StompMessage $message): void
     {
-        $attempt = $message->getProperty(self::ATTEMPT, 1);
+        $attempt = (int)$message->getProperty(self::ATTEMPT, 1);
 
         $newMessage = $this->getContext()->createMessage(
             $message->getBody(),

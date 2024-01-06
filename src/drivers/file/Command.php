@@ -23,8 +23,7 @@ class Command extends CliCommand
 {
     /**
      * @var Queue
-     * @psalm-suppress NonInvariantDocblockPropertyType
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
      */
     public CliQueue $queue;
     /**
