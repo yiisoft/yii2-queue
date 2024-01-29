@@ -11,6 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsProviderInterface;
 use yii\redis\Connection;
 
 /**
@@ -18,7 +19,7 @@ use yii\redis\Connection;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends CliQueue
+class Queue extends CliQueue implements StatisticsProviderInterface
 {
     /**
      * @var Connection|array|string
@@ -204,5 +205,18 @@ class Queue extends CliQueue
         }
 
         return $id;
+    }
+
+    private $_statistcsProvider;
+
+    /**
+     * @return StatisticsProvider
+     */
+    public function getStatisticsProvider()
+    {
+        if (!$this->_statistcsProvider) {
+            $this->_statistcsProvider = new StatisticsProvider($this);
+        }
+        return $this->_statistcsProvider;
     }
 }

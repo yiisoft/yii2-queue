@@ -14,13 +14,14 @@ use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
  * Db Queue.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends CliQueue
+class Queue extends CliQueue implements StatisticsProviderInterface
 {
     /**
      * @var Connection|array|string
@@ -233,6 +234,8 @@ class Queue extends CliQueue
         }
     }
 
+    protected $reserveTime;
+
     /**
      * Moves expired messages into waiting list.
      */
@@ -251,5 +254,16 @@ class Queue extends CliQueue
         }
     }
 
-    protected $reserveTime;
+    private $_statistcsProvider;
+
+    /**
+     * @return StatisticsProvider
+     */
+    public function getStatisticsProvider()
+    {
+        if (!$this->_statistcsProvider) {
+            $this->_statistcsProvider = new StatisticsProvider($this);
+        }
+        return $this->_statistcsProvider;
+    }
 }

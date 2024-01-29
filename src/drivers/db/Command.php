@@ -9,6 +9,7 @@ namespace yii\queue\db;
 
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\InfoAction;
 
 /**
  * Manages application db-queue.
