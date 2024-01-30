@@ -137,7 +137,6 @@ abstract class TestCase extends CliTestCase
 
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
-
         $this->assertSimpleJobDone($job);
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
