@@ -133,11 +133,13 @@ abstract class TestCase extends CliTestCase
 
     public function testDoneCount()
     {
-        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+        $this->getQueue()->messageHandler = function () {
+            return true;
+        };
 
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
-        $this->assertSimpleJobDone($job);
+        $this->getQueue()->run(false);
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
     }
