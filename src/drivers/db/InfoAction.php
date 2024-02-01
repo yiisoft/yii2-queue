@@ -14,6 +14,8 @@ use yii\queue\cli\Action;
 /**
  * Info about queue status.
  *
+ * @deprecated Will be removed in 3.0. Use yii\queue\cli\InfoAction instead.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class InfoAction extends Action

@@ -87,6 +87,42 @@ class QueueTest extends CliTestCase
         $this->assertFalse((bool) $this->getQueue()->redis->hexists($this->getQueue()->channel . '.messages', $id));
     }
 
+    public function testWaitingCount()
+    {
+        $this->getQueue()->push($this->createSimpleJob());
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
+    }
+
+    public function testDelayedCount()
+    {
+        $this->getQueue()->delay(5)->push($this->createSimpleJob());
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
+    }
+
+    public function testReservedCount()
+    {
+        $this->getQueue()->messageHandler = function () {
+            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+        };
+
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+        $this->getQueue()->run(false);
+    }
+
+    public function testDoneCount()
+    {
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+
+        $this->assertSimpleJobDone($job);
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
+    }
+
     /**
      * @return Queue
      */
@@ -97,6 +133,7 @@ class QueueTest extends CliTestCase
 
     protected function tearDown()
     {
+        $this->getQueue()->messageHandler = null;
         $this->getQueue()->redis->flushdb();
         parent::tearDown();
     }

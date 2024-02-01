@@ -43,6 +43,7 @@ $config = [
                 'class' => \yii\mutex\MysqlMutex::class,
                 'db' => 'mysql',
             ],
+            'deleteReleased' => false,
         ],
         'sqlite' => [
             'class' => \yii\db\Connection::class,
@@ -52,6 +53,7 @@ $config = [
             'class' => \yii\queue\db\Queue::class,
             'db' => 'sqlite',
             'mutex' => \yii\mutex\FileMutex::class,
+            'deleteReleased' => false,
         ],
         'pgsql' => [
             'class' => \yii\db\Connection::class,
@@ -72,6 +74,7 @@ $config = [
                 'db' => 'pgsql',
             ],
             'mutexTimeout' => 0,
+            'deleteReleased' => false,
         ],
         'redis' => [
             'class' => \yii\redis\Connection::class,

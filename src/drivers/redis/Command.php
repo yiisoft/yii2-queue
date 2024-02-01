@@ -9,6 +9,7 @@ namespace yii\queue\redis;
 
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\InfoAction;
 
 /**
  * Manages application redis-queue.
