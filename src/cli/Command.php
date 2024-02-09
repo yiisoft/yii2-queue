@@ -182,7 +182,7 @@ abstract class Command extends Controller
             $cmd[] = '--color=' . $this->isColorEnabled();
         }
 
-        $process = new Process($cmd, null, null, $message, $ttr);
+        $process = new Process($cmd, null, null, $message, (float)$ttr);
         try {
             $result = $process->run(function ($type, $buffer) {
                 if ($type === Process::ERR) {
