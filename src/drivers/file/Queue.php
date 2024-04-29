@@ -18,6 +18,8 @@ use yii\queue\interfaces\StatisticsProviderInterface;
 /**
  * File Queue.
  *
+ * @property-read StatisticsProvider $statisticsProvider
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Queue extends CliQueue implements StatisticsProviderInterface

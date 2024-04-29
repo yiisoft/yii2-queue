@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +25,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
      * @var Queue
      */
     protected $queue;
+
 
     public function __construct(Queue $queue, $config = [])
     {

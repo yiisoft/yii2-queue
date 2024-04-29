@@ -19,6 +19,8 @@ use yii\queue\interfaces\StatisticsProviderInterface;
 /**
  * Db Queue.
  *
+ * @property-read StatisticsProvider $statisticsProvider
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Queue extends CliQueue implements StatisticsProviderInterface

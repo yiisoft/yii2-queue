@@ -17,6 +17,8 @@ use yii\redis\Connection;
 /**
  * Redis Queue.
  *
+ * @property-read StatisticsProvider $statisticsProvider
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Queue extends CliQueue implements StatisticsProviderInterface
