@@ -10,7 +10,6 @@ Yii2 Queue Extension Change Log
 2.3.7 April 29, 2024
 --------------------
 
-- no changes in this release.
 - Enh #509: Add StatisticsProviderInterface to get statistics from queue (kalmer)
 
 
