@@ -76,10 +76,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      */
     public function status($id)
     {
-        if (!is_numeric($id) || $id <= 0) {
-            throw new InvalidArgumentException("Unknown message ID: $id.");
-        }
-
         if ($this->redis->hexists("$this->channel.attempts", $id)) {
             return self::STATUS_RESERVED;
         }
@@ -198,7 +194,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
 
-        $id = $this->redis->incr("$this->channel.message_id");
+        $id = uniqid('', true);
         $this->redis->hset("$this->channel.messages", $id, "$ttr;$message");
         if (!$delay) {
             $this->redis->lpush("$this->channel.waiting", $id);
