@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 2.3.8 under development
 -----------------------
 
-- no changes in this release.
+- Bug #522: Fix SQS driver type error with custom value passed to `queue/listen` (flaviovs)
 
 
 2.3.7 April 29, 2024

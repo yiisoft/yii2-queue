@@ -48,6 +48,8 @@ class Command extends CliCommand
         if (!is_numeric($timeout)) {
             throw new Exception('Timeout must be numeric.');
         }
+        $timeout = (int) $timeout;
+
         if ($timeout < 1 || $timeout > 20) {
             throw new Exception('Timeout must be between 1 and 20');
         }
