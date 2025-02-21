@@ -11,7 +11,7 @@ test:			## Run tests. Params: {{ v=5.6 }}. Default latest PHP 5.6
 	make down
 
 down:			## Stop and remove containers, networks
-	docker-compose down
+	docker compose down
 
 benchmark:		## Run benchmark. Params: {{ v=5.6 }}. Default latest PHP 5.6
 	PHP_VERSION=$(filter-out $@,$(v)) docker compose build --pull yii2-queue-php
