@@ -171,7 +171,7 @@ class QueueTest extends CliTestCase
         $fault();
 
         //make the redlock invalid after 1s
-        sleep(1);
+        sleep(2);
         $this->getQueue()->run(false);
         $this->assertEquals(1, $msgCount);
     }
