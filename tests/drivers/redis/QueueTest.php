@@ -144,9 +144,9 @@ class QueueTest extends CliTestCase
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(1)->push($job);
         //expect 1 msg should be recv
-        $this->getQueue()->messageHandler = function () {
-            var_dump(func_get_args());
-            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+        $msgCount = 0;
+        $this->getQueue()->messageHandler = function () use(&$msgCount) {
+            $msgCount++;
         };
 
         $fault = function () {
@@ -171,5 +171,6 @@ class QueueTest extends CliTestCase
         $fault();
 
         $this->getQueue()->run(false);
+        $this->assertEquals(1, $msgCount);
     }
 }
