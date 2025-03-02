@@ -10,6 +10,7 @@ namespace tests\drivers\redis;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
+use yii\di\Instance;
 use yii\queue\redis\Queue;
 
 /**
@@ -136,5 +137,39 @@ class QueueTest extends CliTestCase
         $this->getQueue()->messageHandler = null;
         $this->getQueue()->redis->flushdb();
         parent::tearDown();
+    }
+
+    public function testMoveExpired()
+    {
+        $job = $this->createSimpleJob();
+        $this->getQueue()->delay(1)->push($job);
+        //expect 1 msg should be recv
+        $this->getQueue()->messageHandler = function () {
+            var_dump(func_get_args());
+            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+        };
+
+        $fault = function () {
+            sleep(2);
+            $mockRedis = Instance::ensure([
+                'class' => RedisCrashMock::class,
+                'hostname' => getenv('REDIS_HOST') ?: 'localhost',
+                'database' => getenv('REDIS_DB') ?: 1,
+            ], 'yii\redis\Connection');
+
+            $queue = $this->getQueue();
+            $old = $queue->redis;
+            $queue->redis = $mockRedis;
+
+            try {
+                $queue->run(false);
+            }catch (\Exception $e){
+            }finally{
+                $queue->redis = $old;
+            }
+        };
+        $fault();
+
+        $this->getQueue()->run(false);
     }
 }
