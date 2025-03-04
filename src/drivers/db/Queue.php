@@ -161,7 +161,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             'job' => $message,
             'pushed_at' => time(),
             'ttr' => $ttr,
-            'delay' => $delay,
+            'execute_at' => time() + $delay,
             'priority' => $priority ?: 1024,
         ])->execute();
         $tableSchema = $this->db->getTableSchema($this->tableName);
@@ -188,7 +188,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                 $payload = (new Query())
                     ->from($this->tableName)
                     ->andWhere(['channel' => $this->channel, 'reserved_at' => null])
-                    ->andWhere('[[pushed_at]] <= :time - [[delay]]', [':time' => time()])
+                    ->andWhere('[[execute_at]] <= :time', [':time' => time()])
                     ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
                     ->limit(1)
                     ->one($this->db);
