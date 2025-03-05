@@ -139,6 +139,15 @@ class QueueTest extends CliTestCase
         parent::tearDown();
     }
 
+    /**
+     * Verify that Redis data persists when process crashes during moveExpired
+     *
+     * Steps:
+     * 1. Push a delayed job into queue
+     * 2. Wait for job to expire
+     * 3. Mock Redis to simulate crash during moveExpired
+     * 4. Successfully process job after recovery
+     */
     public function testConsumeMsgAtLeastOnce()
     {
         $job = $this->createSimpleJob();
@@ -152,11 +161,13 @@ class QueueTest extends CliTestCase
         //ensuer the delayed msg can be consumed
         sleep(2);
 
-        //based on the implemention, emulate a crash when redis "rpush" command should be execute
+        // based on the implemention, emulate a crash when redis "rpush"
+        // command should be execute,
         $mockRedis = Instance::ensure([
             'class' => RedisCrashMock::class,
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
             'database' => getenv('REDIS_DB') ?: 1,
+            'crashOnCommand' => 'rpush' // Crash when trying to move job to waiting queue
         ], 'yii\redis\Connection');
 
         $queue = $this->getQueue();
