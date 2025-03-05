@@ -139,7 +139,7 @@ class QueueTest extends CliTestCase
         parent::tearDown();
     }
 
-    public function testMoveExpired()
+    public function testConsumeMsgAtLeastOnce()
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(1)->push($job);
@@ -149,28 +149,28 @@ class QueueTest extends CliTestCase
             $msgCount++;
         };
 
-        $fault = function () {
-            sleep(2);
-            $mockRedis = Instance::ensure([
-                'class' => RedisCrashMock::class,
-                'hostname' => getenv('REDIS_HOST') ?: 'localhost',
-                'database' => getenv('REDIS_DB') ?: 1,
-            ], 'yii\redis\Connection');
+        //ensuer the delayed msg can be consumed
+        sleep(2);
 
-            $queue = $this->getQueue();
-            $old = $queue->redis;
-            $queue->redis = $mockRedis;
+        //based on the implemention, emulate a crash when redis "rpush" command should be execute
+        $mockRedis = Instance::ensure([
+            'class' => RedisCrashMock::class,
+            'hostname' => getenv('REDIS_HOST') ?: 'localhost',
+            'database' => getenv('REDIS_DB') ?: 1,
+        ], 'yii\redis\Connection');
 
-            try {
-                $queue->run(false);
-            }catch (\Exception $e){
-            }finally{
-                $queue->redis = $old;
-            }
-        };
-        $fault();
+        $queue = $this->getQueue();
+        $old = $queue->redis;
+        $queue->redis = $mockRedis;
 
-        //make the redlock invalid after 1s
+        try {
+            $queue->run(false);
+        }catch (\Exception $e){
+        }finally{
+            $queue->redis = $old;
+        }
+
+        //ensure the redlock invalid after 1s
         sleep(2);
         $this->getQueue()->run(false);
         $this->assertEquals(1, $msgCount);
