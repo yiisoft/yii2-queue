@@ -154,7 +154,7 @@ class QueueTest extends CliTestCase
         $this->getQueue()->delay(1)->push($job);
         // Expect a single message to be received.
         $messageCount = 0;
-        $this->getQueue()->messageHandler = function () use(&$msgCount) {
+        $this->getQueue()->messageHandler = function () use(&$messageCount) {
             $messageCount++;
         };
 
@@ -182,7 +182,7 @@ class QueueTest extends CliTestCase
             $queue->redis = $old;
         }
 
-        // Ensure the redlock is invalid after 1s.
+        // Ensure the red lock is invalid. The red lock is valid for 1s.
         sleep(2);
         $this->getQueue()->run(false);
         $this->assertEquals(1, $messageCount);
