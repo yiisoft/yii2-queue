@@ -140,34 +140,34 @@ class QueueTest extends CliTestCase
     }
 
     /**
-     * Verify that Redis data persists when process crashes during moveExpired
+     * Verify that Redis data persists when process crashes during moveExpired.
      *
      * Steps:
      * 1. Push a delayed job into queue
-     * 2. Wait for job to expire
+     * 2. Wait for the job to expire
      * 3. Mock Redis to simulate crash during moveExpired
      * 4. Successfully process job after recovery
      */
-    public function testConsumeMsgAtLeastOnce()
+    public function testConsumeDelayedMessageAtLeastOnce()
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(1)->push($job);
-        //expect 1 msg should be recv
-        $msgCount = 0;
+        // Expect a single message to be received.
+        $messageCount = 0;
         $this->getQueue()->messageHandler = function () use(&$msgCount) {
-            $msgCount++;
+            $messageCount++;
         };
 
-        //ensuer the delayed msg can be consumed
+        // Ensure the delayed message can be consumed when more time passed than the delay is.
         sleep(2);
 
-        // based on the implemention, emulate a crash when redis "rpush"
-        // command should be execute,
+        // Based on the implemention, emulate a crash when redis "rpush"
+        // command should be executed.
         $mockRedis = Instance::ensure([
             'class' => RedisCrashMock::class,
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
             'database' => getenv('REDIS_DB') ?: 1,
-            'crashOnCommand' => 'rpush' // Crash when trying to move job to waiting queue
+            'crashOnCommand' => 'rpush' // Crash when trying to move job to waiting queue.
         ], 'yii\redis\Connection');
 
         $queue = $this->getQueue();
@@ -176,14 +176,15 @@ class QueueTest extends CliTestCase
 
         try {
             $queue->run(false);
-        }catch (\Exception $e){
-        }finally{
+        } catch (\Exception $e) {
+            // Ignore exceptions.
+        } finally {
             $queue->redis = $old;
         }
 
-        //ensure the redlock invalid after 1s
+        // Ensure the redlock is invalid after 1s.
         sleep(2);
         $this->getQueue()->run(false);
-        $this->assertEquals(1, $msgCount);
+        $this->assertEquals(1, $messageCount);
     }
 }
