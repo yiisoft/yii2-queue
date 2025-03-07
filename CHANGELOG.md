@@ -3,7 +3,7 @@ Yii2 Queue Extension Change Log
 
 2.3.8 under development
 -----------------------
-
+- Enh: Ensure Redis driver messages are consumed at least once (soul11201)
 - Bug #522: Fix SQS driver type error with custom value passed to `queue/listen` (flaviovs)
 
 
