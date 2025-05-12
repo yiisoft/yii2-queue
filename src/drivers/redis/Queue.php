@@ -14,14 +14,17 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsProviderInterface;
 use yii\redis\Connection;
 
 /**
  * Redis Queue.
  *
+ * @property-read StatisticsProvider $statisticsProvider
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends CliQueue
+class Queue extends CliQueue implements StatisticsProviderInterface
 {
     /**
      * @var Connection|array|string
@@ -182,10 +185,10 @@ class Queue extends CliQueue
     {
         $now = time();
         if ($expired = $this->redis->zrevrangebyscore($from, $now, '-inf')) {
-            $this->redis->zremrangebyscore($from, '-inf', $now);
             foreach ($expired as $id) {
                 $this->redis->rpush("$this->channel.waiting", $id);
             }
+            $this->redis->zremrangebyscore($from, '-inf', $now);
         }
     }
 
@@ -220,5 +223,18 @@ class Queue extends CliQueue
         }
 
         return $id;
+    }
+
+    private $_statistcsProvider;
+
+    /**
+     * @return StatisticsProvider
+     */
+    public function getStatisticsProvider()
+    {
+        if (!$this->_statistcsProvider) {
+            $this->_statistcsProvider = new StatisticsProvider($this);
+        }
+        return $this->_statistcsProvider;
     }
 }

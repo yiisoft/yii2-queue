@@ -62,6 +62,7 @@ $config = [
                 'class' => MysqlMutex::class,
                 'db' => 'mysql',
             ],
+            'deleteReleased' => false,
         ],
         'sqlite' => [
             'class' => Connection::class,
@@ -71,6 +72,7 @@ $config = [
             'class' => DbQueue::class,
             'db' => 'sqlite',
             'mutex' => FileMutex::class,
+            'deleteReleased' => false,
         ],
         'pgsql' => [
             'class' => Connection::class,
@@ -91,6 +93,7 @@ $config = [
                 'db' => 'pgsql',
             ],
             'mutexTimeout' => 0,
+            'deleteReleased' => false,
         ],
         'redis' => [
             'class' => RedisConnection::class,

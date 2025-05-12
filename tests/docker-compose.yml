@@ -72,6 +72,10 @@ services:
       MYSQL_DATABASE: yii2_queue_test
     networks:
       net: {}
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
 
   # https://hub.docker.com/_/postgres/
   postgres:

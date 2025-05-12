@@ -1,6 +1,6 @@
 {
     "name": "yiisoft/yii2-queue",
-    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk, SQS and Gearman",
+    "description": "Yii2 Queue Extension which supports queues based on DB, Redis, RabbitMQ, Beanstalk, SQS, and Gearman",
     "type": "yii2-extension",
     "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman", "sqs"],
     "license": "BSD-3-Clause",
@@ -18,7 +18,7 @@
     "require": {
         "php": ">=8.1",
         "yiisoft/yii2": "~2.0.14",
-        "symfony/process": "^6.3",
+        "symfony/process": "^6.3||^7.0",
         "laravel/serializable-closure": "^v1.3.0"
     },
     "require-dev": {
