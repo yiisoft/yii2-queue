@@ -1,6 +1,5 @@
-version: "3.5"
+---
 services:
-
   # https://hub.docker.com/_/php/
   yii2-queue-php:
     container_name: yii2-queue-php

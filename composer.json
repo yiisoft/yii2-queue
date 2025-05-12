@@ -17,8 +17,8 @@
     },
     "require": {
         "php": ">=8.1",
-        "yiisoft/yii2": "~2.0.14",
-        "symfony/process": "^6.3||^7.0",
+        "yiisoft/yii2": "~2.0.50",
+        "symfony/process": "^7.0",
         "laravel/serializable-closure": "^v1.3.0"
     },
     "require-dev": {

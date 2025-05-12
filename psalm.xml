@@ -27,5 +27,9 @@
     </stubs>
     <issueHandlers>
         <MixedAssignment errorLevel="suppress"/>
+        <PropertyNotSetInConstructor errorLevel="suppress" />
+        <RedundantPropertyInitializationCheck errorLevel="suppress" />
+        <RiskyTruthyFalsyComparison errorLevel="suppress" />
+        <MissingOverrideAttribute errorLevel="suppress" />
     </issueHandlers>
 </psalm>

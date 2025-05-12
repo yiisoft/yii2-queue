@@ -33,7 +33,7 @@ class Behavior extends \yii\base\Behavior
 {
     /**
      * @var Queue
-     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public $owner;
 
