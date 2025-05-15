@@ -225,6 +225,11 @@ abstract class Queue extends Component
     protected function handleMessage($id, $message, $ttr, $attempt)
     {
         list($job, $error) = $this->unserializeMessage($message);
+
+        if ($attempt > 1 && !($job instanceof RetryableJobInterface)) {
+            return false;
+        }
+
         $event = new ExecEvent([
             'id' => $id,
             'job' => $job,
