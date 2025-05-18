@@ -18,7 +18,7 @@ namespace yii\queue\interfaces;
 interface StatisticsProviderInterface
 {
     /**
-     * @return int
+     * @return StatisticsInterface
      */
-    public function getStatisticsProvider();
+    public function getStatisticsProvider(): StatisticsInterface;
 }

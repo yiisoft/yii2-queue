@@ -14,6 +14,7 @@ use yii\base\BaseObject;
 use yii\queue\interfaces\DelayedCountInterface;
 use yii\queue\interfaces\DoneCountInterface;
 use yii\queue\interfaces\ReservedCountInterface;
+use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\WaitingCountInterface;
 
 /**
@@ -21,7 +22,12 @@ use yii\queue\interfaces\WaitingCountInterface;
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
-class StatisticsProvider extends BaseObject implements DoneCountInterface, WaitingCountInterface, DelayedCountInterface, ReservedCountInterface
+class StatisticsProvider extends BaseObject implements
+    DoneCountInterface,
+    WaitingCountInterface,
+    DelayedCountInterface,
+    ReservedCountInterface,
+    StatisticsInterface
 {
     /**
      * @var Queue
@@ -29,7 +35,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     protected Queue $queue;
 
 
-    public function __construct(Queue $queue, $config = [])
+    public function __construct(Queue $queue, array $config = [])
     {
         $this->queue = $queue;
         parent::__construct($config);
@@ -41,7 +47,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     public function getWaitingCount(): int
     {
         $prefix = $this->queue->channel;
-        return $this->queue->redis->llen("$prefix.waiting");
+        return (int) $this->queue->redis->llen("$prefix.waiting");
     }
 
     /**
@@ -50,7 +56,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     public function getDelayedCount(): int
     {
         $prefix = $this->queue->channel;
-        return $this->queue->redis->zcount("$prefix.delayed", '-inf', '+inf');
+        return (int) $this->queue->redis->zcount("$prefix.delayed", '-inf', '+inf');
     }
 
     /**
@@ -59,7 +65,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     public function getReservedCount(): int
     {
         $prefix = $this->queue->channel;
-        return $this->queue->redis->zcount("$prefix.reserved", '-inf', '+inf');
+        return (int) $this->queue->redis->zcount("$prefix.reserved", '-inf', '+inf');
     }
 
     /**
@@ -71,7 +77,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
         $waiting = $this->getWaitingCount();
         $delayed = $this->getDelayedCount();
         $reserved = $this->getReservedCount();
-        $total = $this->queue->redis->get("$prefix.message_id");
+        $total = (int) $this->queue->redis->get("$prefix.message_id");
         return $total - $waiting - $delayed - $reserved;
     }
 }

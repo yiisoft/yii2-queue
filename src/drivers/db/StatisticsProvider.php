@@ -15,6 +15,7 @@ use yii\db\Query;
 use yii\queue\interfaces\DelayedCountInterface;
 use yii\queue\interfaces\DoneCountInterface;
 use yii\queue\interfaces\ReservedCountInterface;
+use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\WaitingCountInterface;
 
 /**
@@ -22,14 +23,19 @@ use yii\queue\interfaces\WaitingCountInterface;
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
-class StatisticsProvider extends BaseObject implements DoneCountInterface, WaitingCountInterface, DelayedCountInterface, ReservedCountInterface
+class StatisticsProvider extends BaseObject implements
+    DoneCountInterface,
+    WaitingCountInterface,
+    DelayedCountInterface,
+    ReservedCountInterface,
+    StatisticsInterface
 {
     /**
      * @var Queue
      */
     protected Queue $queue;
 
-    public function __construct(Queue $queue, $config = [])
+    public function __construct(Queue $queue, array $config = [])
     {
         $this->queue = $queue;
         parent::__construct($config);
@@ -40,7 +46,8 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
      */
     public function getWaitingCount(): int
     {
-        return (new Query())
+        /** @psalm-var \yii\db\Connection $this->queue->db */
+        return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['reserved_at' => null])
@@ -53,7 +60,8 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
      */
     public function getDelayedCount(): int
     {
-        return (new Query())
+        /** @psalm-var \yii\db\Connection $this->queue->db */
+        return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['reserved_at' => null])
@@ -66,7 +74,8 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
      */
     public function getReservedCount(): int
     {
-        return (new Query())
+        /** @psalm-var \yii\db\Connection $this->queue->db */
+        return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere('[[reserved_at]] is not null')
@@ -79,7 +88,8 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
      */
     public function getDoneCount(): int
     {
-        return (new Query())
+        /** @psalm-var \yii\db\Connection $this->queue->db */
+        return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere('[[done_at]] is not null')

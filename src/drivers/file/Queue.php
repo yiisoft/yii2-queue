@@ -16,6 +16,7 @@ use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
@@ -340,16 +341,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    private $_statistcsProvider;
+    private StatisticsInterface $_statisticsProvider;
 
     /**
-     * @return StatisticsProvider
+     * @return StatisticsInterface
      */
-    public function getStatisticsProvider()
+    public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!$this->_statistcsProvider) {
-            $this->_statistcsProvider = new StatisticsProvider($this);
+        if (!isset($this->_statisticsProvider)) {
+            $this->_statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statistcsProvider;
+        return $this->_statisticsProvider;
     }
 }
