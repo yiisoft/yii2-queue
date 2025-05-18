@@ -15,6 +15,7 @@ use tests\drivers\CliTestCase;
 use Yii;
 use yii\di\Instance;
 use yii\queue\redis\Queue;
+use yii\redis\Connection;
 
 /**
  * Redis Queue Test.
@@ -91,32 +92,31 @@ class QueueTest extends CliTestCase
         $this->assertFalse((bool) $this->getQueue()->redis->hexists($this->getQueue()->channel . '.messages', $id));
     }
 
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
         };
 
-        $job = $this->createSimpleJob();
-        $this->getQueue()->push($job);
+        $this->getQueue()->push($this->createSimpleJob());
         $this->getQueue()->run(false);
     }
 
-    public function testDoneCount()
+    public function testDoneCount(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -151,13 +151,13 @@ class QueueTest extends CliTestCase
      * 3. Mock Redis to simulate crash during moveExpired
      * 4. Successfully process job after recovery
      */
-    public function testConsumeDelayedMessageAtLeastOnce()
+    public function testConsumeDelayedMessageAtLeastOnce(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(1)->push($job);
         // Expect a single message to be received.
         $messageCount = 0;
-        $this->getQueue()->messageHandler = function () use(&$messageCount) {
+        $this->getQueue()->messageHandler = static function () use(&$messageCount) {
             $messageCount++;
         };
 
@@ -171,7 +171,7 @@ class QueueTest extends CliTestCase
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
             'database' => getenv('REDIS_DB') ?: 1,
             'crashOnCommand' => 'rpush' // Crash when trying to move job to waiting queue.
-        ], 'yii\redis\Connection');
+        ], Connection::class);
 
         $queue = $this->getQueue();
         $old = $queue->redis;

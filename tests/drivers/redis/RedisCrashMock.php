@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace tests\drivers\redis;
 
 use yii\redis\Connection;

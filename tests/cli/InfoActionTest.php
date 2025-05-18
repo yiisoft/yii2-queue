@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,16 +27,15 @@ use yii\queue\cli\InfoAction;
  */
 class InfoActionTest extends TestCase
 {
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
-            ->getMock()
-        ;
+            ->getMock();
 
         $controller->expects(self::exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->with(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -45,8 +47,7 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
@@ -67,7 +68,7 @@ class InfoActionTest extends TestCase
         $action->run();
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
@@ -76,7 +77,7 @@ class InfoActionTest extends TestCase
 
         $controller->expects(self::exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->with(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -110,7 +111,7 @@ class InfoActionTest extends TestCase
         $action->run();
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
@@ -119,7 +120,7 @@ class InfoActionTest extends TestCase
 
         $controller->expects(self::exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->with(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -131,8 +132,7 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
@@ -162,7 +162,7 @@ class InfoActionTest extends TestCase
 
         $controller->expects(self::exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->with(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -174,8 +174,7 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 

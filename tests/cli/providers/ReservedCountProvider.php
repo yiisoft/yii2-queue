@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +22,7 @@ class ReservedCountProvider extends BaseStatisticsProvider implements ReservedCo
     /**
      * @inheritdoc
      */
-    public function getReservedCount()
+    public function getReservedCount(): int
     {
         return 10;
     }
