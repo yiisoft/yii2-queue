@@ -136,8 +136,8 @@ abstract class TestCase extends CliTestCase
 
     public function testDoneCount(): void
     {
-        $this->getQueue()->messageHandler = function () {
-            return true;
+        $this->getQueue()->messageHandler = static function () {
+            return null;
         };
 
         $job = $this->createSimpleJob();

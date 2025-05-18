@@ -90,32 +90,31 @@ class QueueTest extends CliTestCase
         $this->assertFileDoesNotExist($this->getQueue()->path . "/job$id.data");
     }
 
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
         };
 
-        $job = $this->createSimpleJob();
-        $this->getQueue()->push($job);
+        $this->getQueue()->push($this->createSimpleJob());
         $this->getQueue()->run(false);
     }
 
-    public function testDoneCount()
+    public function testDoneCount(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();

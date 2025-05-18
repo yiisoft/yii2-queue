@@ -40,5 +40,6 @@
         <InvalidFalsableReturnType errorLevel="suppress"/>
         <InvalidOperand errorLevel="suppress"/>
         <MixedArgument errorLevel="suppress"/>
+        <MissingClassConstType errorLevel="suppress"/>
     </issueHandlers>
 </psalm>
