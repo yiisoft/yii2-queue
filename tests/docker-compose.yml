@@ -7,7 +7,7 @@ services:
         context: ..
         dockerfile: tests/docker/php/Dockerfile
         args:
-            PHP_VERSION: ${PHP_VERSION:-8.1}
+            PHP_VERSION: ${PHP_VERSION:-8.2}
     volumes:
     - ./runtime/.composer:/root/.composer
     - ..:/code

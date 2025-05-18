@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,8 +27,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @var Queue
      */
-    protected $queue;
-
+    protected Queue $queue;
 
     public function __construct(Queue $queue, $config = [])
     {
@@ -36,47 +38,51 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getWaitingCount()
+    public function getWaitingCount(): int
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['reserved_at' => null])
-            ->andWhere(['delay' => 0])->count('*', $this->queue->db);
+            ->andWhere(['delay' => 0])
+            ->count('*', $this->queue->db);
     }
 
     /**
      * @inheritdoc
      */
-    public function getDelayedCount()
+    public function getDelayedCount(): int
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['reserved_at' => null])
-            ->andWhere(['>', 'delay', 0])->count('*', $this->queue->db);
+            ->andWhere(['>', 'delay', 0])
+            ->count('*', $this->queue->db);
     }
 
     /**
      * @inheritdoc
      */
-    public function getReservedCount()
+    public function getReservedCount(): int
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere('[[reserved_at]] is not null')
-            ->andWhere(['done_at' => null])->count('*', $this->queue->db);
+            ->andWhere(['done_at' => null])
+            ->count('*', $this->queue->db);
     }
 
     /**
      * @inheritdoc
      */
-    public function getDoneCount()
+    public function getDoneCount(): int
     {
         return (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
-            ->andWhere('[[done_at]] is not null')->count('*', $this->queue->db);
+            ->andWhere('[[done_at]] is not null')
+            ->count('*', $this->queue->db);
     }
 }

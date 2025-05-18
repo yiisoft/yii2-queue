@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +11,7 @@
 namespace yii\queue\cli;
 
 use yii\base\NotSupportedException;
+use yii\console\Controller;
 use yii\helpers\Console;
 use yii\queue\interfaces\DelayedCountInterface;
 use yii\queue\interfaces\DoneCountInterface;
@@ -19,19 +23,20 @@ use yii\queue\interfaces\WaitingCountInterface;
  * Info about queue status.
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
+ *
+ * @property Controller $controller
  */
 class InfoAction extends Action
 {
     /**
      * @var Queue
      */
-    public $queue;
-
+    public Queue $queue;
 
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
         if (!($this->queue instanceof StatisticsProviderInterface)) {
             throw new NotSupportedException('Queue does not support ' . StatisticsProviderInterface::class);

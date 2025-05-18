@@ -29,7 +29,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     /**
      * @var int
      */
-    public $options = 0;
+    public int $options = 0;
 
     /**
      * @inheritdoc

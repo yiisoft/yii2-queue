@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +26,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @var Queue
      */
-    protected $queue;
+    protected Queue $queue;
 
 
     public function __construct(Queue $queue, $config = [])
@@ -35,7 +38,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getWaitingCount()
+    public function getWaitingCount(): int
     {
         $prefix = $this->queue->channel;
         return $this->queue->redis->llen("$prefix.waiting");
@@ -44,7 +47,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getDelayedCount()
+    public function getDelayedCount(): int
     {
         $prefix = $this->queue->channel;
         return $this->queue->redis->zcount("$prefix.delayed", '-inf', '+inf');
@@ -53,7 +56,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getReservedCount()
+    public function getReservedCount(): int
     {
         $prefix = $this->queue->channel;
         return $this->queue->redis->zcount("$prefix.reserved", '-inf', '+inf');
@@ -62,7 +65,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getDoneCount()
+    public function getDoneCount(): int
     {
         $prefix = $this->queue->channel;
         $waiting = $this->getWaitingCount();

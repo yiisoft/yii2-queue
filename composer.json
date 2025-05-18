@@ -16,7 +16,7 @@
         "docs": "https://github.com/yiisoft/yii2-queue/blob/master/docs/guide"
     },
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "yiisoft/yii2": "~2.0.50",
         "symfony/process": "^7.0",
         "laravel/serializable-closure": "^v1.3.0"

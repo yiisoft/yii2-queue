@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,8 +26,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @var Queue
      */
-    protected $queue;
-
+    protected Queue $queue;
 
     public function __construct(Queue $queue, $config = [])
     {
@@ -35,7 +37,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getWaitingCount()
+    public function getWaitingCount(): int
     {
         $data = $this->getIndexData();
         return !empty($data['waiting']) ? count($data['waiting']) : 0;
@@ -44,7 +46,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getDelayedCount()
+    public function getDelayedCount(): int
     {
         $data = $this->getIndexData();
         return !empty($data['delayed']) ? count($data['delayed']) : 0;
@@ -53,7 +55,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getReservedCount()
+    public function getReservedCount(): int
     {
         $data = $this->getIndexData();
         return !empty($data['reserved']) ? count($data['reserved']) : 0;
@@ -62,7 +64,7 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
     /**
      * @inheritdoc
      */
-    public function getDoneCount()
+    public function getDoneCount(): int
     {
         $data = $this->getIndexData();
         $total = isset($data['lastId']) ? $data['lastId'] : 0;
@@ -74,8 +76,8 @@ class StatisticsProvider extends BaseObject implements DoneCountInterface, Waiti
         $fileName = $this->queue->path . '/index.data';
         if (file_exists($fileName)) {
             return call_user_func($this->queue->indexDeserializer, file_get_contents($fileName));
-        } else {
-            return [];
         }
+
+        return [];
     }
 }
