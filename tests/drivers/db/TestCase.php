@@ -127,6 +127,7 @@ abstract class TestCase extends CliTestCase
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
         };
 
         $job = $this->createSimpleJob();
@@ -137,7 +138,7 @@ abstract class TestCase extends CliTestCase
     public function testDoneCount(): void
     {
         $this->getQueue()->messageHandler = static function () {
-            return null;
+            return true;
         };
 
         $job = $this->createSimpleJob();

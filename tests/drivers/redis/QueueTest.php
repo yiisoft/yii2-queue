@@ -110,6 +110,7 @@ class QueueTest extends CliTestCase
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
         };
 
         $this->getQueue()->push($this->createSimpleJob());
@@ -159,6 +160,7 @@ class QueueTest extends CliTestCase
         $messageCount = 0;
         $this->getQueue()->messageHandler = static function () use(&$messageCount) {
             $messageCount++;
+            return true;
         };
 
         // Ensure the delayed message can be consumed when more time passed than the delay is.

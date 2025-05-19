@@ -108,6 +108,7 @@ class QueueTest extends CliTestCase
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
         };
 
         $this->getQueue()->push($this->createSimpleJob());
