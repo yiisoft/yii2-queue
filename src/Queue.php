@@ -226,8 +226,14 @@ abstract class Queue extends Component
     {
         list($job, $error) = $this->unserializeMessage($message);
 
-        if ($attempt > 1 && !($job instanceof RetryableJobInterface)) {
-            return false;
+        // Handle aborted jobs without thrown error
+        if ($attempt > 1) {
+            if ($job instanceof RetryableJobInterface && !$job->canRetry($attempt, $error)) {
+                return true;
+            } else {
+                // Non RetryableJobs can have a maximum of one attempt
+                return true;
+            }
         }
 
         $event = new ExecEvent([
