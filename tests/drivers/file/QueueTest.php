@@ -90,6 +90,42 @@ class QueueTest extends CliTestCase
         $this->assertFileDoesNotExist($this->getQueue()->path . "/job$id.data");
     }
 
+    public function testWaitingCount(): void
+    {
+        $this->getQueue()->push($this->createSimpleJob());
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
+    }
+
+    public function testDelayedCount(): void
+    {
+        $this->getQueue()->delay(5)->push($this->createSimpleJob());
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
+    }
+
+    public function testReservedCount(): void
+    {
+        $this->getQueue()->messageHandler = function () {
+            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
+        };
+
+        $this->getQueue()->push($this->createSimpleJob());
+        $this->getQueue()->run(false);
+    }
+
+    public function testDoneCount(): void
+    {
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+
+        $this->assertSimpleJobDone($job);
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
+    }
+
     /**
      * @return Queue
      */
@@ -100,6 +136,7 @@ class QueueTest extends CliTestCase
 
     protected function tearDown(): void
     {
+        $this->getQueue()->messageHandler = null;
         foreach (glob(Yii::getAlias("@runtime/queue/*")) as $fileName) {
             unlink($fileName);
         }

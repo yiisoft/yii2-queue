@@ -31,7 +31,6 @@ class VerboseBehavior extends Behavior
     public $owner;
     /**
      * @var Controller
-     * @psalm-suppress PropertyNotSetInConstructor
      */
     public Controller $command;
 

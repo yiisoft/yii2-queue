@@ -27,5 +27,19 @@
     </stubs>
     <issueHandlers>
         <MixedAssignment errorLevel="suppress"/>
+        <PropertyNotSetInConstructor errorLevel="suppress" />
+        <RedundantPropertyInitializationCheck errorLevel="suppress" />
+        <RiskyTruthyFalsyComparison errorLevel="suppress" />
+        <MissingOverrideAttribute errorLevel="suppress" />
+        <!-- for BC -->
+        <ClassMustBeFinal errorLevel="suppress"/>
+        <FalsableReturnStatement errorLevel="suppress"/>
+        <PossiblyFalseArgument errorLevel="suppress"/>
+        <PossiblyFalsePropertyAssignmentValue errorLevel="suppress"/>
+        <PossiblyFalseIterator errorLevel="suppress"/>
+        <InvalidFalsableReturnType errorLevel="suppress"/>
+        <InvalidOperand errorLevel="suppress"/>
+        <MixedArgument errorLevel="suppress"/>
+        <MissingClassConstType errorLevel="suppress"/>
     </issueHandlers>
 </psalm>

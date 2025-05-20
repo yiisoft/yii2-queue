@@ -20,13 +20,15 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Info about queue status.
  *
+ * @deprecated Will be removed in 3.0. Use yii\queue\cli\InfoAction instead.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class InfoAction extends Action
 {
     /**
      * @var Queue
-     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public CliQueue $queue;
 

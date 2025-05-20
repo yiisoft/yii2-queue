@@ -1,6 +1,6 @@
 {
     "name": "yiisoft/yii2-queue",
-    "description": "Yii2 Queue Extension which supported DB, Redis, RabbitMQ, Beanstalk, SQS and Gearman",
+    "description": "Yii2 Queue Extension which supports queues based on DB, Redis, RabbitMQ, Beanstalk, SQS, and Gearman",
     "type": "yii2-extension",
     "keywords": ["yii", "queue", "async", "gii", "db", "redis", "rabbitmq", "beanstalk", "gearman", "sqs"],
     "license": "BSD-3-Clause",
@@ -16,9 +16,9 @@
         "docs": "https://github.com/yiisoft/yii2-queue/blob/master/docs/guide"
     },
     "require": {
-        "php": ">=8.1",
-        "yiisoft/yii2": "~2.0.14",
-        "symfony/process": "^6.3",
+        "php": ">=8.2",
+        "yiisoft/yii2": "~2.0.50",
+        "symfony/process": "^7.0",
         "laravel/serializable-closure": "^v1.3.0"
     },
     "require-dev": {
@@ -33,7 +33,7 @@
         "enqueue/stomp": "^0.10.0",
         "pda/pheanstalk": "^5.0.0",
         "aws/aws-sdk-php": "3.285.0",
-        "vimeo/psalm": "^5.10.0"
+        "vimeo/psalm": "^6.0.0"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",

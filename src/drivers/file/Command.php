@@ -13,6 +13,7 @@ namespace yii\queue\file;
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\cli\InfoAction;
 
 /**
  * Manages application file-queue.
@@ -23,7 +24,7 @@ class Command extends CliCommand
 {
     /**
      * @var Queue
-     * @psalm-suppress PropertyNotSetInConstructor, NonInvariantDocblockPropertyType
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public CliQueue $queue;
     /**

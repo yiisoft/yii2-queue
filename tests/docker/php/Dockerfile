@@ -1,7 +1,7 @@
 # Important! Do not use this image in production!
 ARG PHP_VERSION
 
-FROM --platform=linux/amd64 php:${PHP_VERSION}-cli-alpine
+FROM php:${PHP_VERSION}-cli-alpine
 
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
     && echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \

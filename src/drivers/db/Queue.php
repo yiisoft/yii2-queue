@@ -17,13 +17,17 @@ use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsInterface;
+use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
  * Db Queue.
  *
+ * @property-read StatisticsProvider $statisticsProvider
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends CliQueue
+class Queue extends CliQueue implements StatisticsProviderInterface
 {
     /**
      * @var Connection|array|string
@@ -86,8 +90,8 @@ class Queue extends CliQueue
                     if ($this->handleMessage(
                         $payload['id'],
                         $payload['job'],
-                        (int)$payload['ttr'],
-                        (int)$payload['attempt']
+                        (int) $payload['ttr'],
+                        (int) $payload['attempt']
                     )) {
                         $this->release($payload);
                     }
@@ -280,5 +284,18 @@ class Queue extends CliQueue
             $this->mutex = Instance::ensure($this->mutex, Mutex::class);
         }
         return $mutex;
+    }
+
+    private StatisticsInterface $_statisticsProvider;
+
+    /**
+     * @return StatisticsInterface
+     */
+    public function getStatisticsProvider(): StatisticsInterface
+    {
+        if (!isset($this->_statisticsProvider)) {
+            $this->_statisticsProvider = new StatisticsProvider($this);
+        }
+        return $this->_statisticsProvider;
     }
 }

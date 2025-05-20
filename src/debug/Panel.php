@@ -24,7 +24,6 @@ use yii\queue\Queue;
  * Debug Panel.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
- * @psalm-suppress PropertyNotSetInConstructor
  */
 class Panel extends BasePanel implements ViewContextInterface
 {

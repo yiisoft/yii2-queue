@@ -1,10 +1,16 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.7 under development
+2.3.8 under development
 -----------------------
+- Enh #516: Ensure Redis driver messages are consumed at least once (soul11201)
+- Bug #522: Fix SQS driver type error with custom value passed to `queue/listen` (flaviovs)
 
-- no changes in this release.
+
+2.3.7 April 29, 2024
+--------------------
+
+- Enh #509: Add StatisticsProviderInterface to get statistics from queue (kalmer)
 
 
 2.3.6 October 03, 2023

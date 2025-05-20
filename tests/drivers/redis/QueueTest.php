@@ -13,7 +13,9 @@ namespace tests\drivers\redis;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
+use yii\di\Instance;
 use yii\queue\redis\Queue;
+use yii\redis\Connection;
 
 /**
  * Redis Queue Test.
@@ -90,6 +92,42 @@ class QueueTest extends CliTestCase
         $this->assertFalse((bool) $this->getQueue()->redis->hexists($this->getQueue()->channel . '.messages', $id));
     }
 
+    public function testWaitingCount(): void
+    {
+        $this->getQueue()->push($this->createSimpleJob());
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
+    }
+
+    public function testDelayedCount(): void
+    {
+        $this->getQueue()->delay(5)->push($this->createSimpleJob());
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
+    }
+
+    public function testReservedCount(): void
+    {
+        $this->getQueue()->messageHandler = function () {
+            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
+        };
+
+        $this->getQueue()->push($this->createSimpleJob());
+        $this->getQueue()->run(false);
+    }
+
+    public function testDoneCount(): void
+    {
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+        $job = $this->createSimpleJob();
+        $this->getQueue()->push($job);
+
+        $this->assertSimpleJobDone($job);
+
+        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
+    }
+
     /**
      * @return Queue
      */
@@ -100,7 +138,58 @@ class QueueTest extends CliTestCase
 
     protected function tearDown(): void
     {
+        $this->getQueue()->messageHandler = null;
         $this->getQueue()->redis->flushdb();
         parent::tearDown();
+    }
+
+    /**
+     * Verify that Redis data persists when process crashes during moveExpired.
+     *
+     * Steps:
+     * 1. Push a delayed job into queue
+     * 2. Wait for the job to expire
+     * 3. Mock Redis to simulate crash during moveExpired
+     * 4. Successfully process job after recovery
+     */
+    public function testConsumeDelayedMessageAtLeastOnce(): void
+    {
+        $job = $this->createSimpleJob();
+        $this->getQueue()->delay(1)->push($job);
+        // Expect a single message to be received.
+        $messageCount = 0;
+        $this->getQueue()->messageHandler = static function () use(&$messageCount) {
+            $messageCount++;
+            return true;
+        };
+
+        // Ensure the delayed message can be consumed when more time passed than the delay is.
+        sleep(2);
+
+        // Based on the implemention, emulate a crash when redis "rpush"
+        // command should be executed.
+        $mockRedis = Instance::ensure([
+            'class' => RedisCrashMock::class,
+            'hostname' => getenv('REDIS_HOST') ?: 'localhost',
+            'database' => getenv('REDIS_DB') ?: 1,
+            'crashOnCommand' => 'rpush' // Crash when trying to move job to waiting queue.
+        ], Connection::class);
+
+        $queue = $this->getQueue();
+        $old = $queue->redis;
+        $queue->redis = $mockRedis;
+
+        try {
+            $queue->run(false);
+        } catch (\Exception $e) {
+            // Ignore exceptions.
+        } finally {
+            $queue->redis = $old;
+        }
+
+        // Ensure the red lock is invalid. The red lock is valid for 1s.
+        sleep(2);
+        $this->getQueue()->run(false);
+        $this->assertEquals(1, $messageCount);
     }
 }

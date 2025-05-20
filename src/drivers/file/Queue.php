@@ -16,13 +16,17 @@ use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsInterface;
+use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
  * File Queue.
  *
+ * @property-read StatisticsProvider $statisticsProvider
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Queue extends CliQueue
+class Queue extends CliQueue implements StatisticsProviderInterface
 {
     /**
      * @var string
@@ -257,6 +261,7 @@ class Queue extends CliQueue
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
+        $id = 0;
 
         $this->touchIndex(function (array &$data) use ($payload, $ttr, $delay, &$id) {
             /** @var array{lastId: int, waiting: array, delayed: array} $data */
@@ -334,5 +339,18 @@ class Queue extends CliQueue
             flock($file, LOCK_UN);
             fclose($file);
         }
+    }
+
+    private StatisticsInterface $_statisticsProvider;
+
+    /**
+     * @return StatisticsInterface
+     */
+    public function getStatisticsProvider(): StatisticsInterface
+    {
+        if (!isset($this->_statisticsProvider)) {
+            $this->_statisticsProvider = new StatisticsProvider($this);
+        }
+        return $this->_statisticsProvider;
     }
 }
