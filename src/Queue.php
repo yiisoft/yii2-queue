@@ -230,7 +230,7 @@ abstract class Queue extends Component
         if ($attempt > 1) {
             if ($job instanceof RetryableJobInterface && !$job->canRetry($attempt - 1, $error)) {
                 return true;
-            } elseif ($attempt > $this->attempts) {
+            } elseif (!($job instanceof RetryableJobInterface) && $attempt > $this->attempts) {
                 return true;
             }
         }
