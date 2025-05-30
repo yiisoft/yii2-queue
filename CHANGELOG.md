@@ -5,7 +5,7 @@ Yii2 Queue Extension Change Log
 -----------------------
 - Enh #516: Ensure Redis driver messages are consumed at least once (soul11201)
 - Bug #522: Fix SQS driver type error with custom value passed to `queue/listen` (flaviovs)
-- Bug #528: Prevent multiple execution of aborted jobs
+- Bug #528: Prevent multiple execution of aborted jobs (luke-)
 
 2.3.7 April 29, 2024
 --------------------
