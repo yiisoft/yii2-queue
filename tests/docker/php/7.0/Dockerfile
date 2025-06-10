@@ -4,14 +4,14 @@ RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list \
     && sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list \
     && sed -i '/stretch-updates/d' /etc/apt/sources.list
 
-RUN apt update -qq \
-    && apt install -y ca-certificates \
+RUN apt-get update -qq \
+    && apt install -y --allow-unauthenticated ca-certificates \
     && sed -i '/^mozilla\/DST_Root_CA_X3.crt$/ s/^/!/' /etc/ca-certificates.conf \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
-    && apt-get install -y unzip curl zlib1g-dev libicu-dev libpq-dev libgearman-dev
+    && apt-get install -y --allow-unauthenticated unzip curl zlib1g-dev libicu-dev libpq-dev libgearman-dev
 
 RUN docker-php-ext-install zip pcntl bcmath pdo_mysql intl pdo_pgsql
 
