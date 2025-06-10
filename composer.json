@@ -21,7 +21,7 @@
         "symfony/process": "^3.3||^4.0||^5.0||^6.0||^7.0"
     },
     "require-dev": {
-        "yiisoft/yii2-redis": "~2.0.0",
+        "yiisoft/yii2-redis": "2.0.19",
         "php-amqplib/php-amqplib": "^2.8.0||^3.0.0",
         "enqueue/amqp-lib": "^0.8||^0.9.10||^0.10.0",
         "pda/pheanstalk": "~3.2.1",
@@ -30,7 +30,7 @@
         "yiisoft/yii2-gii": "~2.2.0",
         "phpunit/phpunit": "4.8.34",
         "aws/aws-sdk-php": ">=2.4",
-        "enqueue/stomp": "^0.8.39||^0.10.0",
+        "enqueue/stomp": "^0.8.39||0.10.19",
         "cweagans/composer-patches": "^1.7"
     },
     "suggest": {
