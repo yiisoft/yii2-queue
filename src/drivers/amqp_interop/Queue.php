@@ -20,6 +20,7 @@ use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
 use Interop\Amqp\Impl\AmqpBind;
+use Yii;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
 use yii\base\NotSupportedException;
@@ -296,8 +297,7 @@ class Queue extends CliQueue
                         $oldHandler($signal);
                     }
 
-                    pcntl_signal($signal, SIG_DFL);
-                    posix_kill(posix_getpid(), $signal);
+                    Yii::$app->end();
                 });
             }
         }
@@ -315,6 +315,7 @@ class Queue extends CliQueue
         $consumer = $this->context->createConsumer($queue);
 
         $callback = function (AmqpMessage $message, AmqpConsumer $consumer) {
+            pcntl_signal_dispatch();
             if ($message->isRedelivered()) {
                 $consumer->acknowledge($message);
 
@@ -333,6 +334,7 @@ class Queue extends CliQueue
 
                 $this->redeliver($message);
             }
+            pcntl_signal_dispatch();
 
             return true;
         };
