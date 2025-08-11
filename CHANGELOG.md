@@ -7,7 +7,7 @@ Yii2 Queue Extension Change Log
 - Bug #522: Fix SQS driver type error with custom value passed to `queue/listen` (flaviovs)
 - Bug #528: Prevent multiple execution of aborted jobs (luke-)
 - Enh #493: Pass environment variables to sub-processes (mgrechanik)
-- Bug #538: Fix type hint for previous parameter in `InvalidJobException` class constructor (terabytesoftw)
+- Bug #538: Fix type hint for previous parameter in `InvalidJobException` class constructor in PHP `8.4` (implicitly marking parameter nullable) (terabytesoftw)
 
 2.3.7 April 29, 2024
 --------------------
