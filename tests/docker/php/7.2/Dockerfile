@@ -1,7 +1,9 @@
 FROM php:7.2-cli
 
-RUN apt-get update \
-    && apt-get install -y unzip libbz2-dev curl zlib1g-dev libicu-dev libpq-dev libgearman-dev
+RUN echo "deb http://archive.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list \
+    && apt-get update --allow-releaseinfo-change \
+    && apt-get install -y unzip curl zlib1g-dev libicu-dev libpq-dev libgearman-dev
 
 RUN docker-php-ext-install zip pcntl bcmath pdo_mysql intl pdo_pgsql
 

@@ -31,7 +31,7 @@ class InvalidJobException extends \Exception
      * @param int $code
      * @param Throwable|null $previous
      */
-    public function __construct($serialized, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct($serialized, $message = '', $code = 0, $previous = null)
     {
         $this->serialized = $serialized;
         parent::__construct($message, $code, $previous);
