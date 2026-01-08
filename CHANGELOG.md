@@ -3,16 +3,16 @@ Yii2 Queue Extension Change Log
 
 3.0.0 under development
 ---
-- The minimum supported PHP version is 8.3
-- Added PSALM for static code analysis. Error level set to 1
-- Added strict typing
-- The `pda/pheanstalk` package of the Beanstalk driver has been updated to version 5.*
-- Removed deprecated interfaces `RetryableJob`, `Job`, `Serializer`
-- Removed deprecated classes `Signal`, `Verbose`
-- Deprecated driver amqp has been removed
-- Returned tests for the SQS driver
-- All dependent packages for supported drivers have been updated to the latest versions
-- The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package
+- The minimum supported PHP version is 8.3 (@s1lver)
+- Added PSALM for static code analysis. Error level set to 1 (@s1lver)
+- Added strict typing (@s1lver)
+- The `pda/pheanstalk` package of the Beanstalk driver has been updated to version 8.* (@s1lver)
+- Removed deprecated interfaces `RetryableJob`, `Job`, `Serializer` (@s1lver)
+- Removed deprecated classes `Signal`, `Verbose` (@s1lver)
+- Deprecated driver amqp has been removed (@s1lver)
+- Returned tests for the SQS driver (@s1lver)
+- All dependent packages for supported drivers have been updated to the latest versions (@s1lver)
+- The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
 
 2.3.8 January 08, 2026
 ----------------------
