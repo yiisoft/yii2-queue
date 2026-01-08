@@ -31,6 +31,11 @@ class Queue extends CliQueue
      */
     public string $url = 'localhost';
     /**
+     * Custom endpoint for SQS
+     * @var string|null
+     */
+    public ?string $endpoint = null;
+    /**
      * aws access key.
      * @var string|null
      */
@@ -233,11 +238,18 @@ class Queue extends CliQueue
             $credentials = CredentialProvider::defaultProvider();
         }
 
-        $this->client = new SqsClient([
+        $config = [
             'credentials' => $credentials,
             'region' => $this->region,
             'version' => $this->version,
-        ]);
+        ];
+
+        if (null !== $this->endpoint) {
+            $config['endpoint'] = $this->endpoint;
+            $config['use_path_style_endpoint'] = true;
+        }
+
+        $this->client = new SqsClient($config);
         return $this->client;
     }
 }

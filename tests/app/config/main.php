@@ -130,6 +130,7 @@ $config = [
             'key' => getenv('AWS_KEY'),
             'secret' => getenv('AWS_SECRET'),
             'region' => getenv('AWS_REGION'),
+            'endpoint' => getenv('AWS_SQS_ENDPOINT'),
         ],
         'sqsFifoQueue' => [
             'class' => SqsQueue::class,
@@ -138,6 +139,7 @@ $config = [
             'secret' => getenv('AWS_SECRET'),
             'region' => getenv('AWS_REGION'),
             'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
+            'endpoint' => getenv('AWS_SQS_ENDPOINT'),
         ],
     ],
 ];

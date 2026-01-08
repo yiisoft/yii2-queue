@@ -42,6 +42,7 @@ services:
       AWS_KEY: ${AWS_KEY:-admin}
       AWS_SECRET: ${AWS_SECRET:-admin}
       AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_SQS_ENDPOINT: ${AWS_SQS_ENDPOINT:-http://localstack:4566}
       AWS_SQS_URL: ${AWS_SQS_URL:-http://localstack:4566/000000000000/yii2-queue}
       AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL:-http://localstack:4566/000000000000/yii2-queue.fifo}
       AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID:-default}
