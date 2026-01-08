@@ -7,7 +7,7 @@ services:
         context: ..
         dockerfile: tests/docker/php/Dockerfile
         args:
-            PHP_VERSION: ${PHP_VERSION:-8.2}
+            PHP_VERSION: ${PHP_VERSION:-8.3}
     volumes:
     - ./runtime/.composer:/root/.composer
     - ..:/code
@@ -61,7 +61,8 @@ services:
 
   # https://hub.docker.com/_/mysql/
   mysql:
-    image: mysql:5.7
+    image: mysql:5.7.44
+    platform: linux/amd64
     ports:
     - "3307:3306"
     environment:

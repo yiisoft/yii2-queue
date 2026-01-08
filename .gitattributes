@@ -1,15 +1,9 @@
 # Ignore all test and documentation for archive
-/.github            export-ignore
+.*                  export-ignore
+*.dist              export-ignore
+*.xml               export-ignore
 /docs               export-ignore
 /tests              export-ignore
-/.dockerignore      export-ignore
-/.editorconfig      export-ignore
-/.env.example       export-ignore
-/.gitattributes     export-ignore
-/.gitignore         export-ignore
-/.php_cs            export-ignore
 /Makefile           export-ignore
-/phpunit.xml.dist   export-ignore
 /support            export-ignore
-/psalm.xml          export-ignore
 /stubs              export-ignore

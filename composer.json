@@ -16,14 +16,14 @@
         "docs": "https://github.com/yiisoft/yii2-queue/blob/master/docs/guide"
     },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "yiisoft/yii2": "~2.0.50",
         "symfony/process": "^7.0",
         "laravel/serializable-closure": "^v1.3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.3.0",
-        "yiisoft/yii2-redis": "~2.0.0",
+        "yiisoft/yii2-redis": "~2.1.0",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
         "php-amqplib/php-amqplib": "^3.0.0",
@@ -31,8 +31,8 @@
         "enqueue/amqp-bunny": "^0.10.0",
         "enqueue/amqp-ext": "^0.10.8",
         "enqueue/stomp": "^0.10.0",
-        "pda/pheanstalk": "^5.0.0",
-        "aws/aws-sdk-php": "3.285.0",
+        "pda/pheanstalk": "^7.0.0",
+        "aws/aws-sdk-php": "^3.369.0",
         "vimeo/psalm": "^6.0.0"
     },
     "suggest": {
