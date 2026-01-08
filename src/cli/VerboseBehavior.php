@@ -63,6 +63,7 @@ class VerboseBehavior extends Behavior
         $this->command->stdout($this->jobTitle($event), Console::FG_GREY);
         $this->command->stdout(' - ', Console::FG_YELLOW);
         $this->command->stdout('Started', Console::FG_GREEN);
+        $this->command->stdout(' (params:' . json_encode($event->job, JSON_UNESCAPED_UNICODE) . ')');
         $this->command->stdout(PHP_EOL);
     }
 
