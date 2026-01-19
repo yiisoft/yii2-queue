@@ -11,6 +11,12 @@
     </MissingTemplateParam>
   </file>
   <file src="src/cli/Command.php">
+    <InvalidArgument>
+      <code><![CDATA[$action]]></code>
+    </InvalidArgument>
+    <MissingTemplateParam>
+      <code><![CDATA[Command]]></code>
+    </MissingTemplateParam>
     <RedundantCondition>
       <code><![CDATA[isset($_ENV)]]></code>
     </RedundantCondition>
@@ -19,9 +25,9 @@
     </TypeDoesNotContainNull>
   </file>
   <file src="src/cli/Queue.php">
-    <MixedArgumentTypeCoercion>
+    <ArgumentTypeCoercion>
       <code><![CDATA[$this->loopConfig]]></code>
-    </MixedArgumentTypeCoercion>
+    </ArgumentTypeCoercion>
   </file>
   <file src="src/cli/SignalLoop.php">
     <MixedArgumentTypeCoercion>
