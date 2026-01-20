@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 2.3.9 under development
 -----------------------
 
-- no changes in this release.
+- Enh #412: Added path to an `.ini` file to a child process (werdender)
 
 
 2.3.8 January 08, 2026
