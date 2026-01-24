@@ -33,8 +33,7 @@
         "enqueue/stomp": "^0.10.0",
         "pda/pheanstalk": "^8.0.0",
         "aws/aws-sdk-php": "^3.369.0",
-        "vimeo/psalm": "^6.0.0",
-        "squizlabs/php_codesniffer": "^4.0.0"
+        "vimeo/psalm": "^6.0.0"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
