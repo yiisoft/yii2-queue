@@ -20,6 +20,8 @@ use yii\queue\Queue as BaseQueue;
 /**
  * Queue with CLI.
  *
+ * @property-read int|null $workerPid
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 abstract class Queue extends BaseQueue implements BootstrapInterface

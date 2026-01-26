@@ -17,6 +17,16 @@ use yii\queue\stomp\Queue as StompQueue;
 use yii\queue\sync\Queue as SyncQueue;
 use yii\redis\Connection as RedisConnection;
 
+if (version_compare(PHP_VERSION, '8.5.0') >= 0) {
+    $mysqlAttributes = [
+        Pdo\Mysql::ATTR_INIT_COMMAND => 'SET sql_mode = "STRICT_ALL_TABLES"',
+    ];
+} else {
+    $mysqlAttributes = [
+        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode = "STRICT_ALL_TABLES"',
+    ];
+}
+
 $config = [
     'id' => 'yii2-queue-app',
     'basePath' => dirname(__DIR__),
@@ -51,9 +61,7 @@ $config = [
             'username' => getenv('MYSQL_USER') ?: 'root',
             'password' => getenv('MYSQL_PASSWORD') ?: '',
             'charset' => 'utf8',
-            'attributes' => [
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode = "STRICT_ALL_TABLES"',
-            ],
+            'attributes' => $mysqlAttributes,
         ],
         'mysqlQueue' => [
             'class' => DbQueue::class,
@@ -130,6 +138,7 @@ $config = [
             'key' => getenv('AWS_KEY'),
             'secret' => getenv('AWS_SECRET'),
             'region' => getenv('AWS_REGION'),
+            'endpoint' => getenv('AWS_SQS_ENDPOINT'),
         ],
         'sqsFifoQueue' => [
             'class' => SqsQueue::class,
@@ -138,6 +147,7 @@ $config = [
             'secret' => getenv('AWS_SECRET'),
             'region' => getenv('AWS_REGION'),
             'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
+            'endpoint' => getenv('AWS_SQS_ENDPOINT'),
         ],
     ],
 ];

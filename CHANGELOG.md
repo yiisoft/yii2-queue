@@ -3,22 +3,26 @@ Yii2 Queue Extension Change Log
 
 3.0.0 under development
 ---
-- The minimum supported PHP version is 8.2
-- Added PSALM for static code analysis. Error level set to 1
-- Added strict typing
-- The `pda/pheanstalk` package of the Beanstalk driver has been updated to version 5.*
-- Removed deprecated interfaces `RetryableJob`, `Job`, `Serializer`
-- Removed deprecated classes `Signal`, `Verbose`
-- Deprecated driver amqp has been removed
-- Returned tests for the SQS driver
-- All dependent packages for supported drivers have been updated to the latest versions
-- The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package
+- The minimum supported PHP version is 8.3 (@s1lver)
+- Added PSALM for static code analysis. Error level set to 1 (@s1lver)
+- Added strict typing (@s1lver)
+- The `pda/pheanstalk` package of the Beanstalk driver has been updated to version 8.* (@s1lver)
+- Removed deprecated interfaces `RetryableJob`, `Job`, `Serializer` (@s1lver)
+- Removed deprecated classes `Signal`, `Verbose` (@s1lver)
+- Deprecated driver amqp has been removed (@s1lver)
+- Returned tests for the SQS driver (@s1lver)
+- All dependent packages for supported drivers have been updated to the latest versions (@s1lver)
+- The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
 
-2.3.8 under development
------------------------
-- Enh #516: Ensure Redis driver messages are consumed at least once (soul11201)
+2.3.8 January 08, 2026
+----------------------
+
 - Bug #522: Fix SQS driver type error with custom value passed to `queue/listen` (flaviovs)
 - Bug #528: Prevent multiple execution of aborted jobs (luke-)
+- Bug #538: Fix type hint for previous parameter in `InvalidJobException` class constructor in PHP `8.4` (implicitly marking parameter nullable) (terabytesoftw)
+- Enh #493: Pass environment variables to sub-processes (mgrechanik)
+- Enh #516: Ensure Redis driver messages are consumed at least once (soul11201)
+
 
 2.3.7 April 29, 2024
 --------------------

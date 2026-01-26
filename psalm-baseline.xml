@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.14.3@d0b040a91f280f071c1abcb1b77ce3822058725a">
+  <file src="src/LogBehavior.php">
+    <MissingTemplateParam>
+      <code><![CDATA[LogBehavior]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="src/cli/Action.php">
+    <MissingTemplateParam>
+      <code><![CDATA[Action]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="src/cli/Command.php">
+    <InvalidArgument>
+      <code><![CDATA[$action]]></code>
+    </InvalidArgument>
+    <MissingTemplateParam>
+      <code><![CDATA[Command]]></code>
+    </MissingTemplateParam>
+    <RedundantCondition>
+      <code><![CDATA[isset($_ENV)]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[null]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="src/cli/Queue.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$this->loopConfig]]></code>
+    </ArgumentTypeCoercion>
+  </file>
+  <file src="src/cli/SignalLoop.php">
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$config]]></code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="src/cli/VerboseBehavior.php">
+    <MissingTemplateParam>
+      <code><![CDATA[VerboseBehavior]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="src/closure/Behavior.php">
+    <MissingTemplateParam>
+      <code><![CDATA[Behavior]]></code>
+    </MissingTemplateParam>
+  </file>
+  <file src="src/drivers/db/StatisticsProvider.php">
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$config]]></code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="src/drivers/file/Queue.php">
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[false !== $alias]]></code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="src/drivers/file/StatisticsProvider.php">
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$config]]></code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="src/drivers/redis/StatisticsProvider.php">
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$config]]></code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="src/gii/Generator.php">
+    <DocblockTypeContradiction>
+      <code><![CDATA[$path === false]]></code>
+      <code><![CDATA[false === $alias]]></code>
+    </DocblockTypeContradiction>
+  </file>
+</files>

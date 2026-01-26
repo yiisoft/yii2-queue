@@ -15,13 +15,14 @@ Documentation is at [docs/guide/README.md](docs/guide/README.md).
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-queue/v/stable.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2-queue/downloads.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
 [![Build Status](https://github.com/yiisoft/yii2-queue/workflows/build/badge.svg)](https://github.com/yiisoft/yii2-queue/actions)
-
-## Requirements
-
-- PHP 8.2 or higher.
+[![Static status](https://github.com/yiisoft/yii2-queue/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/yii2-queue/actions?query=workflow%3A%22static+analysis%22)
+[![codecov](https://codecov.io/gh/yiisoft/yii2-queue/graph/badge.svg)](https://codecov.io/gh/yiisoft/yii2-queue)
 
 Installation
 ------------
+
+> [!IMPORTANT]
+> - The minimum required [PHP](https://www.php.net/) version is PHP `8.3`.
 
 The preferred way to install this extension is through [composer](https://getcomposer.org/download/):
 
