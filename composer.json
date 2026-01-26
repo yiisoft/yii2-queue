@@ -26,6 +26,7 @@
         "yiisoft/yii2-redis": "~2.1.0",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
+        "yiisoft/yii2-coding-standards": "^3.0",
         "php-amqplib/php-amqplib": "^3.0.0",
         "enqueue/amqp-lib": "^0.10.0",
         "enqueue/amqp-bunny": "^0.10.0",
@@ -80,5 +81,9 @@
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    ]
+    ],
+    "scripts": {
+        "phpcbf": "./vendor/bin/phpcbf -q src/ tests/",
+        "phpcs": "./vendor/bin/phpcs -q src/ tests/"
+    }
 }

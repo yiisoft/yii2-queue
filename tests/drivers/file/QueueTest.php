@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\drivers\file;
 
@@ -137,7 +137,7 @@ class QueueTest extends CliTestCase
     protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
-        foreach (glob(Yii::getAlias("@runtime/queue/*")) as $fileName) {
+        foreach (glob(Yii::getAlias('@runtime/queue/*')) as $fileName) {
             unlink($fileName);
         }
         parent::tearDown();

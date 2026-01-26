@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\debug;
 
@@ -127,7 +127,7 @@ class Panel extends BasePanel implements ViewContextInterface
                     } elseif ($queue->isDone($job['id'])) {
                         $job['status'] = 'done';
                     }
-                } catch (NotSupportedException|Exception $e) {
+                } catch (NotSupportedException | Exception $e) {
                     $job['status'] = $e->getMessage();
                 }
             }

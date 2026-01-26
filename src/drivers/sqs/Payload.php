@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\sqs;
 
@@ -24,7 +24,7 @@ class Payload
      */
     public function __construct(array $response)
     {
-        $this->messages = $response['Messages']??[];
+        $this->messages = $response['Messages'] ?? [];
         if (!empty($this->messages)) {
             $messages = $this->messages;
             /** @var array{

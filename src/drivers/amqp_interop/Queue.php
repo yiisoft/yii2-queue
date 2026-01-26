@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\amqp_interop;
 
@@ -540,9 +540,9 @@ class Queue extends CliQueue
         $newMessage->setProperty(self::ATTEMPT, ++$attempt);
 
         $this->context->createProducer()->send(
-             $this->context->createQueue($this->queueName),
-             $newMessage
-         );
+            $this->context->createQueue($this->queueName),
+            $newMessage
+        );
     }
 
     private function createQueue(): AmqpQueue

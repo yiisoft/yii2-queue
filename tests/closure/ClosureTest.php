@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\closure;
 
@@ -89,7 +89,7 @@ class ClosureTest extends TestCase
      */
     protected function tearDown(): void
     {
-        foreach (glob(Yii::getAlias("@runtime/job-*.lock")) as $fileName) {
+        foreach (glob(Yii::getAlias('@runtime/job-*.lock')) as $fileName) {
             unlink($fileName);
         }
         parent::tearDown();
