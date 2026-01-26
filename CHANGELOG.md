@@ -13,7 +13,7 @@ Yii2 Queue Extension Change Log
 - Enh #542: Returned tests for the SQS driver (@s1lver)
 - Enh #503: All dependent packages for supported drivers have been updated to the latest versions (@s1lver)
 - Enh #503: The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
-- Enh #: Applying Yii2 coding standards (@s1lver)
+- Enh #544: Applying Yii2 coding standards (@s1lver)
 
 2.3.8 January 08, 2026
 ----------------------
