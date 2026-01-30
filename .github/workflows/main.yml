@@ -1,9 +1,8 @@
----
 name: build
 
 on:
   pull_request:
-    paths-ignore:
+    paths-ignore: &ignore-paths
       - 'docs/**'
       - 'README.md'
       - 'CHANGELOG.md'
@@ -13,13 +12,7 @@ on:
 
   push:
     branches: [ 'master' ]
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'UPGRADE.md'
-      - '.gitignore'
-      - '.gitattributes'
+    paths-ignore: *ignore-paths
 
 env:
   COMPOSE_PROJECT_NAME: yii2-queue

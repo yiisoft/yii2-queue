@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue;
 
@@ -210,9 +210,11 @@ abstract class Queue extends Component
     {
         [$job, $error] = $this->unserializeMessage($message);
         // Handle aborted jobs without throwing an error.
-        if ($attempt > 1 &&
-            (($job instanceof RetryableJobInterface && !$job->canRetry($attempt - 1, $error))
-                || (!($job instanceof RetryableJobInterface) && $attempt > $this->attempts))) {
+        if (
+            $attempt > 1
+            && (($job instanceof RetryableJobInterface && !$job->canRetry($attempt - 1, $error))
+                || (!($job instanceof RetryableJobInterface) && $attempt > $this->attempts))
+        ) {
             return true;
         }
         $event = new ExecEvent([

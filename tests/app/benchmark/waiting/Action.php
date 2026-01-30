@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\app\benchmark\waiting;
 
@@ -69,10 +69,10 @@ class Action extends BaseAction
             throw new ConsoleException("Unknown mode: $mode.");
         }
         if ($jobCount <= 0) {
-            throw new ConsoleException("Job count must be greater than zero.");
+            throw new ConsoleException('Job count must be greater than zero.');
         }
         if ($workerCount <= 0) {
-            throw new ConsoleException("Worker count must be greater than zero.");
+            throw new ConsoleException('Worker count must be greater than zero.');
         }
 
         foreach ($this->modes[$mode] as $queueName => $workerCommand) {
@@ -96,7 +96,6 @@ class Action extends BaseAction
 
                 $pushedCount = 0;
                 while ($pushedCount < $jobCount) {
-
                     // Push batch of jobs
                     $jobs = [];
                     for ($i = 0; $i < $workerCount && $pushedCount < $jobCount; $i++) {

@@ -1,0 +1,28 @@
+name: linter
+
+permissions:
+  contents: read
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".editorconfig"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - "docker-compose.yml"
+      - "LICENSE.md"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "UPGRADE.md"
+
+  push: *ignore-paths
+
+jobs:
+  phpcs:
+    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@master
+    with:
+      directories: src/ tests/
+      extensions: 'amqp'

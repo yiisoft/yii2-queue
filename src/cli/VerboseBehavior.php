@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\cli;
 
@@ -80,7 +80,7 @@ class VerboseBehavior extends Behavior
         $this->command->stdout(' - ', BaseConsole::FG_YELLOW);
         $this->command->stdout('Done', BaseConsole::FG_GREEN);
         $duration = number_format(round(microtime(true) - $this->jobStartedAt, 3), 3);
-        $memory = round(memory_get_peak_usage()/1024/1024, 2);
+        $memory = round(memory_get_peak_usage() / 1024 / 1024, 2);
         $this->command->stdout(" ($duration s, $memory MiB)", BaseConsole::FG_YELLOW);
         $this->command->stdout(PHP_EOL);
     }

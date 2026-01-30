@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
@@ -80,12 +80,14 @@ class Queue extends CliQueue
                     try {
                         $info = $pheanstalk->statsJob($job);
 
-                        if ($this->handleMessage(
-                            $job->getId(),
-                            $job->getData(),
-                            $info->timeToRelease,
-                            $info->reserves
-                        )) {
+                        if (
+                            $this->handleMessage(
+                                $job->getId(),
+                                $job->getData(),
+                                $info->timeToRelease,
+                                $info->reserves
+                            )
+                        ) {
                             $pheanstalk->delete($job);
                         }
                     } catch (Exception) {

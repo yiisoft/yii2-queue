@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\db;
 
@@ -87,12 +87,14 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             while ($canContinue()) {
                 if ($payload = $this->reserve()) {
                     /** @psalm-var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
-                    if ($this->handleMessage(
-                        $payload['id'],
-                        $payload['job'],
-                        (int) $payload['ttr'],
-                        (int) $payload['attempt']
-                    )) {
+                    if (
+                        $this->handleMessage(
+                            $payload['id'],
+                            $payload['job'],
+                            (int) $payload['ttr'],
+                            (int) $payload['attempt']
+                        )
+                    ) {
                         $this->release($payload);
                     }
                 } elseif (!$repeat) {
@@ -176,7 +178,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         if (null === $tableSchema) {
             return null;
         }
-        return $this->getDb()->getLastInsertID($tableSchema->sequenceName??'');
+        return $this->getDb()->getLastInsertID($tableSchema->sequenceName ?? '');
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\drivers\redis;
 
@@ -158,7 +158,7 @@ class QueueTest extends CliTestCase
         $this->getQueue()->delay(1)->push($job);
         // Expect a single message to be received.
         $messageCount = 0;
-        $this->getQueue()->messageHandler = static function () use(&$messageCount) {
+        $this->getQueue()->messageHandler = static function () use (&$messageCount) {
             $messageCount++;
             return true;
         };

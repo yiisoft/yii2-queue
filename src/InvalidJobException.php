@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue;
 
@@ -31,11 +31,10 @@ class InvalidJobException extends Exception
      */
     public function __construct(
         private readonly string $serialized,
-        string                  $message = '',
-        int                     $code = 0,
-        ?Throwable              $previous = null
-    )
-    {
+        string $message = '',
+        int $code = 0,
+        ?Throwable $previous = null
+    ) {
         parent::__construct($message, $code, $previous);
     }
 
