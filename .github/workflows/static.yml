@@ -15,6 +15,9 @@ on:
 
 name: static analysis
 
+permissions:
+  contents: read
+
 env:
   COMPOSE_PROJECT_NAME: yii2-queue
   COMPOSE_FILE: tests/docker-compose.yml
