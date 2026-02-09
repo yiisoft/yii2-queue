@@ -6,17 +6,19 @@ permissions:
 on:
   pull_request: &ignore-paths
     paths-ignore:
-      - ".editorconfig"
-      - ".gitattributes"
-      - ".github/CONTRIBUTING.md"
-      - ".github/FUNDING.yml"
-      - ".github/SECURITY.md"
-      - ".gitignore"
-      - "docker-compose.yml"
-      - "LICENSE.md"
-      - "README.md"
-      - "CHANGELOG.md"
-      - "UPGRADE.md"
+      - 'docs/**'
+      - '.github/CONTRIBUTING.md'
+      - '.github/FUNDING.yml'
+      - '.github/SECURITY.md'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE.md'
+      - 'UPGRADE.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - '.editorconfig'
+      - 'docker-compose.yml'
+      - 'Makefile'
 
   push: *ignore-paths
 
