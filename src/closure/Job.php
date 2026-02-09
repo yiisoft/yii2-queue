@@ -1,14 +1,19 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\closure;
 
-use function Opis\Closure\unserialize as opis_unserialize;
+use Laravel\SerializableClosure\SerializableClosure;
+use Laravel\SerializableClosure\Serializers\Native;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Closure Job.
@@ -20,19 +25,24 @@ class Job implements JobInterface
     /**
      * @var string serialized closure
      */
-    public $serialized;
-
+    public string $serialized = '';
 
     /**
      * Unserializes and executes a closure.
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
-        $unserialized = opis_unserialize($this->serialized);
-        if ($unserialized instanceof \Closure) {
-            return $unserialized();
+        /** @var SerializableClosure $unserialize */
+        $unserialize = unserialize($this->serialized);
+        $closure = $unserialize->getClosure();
+        $nativeClosure = $closure();
+
+        if ($nativeClosure instanceof Native) {
+            return $nativeClosure();
         }
-        return $unserialized->execute($queue);
+
+        /** @psalm-var JobInterface $nativeClosure */
+        return $nativeClosure->execute($queue);
     }
 }

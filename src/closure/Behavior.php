@@ -1,13 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\closure;
 
-use function Opis\Closure\serialize as opis_serialize;
+use Laravel\SerializableClosure\SerializableClosure;
 use yii\queue\PushEvent;
 use yii\queue\Queue;
 
@@ -30,14 +33,14 @@ class Behavior extends \yii\base\Behavior
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public $owner;
-
 
     /**
      * @inheritdoc
      */
-    public function events()
+    public function events(): array
     {
         return [
             Queue::EVENT_BEFORE_PUSH => 'beforePush',
@@ -48,9 +51,14 @@ class Behavior extends \yii\base\Behavior
      * Converts the closure to a job object.
      * @param PushEvent $event
      */
-    public function beforePush(PushEvent $event)
+    public function beforePush(PushEvent $event): void
     {
-        $serialized = opis_serialize($event->job);
+        SerializableClosure::setSecretKey(uniqid('', true));
+        $serialized = serialize(
+            new SerializableClosure(function () use ($event) {
+                return $event->job;
+            })
+        );
         $event->job = new Job();
         $event->job->serialized = $serialized;
     }

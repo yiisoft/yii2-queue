@@ -1,9 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 /**
- * @var \yii\web\View $this
+ * @var View $this
  * @var string $url
  * @var int $count
  */
+
+use yii\web\View;
+
 ?>
 <div class="yii-debug-toolbar__block">
     <a href="<?= $url ?>">
@@ -13,4 +19,3 @@
         </span>
     </a>
 </div>
-

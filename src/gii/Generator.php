@@ -1,15 +1,19 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\gii;
 
 use Yii;
 use yii\base\BaseObject;
 use yii\gii\CodeFile;
+use yii\gii\Generator as BaseGenerator;
 use yii\queue\JobInterface;
 use yii\queue\RetryableJobInterface;
 
@@ -18,19 +22,18 @@ use yii\queue\RetryableJobInterface;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Generator extends \yii\gii\Generator
+class Generator extends BaseGenerator
 {
-    public $jobClass;
-    public $properties;
-    public $retryable = false;
-    public $ns = 'app\jobs';
-    public $baseClass = BaseObject::class;
-
+    public string $jobClass = '';
+    public string $properties = '';
+    public bool $retryable = false;
+    public string $ns = 'app\jobs';
+    public string $baseClass = BaseObject::class;
 
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Job Generator';
     }
@@ -38,7 +41,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'This generator generates a Job class for the queue.';
     }
@@ -46,7 +49,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return array_merge(parent::rules(), [
             [['jobClass', 'properties', 'ns', 'baseClass'], 'trim'],
@@ -63,7 +66,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return array_merge(parent::attributeLabels(), [
             'jobClass' => 'Job Class',
@@ -77,7 +80,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function hints()
+    public function hints(): array
     {
         return array_merge(parent::hints(), [
             'jobClass' => 'This is the name of the Job class to be generated, e.g., <code>SomeJob</code>.',
@@ -91,7 +94,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function stickyAttributes()
+    public function stickyAttributes(): array
     {
         return array_merge(parent::stickyAttributes(), ['ns', 'baseClass']);
     }
@@ -99,7 +102,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function requiredTemplates()
+    public function requiredTemplates(): array
     {
         return ['job.php'];
     }
@@ -107,7 +110,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @inheritdoc
      */
-    public function generate()
+    public function generate(): array
     {
         $params = [];
         $params['jobClass'] = $this->jobClass;
@@ -125,8 +128,12 @@ class Generator extends \yii\gii\Generator
         }
         $params['properties'] = array_unique(preg_split('/[\s,]+/', $this->properties, -1, PREG_SPLIT_NO_EMPTY));
 
+        $alias = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
+        if (false === $alias) {
+            return [];
+        }
         $jobFile = new CodeFile(
-            Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $this->jobClass . '.php',
+            $alias . '/' . $this->jobClass . '.php',
             $this->render('job.php', $params)
         );
 
@@ -138,8 +145,9 @@ class Generator extends \yii\gii\Generator
      *
      * @param string $attribute job attribute name.
      */
-    public function validateJobClass($attribute)
+    public function validateJobClass(string $attribute): void
     {
+        /** @psalm-suppress MixedArgument */
         if ($this->isReservedKeyword($this->$attribute)) {
             $this->addError($attribute, 'Class name cannot be a reserved PHP keyword.');
         }
@@ -150,8 +158,9 @@ class Generator extends \yii\gii\Generator
      *
      * @param string $attribute Namespace attribute name.
      */
-    public function validateNamespace($attribute)
+    public function validateNamespace(string $attribute): void
     {
+        /** @psalm-var string $value */
         $value = $this->$attribute;
         $value = ltrim($value, '\\');
         $path = Yii::getAlias('@' . str_replace('\\', '/', $value), false);

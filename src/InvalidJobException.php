@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue;
 
+use Exception;
 use Throwable;
 
 /**
@@ -17,30 +21,27 @@ use Throwable;
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  * @since 2.1.1
  */
-class InvalidJobException extends \Exception
+class InvalidJobException extends Exception
 {
-    /**
-     * @var string
-     */
-    private $serialized;
-
-
     /**
      * @param string $serialized
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
      */
-    public function __construct($serialized, $message = '', $code = 0, $previous = null)
-    {
-        $this->serialized = $serialized;
+    public function __construct(
+        private readonly string $serialized,
+        string $message = '',
+        int $code = 0,
+        ?Throwable $previous = null
+    ) {
         parent::__construct($message, $code, $previous);
     }
 
     /**
      * @return string of serialized message that cannot be unserialized to a job
      */
-    final public function getSerialized()
+    final public function getSerialized(): string
     {
         return $this->serialized;
     }

@@ -1,14 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\sqs;
 
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application aws sqs-queue.
@@ -20,9 +24,9 @@ class Command extends CliCommand
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * Runs all jobs from sqs.
@@ -30,7 +34,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -40,16 +44,11 @@ class Command extends CliCommand
      * It can be used as demon process.
      *
      * @param int $timeout number of seconds to sleep before next reading of the queue.
-     * @throws Exception when params are invalid.
      * @return null|int exit code.
+     * @throws Exception when params are invalid.
      */
-    public function actionListen($timeout = 3)
+    public function actionListen(int $timeout = 3): ?int
     {
-        if (!is_numeric($timeout)) {
-            throw new Exception('Timeout must be numeric.');
-        }
-        $timeout = (int) $timeout;
-
         if ($timeout < 1 || $timeout > 20) {
             throw new Exception('Timeout must be between 1 and 20');
         }
@@ -60,7 +59,7 @@ class Command extends CliCommand
     /**
      * Clears the queue.
      */
-    public function actionClear()
+    public function actionClear(): void
     {
         if ($this->confirm('Are you sure?')) {
             $this->queue->clear();
@@ -71,7 +70,7 @@ class Command extends CliCommand
     /**
      * @inheritdoc
      */
-    protected function isWorkerAction($actionID)
+    protected function isWorkerAction($actionID): bool
     {
         return in_array($actionID, ['run', 'listen']);
     }

@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\cli;
 
@@ -18,16 +21,21 @@ use yii\base\Event;
 class WorkerEvent extends Event
 {
     /**
+     * @inheritdoc
+     */
+    public $name;
+    /**
      * @var Queue
      * @inheritdoc
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public $sender;
     /**
      * @var LoopInterface
      */
-    public $loop;
+    public LoopInterface $loop;
     /**
      * @var null|int exit code
      */
-    public $exitCode;
+    public ?int $exitCode = null;
 }

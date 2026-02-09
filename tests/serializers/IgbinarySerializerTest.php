@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\serializers;
 
@@ -16,12 +19,12 @@ use yii\queue\serializers\IgbinarySerializer;
  */
 class IgbinarySerializerTest extends TestCase
 {
-    protected function createSerializer()
+    protected function createSerializer(): IgbinarySerializer
     {
         return new IgbinarySerializer();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!extension_loaded('igbinary')) {
             $this->markTestSkipped('Igbinary extension is not loaded.');

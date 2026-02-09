@@ -1,13 +1,17 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\gearman;
 
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application gearman-queue.
@@ -18,14 +22,14 @@ class Command extends CliCommand
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * @inheritdoc
      */
-    protected function isWorkerAction($actionID)
+    protected function isWorkerAction($actionID): bool
     {
         return in_array($actionID, ['run', 'listen'], true);
     }
@@ -36,7 +40,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -47,7 +51,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionListen()
+    public function actionListen(): ?int
     {
         return $this->queue->run(true);
     }

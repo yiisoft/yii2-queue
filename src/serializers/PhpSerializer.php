@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\serializers;
 
@@ -19,7 +22,7 @@ class PhpSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function serialize($job)
+    public function serialize($job): string
     {
         return serialize($job);
     }
@@ -27,7 +30,7 @@ class PhpSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function unserialize($serialized)
+    public function unserialize(string $serialized): mixed
     {
         return unserialize($serialized);
     }

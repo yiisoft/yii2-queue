@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\drivers\sqs;
 
@@ -19,7 +22,7 @@ use yii\queue\sqs\Queue;
  */
 class QueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -28,7 +31,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -37,7 +40,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -46,10 +49,10 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -57,12 +60,8 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
-        if (!getenv('AWS_SQS_CLEAR_TEST_ENABLED')) {
-            $this->markTestSkipped(__METHOD__ . ' is disabled');
-        }
-
         $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
     }
@@ -70,17 +69,8 @@ class QueueTest extends CliTestCase
     /**
      * @return Queue
      */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->sqsQueue;
-    }
-
-    protected function setUp()
-    {
-        if (!getenv('AWS_SQS_ENABLED')) {
-            $this->markTestSkipped('AWS SQS tests are disabled');
-        }
-
-        parent::setUp();
     }
 }

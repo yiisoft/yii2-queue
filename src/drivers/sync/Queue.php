@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\sync;
 
@@ -22,30 +25,28 @@ class Queue extends BaseQueue
     /**
      * @var bool
      */
-    public $handle = false;
-
+    public bool $handle = false;
     /**
-     * @var array of payloads
+     * @var array $payloads of payloads
      */
-    private $payloads = [];
+    private array $payloads = [];
     /**
      * @var int last pushed ID
      */
-    private $pushedId = 0;
+    private int $pushedId = 0;
     /**
      * @var int started ID
      */
-    private $startedId = 0;
+    private int $startedId = 0;
     /**
      * @var int last finished ID
      */
-    private $finishedId = 0;
-
+    private int $finishedId = 0;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         if ($this->handle) {
@@ -60,10 +61,15 @@ class Queue extends BaseQueue
     /**
      * Runs all jobs from queue.
      */
-    public function run()
+    public function run(): void
     {
         while (($payload = array_shift($this->payloads)) !== null) {
-            list($ttr, $message) = $payload;
+            /**
+             * @var int $ttr
+             * @var string $message
+             * @psalm-suppress MixedArrayAccess
+             */
+            [$ttr, $message] = $payload;
             $this->startedId = $this->finishedId + 1;
             $this->handleMessage($this->startedId, $message, $ttr, 1);
             $this->finishedId = $this->startedId;
@@ -74,16 +80,16 @@ class Queue extends BaseQueue
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
-        array_push($this->payloads, [$ttr, $message]);
+        $this->payloads[] = [$ttr, $payload];
         return ++$this->pushedId;
     }
 
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_int($id) || $id <= 0 || $id > $this->pushedId) {
             throw new InvalidArgumentException("Unknown messages ID: $id.");

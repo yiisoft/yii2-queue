@@ -1,15 +1,21 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\db;
 
+use yii\db\Connection;
 use yii\db\Query;
+use yii\helpers\BaseConsole;
 use yii\helpers\Console;
 use yii\queue\cli\Action;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Info about queue status.
@@ -22,34 +28,36 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
-        Console::output($this->format('Jobs', Console::FG_GREEN));
+        Console::output($this->format('Jobs', BaseConsole::FG_GREEN));
+        /** @var Connection $db */
+        $db = $this->queue->db;
 
-        Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
-        Console::output($this->getWaiting()->count('*', $this->queue->db));
+        Console::stdout($this->format('- waiting: ', BaseConsole::FG_YELLOW));
+        Console::output((string)$this->getWaiting()->count('*', $db));
 
-        Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
-        Console::output($this->getDelayed()->count('*', $this->queue->db));
+        Console::stdout($this->format('- delayed: ', BaseConsole::FG_YELLOW));
+        Console::output((string)$this->getDelayed()->count('*', $db));
 
-        Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
-        Console::output($this->getReserved()->count('*', $this->queue->db));
+        Console::stdout($this->format('- reserved: ', BaseConsole::FG_YELLOW));
+        Console::output((string)$this->getReserved()->count('*', $db));
 
-        Console::stdout($this->format('- done: ', Console::FG_YELLOW));
-        Console::output($this->getDone()->count('*', $this->queue->db));
+        Console::stdout($this->format('- done: ', BaseConsole::FG_YELLOW));
+        Console::output((string)$this->getDone()->count('*', $db));
     }
 
     /**
      * @return Query
      */
-    protected function getWaiting()
+    protected function getWaiting(): Query
     {
         return (new Query())
             ->from($this->queue->tableName)
@@ -61,7 +69,7 @@ class InfoAction extends Action
     /**
      * @return Query
      */
-    protected function getDelayed()
+    protected function getDelayed(): Query
     {
         return (new Query())
             ->from($this->queue->tableName)
@@ -73,7 +81,7 @@ class InfoAction extends Action
     /**
      * @return Query
      */
-    protected function getReserved()
+    protected function getReserved(): Query
     {
         return (new Query())
             ->from($this->queue->tableName)
@@ -85,7 +93,7 @@ class InfoAction extends Action
     /**
      * @return Query
      */
-    protected function getDone()
+    protected function getDone(): Query
     {
         return (new Query())
             ->from($this->queue->tableName)

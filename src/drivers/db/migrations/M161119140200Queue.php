@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\db\migrations;
 
@@ -16,11 +19,9 @@ use yii\db\Migration;
  */
 class M161119140200Queue extends Migration
 {
-    public $tableName = '{{%queue}}';
-    public $tableOptions;
+    public string $tableName = '{{%queue}}';
 
-
-    public function up()
+    public function up(): void
     {
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
@@ -29,13 +30,13 @@ class M161119140200Queue extends Migration
             'created_at' => $this->integer()->notNull(),
             'started_at' => $this->integer(),
             'finished_at' => $this->integer(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createIndex('channel', $this->tableName, 'channel');
         $this->createIndex('started_at', $this->tableName, 'started_at');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->dropTable($this->tableName);
     }

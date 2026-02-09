@@ -1,9 +1,19 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
+declare(strict_types=1);
+
 namespace tests\closure;
 
+use Closure;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Closure Job.
@@ -13,11 +23,11 @@ use yii\queue\JobInterface;
 class ClosureJob extends BaseObject implements JobInterface
 {
     /**
-     * @var \Closure
+     * @var Closure
      */
     public $closure;
 
-    public function execute($queue)
+    public function execute(Queue $queue)
     {
         call_user_func($this->closure);
     }

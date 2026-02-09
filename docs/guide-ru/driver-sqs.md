@@ -10,7 +10,7 @@
 ```php
 return [
     'bootstrap' => [
-        'queue', // The component registers own console commands
+        'queue', // Компонент регистрирует собственные консольные команды
     ],
     'components' => [
         'queue' => [
@@ -19,10 +19,36 @@ return [
             'key' => '<key>',
             'secret' => '<secret>',
             'region' => '<region>',
+            'endpoint' => '<endpoint>', // https://docs.aws.amazon.com/general/latest/gr/sqs-service.html#sqs_region
         ],
     ],
 ];
 ```
+
+Пример настройки для FIFO очередей:
+
+```php
+return [
+    'bootstrap' => [
+        'queue', // Компонент регистрирует собственные консольные команды
+    ],
+    'components' => [
+        'queue' => [
+            'class' => \yii\queue\sqs\Queue::class,
+            'url' => '<sqs url>',
+            'key' => '<key>',
+            'secret' => '<secret>',
+            'region' => '<region>',
+            'messageGroupId' => '<Group ID>',
+            'endpoint' => '<endpoint>', // https://docs.aws.amazon.com/general/latest/gr/sqs-service.html#sqs_region
+        ],
+    ],
+];
+```
+
+Идентификатор группы сообщений требуется SQS для очередей FIFO. Вы можете настроить свои собственные или использовать значение "default".
+
+Идентификатор дедупликации генерируется автоматически, поэтому независимо от того, активировали ли вы дедупликацию на основе содержимого в очереди SQS или нет, этот идентификатор будет использоваться.
 
 Консоль
 -------

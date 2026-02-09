@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\drivers\db;
 
@@ -20,7 +23,7 @@ use yii\db\Query;
  */
 abstract class TestCase extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -29,7 +32,7 @@ abstract class TestCase extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -41,7 +44,7 @@ abstract class TestCase extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testPriority()
+    public function testPriority(): void
     {
         $this->getQueue()->priority(100)->push(new PriorityJob(['number' => 1]));
         $this->getQueue()->priority(300)->push(new PriorityJob(['number' => 5]));
@@ -53,7 +56,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals('12345', file_get_contents(PriorityJob::getFileName()));
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -62,7 +65,7 @@ abstract class TestCase extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -71,10 +74,10 @@ abstract class TestCase extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -82,7 +85,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
@@ -94,7 +97,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals(0, $actual);
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
@@ -106,24 +109,25 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals(0, $actual);
     }
 
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
         };
 
         $job = $this->createSimpleJob();
@@ -131,9 +135,9 @@ abstract class TestCase extends CliTestCase
         $this->getQueue()->run(false);
     }
 
-    public function testDoneCount()
+    public function testDoneCount(): void
     {
-        $this->getQueue()->messageHandler = function () {
+        $this->getQueue()->messageHandler = static function () {
             return true;
         };
 
@@ -144,8 +148,7 @@ abstract class TestCase extends CliTestCase
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
     }
 
-
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
         $this->getQueue()->db->createCommand()

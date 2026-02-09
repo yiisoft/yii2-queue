@@ -1,21 +1,20 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\drivers\amqp_interop;
 
-use Enqueue\AmqpLib\AmqpConnectionFactory;
+use Interop\Amqp\AmqpConsumer;
 use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\Impl\AmqpMessage as InteropAmqpMessage;
-use Interop\Amqp\AmqpTopic;
-use Interop\Amqp\Impl\AmqpBind;
-use Interop\Amqp\AmqpQueue;
 use tests\app\PriorityJob;
 use tests\app\RetryJob;
-use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\amqp_interop\Queue;
 
@@ -24,13 +23,16 @@ use yii\queue\amqp_interop\Queue;
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */
-class QueueTest extends CliTestCase
+class QueueTest extends AmqpTestCase
 {
     /**
      * Test working setter routing key
      */
-    public function testNativeSettingRoutingKey()
+    public function testNativeSettingRoutingKey(): void
     {
+        $this->exchangeName = null;
+        $this->queueName = null;
+
         $uniqRoutingKey = Yii::$app->security->generateRandomString(12);
         $message = new InteropAmqpMessage();
         $message->setRoutingKey($uniqRoutingKey);
@@ -38,80 +40,7 @@ class QueueTest extends CliTestCase
         $this->assertSame($uniqRoutingKey, $message->getRoutingKey());
     }
 
-    /**
-     * Sending a message to a queue using RoutingKey
-     */
-    public function testSendMessageWithRoutingKey()
-    {
-        $uniqKey = Yii::$app->security->generateRandomString(12);
-        $receivedRoutingKey = null;
-
-        $yiiQueue = $this->getQueue();
-        $yiiQueue->routingKey = $uniqKey;
-        $yiiQueue->push($this->createSimpleJob());
-
-        $context = $this->getNativeAMQPContext($yiiQueue);
-
-        $queue = $context->createQueue($yiiQueue->queueName);
-        $consumer = $context->createConsumer($queue);
-        $callback = function (AmqpMessage $message) use (&$receivedRoutingKey) {
-            $receivedRoutingKey = $message->getRoutingKey();
-            return true;
-        };
-        $subscriptionConsumer = $context->createSubscriptionConsumer();
-        $subscriptionConsumer->subscribe($consumer, $callback);
-        $subscriptionConsumer->consume(1000);
-
-        sleep(3);
-
-        $this->assertSame($yiiQueue->routingKey, $receivedRoutingKey);
-    }
-
-    /**
-     * Test push message with headers
-     * @return void
-     */
-    public function testPushMessageWithHeaders()
-    {
-        $actualHeaders = [];
-        $messageHeaders = [
-            'header-1' => 'header-value-1',
-            'header-2' => 'header-value-2',
-        ];
-
-        $yiiQueue = $this->getQueue();
-        $yiiQueue->setMessageHeaders = $messageHeaders;
-        $yiiQueue->push($this->createSimpleJob());
-
-        $context = $this->getNativeAMQPContext($yiiQueue);
-
-        $queue = $context->createQueue($yiiQueue->queueName);
-        $consumer = $context->createConsumer($queue);
-        $callback = function (AmqpMessage $message) use (&$actualHeaders) {
-            /**
-             * This not mistake. In original package this function mixed up
-             * getHeaders() => getProperties()
-             */
-            $actualHeaders = $message->getProperties();
-            return true;
-        };
-        $subscriptionConsumer = $context->createSubscriptionConsumer();
-        $subscriptionConsumer->subscribe($consumer, $callback);
-        $subscriptionConsumer->consume(1000);
-
-        sleep(3);
-
-        $expectedHeaders = array_merge(
-            $messageHeaders,
-            [
-                Queue::ATTEMPT => 1,
-                Queue::TTR => 300,
-            ]
-        );
-        $this->assertEquals($expectedHeaders, $actualHeaders);
-    }
-
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -120,7 +49,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -129,10 +58,10 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -140,7 +69,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testPriority()
+    public function testPriority(): void
     {
         $this->getQueue()->priority(3)->push(new PriorityJob(['number' => 1]));
         $this->getQueue()->priority(1)->push(new PriorityJob(['number' => 5]));
@@ -156,7 +85,7 @@ class QueueTest extends CliTestCase
     /**
      * @requires extension pcntl
      */
-    public function testSignals()
+    public function testSignals(): void
     {
         $signals = [
             1 => 129, // SIGHUP
@@ -176,45 +105,84 @@ class QueueTest extends CliTestCase
     }
 
     /**
-     * @return Queue
+     * Sending a message to a queue using RoutingKey
      */
-    protected function getQueue()
+    public function testSendMessageWithRoutingKey(): void
     {
-        return Yii::$app->amqpInteropQueue;
-    }
+        $this->queueName = 'routing-key';
+        $this->exchangeName = 'routing-key';
+        $this->routingKey = Yii::$app->security->generateRandomString(10);
 
-    protected function setUp()
-    {
-        if ('true' == getenv('EXCLUDE_AMQP_INTEROP')) {
-            $this->markTestSkipped('Amqp tests are disabled for php 5.5');
-        }
+        $receivedRoutingKey = null;
 
-        parent::setUp();
+        $queue = $this->getQueue(true);
+        $queue->exchangeName = $this->exchangeName;
+        $queue->queueName = $this->queueName;
+        $queue->routingKey = $this->routingKey;
+        $queue->push($this->createSimpleJob());
+
+        $context = $this->getAMQPContext();
+        $consumer = $context->createConsumer(
+            $context->createQueue($this->queueName)
+        );
+        $callback = function (AmqpMessage $message, AmqpConsumer $consumer) use (&$receivedRoutingKey) {
+            $receivedRoutingKey = $message->getRoutingKey();
+            $consumer->acknowledge($message);
+            return true;
+        };
+        $subscriptionConsumer = $context->createSubscriptionConsumer();
+        $subscriptionConsumer->subscribe($consumer, $callback);
+        $subscriptionConsumer->consume(1000);
+
+        $this->assertSame($this->routingKey, $receivedRoutingKey);
     }
 
     /**
-     * @param Queue $yiiQueue
-     * @return mixed
+     * Test push message with headers
+     * @return void
      */
-    private function getNativeAMQPContext($yiiQueue)
+    public function testPushMessageWithHeaders(): void
     {
-        $factory = new AmqpConnectionFactory([
-            'host' => $yiiQueue->host,
-        ]);
-        $context = $factory->createContext();
+        $this->queueName = 'message-headers';
+        $this->exchangeName = 'message-headers';
 
-        $queue = $context->createQueue($yiiQueue->queueName);
-        $queue->addFlag(AmqpQueue::FLAG_DURABLE);
-        $queue->setArguments(['x-max-priority' => 10]);
-        $context->declareQueue($queue);
+        $actualHeaders = [];
+        $messageHeaders = [
+            'header-1' => 'header-value-1',
+            'header-2' => 'header-value-2',
+        ];
 
-        $topic = $context->createTopic($yiiQueue->exchangeName);
-        $topic->setType($yiiQueue->exchangeType);
-        $topic->addFlag(AmqpTopic::FLAG_DURABLE);
-        $context->declareTopic($topic);
+        $queue = $this->getQueue(true);
+        $queue->exchangeName = $this->exchangeName;
+        $queue->queueName = $this->queueName;
+        $queue->setMessageHeaders = $messageHeaders;
+        $queue->push($this->createSimpleJob());
 
-        $context->bind(new AmqpBind($queue, $topic, $yiiQueue->routingKey));
+        $context = $this->getAMQPContext();
+        $consumer = $context->createConsumer(
+            $context->createQueue($this->queueName)
+        );
+        $callback = function (AmqpMessage $message, AmqpConsumer $consumer) use (&$actualHeaders) {
+            /**
+             * This not mistake. In original package this function mixed up
+             * getHeaders() => getProperties()
+             */
+            $actualHeaders = $message->getProperties();
+            $consumer->acknowledge($message);
+            return true;
+        };
+        $subscriptionConsumer = $context->createSubscriptionConsumer();
+        $subscriptionConsumer->subscribe($consumer, $callback);
+        $subscriptionConsumer->consume(1000);
 
-        return $context;
+
+        $expectedHeaders = array_merge(
+            $messageHeaders,
+            [
+                Queue::ATTEMPT => 1,
+                Queue::TTR => 300,
+            ]
+        );
+        $this->assertEquals($expectedHeaders, $actualHeaders);
     }
 }

@@ -1,14 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\app\benchmark\waiting;
 
 use Symfony\Component\Process\Process;
 use Yii;
+use yii\base\Action as BaseAction;
 use yii\console\Exception as ConsoleException;
 use yii\helpers\Console;
 use yii\queue\Queue;
@@ -18,18 +22,17 @@ use yii\queue\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Action extends \yii\base\Action
+class Action extends BaseAction
 {
     /**
      * @var array
      */
-    public $modes = [
+    public array $modes = [
         // Worker will be run in fast mode
         'fast' => [
             'gearmanQueue'     => ['gearman-queue/listen'      ,'--isolate=0'],
             'beanstalkQueue'   => ['beanstalk-queue/listen'    ,'--isolate=0'],
             'redisQueue'       => ['redis-queue/listen'        ,'--isolate=0'],
-            'amqpQueue'        => ['amqp-queue/listen'         ,'--isolate=0'],
             'amqpInteropQueue' => ['amqp-interop-queue/listen' ,'--isolate=0'],
             'mysqlQueue'       => ['mysql-queue/listen', '1'   ,'--isolate=0'],
             'fileQueue'        => ['file-queue/listen' , '1'   ,'--isolate=0'],
@@ -40,7 +43,6 @@ class Action extends \yii\base\Action
             'gearmanQueue'     => ['gearman-queue/listen'      ,'--isolate=1'],
             'beanstalkQueue'   => ['beanstalk-queue/listen'    ,'--isolate=1'],
             'redisQueue'       => ['redis-queue/listen'        ,'--isolate=1'],
-            'amqpQueue'        => ['amqp-queue/listen'         ,'--isolate=1'],
             'amqpInteropQueue' => ['amqp-interop-queue/listen' ,'--isolate=1'],
             'mysqlQueue'       => ['mysql-queue/listen', '1'   ,'--isolate=1'],
             'fileQueue'        => ['file-queue/listen' , '1'   ,'--isolate=1'],
@@ -50,7 +52,7 @@ class Action extends \yii\base\Action
     /**
      * @var Process[]
      */
-    private $workers = [];
+    private array $workers = [];
 
     /**
      * Runs benchmark of job wait time.
@@ -61,16 +63,16 @@ class Action extends \yii\base\Action
      * @param int $payloadSize additional job size
      * @throws
      */
-    public function run($mode = 'fast', $jobCount = 1000, $workerCount = 10, $payloadSize = 0)
+    public function run(string $mode = 'fast', int $jobCount = 1000, int $workerCount = 10, int $payloadSize = 0): void
     {
         if (!isset($this->modes[$mode])) {
             throw new ConsoleException("Unknown mode: $mode.");
         }
         if ($jobCount <= 0) {
-            throw new ConsoleException("Job count must be greater than zero.");
+            throw new ConsoleException('Job count must be greater than zero.');
         }
         if ($workerCount <= 0) {
-            throw new ConsoleException("Worker count must be greater than zero.");
+            throw new ConsoleException('Worker count must be greater than zero.');
         }
 
         foreach ($this->modes[$mode] as $queueName => $workerCommand) {
@@ -94,13 +96,12 @@ class Action extends \yii\base\Action
 
                 $pushedCount = 0;
                 while ($pushedCount < $jobCount) {
-
                     // Push batch of jobs
                     $jobs = [];
                     for ($i = 0; $i < $workerCount && $pushedCount < $jobCount; $i++) {
                         $jobs[] = $job = new Job();
                         $job->resultFileName = $resultFileName;
-                        $lockName = uniqid($queueName);
+                        $lockName = uniqid($queueName, true);
                         $job->lockFileName = Yii::getAlias("@runtime/$lockName.lock");
                         touch($job->lockFileName);
                         $job->pushedAt = microtime(true);
@@ -125,7 +126,7 @@ class Action extends \yii\base\Action
                 }
 
                 Console::endProgress(strtr(
-                    'MEDIAN = {median} s; AVG = {avg} s; MIN = {min} s; MAX = {max} s' . PHP_EOL,
+                    'COUNT = {count}; MEDIAN = {median} s; AVG = {avg} s; MIN = {min} s; MAX = {max} s' . PHP_EOL,
                     $this->calcResult($resultFileName, 4)
                 ));
             } finally {
@@ -141,7 +142,7 @@ class Action extends \yii\base\Action
      * @param int $count
      * @param callable $callback
      */
-    private function startWorkers($command, $count, callable $callback)
+    private function startWorkers(array $command, int $count, callable $callback): void
     {
         for ($i = 0; $i < $count; $i++) {
             $this->workers[] = $worker = new Process(array_merge(['php', 'tests/yii'], $command));
@@ -152,10 +153,9 @@ class Action extends \yii\base\Action
     /**
      * Stops started workers.
      */
-    private function stopWorkers()
+    private function stopWorkers(): void
     {
         foreach ($this->workers as $worker) {
-            /** @var Process $worker */
             $worker->stop();
         }
         $this->workers = [];
@@ -168,7 +168,7 @@ class Action extends \yii\base\Action
      * @param int $scale
      * @return array of aggregate results in seconds
      */
-    private function calcResult($fileName, $scale = 4)
+    private function calcResult(string $fileName, int $scale): array
     {
         /** @var float[] $times */
         $times = explode("\n", trim(file_get_contents($fileName)));
@@ -181,8 +181,8 @@ class Action extends \yii\base\Action
             $median = ($median + $times[$middleIndex - 1]) / 2;
         }
         $avg = array_sum($times) / $count;
-        $min = min($times);
-        $max = max($times);
+        $min = (float)min($times);
+        $max = (float)max($times);
 
         return [
             '{count}' => $count,

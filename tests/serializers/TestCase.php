@@ -1,13 +1,17 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\serializers;
 
 use tests\app\SimpleJob;
+use tests\TestCase as BaseTestCase;
 use yii\base\BaseObject;
 use yii\queue\serializers\SerializerInterface;
 
@@ -16,18 +20,18 @@ use yii\queue\serializers\SerializerInterface;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class TestCase extends \tests\TestCase
+abstract class TestCase extends BaseTestCase
 {
     /**
      * @return SerializerInterface
      */
-    abstract protected function createSerializer();
+    abstract protected function createSerializer(): SerializerInterface;
 
     /**
      * @dataProvider providerSerialize
      * @param mixed $expected
      */
-    public function testSerialize($expected)
+    public function testSerialize(mixed $expected): void
     {
         $serializer = $this->createSerializer();
 
@@ -37,7 +41,7 @@ abstract class TestCase extends \tests\TestCase
         $this->assertEquals($expected, $actual, "Payload: $serialized");
     }
 
-    public function providerSerialize()
+    public static function providerSerialize(): array
     {
         return [
             // Job object
@@ -76,6 +80,6 @@ abstract class TestCase extends \tests\TestCase
 
 class TestObject extends BaseObject
 {
-    public $foo;
-    public $bar;
+    public int $foo;
+    public array $bar;
 }

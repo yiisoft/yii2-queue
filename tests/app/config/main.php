@@ -1,29 +1,58 @@
 <?php
+
+declare(strict_types=1);
+
+use yii\db\Connection;
+use yii\mutex\FileMutex;
+use yii\mutex\MysqlMutex;
+use yii\mutex\PgsqlMutex;
+use yii\queue\amqp_interop\Queue as AmqpInteropQueue;
+use yii\queue\beanstalk\Queue as BeanstalkQueue;
+use yii\queue\db\Queue as DbQueue;
+use yii\queue\file\Queue as FileQueue;
+use yii\queue\gearman\Queue as GearmanQueue;
+use yii\queue\redis\Queue as RedisQueue;
+use yii\queue\sqs\Queue as SqsQueue;
+use yii\queue\stomp\Queue as StompQueue;
+use yii\queue\sync\Queue as SyncQueue;
+use yii\redis\Connection as RedisConnection;
+
+if (version_compare(PHP_VERSION, '8.5.0') >= 0) {
+    $mysqlAttributes = [
+        Pdo\Mysql::ATTR_INIT_COMMAND => 'SET sql_mode = "STRICT_ALL_TABLES"',
+    ];
+} else {
+    $mysqlAttributes = [
+        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode = "STRICT_ALL_TABLES"',
+    ];
+}
+
 $config = [
     'id' => 'yii2-queue-app',
     'basePath' => dirname(__DIR__),
-    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-    'runtimePath' => dirname(dirname(__DIR__)) . '/runtime',
+    'vendorPath' => dirname(__DIR__, 2) . '/vendor',
+    'runtimePath' => dirname(__DIR__, 2) . '/runtime',
     'bootstrap' => [
         'fileQueue',
         'mysqlQueue',
         'sqliteQueue',
         'pgsqlQueue',
         'redisQueue',
-        'amqpQueue',
         'amqpInteropQueue',
         'beanstalkQueue',
         'stompQueue',
+        'sqsQueue',
+        'sqsFifoQueue',
     ],
     'components' => [
         'syncQueue' => [
-            'class' => \yii\queue\sync\Queue::class,
+            'class' => SyncQueue::class,
         ],
         'fileQueue' => [
-            'class' => \yii\queue\file\Queue::class,
+            'class' => FileQueue::class,
         ],
         'mysql' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => sprintf(
                 'mysql:host=%s;dbname=%s',
                 getenv('MYSQL_HOST') ?: 'localhost',
@@ -32,31 +61,29 @@ $config = [
             'username' => getenv('MYSQL_USER') ?: 'root',
             'password' => getenv('MYSQL_PASSWORD') ?: '',
             'charset' => 'utf8',
-            'attributes' => [
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode = "STRICT_ALL_TABLES"',
-            ],
+            'attributes' => $mysqlAttributes,
         ],
         'mysqlQueue' => [
-            'class' => \yii\queue\db\Queue::class,
+            'class' => DbQueue::class,
             'db' => 'mysql',
             'mutex' => [
-                'class' => \yii\mutex\MysqlMutex::class,
+                'class' => MysqlMutex::class,
                 'db' => 'mysql',
             ],
             'deleteReleased' => false,
         ],
         'sqlite' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => 'sqlite:@runtime/yii2_queue_test.db',
         ],
         'sqliteQueue' => [
-            'class' => \yii\queue\db\Queue::class,
+            'class' => DbQueue::class,
             'db' => 'sqlite',
-            'mutex' => \yii\mutex\FileMutex::class,
+            'mutex' => FileMutex::class,
             'deleteReleased' => false,
         ],
         'pgsql' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => sprintf(
                 'pgsql:host=%s;dbname=%s',
                 getenv('POSTGRES_HOST') ?: 'localhost',
@@ -67,47 +94,60 @@ $config = [
             'charset' => 'utf8',
         ],
         'pgsqlQueue' => [
-            'class' => \yii\queue\db\Queue::class,
+            'class' => DbQueue::class,
             'db' => 'pgsql',
             'mutex' => [
-                'class' => \yii\mutex\PgsqlMutex::class,
+                'class' => PgsqlMutex::class,
                 'db' => 'pgsql',
             ],
             'mutexTimeout' => 0,
             'deleteReleased' => false,
         ],
         'redis' => [
-            'class' => \yii\redis\Connection::class,
+            'class' => RedisConnection::class,
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
             'database' => getenv('REDIS_DB') ?: 1,
         ],
         'redisQueue' => [
-            'class' => \yii\queue\redis\Queue::class,
-        ],
-        'amqpQueue' => [
-            'class' => \yii\queue\amqp\Queue::class,
-            'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
-            'user' => getenv('RABBITMQ_USER') ?: 'guest',
-            'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
-            'queueName' => 'queue-basic',
-            'exchangeName' => 'exchange-basic',
+            'class' => RedisQueue::class,
         ],
         'amqpInteropQueue' => [
-            'class' => \yii\queue\amqp_interop\Queue::class,
+            'class' => AmqpInteropQueue::class,
             'host' => getenv('RABBITMQ_HOST') ?: 'localhost',
             'user' => getenv('RABBITMQ_USER') ?: 'guest',
             'password' => getenv('RABBITMQ_PASSWORD') ?: 'guest',
+            'port' => getenv('RABBITMQ_PORT') ?: 5672,
             'queueOptionalArguments' => ['x-max-priority' => 10],
             'queueName' => 'queue-interop',
             'exchangeName' => 'exchange-interop',
         ],
         'beanstalkQueue' => [
-            'class' => \yii\queue\beanstalk\Queue::class,
+            'class' => BeanstalkQueue::class,
             'host' => getenv('BEANSTALK_HOST') ?: 'localhost',
         ],
         'stompQueue' => [
-            'class' => \yii\queue\stomp\Queue::class,
+            'class' => StompQueue::class,
             'host' => getenv('ACTIVEMQ_HOST') ?: 'localhost',
+            'port' => getenv('ACTIVEMQ_PORT'),
+            'user' => getenv('ACTIVEMQ_USER'),
+            'password' => getenv('ACTIVEMQ_PASSWORD'),
+        ],
+        'sqsQueue' => [
+            'class' => SqsQueue::class,
+            'url' => getenv('AWS_SQS_URL'),
+            'key' => getenv('AWS_KEY'),
+            'secret' => getenv('AWS_SECRET'),
+            'region' => getenv('AWS_REGION'),
+            'endpoint' => getenv('AWS_SQS_ENDPOINT'),
+        ],
+        'sqsFifoQueue' => [
+            'class' => SqsQueue::class,
+            'url' => getenv('AWS_SQS_FIFO_URL'),
+            'key' => getenv('AWS_KEY'),
+            'secret' => getenv('AWS_SECRET'),
+            'region' => getenv('AWS_REGION'),
+            'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
+            'endpoint' => getenv('AWS_SQS_ENDPOINT'),
         ],
     ],
 ];
@@ -115,31 +155,8 @@ $config = [
 if (defined('GEARMAN_SUCCESS')) {
     $config['bootstrap'][] = 'gearmanQueue';
     $config['components']['gearmanQueue'] = [
-        'class' => \yii\queue\gearman\Queue::class,
+        'class' => GearmanQueue::class,
         'host' => getenv('GEARMAN_HOST') ?: 'localhost',
-    ];
-}
-
-if (getenv('AWS_SQS_ENABLED')) {
-    $config['bootstrap'][] = 'sqsQueue';
-    $config['components']['sqsQueue'] = [
-        'class' => \yii\queue\sqs\Queue::class,
-        'url' => getenv('AWS_SQS_URL'),
-        'key' => getenv('AWS_KEY'),
-        'secret' => getenv('AWS_SECRET'),
-        'region' => getenv('AWS_REGION'),
-    ];
-}
-
-if (getenv('AWS_SQS_FIFO_ENABLED')) {
-    $config['bootstrap'][] = 'sqsFifoQueue';
-    $config['components']['sqsFifoQueue'] = [
-        'class' => \yii\queue\sqs\Queue::class,
-        'url' => getenv('AWS_SQS_FIFO_URL'),
-        'key' => getenv('AWS_KEY'),
-        'secret' => getenv('AWS_SECRET'),
-        'region' => getenv('AWS_REGION'),
-        'messageGroupId' => getenv('AWS_SQS_FIFO_MESSAGE_GROUP_ID'),
     ];
 }
 

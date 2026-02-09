@@ -1,15 +1,20 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\debug;
 
+use Exception;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\base\ViewContextInterface;
+use yii\debug\Panel as BasePanel;
 use yii\helpers\VarDumper;
 use yii\queue\JobInterface;
 use yii\queue\PushEvent;
@@ -20,15 +25,14 @@ use yii\queue\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Panel extends \yii\debug\Panel implements ViewContextInterface
+class Panel extends BasePanel implements ViewContextInterface
 {
-    private $_jobs = [];
-
+    private array $jobs = [];
 
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Queue';
     }
@@ -36,11 +40,11 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         PushEvent::on(Queue::class, Queue::EVENT_AFTER_PUSH, function (PushEvent $event) {
-            $this->_jobs[] = $this->getPushData($event);
+            $this->jobs[] = $this->getPushData($event);
         });
     }
 
@@ -48,7 +52,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      * @param PushEvent $event
      * @return array
      */
-    protected function getPushData(PushEvent $event)
+    protected function getPushData(PushEvent $event): array
     {
         $data = [];
         foreach (Yii::$app->getComponents(false) as $id => $component) {
@@ -79,13 +83,13 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
      */
     public function save()
     {
-        return ['jobs' => $this->_jobs];
+        return ['jobs' => $this->jobs];
     }
 
     /**
      * @inheritdoc
      */
-    public function getViewPath()
+    public function getViewPath(): string
     {
         return __DIR__ . '/views';
     }
@@ -93,8 +97,9 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function getSummary()
+    public function getSummary(): string
     {
+        /** @psalm-var array{jobs: array} $this->data */
         return Yii::$app->view->render('summary', [
             'url' => $this->getUrl(),
             'count' => isset($this->data['jobs']) ? count($this->data['jobs']) : 0,
@@ -104,14 +109,17 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
     /**
      * @inheritdoc
      */
-    public function getDetail()
+    public function getDetail(): string
     {
-        $jobs = isset($this->data['jobs']) ? $this->data['jobs'] : [];
+        /** @psalm-var array{jobs: array} $this->data */
+        $jobs = $this->data['jobs'] ?? [];
         foreach ($jobs as &$job) {
+            /** @psalm-var array{sender: string, id: string|int} $job */
             $job['status'] = 'unknown';
             /** @var Queue $queue */
             if ($queue = Yii::$app->get($job['sender'], false)) {
                 try {
+                    /** @psalm-var Queue $queue */
                     if ($queue->isWaiting($job['id'])) {
                         $job['status'] = 'waiting';
                     } elseif ($queue->isReserved($job['id'])) {
@@ -119,8 +127,7 @@ class Panel extends \yii\debug\Panel implements ViewContextInterface
                     } elseif ($queue->isDone($job['id'])) {
                         $job['status'] = 'done';
                     }
-                } catch (NotSupportedException $e) {
-                } catch (\Exception $e) {
+                } catch (NotSupportedException | Exception $e) {
                     $job['status'] = $e->getMessage();
                 }
             }

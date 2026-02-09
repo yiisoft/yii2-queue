@@ -1,30 +1,37 @@
 help:			## Display help information
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-build:			## Build an image from a docker-compose file. Params: {{ v=5.6 }}. Default latest PHP 5.6
-	@cp -n .env.example .env
+build:			## Build an image from a docker-compose file. Params: {{ v=8.3 }}. Default latest PHP 8.3
+	@if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "Created .env file from .env.example"; \
+	else \
+		echo ".env file already exists, skipping creation"; \
+	fi
 	PHP_VERSION=$(filter-out $@,$(v)) docker compose up -d --build
+	make create-sqs-queue
+	make create-sqs-fifo-queue
 
-test:			## Run tests. Params: {{ v=5.6 }}. Default latest PHP 5.6
-	PHP_VERSION=$(filter-out $@,$(v)) docker compose build --pull yii2-queue-php
-	PHP_VERSION=$(filter-out $@,$(v)) docker compose run yii2-queue-php vendor/bin/phpunit --colors=always -v --debug
+test:			## Run tests. Params: {{ v=8.3 }}. Default latest PHP 8.3
+	make build
+	PHP_VERSION=$(filter-out $@,$(v)) docker compose run yii2-queue-php vendor/bin/phpunit --coverage-clover coverage.xml
 	make down
 
 down:			## Stop and remove containers, networks
 	docker compose down
 
-benchmark:		## Run benchmark. Params: {{ v=5.6 }}. Default latest PHP 5.6
+benchmark:		## Run benchmark. Params: {{ v=8.3 }}. Default latest PHP 8.3
 	PHP_VERSION=$(filter-out $@,$(v)) docker compose build --pull yii2-queue-php
 	PHP_VERSION=$(filter-out $@,$(v)) docker compose run yii2-queue-php tests/yii benchmark/waiting
 	make down
 
 sh:			## Enter the container with the application
-	docker exec -it yii2-queue-php bash
+	docker exec -it yii2-queue-php sh
 
-check-cs:
-	docker compose build php72
-	docker compose run php72 php-cs-fixer fix --diff --dry-run
-	docker compose down
+static-analyze:		## Run code static analyze. Params: {{ v=8.3 }}. Default latest PHP 8.3
+	PHP_VERSION=$(filter-out $@,$(v)) docker compose build --pull yii2-queue-php
+	PHP_VERSION=$(filter-out $@,$(v)) docker compose run yii2-queue-php vendor/bin/psalm --config=psalm.xml --shepherd --stats --php-version=$(v)
+	make down
 
 clean:
 	docker compose down
@@ -35,3 +42,9 @@ clean:
 
 clean-all: clean
 	sudo rm -rf tests/runtime/.composer*
+
+create-sqs-queue:	## Create SQS queue
+	docker exec yii2-queue-localstack sh -c "awslocal sqs create-queue --queue-name yii2-queue"
+
+create-sqs-fifo-queue:	## Create SQS FIFO queue
+	docker exec yii2-queue-localstack sh -c 'awslocal sqs create-queue --queue-name yii2-queue.fifo --attributes "FifoQueue=true"'

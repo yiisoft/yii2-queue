@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\cli\providers;
 
 use yii\queue\interfaces\DoneCountInterface;
@@ -20,7 +22,7 @@ class DoneCountProvider extends BaseStatisticsProvider implements DoneCountInter
     /**
      * @inheritdoc
      */
-    public function getDoneCount()
+    public function getDoneCount(): int
     {
         return 10;
     }

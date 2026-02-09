@@ -1,14 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\stomp;
 
 use yii\console\Exception;
 use yii\queue\cli\Command as CliCommand;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Manages application stomp-queue.
@@ -20,18 +24,17 @@ class Command extends CliCommand
 {
     /**
      * @var Queue
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * @inheritdoc
      */
-    protected function isWorkerAction($actionID)
+    protected function isWorkerAction($actionID): bool
     {
         return in_array($actionID, ['run', 'listen']);
     }
-
 
     /**
      * Runs all jobs from stomp-queue.
@@ -39,7 +42,7 @@ class Command extends CliCommand
      *
      * @return null|int exit code.
      */
-    public function actionRun()
+    public function actionRun(): ?int
     {
         return $this->queue->run(false);
     }
@@ -52,11 +55,8 @@ class Command extends CliCommand
      * @throws Exception when params are invalid.
      * @return null|int exit code.
      */
-    public function actionListen($timeout = 3)
+    public function actionListen(int $timeout = 3): ?int
     {
-        if (!is_numeric($timeout)) {
-            throw new Exception('Timeout must be numeric.');
-        }
         if ($timeout < 1) {
             throw new Exception('Timeout must be greater that zero.');
         }

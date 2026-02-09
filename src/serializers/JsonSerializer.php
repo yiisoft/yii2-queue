@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\serializers;
 
@@ -26,13 +29,12 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     /**
      * @var int
      */
-    public $options = 0;
-
+    public int $options = 0;
 
     /**
      * @inheritdoc
      */
-    public function serialize($job)
+    public function serialize($job): string
     {
         return Json::encode($this->toArray($job), $this->options);
     }
@@ -40,7 +42,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function unserialize($serialized)
+    public function unserialize(string $serialized): mixed
     {
         return $this->fromArray(Json::decode($serialized));
     }
@@ -50,7 +52,7 @@ class JsonSerializer extends BaseObject implements SerializerInterface
      * @return array|mixed
      * @throws InvalidConfigException
      */
-    protected function toArray($data)
+    protected function toArray(mixed $data)
     {
         if (is_object($data)) {
             $result = [$this->classKey => get_class($data)];
@@ -80,10 +82,10 @@ class JsonSerializer extends BaseObject implements SerializerInterface
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @return mixed
      */
-    protected function fromArray($data)
+    protected function fromArray(mixed $data)
     {
         if (!is_array($data)) {
             return $data;

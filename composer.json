@@ -16,22 +16,25 @@
         "docs": "https://github.com/yiisoft/yii2-queue/blob/master/docs/guide"
     },
     "require": {
-        "php": ">=5.5.0",
-        "yiisoft/yii2": "~2.0.14",
-        "symfony/process": "^3.3||^4.0||^5.0||^6.0||^7.0"
+        "php": ">=8.3",
+        "yiisoft/yii2": "~2.0.54",
+        "symfony/process": "^7.0",
+        "laravel/serializable-closure": "^v2.0.0"
     },
     "require-dev": {
-        "yiisoft/yii2-redis": "2.0.19",
-        "php-amqplib/php-amqplib": "^2.8.0||^3.0.0",
-        "enqueue/amqp-lib": "^0.8||^0.9.10||^0.10.0",
-        "pda/pheanstalk": "~3.2.1",
-        "opis/closure": "*",
+        "phpunit/phpunit": "^10.3.0",
+        "yiisoft/yii2-redis": "~2.1.0",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
-        "phpunit/phpunit": "4.8.34",
-        "aws/aws-sdk-php": ">=2.4",
-        "enqueue/stomp": "^0.8.39||0.10.19",
-        "cweagans/composer-patches": "^1.7"
+        "yiisoft/yii2-coding-standards": "^3.0",
+        "php-amqplib/php-amqplib": "^3.0.0",
+        "enqueue/amqp-lib": "^0.10.0",
+        "enqueue/amqp-bunny": "^0.10.0",
+        "enqueue/amqp-ext": "^0.10.8",
+        "enqueue/stomp": "^0.10.0",
+        "pda/pheanstalk": "^8.0.0",
+        "aws/aws-sdk-php": "^3.369.0",
+        "vimeo/psalm": "^6.0.0"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
@@ -46,7 +49,6 @@
     "autoload": {
         "psr-4": {
             "yii\\queue\\": "src",
-            "yii\\queue\\amqp\\": "src/drivers/amqp",
             "yii\\queue\\amqp_interop\\": "src/drivers/amqp_interop",
             "yii\\queue\\beanstalk\\": "src/drivers/beanstalk",
             "yii\\queue\\db\\": "src/drivers/db",
@@ -66,23 +68,12 @@
     "config": {
         "allow-plugins": {
             "yiisoft/yii2-composer": true,
-            "cweagans/composer-patches": true,
             "php-http/discovery": true
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "2.x-dev"
-        },
-        "composer-exit-on-patch-failure": true,
-        "patches": {
-            "phpunit/phpunit-mock-objects": {
-                "Fix PHP 7 and 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_mock_objects.patch"
-            },
-            "phpunit/phpunit": {
-                "Fix PHP 7 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php7.patch",
-                "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch"
-            }
         }
     },
     "repositories": [
@@ -90,5 +81,9 @@
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    ]
+    ],
+    "scripts": {
+        "phpcbf": "./vendor/bin/phpcbf -q src/ tests/",
+        "phpcs": "./vendor/bin/phpcs -q src/ tests/"
+    }
 }
