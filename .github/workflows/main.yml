@@ -4,11 +4,16 @@ on:
   pull_request:
     paths-ignore: &ignore-paths
       - 'docs/**'
+      - '.github/CONTRIBUTING.md'
+      - '.github/FUNDING.yml'
+      - '.github/SECURITY.md'
       - 'README.md'
       - 'CHANGELOG.md'
+      - 'LICENSE.md'
       - 'UPGRADE.md'
       - '.gitignore'
       - '.gitattributes'
+      - '.editorconfig'
 
   push:
     branches: [ 'master' ]
