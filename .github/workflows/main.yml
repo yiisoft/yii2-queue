@@ -20,9 +20,6 @@ on:
     branches: [ 'master' ]
     paths-ignore: *ignore-paths
 
-env:
-  COMPOSE_PROJECT_NAME: yii2-queue
-  COMPOSE_FILE: tests/docker-compose.yml
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}
