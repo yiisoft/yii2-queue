@@ -81,9 +81,6 @@ class StatisticsProvider extends BaseObject implements
         return $total - $this->getDelayedCount() - $this->getWaitingCount();
     }
 
-    /**
-     * @psalm-suppress MissingReturnType
-     */
     protected function getIndexData()
     {
         $fileName = $this->queue->path . '/index.data';

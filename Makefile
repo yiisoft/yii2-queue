@@ -2,12 +2,6 @@ help:			## Display help information
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
 build:			## Build an image from a docker-compose file. Params: {{ v=8.3 }}. Default latest PHP 8.3
-	@if [ ! -f .env ]; then \
-		cp .env.example .env; \
-		echo "Created .env file from .env.example"; \
-	else \
-		echo ".env file already exists, skipping creation"; \
-	fi
 	PHP_VERSION=$(filter-out $@,$(v)) docker compose up -d --build
 	make create-sqs-queue
 	make create-sqs-fifo-queue
@@ -29,14 +23,13 @@ sh:			## Enter the container with the application
 	docker exec -it yii2-queue-php sh
 
 static-analyze:		## Run code static analyze. Params: {{ v=8.3 }}. Default latest PHP 8.3
-	PHP_VERSION=$(filter-out $@,$(v)) docker compose build --pull yii2-queue-php
-	PHP_VERSION=$(filter-out $@,$(v)) docker compose run yii2-queue-php vendor/bin/psalm --config=psalm.xml --shepherd --stats --php-version=$(v)
+	make build v=$(filter-out $@,$(v))
+	docker exec yii2-queue-php sh -c "php -v && composer update && vendor/bin/phpstan analyse --memory-limit 512M"
 	make down
 
 clean:
 	docker compose down
 	rm -rf tests/runtime/*
-	rm -f .php_cs.cache
 	rm -rf composer.lock
 	rm -rf vendor/
 

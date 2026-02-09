@@ -232,7 +232,6 @@ abstract class Queue extends Component
             return $this->handleError($event);
         }
         try {
-            /** @psalm-suppress PossiblyUndefinedMethod, MixedMethodCall */
             $event->result = $event->job?->execute($this);
         } catch (Throwable $error) {
             $event->error = $error;

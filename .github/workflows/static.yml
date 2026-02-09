@@ -1,6 +1,11 @@
+name: static analysis
+
+permissions:
+  contents: read
+
 on:
-  pull_request:
-    paths-ignore: &ignore-paths
+  pull_request: &ignore-paths
+    paths-ignore:
       - 'docs/**'
       - '.github/CONTRIBUTING.md'
       - '.github/FUNDING.yml'
@@ -12,31 +17,13 @@ on:
       - '.gitignore'
       - '.gitattributes'
       - '.editorconfig'
+      - 'docker-compose.yml'
+      - 'Dockerfile'
+      - 'Makefile'
       - 'phpunit.xml.dist'
 
-  push:
-    branches: [ 'master' ]
-    paths-ignore: *ignore-paths
+  push: *ignore-paths
 
-name: static analysis
-
-permissions:
-  contents: read
-
-env:
-  COMPOSE_PROJECT_NAME: yii2-queue
-  COMPOSE_FILE: tests/docker-compose.yml
 jobs:
-  psalm:
-    name: PHP ${{ matrix.php }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [ '8.3', '8.4', '8.5' ]
-    steps:
-      - name: Checkout.
-        uses: actions/checkout@v2
-
-      - name: Run static analyzes for PHP ${{ matrix.php }}
-        run: make static-analyze v=${{ matrix.php }}
+  phpstan:
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@master

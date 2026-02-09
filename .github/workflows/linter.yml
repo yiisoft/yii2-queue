@@ -18,7 +18,9 @@ on:
       - '.gitattributes'
       - '.editorconfig'
       - 'docker-compose.yml'
+      - 'Dockerfile'
       - 'Makefile'
+      - 'phpunit.xml.dist'
 
   push: *ignore-paths
 

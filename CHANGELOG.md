@@ -4,7 +4,7 @@ Yii2 Queue Extension Change Log
 3.0.0 under development
 ---
 - Enh #542: The minimum supported PHP version is 8.3 (@s1lver)
-- Enh #503: Added PSALM for static code analysis. Error level set to 1 (@s1lver)
+- Enh #503: Added PHPStan for static code analysis. Error level set to 8 (@s1lver)
 - Enh #503: Added strict typing (@s1lver)
 - Enh #542: The `pda/pheanstalk` package of the Beanstalk driver has been updated to version 8.* (@s1lver)
 - Enh #503: Removed deprecated interfaces `RetryableJob`, `Job`, `Serializer` (@s1lver)

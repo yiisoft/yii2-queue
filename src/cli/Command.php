@@ -169,7 +169,6 @@ abstract class Command extends Controller
     protected function handleMessage(int|string|null $id, string $message, ?int $ttr, int $attempt): bool
     {
         // Child process command: php yii queue/exec "id" "ttr" "attempt" "pid"
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         $cmd = [
             $this->phpBinary,
             $_SERVER['SCRIPT_FILENAME'],
@@ -182,7 +181,6 @@ abstract class Command extends Controller
 
         foreach ($this->getPassedOptions() as $name) {
             if (in_array($name, $this->options('exec'), true)) {
-                /** @psalm-suppress MixedOperand */
                 $cmd[] = '--' . $name . '=' . $this->$name;
             }
         }

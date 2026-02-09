@@ -137,7 +137,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * @param int $id of a job
      * @return bool
      * @since 2.0.1
-     * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
      */
     public function remove(int $id): bool
     {
@@ -202,21 +201,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                          * @psalm-var int $attempt
                          */
                         [$id, $ttr, $attempt, $time] = $payload;
-                        /** @psalm-suppress MixedArrayAssignment */
                         $data['reserved'][$key][2] = ++$attempt;
-                        /** @psalm-suppress MixedArrayAssignment */
                         $data['reserved'][$key][3] = time();
                         return;
                     }
                 }
             }
 
-            /** @psalm-suppress MixedArrayAssignment, MixedArrayAccess */
             if (!empty($data['delayed']) && (int)$data['delayed'][0][2] <= time()) {
-                /** @psalm-suppress MixedArrayAssignment, MixedArrayAccess */
                 [$id, $ttr, $time] = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
-                /** @psalm-suppress MixedArrayAssignment, MixedArrayAccess */
                 [$id, $ttr] = array_shift($data['waiting']);
             }
             if ($id) {
@@ -278,7 +272,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                 $data['waiting'][] = [$id, $ttr, 0];
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
-                /** @psalm-suppress MixedArgumentTypeCoercion */
                 usort($data['delayed'], static function (array $a, array $b) {
                     if ($a[2] < $b[2]) {
                         return -1;

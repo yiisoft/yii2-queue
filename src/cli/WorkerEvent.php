@@ -27,7 +27,6 @@ class WorkerEvent extends Event
     /**
      * @var Queue
      * @inheritdoc
-     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public $sender;
     /**

@@ -430,7 +430,6 @@ class Queue extends CliQueue
      */
     protected function open(): void
     {
-        /** @psalm-suppress RedundantConditionGivenDocblockType */
         if ($this->context) {
             return;
         }
@@ -513,9 +512,6 @@ class Queue extends CliQueue
      */
     protected function close(): void
     {
-        /**
-         * @psalm-suppress DocblockTypeContradiction
-         */
         if (!$this->context) {
             return;
         }

@@ -67,7 +67,6 @@ class Queue extends BaseQueue
             /**
              * @var int $ttr
              * @var string $message
-             * @psalm-suppress MixedArrayAccess
              */
             [$ttr, $message] = $payload;
             $this->startedId = $this->finishedId + 1;

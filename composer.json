@@ -22,7 +22,7 @@
         "laravel/serializable-closure": "^v2.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.3.0",
+        "phpunit/phpunit": "^10.5.0",
         "yiisoft/yii2-redis": "~2.1.0",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
@@ -34,7 +34,8 @@
         "enqueue/stomp": "^0.10.0",
         "pda/pheanstalk": "^8.0.0",
         "aws/aws-sdk-php": "^3.369.0",
-        "vimeo/psalm": "^6.0.0"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",

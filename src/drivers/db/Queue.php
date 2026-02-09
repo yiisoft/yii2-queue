@@ -66,9 +66,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     public function init(): void
     {
         parent::init();
-        /** @psalm-suppress PropertyTypeCoercion */
         $this->db = Instance::ensure($this->db, Connection::class);
-        /** @psalm-suppress PropertyTypeCoercion */
         $this->mutex = Instance::ensure($this->mutex, Mutex::class);
     }
 
@@ -185,7 +183,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * Takes one message from waiting list and reserves it for handling.
      *
      * @return array|false
-     * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
      * @throws Exception in case it hasn't waited the lock
      */
     protected function reserve(): bool|array
@@ -271,7 +268,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         /** @var Connection $dbConnection */
         $dbConnection = $this->db;
         if (is_string($this->db) || is_array($this->db)) {
-            /** @psalm-suppress PropertyTypeCoercion */
             $this->db = Instance::ensure($this->db, Connection::class);
         }
         return $dbConnection;
@@ -282,7 +278,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         /** @var Mutex $mutex */
         $mutex = $this->mutex;
         if (is_string($this->mutex) || is_array($this->mutex)) {
-            /** @psalm-suppress PropertyTypeCoercion */
             $this->mutex = Instance::ensure($this->mutex, Mutex::class);
         }
         return $mutex;

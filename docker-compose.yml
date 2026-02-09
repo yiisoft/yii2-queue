@@ -4,13 +4,13 @@ services:
   yii2-queue-php:
     container_name: yii2-queue-php
     build:
-        context: ..
-        dockerfile: tests/docker/php/Dockerfile
+        context: .
+        dockerfile: ./Dockerfile
         args:
             PHP_VERSION: ${PHP_VERSION:-8.3}
     volumes:
     - ./runtime/.composer:/root/.composer
-    - ..:/code
+    - .:/code
     dns:
     - 8.8.8.8
     - 4.4.4.4
