@@ -51,7 +51,6 @@ abstract class Action extends BaseAction
     /**
      * @param string $string
      * @return string
-     * @psalm-suppress MixedInferredReturnType, MixedReturnStatement
      */
     protected function format(string $string): string
     {

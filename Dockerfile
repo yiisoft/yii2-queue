@@ -32,5 +32,5 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY . /code
 WORKDIR /code
 
-ENTRYPOINT ["tests/docker/php/entrypoint.sh"]
+ENTRYPOINT ["tests/docker/entrypoint.sh"]
 CMD ["sleep", "infinity"]

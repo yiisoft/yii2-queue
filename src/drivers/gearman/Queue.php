@@ -47,7 +47,6 @@ class Queue extends CliQueue
             $worker = new GearmanWorker();
             $worker->addServer($this->host, $this->port);
             $worker->addFunction($this->channel, function (GearmanJob $payload) {
-                /** @psalm-suppress PossiblyUndefinedArrayOffset */
                 [$ttr, $message] = explode(';', $payload->workload(), 2);
                 $this->handleMessage($payload->handle(), $message, (int)$ttr, 1);
             });
@@ -87,7 +86,6 @@ class Queue extends CliQueue
             return self::STATUS_WAITING;
         }
 
-        /** @psalm-suppress RedundantCondition */
         if ($status[0] && $status[1]) {
             return self::STATUS_RESERVED;
         }

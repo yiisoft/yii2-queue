@@ -139,7 +139,6 @@ abstract class Queue extends BaseQueue implements BootstrapInterface
 
     /**
      * @inheritdoc
-     * @psalm-suppress MixedReturnStatement, MixedInferredReturnType
      */
     protected function handleMessage(int|string $id, string $message, int $ttr, int $attempt): bool
     {

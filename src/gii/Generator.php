@@ -147,7 +147,6 @@ class Generator extends BaseGenerator
      */
     public function validateJobClass(string $attribute): void
     {
-        /** @psalm-suppress MixedArgument */
         if ($this->isReservedKeyword($this->$attribute)) {
             $this->addError($attribute, 'Class name cannot be a reserved PHP keyword.');
         }

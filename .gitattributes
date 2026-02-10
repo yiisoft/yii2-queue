@@ -2,8 +2,10 @@
 .*                  export-ignore
 *.dist              export-ignore
 *.xml               export-ignore
+*.yml               export-ignore
 /docs               export-ignore
 /tests              export-ignore
 /Makefile           export-ignore
+/Dockerfile         export-ignore
 /support            export-ignore
 /stubs              export-ignore

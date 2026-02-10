@@ -25,7 +25,6 @@ class InfoAction extends Action
 {
     /**
      * @var Queue
-     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     public CliQueue $queue;
 
@@ -39,7 +38,6 @@ class InfoAction extends Action
         );
 
         try {
-            /** @psalm-suppress RawObjectIteration */
             foreach ($this->queue->getStatsTube() as $key => $value) {
                 Console::stdout($this->format("- $key: ", BaseConsole::FG_YELLOW));
                 Console::output((string)$value);

@@ -30,7 +30,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @var Connection|array|string
      * @psalm-var Connection
-     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public Connection|string|array $redis = 'redis';
     /**
@@ -48,7 +47,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     public function init(): void
     {
         parent::init();
-        /** @psalm-suppress PropertyTypeCoercion */
         $this->redis = Instance::ensure($this->redis, Connection::class);
     }
 
@@ -111,7 +109,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         while (!$this->redis->set("$this->channel.moving_lock", true, 'NX')) {
             usleep(10000);
         }
-        /** @psalm-suppress MixedArgument */
         $this->redis->executeCommand('DEL', $this->redis->keys("$this->channel.*"));
     }
 
@@ -169,7 +166,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
 
         /**
-         * @psalm-suppress PossiblyUndefinedArrayOffset
          * @psalm-var string $payload
          */
         [$ttr, $message] = explode(';', $payload, 2);
