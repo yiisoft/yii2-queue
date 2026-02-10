@@ -20,7 +20,7 @@ use yii\queue\file\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
     public function testRun(): void
     {
@@ -126,9 +126,6 @@ class QueueTest extends CliTestCase
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
     }
 
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->fileQueue;

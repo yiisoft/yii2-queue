@@ -21,9 +21,6 @@ use yii\queue\interfaces\StatisticsInterface;
  */
 class BaseStatisticsProvider extends BaseObject implements StatisticsInterface
 {
-    /**
-     * @var Queue
-     */
     protected Queue $queue;
 
     public function __construct(Queue $queue, array $config = [])

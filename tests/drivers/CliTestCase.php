@@ -27,9 +27,6 @@ abstract class CliTestCase extends TestCase
      */
     private array $processes = [];
 
-    /**
-     * @param array $cmd
-     */
     protected function runProcess(array $cmd): void
     {
         $cmd = $this->prepareCmd($cmd);
@@ -43,10 +40,6 @@ abstract class CliTestCase extends TestCase
         );
     }
 
-    /**
-     * @param array $cmd
-     * @return Process
-     */
     protected function startProcess(array $cmd): Process
     {
         $process = new Process($this->prepareCmd($cmd));
@@ -59,10 +52,6 @@ abstract class CliTestCase extends TestCase
         return $process;
     }
 
-    /**
-     * @param array $cmd
-     * @return array
-     */
     private function prepareCmd(array $cmd): array
     {
         $class = new ReflectionClass($this->getQueue());
@@ -84,9 +73,6 @@ abstract class CliTestCase extends TestCase
         return $cmd;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function tearDown(): void
     {
         if (file_exists(PriorityJob::getFileName())) {

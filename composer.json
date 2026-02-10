@@ -22,7 +22,7 @@
         "laravel/serializable-closure": "^v2.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5.0",
+        "phpunit/phpunit": "^12.5.0",
         "yiisoft/yii2-redis": "~2.1.0",
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",

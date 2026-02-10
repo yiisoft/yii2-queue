@@ -17,7 +17,7 @@ use yii\queue\serializers\PhpSerializer;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class PhpSerializerTest extends TestCase
+final class PhpSerializerTest extends TestCase
 {
     protected function createSerializer(): PhpSerializer
     {

@@ -17,7 +17,7 @@ use yii\queue\serializers\IgbinarySerializer;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class IgbinarySerializerTest extends TestCase
+final class IgbinarySerializerTest extends TestCase
 {
     protected function createSerializer(): IgbinarySerializer
     {

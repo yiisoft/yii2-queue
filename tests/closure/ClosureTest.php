@@ -20,7 +20,7 @@ use yii\queue\sync\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class ClosureTest extends TestCase
+final class ClosureTest extends TestCase
 {
     public function testPush1(): void
     {
@@ -68,9 +68,6 @@ class ClosureTest extends TestCase
         $this->assertFileExists($fileName);
     }
 
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         if (!$this->_queue) {
@@ -84,9 +81,6 @@ class ClosureTest extends TestCase
 
     private $_queue;
 
-    /**
-     * @inheritdoc
-     */
     protected function tearDown(): void
     {
         foreach (glob(Yii::getAlias('@runtime/job-*.lock')) as $fileName) {
