@@ -18,11 +18,8 @@ use yii\queue\db\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class PgsqlQueueTest extends TestCase
+final class PgsqlQueueTest extends TestCase
 {
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->pgsqlQueue;

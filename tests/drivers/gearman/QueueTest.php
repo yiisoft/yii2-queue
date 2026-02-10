@@ -20,7 +20,7 @@ use yii\queue\gearman\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
     public function testRun(): void
     {
@@ -64,9 +64,6 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->gearmanQueue;

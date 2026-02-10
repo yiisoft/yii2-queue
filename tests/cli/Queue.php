@@ -40,9 +40,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
 
     private StatisticsInterface $_statisticsProvider;
 
-    /**
-     * @return StatisticsInterface
-     */
     public function getStatisticsProvider(): StatisticsInterface
     {
         if (!isset($this->_statisticsProvider)) {

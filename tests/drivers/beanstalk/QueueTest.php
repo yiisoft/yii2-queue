@@ -23,7 +23,7 @@ use yii\queue\beanstalk\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
     public function testRun(): void
     {
@@ -115,9 +115,6 @@ class QueueTest extends CliTestCase
         $this->assertEquals('queue', $statusTube->name->value);
     }
 
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->beanstalkQueue;
@@ -126,7 +123,6 @@ class QueueTest extends CliTestCase
     /**
      * @param int|string|null $id of a job
      * @return bool
-     * @throws
      */
     protected function jobIsExists(int|string|null $id): bool
     {

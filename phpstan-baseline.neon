@@ -967,12 +967,6 @@ parameters:
 			path: tests/drivers/beanstalk/QueueTest.php
 
 		-
-			message: '#^PHPDoc tag @throws has invalid value \(\)\: Unexpected token "\\n     ", expected type at offset 81 on line 4$#'
-			identifier: phpDoc.parseError
-			count: 1
-			path: tests/drivers/beanstalk/QueueTest.php
-
-		-
 			message: '#^Parameter \#1 \$filename of function file_get_contents expects string, bool\|string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1340,12 +1334,6 @@ parameters:
 
 		-
 			message: '#^Method tests\\serializers\\TestCase\:\:providerSerialize\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/serializers/TestCase.php
-
-		-
-			message: '#^Property tests\\serializers\\TestObject\:\:\$bar type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/serializers/TestCase.php

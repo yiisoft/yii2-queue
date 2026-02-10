@@ -21,14 +21,8 @@ use yii\queue\Queue;
  */
 abstract class TestCase extends \tests\TestCase
 {
-    /**
-     * @return Queue
-     */
     abstract protected function getQueue(): Queue;
 
-    /**
-     * @return SimpleJob
-     */
     protected function createSimpleJob(): SimpleJob
     {
         return new SimpleJob([
@@ -36,9 +30,6 @@ abstract class TestCase extends \tests\TestCase
         ]);
     }
 
-    /**
-     * @param SimpleJob $job
-     */
     protected function assertSimpleJobDone(SimpleJob $job): void
     {
         $timeout = 5000000; // 5 sec
@@ -50,10 +41,6 @@ abstract class TestCase extends \tests\TestCase
         $this->assertFileExists($job->getFileName());
     }
 
-    /**
-     * @param SimpleJob $job
-     * @param int $delay
-     */
     protected function assertSimpleJobLaterDone(SimpleJob $job, int $delay): void
     {
         $time = time() + $delay;
@@ -68,9 +55,6 @@ abstract class TestCase extends \tests\TestCase
         $this->assertGreaterThanOrEqual($time, filemtime($job->getFileName()));
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function tearDown(): void
     {
         // Removes temp job files
