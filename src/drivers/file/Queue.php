@@ -235,9 +235,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     {
         $id = $payload[0];
         $this->touchIndex(function (array &$data) use ($id) {
-            /** @var array{reserved: array} $data */
+            {
+                /** @var array{reserved: array} $data */
+            }
             foreach ($data['reserved'] as $key => $payload) {
-                /** @var array $payload */
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
                     break;
@@ -273,16 +274,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
                 usort($data['delayed'], static function (array $a, array $b) {
-                    if ($a[2] < $b[2]) {
+                    if ($a[2] < $b[2] || $a[0] < $b[0]) {
                         return -1;
                     }
-                    if ($a[2] > $b[2]) {
-                        return 1;
-                    }
-                    if ($a[0] < $b[0]) {
-                        return -1;
-                    }
-                    if ($a[0] > $b[0]) {
+                    if ($a[2] > $b[2] || $a[0] > $b[0]) {
                         return 1;
                     }
                     return 0;
@@ -290,7 +285,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
         });
 
-        /** @var int|string|null $id */
         return $id;
     }
 
@@ -334,16 +328,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    private StatisticsInterface $_statisticsProvider;
+    private StatisticsInterface $statisticsProvider;
 
     /**
      * @return StatisticsInterface
      */
     public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!isset($this->_statisticsProvider)) {
-            $this->_statisticsProvider = new StatisticsProvider($this);
+        if (!isset($this->statisticsProvider)) {
+            $this->statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statisticsProvider;
+        return $this->statisticsProvider;
     }
 }

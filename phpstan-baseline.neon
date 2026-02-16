@@ -1,7 +1,91 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Callable callable\(\)\: mixed invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/drivers/amqp_interop/Queue.php
+
+		-
+			message: '#^PHPDoc tag @var with type array\<float\> is not subtype of native type list\<string\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: tests/app/benchmark/waiting/Action.php
+
+		-
 			message: '#^Access to constant ATTR_INIT_COMMAND on an unknown class Pdo\\Mysql\.$#'
 			identifier: class.notFound
 			count: 1
 			path: tests/app/config/main.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$amqpInteropQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/amqp_interop/AmqpTestCase.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$beanstalkQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/beanstalk/QueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$mysqlQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/db/MysqlQueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$pgsqlQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/db/PgsqlQueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sqliteQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/db/SqliteQueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$fileQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/file/QueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$gearmanQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/gearman/QueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$redisQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/redis/QueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sqsFifoQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/sqs/FifoQueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sqsQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/sqs/QueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$stompQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/stomp/QueueTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$syncQueue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/drivers/sync/QueueTest.php

@@ -12,23 +12,14 @@ namespace yii\queue\db;
 
 use yii\base\BaseObject;
 use yii\db\Query;
-use yii\queue\interfaces\DelayedCountInterface;
-use yii\queue\interfaces\DoneCountInterface;
-use yii\queue\interfaces\ReservedCountInterface;
 use yii\queue\interfaces\StatisticsInterface;
-use yii\queue\interfaces\WaitingCountInterface;
 
 /**
  * Statistics Provider
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
-class StatisticsProvider extends BaseObject implements
-    DoneCountInterface,
-    WaitingCountInterface,
-    DelayedCountInterface,
-    ReservedCountInterface,
-    StatisticsInterface
+class StatisticsProvider extends BaseObject implements StatisticsInterface
 {
     /**
      * @var Queue

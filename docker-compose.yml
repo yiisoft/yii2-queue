@@ -63,7 +63,6 @@ services:
   # https://hub.docker.com/_/mysql/
   mysql:
     image: mysql:5.7.44
-    platform: linux/amd64
     ports:
     - "3307:3306"
     environment:

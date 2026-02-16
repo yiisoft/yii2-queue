@@ -28,4 +28,33 @@ class BaseStatisticsProvider extends BaseObject implements StatisticsInterface
         $this->queue = $queue;
         parent::__construct($config);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getReservedCount(): int
+    {
+        return 10;
+    }
+
+    public function getDoneCount(): int
+    {
+        return 10;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDelayedCount(): int
+    {
+        return 10;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWaitingCount(): int
+    {
+        return 10;
+    }
 }
