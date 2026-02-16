@@ -38,13 +38,8 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         throw new NotSupportedException('"pushMessage" method is not supported.');
     }
 
-    private StatisticsInterface $_statisticsProvider;
-
     public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!isset($this->_statisticsProvider)) {
-            $this->_statisticsProvider = new BaseStatisticsProvider($this);
-        }
-        return $this->_statisticsProvider;
+        return new BaseStatisticsProvider($this);
     }
 }

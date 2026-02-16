@@ -84,7 +84,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if ($payload = $this->reserve()) {
-                    /** @psalm-var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
+                    /** @var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
                     if (
                         $this->handleMessage(
                             $payload['id'],
@@ -283,16 +283,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         return $mutex;
     }
 
-    private StatisticsInterface $_statisticsProvider;
+    private StatisticsInterface $statisticsProvider;
 
     /**
      * @return StatisticsInterface
      */
     public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!isset($this->_statisticsProvider)) {
-            $this->_statisticsProvider = new StatisticsProvider($this);
+        if (!isset($this->statisticsProvider)) {
+            $this->statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statisticsProvider;
+        return $this->statisticsProvider;
     }
 }

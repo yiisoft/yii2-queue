@@ -29,8 +29,8 @@ use yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    public const ATTEMPT = 'yii-attempt';
-    public const TTR = 'yii-ttr';
+    public const string ATTEMPT = 'yii-attempt';
+    public const string TTR = 'yii-ttr';
 
     /**
      * The message queue broker's host.

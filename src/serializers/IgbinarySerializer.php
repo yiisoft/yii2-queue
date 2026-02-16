@@ -27,7 +27,7 @@ class IgbinarySerializer extends BaseObject implements SerializerInterface
      */
     public function serialize($job): string
     {
-        /** @var string|null|false $serialize */
+        /** @var string|null $serialize */
         $serialize = igbinary_serialize($job);
         return is_string($serialize) ? $serialize : '';
     }

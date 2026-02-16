@@ -99,7 +99,6 @@ class Panel extends BasePanel implements ViewContextInterface
      */
     public function getSummary(): string
     {
-        /** @psalm-var array{jobs: array} $this->data */
         return Yii::$app->view->render('summary', [
             'url' => $this->getUrl(),
             'count' => isset($this->data['jobs']) ? count($this->data['jobs']) : 0,
@@ -111,15 +110,14 @@ class Panel extends BasePanel implements ViewContextInterface
      */
     public function getDetail(): string
     {
-        /** @psalm-var array{jobs: array} $this->data */
         $jobs = $this->data['jobs'] ?? [];
         foreach ($jobs as &$job) {
-            /** @psalm-var array{sender: string, id: string|int} $job */
+            /** @var array{sender: string, id: string|int} $job */
             $job['status'] = 'unknown';
             /** @var Queue $queue */
             if ($queue = Yii::$app->get($job['sender'], false)) {
                 try {
-                    /** @psalm-var Queue $queue */
+                    /** @var Queue $queue */
                     if ($queue->isWaiting($job['id'])) {
                         $job['status'] = 'waiting';
                     } elseif ($queue->isReserved($job['id'])) {

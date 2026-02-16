@@ -15,7 +15,6 @@ use Enqueue\AmqpExt\AmqpConnectionFactory as AmqpExtConnectionFactory;
 use Enqueue\AmqpLib\AmqpConnectionFactory as AmqpLibConnectionFactory;
 use Enqueue\AmqpTools\DelayStrategyAware;
 use Enqueue\AmqpTools\RabbitMqDlxDelayStrategy;
-use Interop\Amqp\AmqpConnectionFactory;
 use Interop\Amqp\AmqpConsumer;
 use Interop\Amqp\AmqpContext;
 use Interop\Amqp\AmqpDestination;
@@ -23,7 +22,6 @@ use Interop\Amqp\AmqpMessage;
 use Interop\Amqp\AmqpQueue;
 use Interop\Amqp\AmqpTopic;
 use Interop\Amqp\Impl\AmqpBind;
-use Interop\Queue\Context;
 use LogicException;
 use yii\base\Application as BaseApp;
 use yii\base\Event;
@@ -41,13 +39,13 @@ use yii\queue\cli\Queue as CliQueue;
  */
 class Queue extends CliQueue
 {
-    public const ATTEMPT = 'yii-attempt';
-    public const TTR = 'yii-ttr';
-    public const DELAY = 'yii-delay';
-    public const PRIORITY = 'yii-priority';
-    public const ENQUEUE_AMQP_LIB = 'enqueue/amqp-lib';
-    public const ENQUEUE_AMQP_EXT = 'enqueue/amqp-ext';
-    public const ENQUEUE_AMQP_BUNNY = 'enqueue/amqp-bunny';
+    public const string ATTEMPT = 'yii-attempt';
+    public const string TTR = 'yii-ttr';
+    public const string DELAY = 'yii-delay';
+    public const string PRIORITY = 'yii-priority';
+    public const string ENQUEUE_AMQP_LIB = 'enqueue/amqp-lib';
+    public const string ENQUEUE_AMQP_EXT = 'enqueue/amqp-ext';
+    public const string ENQUEUE_AMQP_BUNNY = 'enqueue/amqp-bunny';
 
     /**
      * The connection to the broker could be configured as an array of options
@@ -258,9 +256,9 @@ class Queue extends CliQueue
     /**
      * Amqp interop context.
      *
-     * @var AmqpContext|Context|null
+     * @var AmqpContext|null
      */
-    protected AmqpContext|null|Context $context = null;
+    protected AmqpContext|null $context = null;
     /**
      * List of supported amqp interop drivers.
      *
@@ -368,7 +366,7 @@ class Queue extends CliQueue
     {
         $this->open();
 
-        /** @psalm-var AmqpContext */
+        /** @var AmqpContext */
         return $this->context;
     }
 
@@ -382,7 +380,7 @@ class Queue extends CliQueue
 
         $topic = $this->getContext()->createTopic($this->exchangeName);
 
-        /** @psalm-var AmqpMessage $message */
+        /** @var AmqpMessage $message */
         $message = $this->getContext()->createMessage($payload);
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
@@ -475,7 +473,7 @@ class Queue extends CliQueue
             return null !== $value;
         });
 
-        /** @var AmqpConnectionFactory $factory */
+        /** @var AmqpBunnyConnectionFactory|AmqpExtConnectionFactory|AmqpLibConnectionFactory $factory */
         $factory = new $connectionClass($config);
 
         $this->context = $factory->createContext();
@@ -543,7 +541,7 @@ class Queue extends CliQueue
 
     private function createQueue(): AmqpQueue
     {
-        /** @psalm-var AmqpQueue */
+        /** @var AmqpQueue */
         return $this->getContext()->createQueue($this->queueName);
     }
 }

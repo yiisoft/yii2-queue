@@ -10,14 +10,11 @@ declare(strict_types=1);
 
 namespace tests\cli;
 
-use tests\cli\providers\DelayedCountProvider;
-use tests\cli\providers\DoneCountProvider;
-use tests\cli\providers\ReservedCountProvider;
-use tests\cli\providers\WaitingCountProvider;
+use tests\cli\providers\BaseStatisticsProvider;
 use tests\TestCase;
 use yii\base\Module;
 use yii\console\Controller;
-use yii\helpers\Console;
+use yii\helpers\BaseConsole;
 use yii\queue\cli\InfoAction;
 
 /**
@@ -34,29 +31,53 @@ final class InfoActionTest extends TestCase
             ->getMock();
 
         $controller
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(9))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
-                    Console::FG_GREEN,
+                    BaseConsole::FG_GREEN,
                 ],
                 [
                     '- waiting: ',
-                    Console::FG_YELLOW,
+                    BaseConsole::FG_YELLOW,
                 ],
                 [
-                    10 . PHP_EOL
-                ]
+                    10 . PHP_EOL,
+                ],
+                [
+                    '- delayed: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null
+                ],
+                [
+                    '- reserved: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- done: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
             );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
-        $provider = $this->getMockBuilder(WaitingCountProvider::class)
+        $provider = $this->getMockBuilder(BaseStatisticsProvider::class)
+            ->onlyMethods(['getWaitingCount'])
             ->setConstructorArgs([$queue])
             ->getMock();
-        $provider
-            ->expects($this->once())
+        $provider->expects($this->once())
             ->method('getWaitingCount')
             ->willReturn(10);
 
@@ -65,10 +86,9 @@ final class InfoActionTest extends TestCase
             ->method('getStatisticsProvider')
             ->willReturn($provider);
 
-        $action = (new InfoAction('infoAction', $controller, [
+        (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
-        ]));
-        $action->run();
+        ]))->run();
     }
 
     public function testDelayedCount(): void
@@ -78,29 +98,54 @@ final class InfoActionTest extends TestCase
             ->getMock();
 
         $controller
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(9))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
-                    Console::FG_GREEN,
+                    BaseConsole::FG_GREEN,
+                ],
+                [
+                    '- waiting: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
                 ],
                 [
                     '- delayed: ',
-                    Console::FG_YELLOW,
+                    BaseConsole::FG_YELLOW,
                 ],
                 [
-                    10 . PHP_EOL
-                ]
+                    10 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- reserved: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- done: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
             );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
-        $provider = $this->getMockBuilder(DelayedCountProvider::class)
+        $provider = $this->getMockBuilder(BaseStatisticsProvider::class)
+            ->onlyMethods(['getDelayedCount'])
             ->setConstructorArgs([$queue])
             ->getMock();
-        $provider
-            ->expects($this->once())
+        $provider->expects($this->once())
             ->method('getDelayedCount')
             ->willReturn(10);
 
@@ -109,10 +154,9 @@ final class InfoActionTest extends TestCase
             ->method('getStatisticsProvider')
             ->willReturn($provider);
 
-        $action = (new InfoAction('infoAction', $controller, [
+        (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
-        ]));
-        $action->run();
+        ]))->run();
     }
 
     public function testReservedCount(): void
@@ -122,30 +166,54 @@ final class InfoActionTest extends TestCase
             ->getMock();
 
         $controller
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(9))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
-                    Console::FG_GREEN,
+                    BaseConsole::FG_GREEN,
+                ],
+                [
+                    '- waiting: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- delayed: ',
+                    BaseConsole::FG_YELLOW
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
                 ],
                 [
                     '- reserved: ',
-                    Console::FG_YELLOW,
+                    BaseConsole::FG_YELLOW,
                 ],
                 [
-                    10 . PHP_EOL
-                ]
+                    10 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- done: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
             );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
-        $provider = $this->getMockBuilder(ReservedCountProvider::class)
+        $provider = $this->getMockBuilder(BaseStatisticsProvider::class)
+            ->onlyMethods(['getReservedCount'])
             ->setConstructorArgs([$queue])
-            ->getMock()
-        ;
-        $provider
-            ->expects($this->once())
+            ->getMock();
+        $provider->expects($this->once())
             ->method('getReservedCount')
             ->willReturn(10);
 
@@ -154,10 +222,9 @@ final class InfoActionTest extends TestCase
             ->method('getStatisticsProvider')
             ->willReturn($provider);
 
-        $action = (new InfoAction('infoAction', $controller, [
+        (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
-        ]));
-        $action->run();
+        ]))->run();
     }
 
     public function testDoneCount(): void
@@ -167,29 +234,54 @@ final class InfoActionTest extends TestCase
             ->getMock();
 
         $controller
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(9))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
-                    Console::FG_GREEN,
+                    BaseConsole::FG_GREEN,
+                ],
+                [
+                    '- waiting: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- delayed: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
+                ],
+                [
+                    '- reserved: ',
+                    BaseConsole::FG_YELLOW,
+                ],
+                [
+                    0 . PHP_EOL,
+                    null,
                 ],
                 [
                     '- done: ',
-                    Console::FG_YELLOW,
+                    BaseConsole::FG_YELLOW,
                 ],
                 [
-                    10 . PHP_EOL
-                ]
+                    10 . PHP_EOL,
+                    null,
+                ],
             );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
-        $provider = $this->getMockBuilder(DoneCountProvider::class)
+        $provider = $this->getMockBuilder(BaseStatisticsProvider::class)
+            ->onlyMethods(['getDoneCount'])
             ->setConstructorArgs([$queue])
             ->getMock();
-        $provider
-            ->expects($this->once())
+        $provider->expects($this->once())
             ->method('getDoneCount')
             ->willReturn(10);
 
@@ -198,9 +290,8 @@ final class InfoActionTest extends TestCase
             ->method('getStatisticsProvider')
             ->willReturn($provider);
 
-        $action = (new InfoAction('infoAction', $controller, [
+        (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
-        ]));
-        $action->run();
+        ]))->run();
     }
 }

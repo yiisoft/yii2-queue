@@ -159,7 +159,7 @@ class Generator extends BaseGenerator
      */
     public function validateNamespace(string $attribute): void
     {
-        /** @psalm-var string $value */
+        /** @var string $value */
         $value = $this->$attribute;
         $value = ltrim($value, '\\');
         $path = Yii::getAlias('@' . str_replace('\\', '/', $value), false);
