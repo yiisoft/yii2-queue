@@ -25,7 +25,7 @@ use yii\queue\cli\InfoAction;
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
-class InfoActionTest extends TestCase
+final class InfoActionTest extends TestCase
 {
     public function testWaitingCount(): void
     {
@@ -33,7 +33,8 @@ class InfoActionTest extends TestCase
             ->setConstructorArgs(['testController', new Module('testModule')])
             ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
@@ -54,11 +55,15 @@ class InfoActionTest extends TestCase
         $provider = $this->getMockBuilder(WaitingCountProvider::class)
             ->setConstructorArgs([$queue])
             ->getMock();
-        $provider->expects(self::once())
+        $provider
+            ->expects($this->once())
             ->method('getWaitingCount')
             ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
@@ -72,7 +77,8 @@ class InfoActionTest extends TestCase
             ->setConstructorArgs(['testController', new Module('testModule')])
             ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
@@ -93,11 +99,15 @@ class InfoActionTest extends TestCase
         $provider = $this->getMockBuilder(DelayedCountProvider::class)
             ->setConstructorArgs([$queue])
             ->getMock();
-        $provider->expects(self::once())
+        $provider
+            ->expects($this->once())
             ->method('getDelayedCount')
             ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
@@ -111,7 +121,8 @@ class InfoActionTest extends TestCase
             ->setConstructorArgs(['testController', new Module('testModule')])
             ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
@@ -133,11 +144,15 @@ class InfoActionTest extends TestCase
             ->setConstructorArgs([$queue])
             ->getMock()
         ;
-        $provider->expects(self::once())
+        $provider
+            ->expects($this->once())
             ->method('getReservedCount')
             ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
@@ -151,7 +166,8 @@ class InfoActionTest extends TestCase
             ->setConstructorArgs(['testController', new Module('testModule')])
             ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
             ->willReturnOnConsecutiveCalls(
                 [
@@ -172,11 +188,15 @@ class InfoActionTest extends TestCase
         $provider = $this->getMockBuilder(DoneCountProvider::class)
             ->setConstructorArgs([$queue])
             ->getMock();
-        $provider->expects(self::once())
+        $provider
+            ->expects($this->once())
             ->method('getDoneCount')
             ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace tests\drivers\redis;
 
+use Exception;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
@@ -22,7 +23,7 @@ use yii\redis\Connection;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
     public function testRun(): void
     {
@@ -128,9 +129,6 @@ class QueueTest extends CliTestCase
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
     }
 
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->redisQueue;
@@ -181,7 +179,7 @@ class QueueTest extends CliTestCase
 
         try {
             $queue->run(false);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Ignore exceptions.
         } finally {
             $queue->redis = $old;

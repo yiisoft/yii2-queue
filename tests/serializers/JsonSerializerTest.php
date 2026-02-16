@@ -19,11 +19,8 @@ use yii\queue\serializers\SerializerInterface;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class JsonSerializerTest extends TestCase
+final class JsonSerializerTest extends TestCase
 {
-    /**
-     * @inheritdoc
-     */
     protected function createSerializer(): SerializerInterface
     {
         return new JsonSerializer();

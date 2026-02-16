@@ -19,7 +19,7 @@ use yii\queue\sqs\Queue;
 /**
  * SQS FIFO Queue Test.
  */
-class FifoQueueTest extends CliTestCase
+final class FifoQueueTest extends CliTestCase
 {
     public function testRun(): void
     {
@@ -65,9 +65,6 @@ class FifoQueueTest extends CliTestCase
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
     }
 
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->sqsFifoQueue;

@@ -23,7 +23,7 @@ use yii\queue\amqp_interop\Queue;
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  */
-class QueueTest extends AmqpTestCase
+final class QueueTest extends AmqpTestCase
 {
     /**
      * Test working setter routing key

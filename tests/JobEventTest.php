@@ -22,7 +22,7 @@ use yii\queue\sync\Queue as SyncQueue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class JobEventTest extends TestCase
+final class JobEventTest extends TestCase
 {
     public function testInvalidJob(): void
     {

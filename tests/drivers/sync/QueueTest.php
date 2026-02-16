@@ -19,11 +19,8 @@ use yii\queue\sync\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends TestCase
+final class QueueTest extends TestCase
 {
-    /**
-     * @return Queue
-     */
     protected function getQueue(): Queue
     {
         return Yii::$app->syncQueue;

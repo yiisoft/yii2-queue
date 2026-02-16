@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace tests\serializers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use tests\app\SimpleJob;
 use tests\TestCase as BaseTestCase;
-use yii\base\BaseObject;
 use yii\queue\serializers\SerializerInterface;
 
 /**
@@ -22,15 +22,9 @@ use yii\queue\serializers\SerializerInterface;
  */
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * @return SerializerInterface
-     */
     abstract protected function createSerializer(): SerializerInterface;
 
-    /**
-     * @dataProvider providerSerialize
-     * @param mixed $expected
-     */
+    #[DataProvider('providerSerialize')]
     public function testSerialize(mixed $expected): void
     {
         $serializer = $this->createSerializer();
@@ -76,10 +70,4 @@ abstract class TestCase extends BaseTestCase
             ],
         ];
     }
-}
-
-class TestObject extends BaseObject
-{
-    public int $foo;
-    public array $bar;
 }
