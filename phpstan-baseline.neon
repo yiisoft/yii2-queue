@@ -205,6 +205,12 @@ parameters:
 			path: src/drivers/amqp_interop/Queue.php
 
 		-
+			message: '#^Callable callable\(\)\: mixed invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/drivers/amqp_interop/Queue.php
+
+		-
 			message: '#^Cannot call method bind\(\) on Interop\\Queue\\Context\|null\.$#'
 			identifier: method.nonObject
 			count: 1
