@@ -368,7 +368,7 @@ class Queue extends CliQueue
     {
         $this->open();
 
-        /** @psalm-var AmqpContext */
+        /** @var AmqpContext */
         return $this->context;
     }
 
@@ -382,7 +382,7 @@ class Queue extends CliQueue
 
         $topic = $this->getContext()->createTopic($this->exchangeName);
 
-        /** @psalm-var AmqpMessage $message */
+        /** @var AmqpMessage $message */
         $message = $this->getContext()->createMessage($payload);
         $message->setDeliveryMode(AmqpMessage::DELIVERY_MODE_PERSISTENT);
         $message->setMessageId(uniqid('', true));
@@ -543,7 +543,7 @@ class Queue extends CliQueue
 
     private function createQueue(): AmqpQueue
     {
-        /** @psalm-var AmqpQueue */
+        /** @var AmqpQueue */
         return $this->getContext()->createQueue($this->queueName);
     }
 }

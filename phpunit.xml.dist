@@ -26,9 +26,5 @@
         <include>
             <directory>./src</directory>
         </include>
-        <exclude>
-            <directory>./src/debug</directory>
-            <directory>./src/gii</directory>
-        </exclude>
     </source>
 </phpunit>

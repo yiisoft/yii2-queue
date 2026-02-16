@@ -145,7 +145,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             /** @var array{waiting: array, delayed: array, reserved: array} $data */
             if (!empty($data['waiting'])) {
                 foreach ($data['waiting'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['waiting'][$key]);
                         $removed = true;
@@ -155,7 +155,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
             if (!$removed && !empty($data['delayed'])) {
                 foreach ($data['delayed'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['delayed'][$key]);
                         $removed = true;
@@ -165,7 +165,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
             if (!$removed && !empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['reserved'][$key]);
                         $removed = true;
@@ -195,10 +195,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             /** @var array{reserved: array, delayed: array, waiting: array} $data */
             if (!empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ((int)$payload[1] + (int)$payload[3] < time()) {
                         /**
-                         * @psalm-var int $attempt
+                         * @var int $attempt
                          */
                         [$id, $ttr, $attempt, $time] = $payload;
                         $data['reserved'][$key][2] = ++$attempt;
@@ -237,7 +237,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         $this->touchIndex(function (array &$data) use ($id) {
             /** @var array{reserved: array} $data */
             foreach ($data['reserved'] as $key => $payload) {
-                /** @psalm-var array $payload */
+                /** @var array $payload */
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
                     break;
@@ -290,7 +290,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
         });
 
-        /** @psalm-var int|string|null $id */
+        /** @var int|string|null $id */
         return $id;
     }
 

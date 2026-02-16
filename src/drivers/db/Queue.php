@@ -84,7 +84,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if ($payload = $this->reserve()) {
-                    /** @psalm-var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
+                    /** @var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
                     if (
                         $this->handleMessage(
                             $payload['id'],

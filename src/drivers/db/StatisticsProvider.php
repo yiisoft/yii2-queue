@@ -46,7 +46,6 @@ class StatisticsProvider extends BaseObject implements
      */
     public function getWaitingCount(): int
     {
-        /** @psalm-var \yii\db\Connection $this->queue->db */
         return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
@@ -60,7 +59,6 @@ class StatisticsProvider extends BaseObject implements
      */
     public function getDelayedCount(): int
     {
-        /** @psalm-var \yii\db\Connection $this->queue->db */
         return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
@@ -74,7 +72,6 @@ class StatisticsProvider extends BaseObject implements
      */
     public function getReservedCount(): int
     {
-        /** @psalm-var \yii\db\Connection $this->queue->db */
         return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
@@ -88,7 +85,6 @@ class StatisticsProvider extends BaseObject implements
      */
     public function getDoneCount(): int
     {
-        /** @psalm-var \yii\db\Connection $this->queue->db */
         return (int) (new Query())
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
