@@ -14,6 +14,7 @@ Yii2 Queue Extension Change Log
 - Enh #503: All dependent packages for supported drivers have been updated to the latest versions (@s1lver)
 - Enh #503: The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
 - Enh #544: Applying Yii2 coding standards (@s1lver)
+- Bug #528: Revert: Prevent multiple execution of aborted jobs (luke-)
 
 2.3.8 January 08, 2026
 ----------------------
