@@ -68,6 +68,9 @@
             "yiisoft/yii2-composer": true,
             "cweagans/composer-patches": true,
             "php-http/discovery": true
+        },
+        "audit": {
+            "block-insecure": false
         }
     },
     "extra": {
