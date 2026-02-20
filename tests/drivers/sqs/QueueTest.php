@@ -75,7 +75,7 @@ class QueueTest extends CliTestCase
         return Yii::$app->sqsQueue;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!getenv('AWS_SQS_ENABLED')) {
             $this->markTestSkipped('AWS SQS tests are disabled');

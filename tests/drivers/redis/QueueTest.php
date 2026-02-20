@@ -132,7 +132,7 @@ class QueueTest extends CliTestCase
         return Yii::$app->redisQueue;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
         $this->getQueue()->redis->flushdb();

@@ -84,7 +84,7 @@ class ClosureTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach (glob(Yii::getAlias("@runtime/job-*.lock")) as $fileName) {
             unlink($fileName);

@@ -145,7 +145,7 @@ abstract class TestCase extends CliTestCase
     }
 
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
         $this->getQueue()->db->createCommand()
