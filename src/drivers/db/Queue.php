@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\db;
 
@@ -14,6 +17,7 @@ use yii\db\Query;
 use yii\di\Instance;
 use yii\mutex\Mutex;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
@@ -28,37 +32,38 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @var Connection|array|string
      */
-    public $db = 'db';
+    public Connection|string|array $db = 'db';
     /**
      * @var Mutex|array|string
      */
-    public $mutex = 'mutex';
+    public Mutex|string|array $mutex = 'mutex';
     /**
      * @var int timeout
      */
-    public $mutexTimeout = 3;
+    public int $mutexTimeout = 3;
     /**
      * @var string table name
      */
-    public $tableName = '{{%queue}}';
+    public string $tableName = '{{%queue}}';
     /**
      * @var string
      */
-    public $channel = 'queue';
+    public string $channel = 'queue';
     /**
      * @var bool ability to delete released messages from table
      */
-    public $deleteReleased = true;
+    public bool $deleteReleased = true;
     /**
      * @var string command class name
      */
-    public $commandClass = Command::class;
+    public string $commandClass = Command::class;
 
+    protected int $reserveTime = 0;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::class);
@@ -69,22 +74,25 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $timeout number of seconds to sleep before next iteration.
+     * @param int<0, max> $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0)
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if ($payload = $this->reserve()) {
-                    if ($this->handleMessage(
-                        $payload['id'],
-                        $payload['job'],
-                        $payload['ttr'],
-                        $payload['attempt']
-                    )) {
+                    /** @psalm-var array{id: int|string, job:string, ttr:int|string, attempt:int|string} $payload */
+                    if (
+                        $this->handleMessage(
+                            $payload['id'],
+                            $payload['job'],
+                            (int) $payload['ttr'],
+                            (int) $payload['attempt']
+                        )
+                    ) {
                         $this->release($payload);
                     }
                 } elseif (!$repeat) {
@@ -99,12 +107,12 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status(int|string $id): int
     {
         $payload = (new Query())
             ->from($this->tableName)
             ->where(['id' => $id])
-            ->one($this->db);
+            ->one($this->getDb());
 
         if (!$payload) {
             if ($this->deleteReleased) {
@@ -114,11 +122,11 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             throw new InvalidArgumentException("Unknown message ID: $id.");
         }
 
-        if (!$payload['reserved_at']) {
+        if (!isset($payload['reserved_at'])) {
             return self::STATUS_WAITING;
         }
 
-        if (!$payload['done_at']) {
+        if (!isset($payload['done_at'])) {
             return self::STATUS_RESERVED;
         }
 
@@ -130,9 +138,9 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      *
      * @since 2.0.1
      */
-    public function clear()
+    public function clear(): void
     {
-        $this->db->createCommand()
+        $this->getDb()->createCommand()
             ->delete($this->tableName, ['channel' => $this->channel])
             ->execute();
     }
@@ -144,9 +152,9 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove(int $id): bool
     {
-        return (bool) $this->db->createCommand()
+        return (bool) $this->getDb()->createCommand()
             ->delete($this->tableName, ['channel' => $this->channel, 'id' => $id])
             ->execute();
     }
@@ -154,30 +162,33 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
-        $this->db->createCommand()->insert($this->tableName, [
+        $this->getDb()->createCommand()->insert($this->tableName, [
             'channel' => $this->channel,
-            'job' => $message,
+            'job' => $payload,
             'pushed_at' => time(),
             'ttr' => $ttr,
             'delay' => $delay,
             'priority' => $priority ?: 1024,
         ])->execute();
-        $tableSchema = $this->db->getTableSchema($this->tableName);
-        return $this->db->getLastInsertID($tableSchema->sequenceName);
+        $tableSchema = $this->getDb()->getTableSchema($this->tableName);
+        if (null === $tableSchema) {
+            return null;
+        }
+        return $this->getDb()->getLastInsertID($tableSchema->sequenceName ?? '');
     }
 
     /**
      * Takes one message from waiting list and reserves it for handling.
      *
-     * @return array|false payload
+     * @return array|false
      * @throws Exception in case it hasn't waited the lock
      */
-    protected function reserve()
+    protected function reserve(): bool|array
     {
-        return $this->db->useMaster(function () {
-            if (!$this->mutex->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
+        return $this->getDb()->useMaster(function () {
+            if (!$this->getMutex()->acquire(__CLASS__ . $this->channel, $this->mutexTimeout)) {
                 throw new Exception('Has not waited the lock.');
             }
 
@@ -191,11 +202,11 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                     ->andWhere('[[pushed_at]] <= :time - [[delay]]', [':time' => time()])
                     ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
                     ->limit(1)
-                    ->one($this->db);
+                    ->one($this->getDb());
                 if (is_array($payload)) {
                     $payload['reserved_at'] = time();
                     $payload['attempt'] = (int) $payload['attempt'] + 1;
-                    $this->db->createCommand()->update($this->tableName, [
+                    $this->getDb()->createCommand()->update($this->tableName, [
                         'reserved_at' => $payload['reserved_at'],
                         'attempt' => $payload['attempt'],
                     ], [
@@ -208,27 +219,25 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                     }
                 }
             } finally {
-                $this->mutex->release(__CLASS__ . $this->channel);
+                $this->getMutex()->release(__CLASS__ . $this->channel);
             }
 
             return $payload;
         });
     }
 
-
-
     /**
      * @param array $payload
      */
-    protected function release($payload)
+    protected function release(array $payload): void
     {
         if ($this->deleteReleased) {
-            $this->db->createCommand()->delete(
+            $this->getDb()->createCommand()->delete(
                 $this->tableName,
                 ['id' => $payload['id']]
             )->execute();
         } else {
-            $this->db->createCommand()->update(
+            $this->getDb()->createCommand()->update(
                 $this->tableName,
                 ['done_at' => time()],
                 ['id' => $payload['id']]
@@ -236,16 +245,14 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    protected $reserveTime;
-
     /**
      * Moves expired messages into waiting list.
      */
-    protected function moveExpired()
+    protected function moveExpired(): void
     {
         if ($this->reserveTime !== time()) {
             $this->reserveTime = time();
-            $this->db->createCommand()->update(
+            $this->getDb()->createCommand()->update(
                 $this->tableName,
                 ['reserved_at' => null],
                 // `reserved_at IS NOT NULL` forces db to use index on column,
@@ -256,16 +263,36 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    private $_statistcsProvider;
+    private function getDb(): Connection
+    {
+        /** @var Connection $dbConnection */
+        $dbConnection = $this->db;
+        if (is_string($this->db) || is_array($this->db)) {
+            $this->db = Instance::ensure($this->db, Connection::class);
+        }
+        return $dbConnection;
+    }
+
+    private function getMutex(): Mutex
+    {
+        /** @var Mutex $mutex */
+        $mutex = $this->mutex;
+        if (is_string($this->mutex) || is_array($this->mutex)) {
+            $this->mutex = Instance::ensure($this->mutex, Mutex::class);
+        }
+        return $mutex;
+    }
+
+    private StatisticsInterface $_statisticsProvider;
 
     /**
-     * @return StatisticsProvider
+     * @return StatisticsInterface
      */
-    public function getStatisticsProvider()
+    public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!$this->_statistcsProvider) {
-            $this->_statistcsProvider = new StatisticsProvider($this);
+        if (!isset($this->_statisticsProvider)) {
+            $this->_statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statistcsProvider;
+        return $this->_statisticsProvider;
     }
 }

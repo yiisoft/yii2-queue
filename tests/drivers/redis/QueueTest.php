@@ -1,26 +1,31 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\drivers\redis;
 
+use Exception;
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\di\Instance;
 use yii\queue\redis\Queue;
+use yii\redis\Connection;
 
 /**
  * Redis Queue Test.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -29,7 +34,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -41,7 +46,7 @@ class QueueTest extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -50,7 +55,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -59,10 +64,10 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -70,7 +75,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
         $this->assertNotEmpty($this->getQueue()->redis->keys($this->getQueue()->channel . '.*'));
@@ -79,7 +84,7 @@ class QueueTest extends CliTestCase
         $this->assertEmpty($this->getQueue()->redis->keys($this->getQueue()->channel . '.*'));
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->assertTrue((bool) $this->getQueue()->redis->hexists($this->getQueue()->channel . '.messages', $id));
@@ -88,32 +93,32 @@ class QueueTest extends CliTestCase
         $this->assertFalse((bool) $this->getQueue()->redis->hexists($this->getQueue()->channel . '.messages', $id));
     }
 
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
         };
 
-        $job = $this->createSimpleJob();
-        $this->getQueue()->push($job);
+        $this->getQueue()->push($this->createSimpleJob());
         $this->getQueue()->run(false);
     }
 
-    public function testDoneCount()
+    public function testDoneCount(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -124,15 +129,12 @@ class QueueTest extends CliTestCase
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
     }
 
-    /**
-     * @return Queue
-     */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->redisQueue;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
         $this->getQueue()->redis->flushdb();
@@ -148,14 +150,15 @@ class QueueTest extends CliTestCase
      * 3. Mock Redis to simulate crash during moveExpired
      * 4. Successfully process job after recovery
      */
-    public function testConsumeDelayedMessageAtLeastOnce()
+    public function testConsumeDelayedMessageAtLeastOnce(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->delay(1)->push($job);
         // Expect a single message to be received.
         $messageCount = 0;
-        $this->getQueue()->messageHandler = function () use(&$messageCount) {
+        $this->getQueue()->messageHandler = static function () use (&$messageCount) {
             $messageCount++;
+            return true;
         };
 
         // Ensure the delayed message can be consumed when more time passed than the delay is.
@@ -168,7 +171,7 @@ class QueueTest extends CliTestCase
             'hostname' => getenv('REDIS_HOST') ?: 'localhost',
             'database' => getenv('REDIS_DB') ?: 1,
             'crashOnCommand' => 'rpush' // Crash when trying to move job to waiting queue.
-        ], 'yii\redis\Connection');
+        ], Connection::class);
 
         $queue = $this->getQueue();
         $old = $queue->redis;
@@ -176,7 +179,7 @@ class QueueTest extends CliTestCase
 
         try {
             $queue->run(false);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Ignore exceptions.
         } finally {
             $queue->redis = $old;

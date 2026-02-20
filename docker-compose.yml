@@ -1,19 +1,25 @@
-version: "3.5"
+---
 services:
-
   # https://hub.docker.com/_/php/
   yii2-queue-php:
     container_name: yii2-queue-php
     build:
-      context: ..
-      dockerfile: tests/docker/php/${PHP_VERSION:-5.6}/Dockerfile
+        context: .
+        dockerfile: ./Dockerfile
+        args:
+            PHP_VERSION: ${PHP_VERSION:-8.3}
     volumes:
     - ./runtime/.composer:/root/.composer
-    - ..:/code
+    - .:/code
     dns:
     - 8.8.8.8
     - 4.4.4.4
     environment:
+      COMPOSER_ALLOW_SUPERUSER: 1
+      XDEBUG_MODE: ${XDEBUG_MODE:-off} # Setup "debug" to enable debugging
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
+      XDEBUG_TRIGGER: ${XDEBUG_TRIGGER:-yes}
+      PHP_IDE_CONFIG: "serverName=yii2-queue"
       MYSQL_HOST: mysql
       MYSQL_USER: yii2_queue_test
       MYSQL_PASSWORD: yii2_queue_test
@@ -29,16 +35,17 @@ services:
       RABBITMQ_PASSWORD: guest
       BEANSTALK_HOST: beanstalk
       GEARMAN_HOST: gearmand
-      COMPOSER_ALLOW_SUPERUSER: 1
-      AWS_SQS_ENABLED: ${AWS_SQS_ENABLED}
-      AWS_KEY: ${AWS_KEY}
-      AWS_SECRET: ${AWS_SECRET}
-      AWS_REGION: ${AWS_REGION}
-      AWS_SQS_URL: ${AWS_SQS_URL}
       ACTIVEMQ_HOST: activemq
-      AWS_SQS_FIFO_ENABLED: ${AWS_SQS_FIFO_ENABLED}
-      AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL}
-      AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID}
+      ACTIVEMQ_USER: artemis
+      ACTIVEMQ_PASSWORD: artemis
+      ACTIVEMQ_PORT: 61616
+      AWS_KEY: ${AWS_KEY:-admin}
+      AWS_SECRET: ${AWS_SECRET:-admin}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_SQS_ENDPOINT: ${AWS_SQS_ENDPOINT:-http://localstack:4566}
+      AWS_SQS_URL: ${AWS_SQS_URL:-http://localstack:4566/000000000000/yii2-queue}
+      AWS_SQS_FIFO_URL: ${AWS_SQS_FIFO_URL:-http://localstack:4566/000000000000/yii2-queue.fifo}
+      AWS_SQS_FIFO_MESSAGE_GROUP_ID: ${AWS_SQS_FIFO_MESSAGE_GROUP_ID:-default}
     depends_on:
     - mysql
     - postgres
@@ -47,14 +54,18 @@ services:
     - beanstalk
     - gearmand
     - activemq
+    - localstack
     networks:
       net: {}
+    extra_hosts:
+      - host.docker.internal:${HOST_IP:-host-gateway}
 
   # https://hub.docker.com/_/mysql/
   mysql:
-    image: mysql:5.7
+    image: mysql:5.7.44
+    platform: linux/amd64
     ports:
-    - 3307:3306
+    - "3307:3306"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
       MYSQL_USER: yii2_queue_test
@@ -71,7 +82,7 @@ services:
   postgres:
     image: postgres:10.4
     ports:
-    - 5433:5432
+    - "5433:5432"
     environment:
       POSTGRES_USER: yii2_queue_test
       POSTGRES_PASSWORD: yii2_queue_test
@@ -83,7 +94,7 @@ services:
   redis:
     image: redis:4.0
     ports:
-    - 6380:6379
+    - "6380:6379"
     networks:
       net: {}
 
@@ -96,11 +107,11 @@ services:
     networks:
       net: {}
 
-  # https://hub.docker.com/r/schickling/beanstalkd/
+  # https://hub.docker.com/r/rayyounghong/beanstalkd/
   beanstalk:
-    image: schickling/beanstalkd
+    image: rayyounghong/beanstalkd
     ports:
-    - 11301:11300
+    - "11301:11300"
     networks:
       net: {}
 
@@ -108,19 +119,39 @@ services:
   gearmand:
     image: artefactual/gearmand
     ports:
-    - 4731:4730
+    - "4731:4730"
     networks:
       net: {}
 
-  #  https://hub.docker.com/r/webcenter/activemq/
+  #  https://hub.docker.com/r/apache/activemq-artemis
   activemq:
-    image: islandora/activemq:3
+    image: apache/activemq-artemis:latest-alpine
     ports:
-      - 61613:61613
+      - "61616:61616"
+      - "8161:8161"
+    networks:
+      net: {}
+
+  # https://hub.docker.com/r/localstack/localstack
+  localstack:
+    container_name: yii2-queue-localstack
+    image: localstack/localstack
+    restart: always
+    ports:
+      - "4566:4566"
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: admin
+      SERVICES: sqs
+      DISABLE_CORS_CHECKS: 1
     networks:
       net: {}
 
 networks:
   net:
+    driver: bridge
     name: yii2_queue_net
-
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

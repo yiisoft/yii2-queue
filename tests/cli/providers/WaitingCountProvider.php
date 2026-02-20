@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\cli\providers;
 
 use yii\queue\interfaces\WaitingCountInterface;
@@ -20,7 +22,7 @@ class WaitingCountProvider extends BaseStatisticsProvider implements WaitingCoun
     /**
      * @inheritdoc
      */
-    public function getWaitingCount()
+    public function getWaitingCount(): int
     {
         return 10;
     }

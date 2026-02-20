@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue;
 
@@ -17,9 +20,9 @@ class PushEvent extends JobEvent
     /**
      * @var int
      */
-    public $delay;
+    public int $delay = 0;
     /**
-     * @var mixed
+     * @var int|string|null
      */
-    public $priority;
+    public string|int|null $priority = null;
 }

@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\drivers\file;
 
@@ -17,9 +20,9 @@ use yii\queue\file\Queue;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
-    public function testRun()
+    public function testRun(): void
     {
         $job = $this->createSimpleJob();
         $this->getQueue()->push($job);
@@ -28,7 +31,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testStatus()
+    public function testStatus(): void
     {
         $job = $this->createSimpleJob();
         $id = $this->getQueue()->push($job);
@@ -40,7 +43,7 @@ class QueueTest extends CliTestCase
         $this->assertTrue($isDone);
     }
 
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -49,7 +52,7 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testLater()
+    public function testLater(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -58,10 +61,10 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -69,7 +72,7 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
         $this->assertNotEmpty(glob($this->getQueue()->path . '/job*.data'));
@@ -78,41 +81,41 @@ class QueueTest extends CliTestCase
         $this->assertEmpty(glob($this->getQueue()->path . '/job*.data'));
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
         $this->assertFileExists($this->getQueue()->path . "/job$id.data");
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
 
-        $this->assertFileNotExists($this->getQueue()->path . "/job$id.data");
+        $this->assertFileDoesNotExist($this->getQueue()->path . "/job$id.data");
     }
 
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $this->getQueue()->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
             $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            return true;
         };
 
-        $job = $this->createSimpleJob();
-        $this->getQueue()->push($job);
+        $this->getQueue()->push($this->createSimpleJob());
         $this->getQueue()->run(false);
     }
 
-    public function testDoneCount()
+    public function testDoneCount(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
@@ -123,18 +126,15 @@ class QueueTest extends CliTestCase
         $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
     }
 
-    /**
-     * @return Queue
-     */
-    protected function getQueue()
+    protected function getQueue(): Queue
     {
         return Yii::$app->fileQueue;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
-        foreach (glob(Yii::getAlias("@runtime/queue/*")) as $fileName) {
+        foreach (glob(Yii::getAlias('@runtime/queue/*')) as $fileName) {
             unlink($fileName);
         }
         parent::tearDown();

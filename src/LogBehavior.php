@@ -1,14 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue;
 
 use Yii;
 use yii\base\Behavior;
+use yii\base\Component;
 
 /**
  * Log Behavior.
@@ -18,20 +22,19 @@ use yii\base\Behavior;
 class LogBehavior extends Behavior
 {
     /**
-     * @var Queue
+     * @var Queue|null|Component
      * @inheritdoc
      */
     public $owner;
     /**
      * @var bool
      */
-    public $autoFlush = true;
-
+    public bool $autoFlush = true;
 
     /**
      * @inheritdoc
      */
-    public function events()
+    public function events(): array
     {
         return [
             Queue::EVENT_AFTER_PUSH => 'afterPush',
@@ -46,7 +49,7 @@ class LogBehavior extends Behavior
     /**
      * @param PushEvent $event
      */
-    public function afterPush(PushEvent $event)
+    public function afterPush(PushEvent $event): void
     {
         $title = $this->getJobTitle($event);
         Yii::info("$title is pushed.", Queue::class);
@@ -55,7 +58,7 @@ class LogBehavior extends Behavior
     /**
      * @param ExecEvent $event
      */
-    public function beforeExec(ExecEvent $event)
+    public function beforeExec(ExecEvent $event): void
     {
         $title = $this->getExecTitle($event);
         Yii::info("$title is started.", Queue::class);
@@ -65,7 +68,7 @@ class LogBehavior extends Behavior
     /**
      * @param ExecEvent $event
      */
-    public function afterExec(ExecEvent $event)
+    public function afterExec(ExecEvent $event): void
     {
         $title = $this->getExecTitle($event);
         Yii::endProfile($title, Queue::class);
@@ -78,7 +81,7 @@ class LogBehavior extends Behavior
     /**
      * @param ExecEvent $event
      */
-    public function afterError(ExecEvent $event)
+    public function afterError(ExecEvent $event): void
     {
         $title = $this->getExecTitle($event);
         Yii::endProfile($title, Queue::class);
@@ -92,11 +95,16 @@ class LogBehavior extends Behavior
      * @param cli\WorkerEvent $event
      * @since 2.0.2
      */
-    public function workerStart(cli\WorkerEvent $event)
+    public function workerStart(cli\WorkerEvent $event): void
     {
-        $title = 'Worker ' . $event->sender->getWorkerPid();
+        $workerPid = $event->sender->getWorkerPid();
+        if (null === $workerPid) {
+            $workerPid = '{PID not found}';
+        }
+        $title = 'Worker ' . $workerPid;
         Yii::info("$title is started.", Queue::class);
         Yii::beginProfile($title, Queue::class);
+
         if ($this->autoFlush) {
             Yii::getLogger()->flush(true);
         }
@@ -106,11 +114,16 @@ class LogBehavior extends Behavior
      * @param cli\WorkerEvent $event
      * @since 2.0.2
      */
-    public function workerStop(cli\WorkerEvent $event)
+    public function workerStop(cli\WorkerEvent $event): void
     {
-        $title = 'Worker ' . $event->sender->getWorkerPid();
+        $workerPid = $event->sender->getWorkerPid();
+        if (null === $workerPid) {
+            $workerPid = '{PID not found}';
+        }
+        $title = 'Worker ' . $workerPid;
         Yii::endProfile($title, Queue::class);
         Yii::info("$title is stopped.", Queue::class);
+
         if ($this->autoFlush) {
             Yii::getLogger()->flush(true);
         }
@@ -121,7 +134,7 @@ class LogBehavior extends Behavior
      * @return string
      * @since 2.0.2
      */
-    protected function getJobTitle(JobEvent $event)
+    protected function getJobTitle(JobEvent $event): string
     {
         $name = $event->job instanceof JobInterface ? get_class($event->job) : 'unknown job';
         return "[$event->id] $name";
@@ -132,11 +145,13 @@ class LogBehavior extends Behavior
      * @return string
      * @since 2.0.2
      */
-    protected function getExecTitle(ExecEvent $event)
+    protected function getExecTitle(ExecEvent $event): string
     {
         $title = $this->getJobTitle($event);
         $extra = "attempt: $event->attempt";
-        if ($pid = $event->sender->getWorkerPid()) {
+
+        $pid = $event->sender->getWorkerPid();
+        if (null !== $pid) {
             $extra .= ", PID: $pid";
         }
         return "$title ($extra)";

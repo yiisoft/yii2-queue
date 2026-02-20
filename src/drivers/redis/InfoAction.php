@@ -1,14 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue\redis;
 
 use yii\helpers\Console;
 use yii\queue\cli\Action;
+use yii\queue\cli\Queue as CliQueue;
 
 /**
  * Info about queue status.
@@ -22,33 +26,32 @@ class InfoAction extends Action
     /**
      * @var Queue
      */
-    public $queue;
-
+    public CliQueue $queue;
 
     /**
      * Info about queue status.
      */
-    public function run()
+    public function run(): void
     {
         $prefix = $this->queue->channel;
         $waiting = $this->queue->redis->llen("$prefix.waiting");
         $delayed = $this->queue->redis->zcount("$prefix.delayed", '-inf', '+inf');
         $reserved = $this->queue->redis->zcount("$prefix.reserved", '-inf', '+inf');
         $total = $this->queue->redis->get("$prefix.message_id");
-        $done = $total - $waiting - $delayed - $reserved;
+        $done = (int)$total - (int)$waiting - (int)$delayed - (int)$reserved;
 
         Console::output($this->format('Jobs', Console::FG_GREEN));
 
         Console::stdout($this->format('- waiting: ', Console::FG_YELLOW));
-        Console::output($waiting);
+        Console::output((string)$waiting);
 
         Console::stdout($this->format('- delayed: ', Console::FG_YELLOW));
-        Console::output($delayed);
+        Console::output((string)$delayed);
 
         Console::stdout($this->format('- reserved: ', Console::FG_YELLOW));
-        Console::output($reserved);
+        Console::output((string)$reserved);
 
         Console::stdout($this->format('- done: ', Console::FG_YELLOW));
-        Console::output($done);
+        Console::output((string)$done);
     }
 }

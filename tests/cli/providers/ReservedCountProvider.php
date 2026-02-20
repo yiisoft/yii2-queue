@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\cli\providers;
 
 use yii\queue\interfaces\ReservedCountInterface;
@@ -20,7 +22,7 @@ class ReservedCountProvider extends BaseStatisticsProvider implements ReservedCo
     /**
      * @inheritdoc
      */
-    public function getReservedCount()
+    public function getReservedCount(): int
     {
         return 10;
     }

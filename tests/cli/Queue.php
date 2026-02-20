@@ -1,15 +1,19 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\cli;
 
 use tests\cli\providers\BaseStatisticsProvider;
 use yii\base\NotSupportedException;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
@@ -22,26 +26,25 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         throw new NotSupportedException('"status" method is not supported.');
     }
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, $ttr, $delay, $priority): int|string|null
     {
         throw new NotSupportedException('"pushMessage" method is not supported.');
     }
 
-    /**
-     * @return StatisticsProvider
-     */
-    public function getStatisticsProvider()
+    private StatisticsInterface $_statisticsProvider;
+
+    public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!$this->_statistcsProvider) {
-            $this->_statistcsProvider = new BaseStatisticsProvider($this);
+        if (!isset($this->_statisticsProvider)) {
+            $this->_statisticsProvider = new BaseStatisticsProvider($this);
         }
-        return $this->_statistcsProvider;
+        return $this->_statisticsProvider;
     }
 }

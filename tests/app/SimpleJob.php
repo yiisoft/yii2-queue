@@ -1,15 +1,19 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\app;
 
 use Yii;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Simple Job.
@@ -18,15 +22,15 @@ use yii\queue\JobInterface;
  */
 class SimpleJob extends BaseObject implements JobInterface
 {
-    public $uid;
+    public string $uid;
 
-    public function execute($queue)
+    public function execute(Queue $queue): void
     {
         file_put_contents($this->getFileName(), '');
     }
 
-    public function getFileName()
+    public function getFileName(): bool|string
     {
-        return Yii::getAlias("@runtime/job-{$this->uid}.lock");
+        return Yii::getAlias("@runtime/job-$this->uid.lock");
     }
 }

@@ -1,15 +1,19 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\app;
 
 use Yii;
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * Priority Job.
@@ -18,15 +22,15 @@ use yii\queue\JobInterface;
  */
 class PriorityJob extends BaseObject implements JobInterface
 {
-    public $number;
+    public int $number;
 
-    public function execute($queue)
+    public function execute(Queue $queue): void
     {
         file_put_contents(self::getFileName(), $this->number, FILE_APPEND);
     }
 
-    public static function getFileName()
+    public static function getFileName(): bool|string
     {
-        return Yii::getAlias("@runtime/job-priority.log");
+        return Yii::getAlias('@runtime/job-priority.log');
     }
 }

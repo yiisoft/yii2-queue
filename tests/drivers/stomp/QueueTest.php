@@ -1,21 +1,24 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\drivers\stomp;
 
 use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
+use yii\base\NotSupportedException;
 use yii\queue\stomp\Queue;
 
-
-class QueueTest extends CliTestCase
+final class QueueTest extends CliTestCase
 {
-    public function testListen()
+    public function testListen(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
@@ -24,10 +27,10 @@ class QueueTest extends CliTestCase
         $this->assertSimpleJobDone($job);
     }
 
-    public function testRetry()
+    public function testRetry(): void
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
-        $job = new RetryJob(['uid' => uniqid()]);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
         $this->getQueue()->push($job);
         sleep(6);
 
@@ -35,22 +38,16 @@ class QueueTest extends CliTestCase
         $this->assertEquals('aa', file_get_contents($job->getFileName()));
     }
 
-    /**
-     * @return Queue
-     */
-    protected function getQueue()
+    public function testStatus(): void
+    {
+        $this->expectException(NotSupportedException::class);
+
+        $id = $this->getQueue()->push($this->createSimpleJob());
+        $this->getQueue()->isWaiting($id);
+    }
+
+    protected function getQueue(): Queue
     {
         return Yii::$app->stompQueue;
     }
-
-
-    protected function setUp()
-    {
-        if ('true' == getenv('EXCLUDE_STOMP')) {
-            $this->markTestSkipped('Stomp tests are disabled for php 5.5');
-        }
-
-        parent::setUp();
-    }
-
 }

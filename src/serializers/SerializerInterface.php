@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\serializers;
 
@@ -20,11 +23,11 @@ interface SerializerInterface
      * @param JobInterface|mixed $job
      * @return string
      */
-    public function serialize($job);
+    public function serialize($job): string;
 
     /**
      * @param string $serialized
-     * @return JobInterface
+     * @return JobInterface|array|mixed
      */
-    public function unserialize($serialized);
+    public function unserialize(string $serialized);
 }

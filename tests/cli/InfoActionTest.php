@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\cli;
 
@@ -22,18 +25,18 @@ use yii\queue\cli\InfoAction;
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
-class InfoActionTest extends TestCase
+final class InfoActionTest extends TestCase
 {
-    public function testWaitingCount()
+    public function testWaitingCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
-            ->getMock()
-        ;
+            ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -45,21 +48,22 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
         $provider = $this->getMockBuilder(WaitingCountProvider::class)
             ->setConstructorArgs([$queue])
-            ->getMock()
-        ;
-        $provider->expects(self::once())
+            ->getMock();
+        $provider
+            ->expects($this->once())
             ->method('getWaitingCount')
-            ->willReturn(10)
-        ;
+            ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
@@ -67,16 +71,16 @@ class InfoActionTest extends TestCase
         $action->run();
     }
 
-    public function testDelayedCount()
+    public function testDelayedCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
-            ->getMock()
-        ;
+            ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -88,21 +92,22 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
         $provider = $this->getMockBuilder(DelayedCountProvider::class)
             ->setConstructorArgs([$queue])
-            ->getMock()
-        ;
-        $provider->expects(self::once())
+            ->getMock();
+        $provider
+            ->expects($this->once())
             ->method('getDelayedCount')
-            ->willReturn(10)
-        ;
+            ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
@@ -110,16 +115,16 @@ class InfoActionTest extends TestCase
         $action->run();
     }
 
-    public function testReservedCount()
+    public function testReservedCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
-            ->getMock()
-        ;
+            ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -131,8 +136,7 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
@@ -140,12 +144,15 @@ class InfoActionTest extends TestCase
             ->setConstructorArgs([$queue])
             ->getMock()
         ;
-        $provider->expects(self::once())
+        $provider
+            ->expects($this->once())
             ->method('getReservedCount')
-            ->willReturn(10)
-        ;
+            ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,
@@ -153,16 +160,16 @@ class InfoActionTest extends TestCase
         $action->run();
     }
 
-    public function testDoneCount()
+    public function testDoneCount(): void
     {
         $controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs(['testController', new Module('testModule')])
-            ->getMock()
-        ;
+            ->getMock();
 
-        $controller->expects(self::exactly(3))
+        $controller
+            ->expects($this->exactly(3))
             ->method('stdout')
-            ->withConsecutive(
+            ->willReturnOnConsecutiveCalls(
                 [
                     'Jobs' . PHP_EOL,
                     Console::FG_GREEN,
@@ -174,21 +181,22 @@ class InfoActionTest extends TestCase
                 [
                     10 . PHP_EOL
                 ]
-            )
-        ;
+            );
 
         $queue = $this->getMockBuilder(Queue::class)->getMock();
 
         $provider = $this->getMockBuilder(DoneCountProvider::class)
             ->setConstructorArgs([$queue])
-            ->getMock()
-        ;
-        $provider->expects(self::once())
+            ->getMock();
+        $provider
+            ->expects($this->once())
             ->method('getDoneCount')
-            ->willReturn(10)
-        ;
+            ->willReturn(10);
 
-        $queue->method('getStatisticsProvider')->willReturn($provider);
+        $queue
+            ->expects($this->once())
+            ->method('getStatisticsProvider')
+            ->willReturn($provider);
 
         $action = (new InfoAction('infoAction', $controller, [
             'queue' => $queue,

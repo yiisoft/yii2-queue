@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\serializers;
 
@@ -22,15 +25,17 @@ class IgbinarySerializer extends BaseObject implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function serialize($job)
+    public function serialize($job): string
     {
-        return igbinary_serialize($job);
+        /** @var string|null|false $serialize */
+        $serialize = igbinary_serialize($job);
+        return is_string($serialize) ? $serialize : '';
     }
 
     /**
      * @inheritdoc
      */
-    public function unserialize($serialized)
+    public function unserialize(string $serialized): mixed
     {
         return igbinary_unserialize($serialized);
     }

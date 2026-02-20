@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\drivers;
 
+use ReflectionClass;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use tests\app\PriorityJob;
@@ -21,12 +25,9 @@ abstract class CliTestCase extends TestCase
     /**
      * @var Process[] ids of started processes
      */
-    private $processes = [];
+    private array $processes = [];
 
-    /**
-     * @param array $cmd
-     */
-    protected function runProcess($cmd)
+    protected function runProcess(array $cmd): void
     {
         $cmd = $this->prepareCmd($cmd);
         $process = new Process($cmd);
@@ -35,15 +36,11 @@ abstract class CliTestCase extends TestCase
         $error = $process->getErrorOutput();
         $this->assertEmpty(
             $error,
-            "Can not execute " . implode($cmd) . " command:\n$error"
+            'Can not execute ' . implode($cmd) . " command:\n$error"
         );
     }
 
-    /**
-     * @param array $cmd
-     * @return Process
-     */
-    protected function startProcess($cmd)
+    protected function startProcess(array $cmd): Process
     {
         $process = new Process($this->prepareCmd($cmd));
         $process->start();
@@ -55,15 +52,10 @@ abstract class CliTestCase extends TestCase
         return $process;
     }
 
-    /**
-     * @param array $cmd
-     * @return array
-     */
-    private function prepareCmd($cmd)
+    private function prepareCmd(array $cmd): array
     {
-        $class = new \ReflectionClass($this->getQueue());
+        $class = new ReflectionClass($this->getQueue());
         $method = $class->getMethod('getCommandId');
-        $method->setAccessible(true);
 
         $replace = [
             'php' => PHP_BINARY,
@@ -74,17 +66,14 @@ abstract class CliTestCase extends TestCase
         array_walk(
             $cmd,
             static function (&$v) use ($replace) {
-                $v = strtr($v, $replace);
+                $v = strtr((string)$v, $replace);
             }
         );
 
         return $cmd;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (file_exists(PriorityJob::getFileName())) {
             unlink(PriorityJob::getFileName());

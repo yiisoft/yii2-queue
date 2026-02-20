@@ -1,14 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\app\benchmark\waiting;
 
 use yii\base\BaseObject;
 use yii\queue\JobInterface;
+use yii\queue\Queue;
 
 /**
  * The job calculates waiting time.
@@ -17,12 +21,12 @@ use yii\queue\JobInterface;
  */
 class Job extends BaseObject implements JobInterface
 {
-    public $pushedAt;
-    public $resultFileName;
-    public $lockFileName;
-    public $payload;
+    public float $pushedAt;
+    public string $resultFileName;
+    public string $lockFileName;
+    public string $payload;
 
-    public function execute($queue)
+    public function execute(Queue $queue): void
     {
         $waitingTime = microtime(true) - $this->pushedAt;
         if (file_exists($this->lockFileName)) {

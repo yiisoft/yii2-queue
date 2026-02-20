@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\cli;
 
@@ -18,5 +21,5 @@ interface LoopInterface
     /**
      * @return bool whether to continue listening of the queue.
      */
-    public function canContinue();
+    public function canContinue(): bool;
 }

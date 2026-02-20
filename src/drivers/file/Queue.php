@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\file;
 
@@ -13,6 +16,7 @@ use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
@@ -27,15 +31,15 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @var string
      */
-    public $path = '@runtime/queue';
+    public string $path = '@runtime/queue';
     /**
      * @var int
      */
-    public $dirMode = 0755;
+    public int $dirMode = 0755;
     /**
      * @var int|null
      */
-    public $fileMode;
+    public ?int $fileMode = null;
     /**
      * @var callable
      */
@@ -47,18 +51,20 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @var string
      */
-    public $commandClass = Command::class;
-
+    public string $commandClass = Command::class;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
-        $this->path = Yii::getAlias($this->path);
+        $alias = Yii::getAlias($this->path);
+        if (false !== $alias) {
+            $this->path = $alias;
+        }
         if (!is_dir($this->path)) {
-            FileHelper::createDirectory($this->path, $this->dirMode, true);
+            FileHelper::createDirectory($this->path, $this->dirMode);
         }
     }
 
@@ -66,17 +72,23 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * Listens queue and runs each job.
      *
      * @param bool $repeat whether to continue listening when queue is empty.
-     * @param int $timeout number of seconds to sleep before next iteration.
+     * @param int<0, max> $timeout number of seconds to sleep before next iteration.
      * @return null|int exit code.
      * @internal for worker command only.
      * @since 2.0.2
      */
-    public function run($repeat, $timeout = 0)
+    public function run(bool $repeat, int $timeout = 0): ?int
     {
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 if (($payload = $this->reserve()) !== null) {
-                    list($id, $message, $ttr, $attempt) = $payload;
+                    [$id, $message, $ttr, $attempt] = $payload;
+                    /**
+                     * @var int|string $id
+                     * @var string $message
+                     * @var int $ttr
+                     * @var int $attempt
+                     */
                     if ($this->handleMessage($id, $message, $ttr, $attempt)) {
                         $this->delete($payload);
                     }
@@ -92,7 +104,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @inheritdoc
      */
-    public function status($id)
+    public function status($id): int
     {
         if (!is_numeric($id) || $id <= 0) {
             throw new InvalidArgumentException("Unknown message ID: $id.");
@@ -110,10 +122,9 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      *
      * @since 2.0.1
      */
-    public function clear()
+    public function clear(): void
     {
-        $this->touchIndex(function (&$data) {
-            $data = [];
+        $this->touchIndex(function () {
             foreach (glob("$this->path/job*.data") as $fileName) {
                 unlink($fileName);
             }
@@ -127,12 +138,14 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * @return bool
      * @since 2.0.1
      */
-    public function remove($id)
+    public function remove(int $id): bool
     {
         $removed = false;
-        $this->touchIndex(function (&$data) use ($id, &$removed) {
+        $this->touchIndex(function (array &$data) use ($id, &$removed) {
+            /** @var array{waiting: array, delayed: array, reserved: array} $data */
             if (!empty($data['waiting'])) {
                 foreach ($data['waiting'] as $key => $payload) {
+                    /** @psalm-var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['waiting'][$key]);
                         $removed = true;
@@ -142,6 +155,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
             if (!$removed && !empty($data['delayed'])) {
                 foreach ($data['delayed'] as $key => $payload) {
+                    /** @psalm-var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['delayed'][$key]);
                         $removed = true;
@@ -151,6 +165,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
             if (!$removed && !empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
+                    /** @psalm-var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['reserved'][$key]);
                         $removed = true;
@@ -171,16 +186,21 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      *
      * @return array|null payload
      */
-    protected function reserve()
+    protected function reserve(): ?array
     {
         $id = null;
         $ttr = null;
         $attempt = null;
-        $this->touchIndex(function (&$data) use (&$id, &$ttr, &$attempt) {
+        $this->touchIndex(function (array &$data) use (&$id, &$ttr, &$attempt) {
+            /** @var array{reserved: array, delayed: array, waiting: array} $data */
             if (!empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
-                    if ($payload[1] + $payload[3] < time()) {
-                        list($id, $ttr, $attempt, $time) = $payload;
+                    /** @psalm-var array $payload */
+                    if ((int)$payload[1] + (int)$payload[3] < time()) {
+                        /**
+                         * @psalm-var int $attempt
+                         */
+                        [$id, $ttr, $attempt, $time] = $payload;
                         $data['reserved'][$key][2] = ++$attempt;
                         $data['reserved'][$key][3] = time();
                         return;
@@ -188,10 +208,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                 }
             }
 
-            if (!empty($data['delayed']) && $data['delayed'][0][2] <= time()) {
-                list($id, $ttr, $time) = array_shift($data['delayed']);
+            if (!empty($data['delayed']) && (int)$data['delayed'][0][2] <= time()) {
+                [$id, $ttr, $time] = array_shift($data['delayed']);
             } elseif (!empty($data['waiting'])) {
-                list($id, $ttr) = array_shift($data['waiting']);
+                [$id, $ttr] = array_shift($data['waiting']);
             }
             if ($id) {
                 $attempt = 1;
@@ -211,11 +231,13 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      *
      * @param array $payload
      */
-    protected function delete($payload)
+    protected function delete(array $payload): void
     {
         $id = $payload[0];
-        $this->touchIndex(function (&$data) use ($id) {
+        $this->touchIndex(function (array &$data) use ($id) {
+            /** @var array{reserved: array} $data */
             foreach ($data['reserved'] as $key => $payload) {
+                /** @psalm-var array $payload */
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
                     break;
@@ -228,19 +250,21 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     /**
      * @inheritdoc
      */
-    protected function pushMessage($message, $ttr, $delay, $priority)
+    protected function pushMessage(string $payload, int $ttr, int $delay, mixed $priority): int|string|null
     {
         if ($priority !== null) {
             throw new NotSupportedException('Job priority is not supported in the driver.');
         }
+        $id = 0;
 
-        $this->touchIndex(function (&$data) use ($message, $ttr, $delay, &$id) {
+        $this->touchIndex(function (array &$data) use ($payload, $ttr, $delay, &$id) {
+            /** @var array{lastId: int, waiting: array, delayed: array} $data */
             if (!isset($data['lastId'])) {
                 $data['lastId'] = 0;
             }
             $id = ++$data['lastId'];
             $fileName = "$this->path/job$id.data";
-            file_put_contents($fileName, $message);
+            file_put_contents($fileName, $payload);
             if ($this->fileMode !== null) {
                 chmod($fileName, $this->fileMode);
             }
@@ -248,7 +272,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                 $data['waiting'][] = [$id, $ttr, 0];
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
-                usort($data['delayed'], function ($a, $b) {
+                usort($data['delayed'], static function (array $a, array $b) {
                     if ($a[2] < $b[2]) {
                         return -1;
                     }
@@ -266,6 +290,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
         });
 
+        /** @psalm-var int|string|null $id */
         return $id;
     }
 
@@ -273,7 +298,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      * @param callable $callback
      * @throws InvalidConfigException
      */
-    private function touchIndex($callback)
+    private function touchIndex(callable $callback): void
     {
         $fileName = "$this->path/index.data";
         $isNew = !file_exists($fileName);
@@ -295,6 +320,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
         try {
             $callback($data);
+            /** @var string $newContent */
             $newContent = call_user_func($this->indexSerializer, $data);
             if ($newContent !== $content) {
                 ftruncate($file, 0);
@@ -308,16 +334,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    private $_statistcsProvider;
+    private StatisticsInterface $_statisticsProvider;
 
     /**
-     * @return StatisticsProvider
+     * @return StatisticsInterface
      */
-    public function getStatisticsProvider()
+    public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!$this->_statistcsProvider) {
-            $this->_statistcsProvider = new StatisticsProvider($this);
+        if (!isset($this->_statisticsProvider)) {
+            $this->_statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statistcsProvider;
+        return $this->_statisticsProvider;
     }
 }

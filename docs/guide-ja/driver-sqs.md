@@ -19,6 +19,7 @@ return [
             'key' => '<key>',
             'secret' => '<secret>',
             'region' => '<region>',
+            'endpoint' => '<endpoint>', // https://docs.aws.amazon.com/general/latest/gr/sqs-service.html#sqs_region
         ],
     ],
 ];
@@ -39,6 +40,7 @@ return [
             'secret' => '<secret>',
             'region' => '<region>',
             'messageGroupId' => '<Group ID>',
+            'endpoint' => '<endpoint>', // https://docs.aws.amazon.com/general/latest/gr/sqs-service.html#sqs_region
         ],
     ],
 ];

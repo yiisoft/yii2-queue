@@ -1,9 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /**
- * @var \yii\web\View $this
+ * @var View $this
  * @var array $jobs
  */
+
 use yii\helpers\Html;
+use yii\web\View;
 
 $styles = [
     'unknown' => 'default',
@@ -15,7 +20,7 @@ $styles = [
 <h1>Pushed <?= count($jobs) ?> jobs</h1>
 
 <?php foreach ($jobs as $job): ?>
-    <div class="panel panel-<?= isset($styles[$job['status']]) ? $styles[$job['status']] : 'danger' ?>">
+    <div class="panel panel-<?= $styles[$job['status']] ?? 'danger' ?>">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <?php if (is_string($job['id'])): ?>

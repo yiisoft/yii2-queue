@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yii\queue\cli;
 
@@ -21,21 +24,20 @@ abstract class Action extends BaseAction
     /**
      * @var Queue
      */
-    public $queue;
+    public Queue $queue;
     /**
-     * @var Command|ConsoleController
+     * @inheritdoc
      */
     public $controller;
-
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
-        if (!$this->queue && ($this->controller instanceof Command)) {
+        if ($this->controller instanceof Command) {
             $this->queue = $this->controller->queue;
         }
         if (!($this->controller instanceof ConsoleController)) {
@@ -50,7 +52,7 @@ abstract class Action extends BaseAction
      * @param string $string
      * @return string
      */
-    protected function format($string)
+    protected function format(string $string): string
     {
         return call_user_func_array([$this->controller, 'ansiFormat'], func_get_args());
     }

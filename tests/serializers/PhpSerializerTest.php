@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace tests\serializers;
 
@@ -14,9 +17,9 @@ use yii\queue\serializers\PhpSerializer;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class PhpSerializerTest extends TestCase
+final class PhpSerializerTest extends TestCase
 {
-    protected function createSerializer()
+    protected function createSerializer(): PhpSerializer
     {
         return new PhpSerializer();
     }

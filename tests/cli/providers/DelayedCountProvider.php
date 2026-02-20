@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace tests\cli\providers;
 
 use yii\queue\interfaces\DelayedCountInterface;
@@ -20,7 +22,7 @@ class DelayedCountProvider extends BaseStatisticsProvider implements DelayedCoun
     /**
      * @inheritdoc
      */
-    public function getDelayedCount()
+    public function getDelayedCount(): int
     {
         return 10;
     }

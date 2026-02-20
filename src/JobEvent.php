@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yii\queue;
 
+use Closure;
 use yii\base\Event;
 
 /**
@@ -17,20 +21,24 @@ use yii\base\Event;
 abstract class JobEvent extends Event
 {
     /**
+     * @inheritdoc
+     */
+    public $name = '';
+    /**
      * @var Queue
      * @inheritdoc
      */
     public $sender;
     /**
-     * @var string|null unique id of a job
+     * @var int|string|null unique id of a job
      */
-    public $id;
+    public string|int|null $id = null;
     /**
-     * @var JobInterface|null
+     * @var Closure|JobInterface|null|mixed
      */
-    public $job;
+    public mixed $job;
     /**
      * @var int time to reserve in seconds of the job
      */
-    public $ttr;
+    public int $ttr = 0;
 }
