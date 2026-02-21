@@ -73,7 +73,7 @@ class FifoQueueTest extends CliTestCase
         return Yii::$app->sqsFifoQueue;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!getenv('AWS_SQS_FIFO_ENABLED')) {
             $this->markTestSkipped('AWS SQS FIFO tests are disabled');

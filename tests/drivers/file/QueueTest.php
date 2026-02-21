@@ -84,7 +84,7 @@ class QueueTest extends CliTestCase
         $this->assertFileExists($this->getQueue()->path . "/job$id.data");
         $this->runProcess(['php', 'yii', 'queue/remove', $id]);
 
-        $this->assertFileNotExists($this->getQueue()->path . "/job$id.data");
+        $this->assertFileDoesNotExist($this->getQueue()->path . "/job$id.data");
     }
 
     public function testWaitingCount()
@@ -131,7 +131,7 @@ class QueueTest extends CliTestCase
         return Yii::$app->fileQueue;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
         foreach (glob(Yii::getAlias("@runtime/queue/*")) as $fileName) {

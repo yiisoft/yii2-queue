@@ -4,6 +4,14 @@ set -eu
 
 flock tests/runtime/composer-install.lock composer install --prefer-dist --no-interaction
 
+PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION;")
+
+if [ "$PHP_VERSION" = "7" ]; then
+    echo "PHP 7.4 detectado → forzando enqueue/stomp 0.10.19"
+    composer require enqueue/stomp:0.10.19 --no-update --dev
+    composer update enqueue/stomp --no-interaction --prefer-dist
+fi
+
 tests/yii sqlite-migrate/up --interactive=0
 
 tests/docker/wait-for-it.sh mysql:3306 -t 180

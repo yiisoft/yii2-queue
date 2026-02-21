@@ -24,11 +24,9 @@ class JsonSerializerTest extends TestCase
         return new JsonSerializer();
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testInvalidArrayKey()
     {
+        $this->expectException(\yii\base\InvalidConfigException::class);
         $this->createSerializer()->serialize([
             'class' => 'failed param',
         ]);
