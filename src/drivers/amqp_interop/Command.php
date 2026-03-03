@@ -34,7 +34,7 @@ class Command extends CliCommand
         parent::init();
 
         // https://github.com/yiisoft/yii2-queue/issues/379
-        if (PHP_MAJOR_VERSION >= 7 && extension_loaded('pcntl') && function_exists('pcntl_signal')) {
+        if (extension_loaded('pcntl') && function_exists('pcntl_signal')) {
             // https://github.com/php-amqplib/php-amqplib#unix-signals
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
 
