@@ -1,7 +1,9 @@
 <p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/yii_logo_dark.svg">
+        <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/yii_logo_light.svg">
+        <img src="https://www.yiiframework.com/image/yii_logo_light.svg" alt="Yii Framework" height="100px">
+    </picture>
     <h1 align="center">Yii2 Queue Extension</h1>
     <br>
 </p>
@@ -12,11 +14,11 @@ It supports queues based on **DB**, **Redis**, **RabbitMQ**, **AMQP**, **Beansta
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-queue/v/stable.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-queue/downloads.svg)](https://packagist.org/packages/yiisoft/yii2-queue)
-[![Build Status](https://github.com/yiisoft/yii2-queue/workflows/build/badge.svg)](https://github.com/yiisoft/yii2-queue/actions)
-[![Static status](https://github.com/yiisoft/yii2-queue/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/yii2-queue/actions?query=workflow%3A%22static+analysis%22)
-[![codecov](https://codecov.io/gh/yiisoft/yii2-queue/graph/badge.svg)](https://codecov.io/gh/yiisoft/yii2-queue)
+[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-queue.svg?style=for-the-badge&label=Stable&logo=packagist)](https://packagist.org/packages/yiisoft/yii2-queue)
+[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-queue.svg?style=for-the-badge&label=Downloads)](https://packagist.org/packages/yiisoft/yii2-queue)
+[![build](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2-queue/main.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2-queue/actions?query=workflow%3Abuild)
+[![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2-queue.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Codecov)](https://codecov.io/gh/yiisoft/yii2-queue)
+[![Static Analysis](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2-queue/static.yml?style=for-the-badge&label=Static)](https://github.com/yiisoft/yii2-queue/actions/workflows/static.yml)
 
 Installation
 ------------
@@ -99,4 +101,17 @@ Yii::$app->queue->isReserved($id);
 Yii::$app->queue->isDone($id);
 ```
 
-For more details see [the guide](docs/guide/README.md).
+## Documentation
+
+- [the guide](docs/guide/README.md)
+
+## Support the project
+
+[![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?style=for-the-badge&logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/yiisoft)
+
+## Follow updates
+
+[![Official website](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)](https://www.yiiframework.com/)
+[![Follow on X](https://img.shields.io/badge/-Follow%20on%20X-1DA1F2.svg?style=for-the-badge&logo=x&logoColor=white&labelColor=000000)](https://x.com/yiiframework)
+[![Telegram](https://img.shields.io/badge/telegram-join-1DA1F2?style=for-the-badge&logo=telegram)](https://t.me/yii_framework_in_english)
+[![Slack](https://img.shields.io/badge/slack-join-1DA1F2?style=for-the-badge&logo=slack)](https://yiiframework.com/go/slack)
