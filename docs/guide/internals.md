@@ -1,4 +1,4 @@
-# Testing
+# Internals
 
 This package provides a consistent set of [Composer](https://getcomposer.org/) scripts for local validation.
 
