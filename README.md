@@ -12,7 +12,7 @@ An extension for running tasks asynchronously via queues.
 
 It supports queues based on **DB**, **Redis**, **RabbitMQ**, **AMQP**, **Beanstalk**, **ActiveMQ** and **Gearman**.
 
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
+For license information, see the [LICENSE](LICENSE.md) file.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-queue.svg?style=for-the-badge&label=Stable&logo=packagist)](https://packagist.org/packages/yiisoft/yii2-queue)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-queue.svg?style=for-the-badge&label=Downloads)](https://packagist.org/packages/yiisoft/yii2-queue)
