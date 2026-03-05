@@ -33,3 +33,4 @@ Developer tools
 Contributing
 ------------
 * [Tests](tests.md)
+* [Internals](internals.md)

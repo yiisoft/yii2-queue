@@ -84,7 +84,9 @@
         }
     ],
     "scripts": {
-        "phpcbf": "./vendor/bin/phpcbf -q src/ tests/",
-        "phpcs": "./vendor/bin/phpcs -q src/ tests/"
+        "cs": "./vendor/bin/phpcs",
+        "cs-fix": "./vendor/bin/phpcbf",
+        "static": "./vendor/bin/phpstan --memory-limit=-1",
+        "tests": "./make test"
     }
 }
