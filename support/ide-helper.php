@@ -51,6 +51,19 @@ abstract class BaseApplication extends yii\base\Application
 /**
  * Class WebApplication
  * Include only Web application related components here
+ *
+ * @property AmqpInteropQueue $amqpInteropQueue
+ * @property BeanstalkQueue $beanstalkQueue
+ * @property FileQueue $fileQueue
+ * @property GearmanQueue $gearmanQueue
+ * @property RedisQueue $redisQueue
+ * @property StompQueue $stompQueue
+ * @property SyncQueue $syncQueue
+ * @property SqsQueue $sqsQueue
+ * @property SqsQueue $sqsFifoQueue
+ * @property DbQueue $mysqlQueue
+ * @property DbQueue $pgsqlQueue
+ * @property DbQueue $sqliteQueue
  */
 class WebApplication extends yii\web\Application
 {
@@ -59,6 +72,19 @@ class WebApplication extends yii\web\Application
 /**
  * Class ConsoleApplication
  * Include only Console application related components here
+ *
+ * @property AmqpInteropQueue $amqpInteropQueue
+ * @property BeanstalkQueue $beanstalkQueue
+ * @property FileQueue $fileQueue
+ * @property GearmanQueue $gearmanQueue
+ * @property RedisQueue $redisQueue
+ * @property StompQueue $stompQueue
+ * @property SyncQueue $syncQueue
+ * @property SqsQueue $sqsQueue
+ * @property SqsQueue $sqsFifoQueue
+ * @property DbQueue $mysqlQueue
+ * @property DbQueue $pgsqlQueue
+ * @property DbQueue $sqliteQueue
  */
 class ConsoleApplication extends yii\console\Application
 {

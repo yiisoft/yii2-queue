@@ -26,11 +26,11 @@ abstract class Command extends Controller
     /**
      * The exit code of the exec action which is returned when job was done.
      */
-    public const EXEC_DONE = 0;
+    public const int EXEC_DONE = 0;
     /**
      * The exit code of the exec action which is returned when job wasn't done and wanted next attempt.
      */
-    public const EXEC_RETRY = 3;
+    public const int EXEC_RETRY = 3;
 
     /**
      * @var Queue
@@ -187,7 +187,7 @@ abstract class Command extends Controller
         if (!in_array('color', $this->getPassedOptions(), true)) {
             $cmd[] = '--color=' . $this->isColorEnabled();
         }
-        $env = isset($_ENV) ? $_ENV : null;
+        $env = [] !== $_ENV ? $_ENV : null;
         $process = new Process($cmd, null, $env, $message, $ttr);
         try {
             $result = $process->run(function (string $type, string $buffer) {

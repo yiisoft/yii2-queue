@@ -13,6 +13,10 @@ namespace yii\queue\interfaces;
 /**
  * Statistics Interface
  */
-interface StatisticsInterface
+interface StatisticsInterface extends
+    DoneCountInterface,
+    WaitingCountInterface,
+    DelayedCountInterface,
+    ReservedCountInterface
 {
 }

@@ -61,7 +61,6 @@ class Action extends BaseAction
      * @param int $jobCount number of jobs that will be pushed to a queue
      * @param int $workerCount number of workers that listen a queue
      * @param int $payloadSize additional job size
-     * @throws
      */
     public function run(string $mode = 'fast', int $jobCount = 1000, int $workerCount = 10, int $payloadSize = 0): void
     {

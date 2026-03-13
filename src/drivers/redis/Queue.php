@@ -29,7 +29,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
 {
     /**
      * @var Connection|array|string
-     * @psalm-var Connection
      */
     public Connection|string|array $redis = 'redis';
     /**
@@ -66,8 +65,8 @@ class Queue extends CliQueue implements StatisticsProviderInterface
                 if (($payload = $this->reserve($timeout)) !== null) {
                     [$id, $message, $ttr, $attempt] = $payload;
                     /**
-                     * @psalm-var int|string $id
-                     * @psalm-var string $message
+                     * @var int|string $id
+                     * @var string $message
                      */
                     if ($this->handleMessage($id, $message, (int)$ttr, (int)$attempt)) {
                         $this->delete($id);
@@ -153,7 +152,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         if (!$timeout) {
             $id = $this->redis->rpop("$this->channel.waiting");
         } elseif ($result = $this->redis->brpop("$this->channel.waiting", $timeout)) {
-            /** @psalm-var array $result */
+            /** @var array $result */
             $id = $result[1];
         }
         if (!$id) {
@@ -166,7 +165,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
 
         /**
-         * @psalm-var string $payload
+         * @var string $payload
          */
         [$ttr, $message] = explode(';', $payload, 2);
         $this->redis->zadd("$this->channel.reserved", time() + (int)$ttr, $id);
@@ -222,16 +221,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         return $id;
     }
 
-    private StatisticsInterface $_statisticsProvider;
+    private StatisticsInterface $statisticsProvider;
 
     /**
      * @return StatisticsInterface
      */
     public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!isset($this->_statisticsProvider)) {
-            $this->_statisticsProvider = new StatisticsProvider($this);
+        if (!isset($this->statisticsProvider)) {
+            $this->statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statisticsProvider;
+        return $this->statisticsProvider;
     }
 }

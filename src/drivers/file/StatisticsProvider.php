@@ -11,23 +11,14 @@ declare(strict_types=1);
 namespace yii\queue\file;
 
 use yii\base\BaseObject;
-use yii\queue\interfaces\DelayedCountInterface;
-use yii\queue\interfaces\DoneCountInterface;
-use yii\queue\interfaces\ReservedCountInterface;
 use yii\queue\interfaces\StatisticsInterface;
-use yii\queue\interfaces\WaitingCountInterface;
 
 /**
  * Statistics Provider
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
-class StatisticsProvider extends BaseObject implements
-    DoneCountInterface,
-    WaitingCountInterface,
-    DelayedCountInterface,
-    ReservedCountInterface,
-    StatisticsInterface
+class StatisticsProvider extends BaseObject implements StatisticsInterface
 {
     /**
      * @var Queue
@@ -77,7 +68,7 @@ class StatisticsProvider extends BaseObject implements
     {
         /** @var array{lastId:int} $data */
         $data = $this->getIndexData();
-        $total = isset($data['lastId']) ? $data['lastId'] : 0;
+        $total = $data['lastId'] ?? 0;
         return $total - $this->getDelayedCount() - $this->getWaitingCount();
     }
 

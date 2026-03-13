@@ -42,7 +42,7 @@ class Job implements JobInterface
             return $nativeClosure();
         }
 
-        /** @psalm-var JobInterface $nativeClosure */
+        /** @var JobInterface $nativeClosure */
         return $nativeClosure->execute($queue);
     }
 }

@@ -14,6 +14,7 @@ use ReflectionClass;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use tests\app\PriorityJob;
+use Yii;
 
 /**
  * CLI Test Case.
@@ -77,6 +78,11 @@ abstract class CliTestCase extends TestCase
     {
         if (file_exists(PriorityJob::getFileName())) {
             unlink(PriorityJob::getFileName());
+        }
+
+        // Removes temp job files
+        foreach (glob(Yii::getAlias('@runtime/job-*.lock')) as $fileName) {
+            unlink($fileName);
         }
 
         // Kills started processes

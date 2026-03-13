@@ -145,7 +145,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             /** @var array{waiting: array, delayed: array, reserved: array} $data */
             if (!empty($data['waiting'])) {
                 foreach ($data['waiting'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['waiting'][$key]);
                         $removed = true;
@@ -155,7 +155,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
             if (!$removed && !empty($data['delayed'])) {
                 foreach ($data['delayed'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['delayed'][$key]);
                         $removed = true;
@@ -165,7 +165,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
             if (!$removed && !empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ($payload[0] === $id) {
                         unset($data['reserved'][$key]);
                         $removed = true;
@@ -195,10 +195,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             /** @var array{reserved: array, delayed: array, waiting: array} $data */
             if (!empty($data['reserved'])) {
                 foreach ($data['reserved'] as $key => $payload) {
-                    /** @psalm-var array $payload */
+                    /** @var array $payload */
                     if ((int)$payload[1] + (int)$payload[3] < time()) {
                         /**
-                         * @psalm-var int $attempt
+                         * @var int $attempt
                          */
                         [$id, $ttr, $attempt, $time] = $payload;
                         $data['reserved'][$key][2] = ++$attempt;
@@ -235,9 +235,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     {
         $id = $payload[0];
         $this->touchIndex(function (array &$data) use ($id) {
-            /** @var array{reserved: array} $data */
+            {
+                /** @var array{reserved: array} $data */
+            }
             foreach ($data['reserved'] as $key => $payload) {
-                /** @psalm-var array $payload */
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
                     break;
@@ -273,16 +274,10 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             } else {
                 $data['delayed'][] = [$id, $ttr, time() + $delay];
                 usort($data['delayed'], static function (array $a, array $b) {
-                    if ($a[2] < $b[2]) {
+                    if ($a[2] < $b[2] || $a[0] < $b[0]) {
                         return -1;
                     }
-                    if ($a[2] > $b[2]) {
-                        return 1;
-                    }
-                    if ($a[0] < $b[0]) {
-                        return -1;
-                    }
-                    if ($a[0] > $b[0]) {
+                    if ($a[2] > $b[2] || $a[0] > $b[0]) {
                         return 1;
                     }
                     return 0;
@@ -290,7 +285,6 @@ class Queue extends CliQueue implements StatisticsProviderInterface
             }
         });
 
-        /** @psalm-var int|string|null $id */
         return $id;
     }
 
@@ -334,16 +328,16 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    private StatisticsInterface $_statisticsProvider;
+    private StatisticsInterface $statisticsProvider;
 
     /**
      * @return StatisticsInterface
      */
     public function getStatisticsProvider(): StatisticsInterface
     {
-        if (!isset($this->_statisticsProvider)) {
-            $this->_statisticsProvider = new StatisticsProvider($this);
+        if (!isset($this->statisticsProvider)) {
+            $this->statisticsProvider = new StatisticsProvider($this);
         }
-        return $this->_statisticsProvider;
+        return $this->statisticsProvider;
     }
 }
