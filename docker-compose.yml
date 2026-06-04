@@ -134,7 +134,7 @@ services:
   # https://hub.docker.com/r/localstack/localstack
   localstack:
     container_name: yii2-queue-localstack
-    image: localstack/localstack
+    image: localstack/localstack:4.14.0
     restart: always
     ports:
       - "4566:4566"
