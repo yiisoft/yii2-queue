@@ -1331,3 +1331,9 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/serializers/TestCase.php
+
+		-
+			message: '#^Access to constant ATTR_INIT_COMMAND on an unknown class Pdo\\Mysql\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/app/config/main.php
