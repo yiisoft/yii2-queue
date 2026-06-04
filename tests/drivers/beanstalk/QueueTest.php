@@ -12,7 +12,10 @@ namespace tests\drivers\beanstalk;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Values\JobId;
+use Pheanstalk\Values\TubeName;
+use RuntimeException;
 use tests\app\PriorityJob;
+use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Throwable;
 use Yii;
@@ -76,6 +79,50 @@ final class QueueTest extends CliTestCase
         $this->assertSimpleJobLaterDone($job, 2);
     }
 
+    public function testRetry(): void
+    {
+        $this->startProcess(['php', 'yii', 'queue/listen', '1']);
+        $job = new RetryJob(['uid' => uniqid('', true)]);
+        $this->getQueue()->push($job);
+        sleep(6);
+
+        $this->assertFileExists($job->getFileName());
+        $this->assertEquals('aa', file_get_contents($job->getFileName()));
+    }
+
+    public function testRetryInProcess(): void
+    {
+        $queue = $this->getQueue();
+        $attempt = 0;
+        $queue->messageHandler = static function () use (&$attempt) {
+            $attempt++;
+            return $attempt >= 2;
+        };
+
+        $queue->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertEquals(2, $attempt);
+    }
+
+    public function testReleaseOnException(): void
+    {
+        $queue = $this->getQueue();
+        $attempts = 0;
+        $queue->messageHandler = static function () use (&$attempts) {
+            $attempts++;
+            if ($attempts <= 2) {
+                throw new RuntimeException('test error');
+            }
+            return true;
+        };
+
+        $queue->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertEquals(3, $attempts);
+    }
+
     public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());
@@ -118,6 +165,18 @@ final class QueueTest extends CliTestCase
     protected function getQueue(): Queue
     {
         return Yii::$app->beanstalkQueue;
+    }
+
+    protected function tearDown(): void
+    {
+        $this->getQueue()->messageHandler = null;
+        $pheanstalk = Pheanstalk::create($this->getQueue()->host, $this->getQueue()->port);
+        $tube = new TubeName($this->getQueue()->tube);
+        $pheanstalk->watch($tube);
+        while ($job = $pheanstalk->reserveWithTimeout(0)) {
+            $pheanstalk->delete($job);
+        }
+        parent::tearDown();
     }
 
     /**

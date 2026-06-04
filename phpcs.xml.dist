@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="Yii2">
-    <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2"></rule>
+    <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2"/>
 
     <!-- generate relative paths -->
     <arg name="basepath" value="src"/>
