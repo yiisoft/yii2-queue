@@ -28,7 +28,7 @@ static-analyze:		## Run code static analyze. Params: {{ v=8.3 }}. Default latest
 	make down
 
 clean:
-	docker compose down
+	make down
 	rm -rf tests/runtime/*
 	rm -rf composer.lock
 	rm -rf vendor/
