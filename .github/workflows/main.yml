@@ -1,5 +1,8 @@
 name: build
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     paths-ignore: &ignore-paths
@@ -30,7 +33,7 @@ jobs:
         php: [ '8.3', '8.4', '8.5' ]
     steps:
       - name: Checkout.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: PHP Unit tests for PHP ${{ matrix.php }}
         run: make test v=${{ matrix.php }}

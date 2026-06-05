@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
-use Exception;
 use Pheanstalk\Contract\PheanstalkPublisherInterface;
 use Pheanstalk\Contract\SocketFactoryInterface;
 use Pheanstalk\Pheanstalk;
@@ -89,8 +88,10 @@ class Queue extends CliQueue
                             )
                         ) {
                             $pheanstalk->delete($job);
+                        } else {
+                            $pheanstalk->release($job);
                         }
-                    } catch (Exception) {
+                    } catch (Throwable) {
                         $pheanstalk->release($job);
                     }
                 } elseif (!$repeat) {

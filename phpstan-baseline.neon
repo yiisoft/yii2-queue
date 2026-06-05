@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Class yii\\queue\\LogBehavior extends generic class yii\\base\\Behavior but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/LogBehavior.php
-
-		-
 			message: '#^Method yii\\queue\\LogBehavior\:\:events\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -25,12 +19,6 @@ parameters:
 			path: src/Queue.php
 
 		-
-			message: '#^Class yii\\queue\\cli\\Action extends generic class yii\\base\\Action but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/cli/Action.php
-
-		-
 			message: '#^Instanceof between yii\\queue\\cli\\Queue and yii\\queue\\cli\\Queue will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -41,18 +29,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/cli/Action.php
-
-		-
-			message: '#^Property yii\\queue\\cli\\Action\:\:\$controller with generic class yii\\base\\Controller does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/cli/Action.php
-
-		-
-			message: '#^Class yii\\queue\\cli\\Command extends generic class yii\\console\\Controller but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/cli/Command.php
 
 		-
 			message: '#^Method yii\\queue\\cli\\Command\:\:optionAliases\(\) return type has no value type specified in iterable type array\.$#'
@@ -79,13 +55,13 @@ parameters:
 			path: src/cli/Command.php
 
 		-
-			message: '#^PHPDoc tag @property for property yii\\queue\\cli\\InfoAction\:\:\$controller contains generic class yii\\console\\Controller but does not specify its types\: T$#'
-			identifier: missingType.generics
+			message: '#^Cannot call method getComponents\(\) on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: method.nonObject
 			count: 1
-			path: src/cli/InfoAction.php
+			path: src/cli/Queue.php
 
 		-
-			message: '#^Parameter \#1 \$type of static method yii\\BaseYii\<yii\\web\\IdentityInterface\>\:\:createObject\(\) expects array\{class\?\: class\-string\<mixed\>, __class\?\: class\-string\<mixed\>\}\|\(callable\(\)\: mixed\)\|class\-string\<mixed\>, array\|string given\.$#'
+			message: '#^Parameter \#1 \$type of static method yii\\BaseYii\<yii\\web\\IdentityInterface\>\:\:createObject\(\) expects array\{class\?\: class\-string\<mixed\>, __class\?\: class\-string\<mixed\>, \.\.\.\}\|\(callable\(\)\: mixed\)\|class\-string\<mixed\>, array\|string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/cli/Queue.php
@@ -121,28 +97,10 @@ parameters:
 			path: src/cli/Queue.php
 
 		-
-			message: '#^Class yii\\queue\\cli\\VerboseBehavior extends generic class yii\\base\\Behavior but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/cli/VerboseBehavior.php
-
-		-
 			message: '#^Method yii\\queue\\cli\\VerboseBehavior\:\:events\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/cli/VerboseBehavior.php
-
-		-
-			message: '#^Property yii\\queue\\cli\\VerboseBehavior\:\:\$command with generic class yii\\console\\Controller does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/cli/VerboseBehavior.php
-
-		-
-			message: '#^Class yii\\queue\\closure\\Behavior extends generic class yii\\base\\Behavior but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/closure/Behavior.php
 
 		-
 			message: '#^Method yii\\queue\\closure\\Behavior\:\:events\(\) return type has no value type specified in iterable type array\.$#'
@@ -154,6 +112,24 @@ parameters:
 			message: '#^Cannot access property \$data on array\<string, array\>\.$#'
 			identifier: property.nonObject
 			count: 2
+			path: src/debug/Panel.php
+
+		-
+			message: '#^Cannot access property \$view on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: src/debug/Panel.php
+
+		-
+			message: '#^Cannot call method get\(\) on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/debug/Panel.php
+
+		-
+			message: '#^Cannot call method getComponents\(\) on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: method.nonObject
+			count: 1
 			path: src/debug/Panel.php
 
 		-
@@ -499,6 +475,12 @@ parameters:
 			path: src/drivers/file/StatisticsProvider.php
 
 		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: src/drivers/gearman/Queue.php
+
+		-
 			message: '#^Cannot call method get\(\) on array\|string\|yii\\redis\\Connection\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -697,6 +679,12 @@ parameters:
 			path: src/drivers/sqs/Queue.php
 
 		-
+			message: '#^Cannot call method on\(\) on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/drivers/sync/Queue.php
+
+		-
 			message: '#^Property yii\\queue\\sync\\Queue\:\:\$payloads type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -763,14 +751,8 @@ parameters:
 			path: tests/app/SimpleJob.php
 
 		-
-			message: '#^Class tests\\app\\benchmark\\Controller extends generic class yii\\console\\Controller but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: tests/app/benchmark/Controller.php
-
-		-
-			message: '#^Class tests\\app\\benchmark\\waiting\\Action extends generic class yii\\base\\Action but does not specify its types\: T$#'
-			identifier: missingType.generics
+			message: '#^Cannot call method get\(\) on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: method.nonObject
 			count: 1
 			path: tests/app/benchmark/waiting/Action.php
 
@@ -821,12 +803,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/app/benchmark/waiting/Action.php
-
-		-
-			message: '#^Access to constant ATTR_INIT_COMMAND on an unknown class Pdo\\Mysql\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/app/config/main.php
 
 		-
 			message: '#^Comparison operation "\>\=" between \-1 and 0 is always false\.$#'
@@ -919,8 +895,8 @@ parameters:
 			path: tests/drivers/TestCase.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$amqpInteropQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$amqpInteropQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/amqp_interop/AmqpTestCase.php
 
@@ -955,6 +931,12 @@ parameters:
 			path: tests/drivers/amqp_interop/AmqpTestCase.php
 
 		-
+			message: '#^Cannot access property \$security on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: tests/drivers/amqp_interop/QueueTest.php
+
+		-
 			message: '#^Parameter \#1 \$filename of function file_get_contents expects string, bool\|string given\.$#'
 			identifier: argument.type
 			count: 2
@@ -967,13 +949,19 @@ parameters:
 			path: tests/drivers/amqp_interop/QueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$beanstalkQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$beanstalkQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/beanstalk/QueueTest.php
 
 		-
 			message: '#^Parameter \#1 \$filename of function file_get_contents expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/drivers/beanstalk/QueueTest.php
+
+		-
+			message: '#^Parameter \#1 \$filename of method PHPUnit\\Framework\\Assert\:\:assertFileExists\(\) expects string, bool\|string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: tests/drivers/beanstalk/QueueTest.php
@@ -1003,20 +991,20 @@ parameters:
 			path: tests/drivers/beanstalk/QueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$mysqlQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$mysqlQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/db/MysqlQueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$pgsqlQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$pgsqlQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/db/PgsqlQueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sqliteQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$sqliteQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/db/SqliteQueueTest.php
 
@@ -1081,12 +1069,6 @@ parameters:
 			path: tests/drivers/db/TestCase.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$fileQueue\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/drivers/file/QueueTest.php
-
-		-
 			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -1117,6 +1099,12 @@ parameters:
 			path: tests/drivers/file/QueueTest.php
 
 		-
+			message: '#^Cannot access property \$fileQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/drivers/file/QueueTest.php
+
+		-
 			message: '#^Parameter \#1 \$filename of function file_get_contents expects string, bool\|string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1141,8 +1129,8 @@ parameters:
 			path: tests/drivers/file/QueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$gearmanQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$gearmanQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/gearman/QueueTest.php
 
@@ -1165,12 +1153,6 @@ parameters:
 			path: tests/drivers/gearman/QueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$redisQueue\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/drivers/redis/QueueTest.php
-
-		-
 			message: '#^Call to an undefined method yii\\queue\\interfaces\\StatisticsInterface\:\:getDelayedCount\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -1191,6 +1173,12 @@ parameters:
 		-
 			message: '#^Call to an undefined method yii\\queue\\interfaces\\StatisticsInterface\:\:getWaitingCount\(\)\.$#'
 			identifier: method.notFound
+			count: 1
+			path: tests/drivers/redis/QueueTest.php
+
+		-
+			message: '#^Cannot access property \$redisQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/redis/QueueTest.php
 
@@ -1255,8 +1243,8 @@ parameters:
 			path: tests/drivers/redis/RedisCrashMock.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sqsFifoQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$sqsFifoQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/sqs/FifoQueueTest.php
 
@@ -1273,8 +1261,8 @@ parameters:
 			path: tests/drivers/sqs/FifoQueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sqsQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$sqsQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/sqs/QueueTest.php
 
@@ -1291,8 +1279,8 @@ parameters:
 			path: tests/drivers/sqs/QueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$stompQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$stompQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/stomp/QueueTest.php
 
@@ -1315,8 +1303,8 @@ parameters:
 			path: tests/drivers/stomp/QueueTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$syncQueue\.$#'
-			identifier: property.notFound
+			message: '#^Cannot access property \$syncQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: tests/drivers/sync/QueueTest.php
 
@@ -1343,3 +1331,9 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/serializers/TestCase.php
+
+		-
+			message: '#^Access to constant ATTR_INIT_COMMAND on an unknown class Pdo\\Mysql\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/app/config/main.php
