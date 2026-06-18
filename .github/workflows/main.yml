@@ -33,13 +33,15 @@ jobs:
         php: [ '8.3', '8.4', '8.5' ]
     steps:
       - name: Checkout.
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
 
       - name: PHP Unit tests for PHP ${{ matrix.php }}
         run: make test v=${{ matrix.php }}
 
       - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@04b047e8bb82a0c002c8312c1c880fbc6a999d45
         with:
           files: ./coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
