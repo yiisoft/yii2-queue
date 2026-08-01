@@ -23,7 +23,6 @@ use yii\queue\interfaces\WaitingCountInterface;
  * Info about queue status.
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
- *
  */
 class InfoAction extends Action
 {

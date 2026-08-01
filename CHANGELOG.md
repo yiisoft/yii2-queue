@@ -3,6 +3,7 @@ Yii2 Queue Extension Change Log
 
 3.0.0 under development
 ---
+
 - Enh #542: The minimum supported PHP version is 8.3 (@s1lver)
 - Enh #503, #546: Added PHPStan for static code analysis. Error level set to 8 (@s1lver)
 - Enh #503: Added strict typing (@s1lver)
@@ -14,7 +15,7 @@ Yii2 Queue Extension Change Log
 - Enh #503: All dependent packages for supported drivers have been updated to the latest versions (@s1lver)
 - Enh #503: The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
 - Enh #544: Applying Yii2 coding standards (@s1lver)
-- Bug #TBD: Fix `@property` annotations in `InfoAction` and `Queue` drivers (mspirkov)
+- Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (mspirkov)
 
 2.3.8 January 08, 2026
 ----------------------
