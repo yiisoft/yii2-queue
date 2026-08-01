@@ -22,7 +22,7 @@ use yii\queue\interfaces\StatisticsProviderInterface;
 /**
  * File Queue.
  *
- * @property-read StatisticsProvider $statisticsProvider
+ * @property-read StatisticsInterface $statisticsProvider
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

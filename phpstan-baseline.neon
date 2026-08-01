@@ -55,6 +55,12 @@ parameters:
 			path: src/cli/Command.php
 
 		-
+			message: '#^Call to an undefined method yii\\base\\Controller\:\:stdout\(\)\.$#'
+			identifier: method.notFound
+			count: 9
+			path: src/cli/InfoAction.php
+
+		-
 			message: '#^Cannot call method getComponents\(\) on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1331,9 +1337,3 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/serializers/TestCase.php
-
-		-
-			message: '#^Access to constant ATTR_INIT_COMMAND on an unknown class Pdo\\Mysql\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/app/config/main.php

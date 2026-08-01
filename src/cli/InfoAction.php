@@ -24,7 +24,6 @@ use yii\queue\interfaces\WaitingCountInterface;
  *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  *
- * @property Controller $controller
  */
 class InfoAction extends Action
 {

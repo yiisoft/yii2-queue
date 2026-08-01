@@ -34,7 +34,6 @@ use yii\queue\cli\Queue as CliQueue;
  * Amqp Queue.
  *
  * @property-read AmqpContext $context
- * @property-read AmqpQueue $queue
  *
  * @author Maksym Kotliar <kotlyar.maksim@gmail.com>
  * @since 2.0.2

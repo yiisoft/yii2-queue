@@ -24,8 +24,7 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Beanstalk Queue.
  *
- * @property-read TubeName $tubeName
- * @property-read object $statsTube Tube statistics.
+ * @property-read TubeStats $statsTube Tube statistics.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */

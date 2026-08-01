@@ -21,7 +21,7 @@ use yii\redis\Connection;
 /**
  * Redis Queue.
  *
- * @property-read StatisticsProvider $statisticsProvider
+ * @property-read StatisticsInterface $statisticsProvider
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
