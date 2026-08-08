@@ -62,7 +62,7 @@ class InfoAction extends Action
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['reserved_at' => null])
-            ->andWhere(['delay' => 0]);
+            ->andWhere(['<=', 'execute_at', time()]);
     }
 
     /**
@@ -74,7 +74,7 @@ class InfoAction extends Action
             ->from($this->queue->tableName)
             ->andWhere(['channel' => $this->queue->channel])
             ->andWhere(['reserved_at' => null])
-            ->andWhere(['>', 'delay', 0]);
+            ->andWhere(['>', 'execute_at', time()]);
     }
 
     /**
