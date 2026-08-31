@@ -16,6 +16,7 @@ Yii2 Queue Extension Change Log
 - Enh #503: The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
 - Enh #544: Applying Yii2 coding standards (@s1lver)
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (mspirkov)
+- Enh #564: Allow `symfony/process` `^8.0` (lukascernydis)
 
 2.3.8 January 08, 2026
 ----------------------
