@@ -15,6 +15,8 @@ use yii\queue\interfaces\DoneCountInterface;
 /**
  * Done Count Provider
  *
+ * @property-read int $doneCount
+ *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
 class DoneCountProvider extends BaseStatisticsProvider implements DoneCountInterface

@@ -18,6 +18,8 @@ use yii\queue\Queue;
 /**
  * Simple Job.
  *
+ * @property-read bool|string $fileName
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class SimpleJob extends BaseObject implements JobInterface

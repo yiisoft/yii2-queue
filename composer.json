@@ -35,7 +35,9 @@
         "pda/pheanstalk": "^8.0.0",
         "aws/aws-sdk-php": "^3.369.0",
         "phpstan/phpstan": "^2.1",
-        "phpstan/phpstan-phpunit": "^2.0"
+        "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^2.6",
+        "mspirkov/yii2-rector": "^0.1"
     },
     "suggest": {
         "ext-pcntl": "Need for process signals.",
@@ -87,6 +89,7 @@
         "cs": "./vendor/bin/phpcs",
         "cs-fix": "./vendor/bin/phpcbf",
         "static": "./vendor/bin/phpstan --memory-limit=-1",
-        "tests": "./make test"
+        "tests": "./make test",
+        "rector": "./vendor/bin/rector"
     }
 }

@@ -22,6 +22,8 @@ use yii\queue\serializers\SerializerInterface;
 /**
  * Base Queue.
  *
+ * @property-read int|null $workerPid
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 abstract class Queue extends Component
