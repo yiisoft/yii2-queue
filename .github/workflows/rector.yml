@@ -1,0 +1,31 @@
+name: rector
+
+permissions:
+  contents: read
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - 'docs/**'
+      - '.github/CONTRIBUTING.md'
+      - '.github/FUNDING.yml'
+      - '.github/SECURITY.md'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE.md'
+      - 'UPGRADE.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - '.editorconfig'
+      - 'docker-compose.yml'
+      - 'Dockerfile'
+      - 'Makefile'
+      - 'phpunit.xml.dist'
+
+  push: *ignore-paths
+
+jobs:
+  rector:
+    uses: yiisoft/yii2-actions/.github/workflows/rector.yml@6f8dc7a0de4cbcc0fffb6a20881f32bba0e13f44 # master
+    with:
+      php-version: '["8.5"]'

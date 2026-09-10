@@ -15,6 +15,8 @@ use yii\queue\interfaces\ReservedCountInterface;
 /**
  * Reserved Count Provider
  *
+ * @property-read int $reservedCount
+ *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
 class ReservedCountProvider extends BaseStatisticsProvider implements ReservedCountInterface
