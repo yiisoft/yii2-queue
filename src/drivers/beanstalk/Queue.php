@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
-use Exception;
 use Pheanstalk\Contract\PheanstalkPublisherInterface;
 use Pheanstalk\Contract\SocketFactoryInterface;
 use Pheanstalk\Pheanstalk;
@@ -25,8 +24,7 @@ use yii\queue\cli\Queue as CliQueue;
 /**
  * Beanstalk Queue.
  *
- * @property-read TubeName $tubeName
- * @property-read object $statsTube Tube statistics.
+ * @property-read TubeStats $statsTube Tube statistics.
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -89,8 +87,10 @@ class Queue extends CliQueue
                             )
                         ) {
                             $pheanstalk->delete($job);
+                        } else {
+                            $pheanstalk->release($job);
                         }
-                    } catch (Exception) {
+                    } catch (Throwable) {
                         $pheanstalk->release($job);
                     }
                 } elseif (!$repeat) {

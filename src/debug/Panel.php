@@ -23,6 +23,8 @@ use yii\queue\Queue;
 /**
  * Debug Panel.
  *
+ * @property-read string $viewPath The view path that may be prefixed to a relative view name.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class Panel extends BasePanel implements ViewContextInterface

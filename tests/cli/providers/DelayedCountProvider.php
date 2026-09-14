@@ -15,6 +15,8 @@ use yii\queue\interfaces\DelayedCountInterface;
 /**
  * Delayed Count Provider
  *
+ * @property-read int $delayedCount
+ *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
 class DelayedCountProvider extends BaseStatisticsProvider implements DelayedCountInterface

@@ -20,6 +20,9 @@ use yii\queue\RetryableJobInterface;
 /**
  * Retry Job.
  *
+ * @property-read bool|string $fileName
+ * @property-read int $ttr Time to reserve in seconds.
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 class RetryJob extends BaseObject implements RetryableJobInterface

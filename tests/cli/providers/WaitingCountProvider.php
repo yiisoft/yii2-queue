@@ -15,6 +15,8 @@ use yii\queue\interfaces\WaitingCountInterface;
 /**
  * Waiting Count Provider
  *
+ * @property-read int $waitingCount
+ *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
 class WaitingCountProvider extends BaseStatisticsProvider implements WaitingCountInterface

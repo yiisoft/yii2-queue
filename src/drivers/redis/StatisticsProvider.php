@@ -20,6 +20,11 @@ use yii\queue\interfaces\WaitingCountInterface;
 /**
  * Statistics Provider
  *
+ * @property-read int $waitingCount
+ * @property-read int $delayedCount
+ * @property-read int $reservedCount
+ * @property-read int $doneCount
+ *
  * @author Kalmer Kaurson <kalmerkaurson@gmail.com>
  */
 class StatisticsProvider extends BaseObject implements

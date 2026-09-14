@@ -9,3 +9,4 @@
 /Dockerfile         export-ignore
 /support            export-ignore
 /stubs              export-ignore
+/rector.php         export-ignore
