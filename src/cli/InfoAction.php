@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yii\queue\cli;
 
 use yii\base\NotSupportedException;
-use yii\console\Controller;
 use yii\helpers\Console;
 use yii\queue\interfaces\DelayedCountInterface;
 use yii\queue\interfaces\DoneCountInterface;
