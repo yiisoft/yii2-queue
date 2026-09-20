@@ -679,6 +679,12 @@ parameters:
 			path: src/drivers/sqs/Queue.php
 
 		-
+			message: '#^Parameter \#1 \$args of method Aws\\Sqs\\SqsClient\:\:receiveMessage\(\) expects array\{QueueUrl\?\: string, AttributeNames\?\: list\<''All''\|''ApproximateNumberOf…''\|''ContentBasedDedupli…''\|''CreatedTimestamp''\|''DeduplicationScope''\|''DelaySeconds''\|''FifoQueue''\|''FifoThroughputLimit''\|''KmsDataKeyReusePeri…''\|''KmsMasterKeyId''\|''LastModifiedTimesta…''\|''MaximumMessageSize''\|''MessageRetentionPer…''\|''Policy''\|''QueueArn''\|''ReceiveMessageWaitT…''\|''RedriveAllowPolicy''\|''RedrivePolicy''\|''SqsManagedSseEnabled''\|''VisibilityTimeout''\>, MessageSystemAttributeNames\?\: list\<''All''\|''ApproximateFirstRec…''\|''ApproximateReceiveC…''\|''AWSTraceHeader''\|''DeadLetterQueueSour…''\|''MessageDeduplicatio…''\|''MessageGroupId''\|''SenderId''\|''SentTimestamp''\|''SequenceNumber''\>, MessageAttributeNames\?\: list\<string\>, MaxNumberOfMessages\?\: int, VisibilityTimeout\?\: int, WaitTimeSeconds\?\: int, ReceiveRequestAttemptId\?\: string, \.\.\.\}, array\{QueueUrl\: string, AttributeNames\: array\{''ApproximateReceiveC…''\}, MessageAttributeNames\: array\{''TTR''\}, MaxNumberOfMessages\: 1, VisibilityTimeout\: int, WaitTimeSeconds\: int\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/drivers/sqs/Queue.php
+
+		-
 			message: '#^Property yii\\queue\\sqs\\Queue\:\:\$serializer type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1337,9 +1343,3 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/serializers/TestCase.php
-
-		-
-			message: '#^Access to constant ATTR_INIT_COMMAND on an unknown class Pdo\\Mysql\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/app/config/main.php
