@@ -32,6 +32,7 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     {
         throw new NotSupportedException('"status" method is not supported.');
     }
+
     /**
      * @inheritdoc
      */

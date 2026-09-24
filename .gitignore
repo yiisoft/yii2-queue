@@ -23,3 +23,7 @@ composer.lock
 coverage.xml
 
 runtime
+
+# PHP CS Fixer
+.php-cs-fixer.php
+.php-cs-fixer.cache
