@@ -15,6 +15,7 @@ Yii2 Queue Extension Change Log
 - Enh #503: All dependent packages for supported drivers have been updated to the latest versions (@s1lver)
 - Enh #503: The `opis/closure` package did not support PHP 8.1 and was replaced by the `laravel/serializable-closure` package (@s1lver)
 - Enh #544: Applying Yii2 coding standards (@s1lver)
+- Bug #552: Move signal handling from AMQP Interop queue component to controller (@snewer)
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (mspirkov)
 - Enh #564: Allow `symfony/process` `^8.0` (lukascernydis)
 - Enh #565: Add the missing `@property` tags (mspirkov)
