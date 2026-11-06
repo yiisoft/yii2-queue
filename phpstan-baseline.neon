@@ -190,7 +190,7 @@ parameters:
 			message: '#^Callable callable\(\)\: mixed invoked with 1 parameter, 0 required\.$#'
 			identifier: arguments.count
 			count: 1
-			path: src/drivers/amqp_interop/Queue.php
+			path: src/drivers/amqp_interop/Command.php
 
 		-
 			message: '#^Cannot call method bind\(\) on Interop\\Queue\\Context\|null\.$#'
@@ -231,12 +231,6 @@ parameters:
 		-
 			message: '#^Cannot call method declareTopic\(\) on Interop\\Queue\\Context\|null\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: src/drivers/amqp_interop/Queue.php
-
-		-
-			message: '#^Comparison operation "\>\=" between 8 and 7 is always true\.$#'
-			identifier: greaterOrEqual.alwaysTrue
 			count: 1
 			path: src/drivers/amqp_interop/Queue.php
 

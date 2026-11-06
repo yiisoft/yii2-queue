@@ -39,12 +39,7 @@ class Command extends CliCommand
             $signals = [SIGTERM, SIGQUIT, SIGINT, SIGHUP];
 
             foreach ($signals as $signal) {
-                /** @var (callable(int):void)|int|null $oldHandler */
-                $oldHandler = null;
-                // This got added in php 7.1 and might not exist on all supported versions
-                if (function_exists('pcntl_signal_get_handler')) {
-                    $oldHandler = pcntl_signal_get_handler($signal);
-                }
+                $oldHandler = pcntl_signal_get_handler($signal);
 
                 pcntl_signal($signal, static function ($signal) use ($oldHandler) {
                     if ($oldHandler && is_callable($oldHandler)) {
