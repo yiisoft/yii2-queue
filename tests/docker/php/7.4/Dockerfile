@@ -1,7 +1,7 @@
 FROM php:7.4-cli
 
-# Debian bullseye is EOL: `bullseye-security` still publishes its index, but the packages return `404`.
-RUN sed -i '/debian-security/d' /etc/apt/sources.list \
+# Debian bullseye is EOL (2026-08-31): `bullseye-security` packages return `404`, use the permanent archive.
+RUN echo 'deb http://archive.debian.org/debian bullseye main' > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install -y unzip curl zlib1g-dev libzip-dev libicu-dev libpq-dev libgearman-dev
 
