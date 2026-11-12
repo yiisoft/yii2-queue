@@ -1,11 +1,12 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.9 Under development
----
+2.3.9 under development
+-----------------------
 
 - Bug #551: Revert "Prevent multiple execution of aborted jobs" (terabytesoftw)
 - Enh #564: Allow `symfony/process` `^8.0` (lukascernydis)
+
 
 2.3.8 January 08, 2026
 ----------------------

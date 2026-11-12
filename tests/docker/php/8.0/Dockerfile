@@ -1,6 +1,8 @@
 FROM --platform=linux/amd64 php:8.0.28-cli
 
-RUN apt-get update \
+# Debian bullseye is EOL (2026-08-31): `bullseye-security` packages return `404`, use the permanent archive.
+RUN echo 'deb http://archive.debian.org/debian bullseye main' > /etc/apt/sources.list \
+   && apt-get update \
    && apt-get install -y unzip curl zlib1g-dev libzip-dev libicu-dev libpq-dev libgearman-dev
 
 RUN docker-php-ext-install zip pcntl bcmath pdo_mysql intl pdo_pgsql sockets
