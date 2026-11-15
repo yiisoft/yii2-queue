@@ -1,7 +1,7 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-2.3.9 under development
+2.3.9 November 15, 2026
 -----------------------
 
 - Bug #551: Revert "Prevent multiple execution of aborted jobs" (terabytesoftw)
