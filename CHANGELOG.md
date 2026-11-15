@@ -1,6 +1,12 @@
 Yii2 Queue Extension Change Log
 ===============================
 
+2.3.10 under development
+------------------------
+
+- no changes in this release.
+
+
 2.3.9 November 15, 2026
 -----------------------
 
