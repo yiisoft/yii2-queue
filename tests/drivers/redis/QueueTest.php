@@ -127,7 +127,16 @@ final class QueueTest extends CliTestCase
 
         $this->assertSimpleJobDone($job);
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
+        // The job writes its file before the worker removes the job from the reserved list,
+        // so the done count can still be 0 for a moment.
+        $statistics = $this->getQueue()->getStatisticsProvider();
+        $timeout = 5000000; // 5 sec
+        $step = 50000;
+        while (($doneCount = $statistics->getDoneCount()) !== 1 && $timeout > 0) {
+            usleep($step);
+            $timeout -= $step;
+        }
+        $this->assertEquals(1, $doneCount);
     }
 
     protected function getQueue(): Queue

@@ -19,7 +19,7 @@ use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Throwable;
 use Yii;
-use yii\log\Logger;
+use yii\log\Target;
 use yii\queue\beanstalk\Queue;
 use yii\queue\Queue as BaseQueue;
 
@@ -174,17 +174,38 @@ final class QueueTest extends CliTestCase
             return true;
         };
 
-        $id = $queue->ttr(1)->push($this->createSimpleJob());
-        $queue->run(false);
+        // The logger flushes its messages when there are too many of them, so they are caught by a target.
+        $target = new class() extends Target {
+            /** @var array<int, array<int, mixed>> */
+            public array $exported = [];
+
+            public function export(): void
+            {
+                array_push($this->exported, ...$this->messages);
+            }
+        };
+        $target->setLevels(['warning']);
+        $target->categories = [BaseQueue::class];
+        $target->logVars = [];
+        $target->exportInterval = 1;
+        $this->assertNotNull(Yii::$app);
+        $log = Yii::$app->getLog();
+        $log->targets['retryAfterTtrExpired'] = $target;
+
+        try {
+            $id = $queue->ttr(1)->push($this->createSimpleJob());
+            $queue->run(false);
+            Yii::getLogger()->flush();
+        } finally {
+            unset($log->targets['retryAfterTtrExpired']);
+        }
 
         $this->assertEquals(2, $attempts);
         $this->assertFalse($this->jobIsExists($id));
 
         $warnings = array_filter(
-            Yii::getLogger()->messages,
-            static fn (array $message) => $message[1] === Logger::LEVEL_WARNING
-                && $message[2] === BaseQueue::class
-                && str_starts_with((string)$message[0], "[$id] Job is not released for retry")
+            $target->exported,
+            static fn (array $message) => str_starts_with((string)$message[0], "[$id] Job is not released for retry")
         );
         $this->assertCount(1, $warnings);
     }
