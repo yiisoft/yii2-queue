@@ -143,6 +143,49 @@ final class QueueTest extends CliTestCase
         $this->assertFalse($this->jobIsExists($id));
     }
 
+    public function testWorkerIgnoresDefaultTube(): void
+    {
+        $queue = $this->getQueue();
+        $handled = 0;
+        $queue->messageHandler = static function () use (&$handled) {
+            $handled++;
+            return true;
+        };
+
+        $pheanstalk = Pheanstalk::create($queue->host, $queue->port);
+        $pheanstalk->useTube(TubeName::default());
+        $foreignJob = $pheanstalk->put('foreign job');
+
+        try {
+            $queue->run(false);
+
+            $this->assertSame(0, $handled, 'The worker must not reserve jobs from the "default" tube.');
+            $this->assertSame('ready', $pheanstalk->statsJob($foreignJob)->state->value);
+        } finally {
+            $pheanstalk->delete($foreignJob);
+        }
+    }
+
+    public function testWorkerWithDefaultTube(): void
+    {
+        $queue = new Queue([
+            'host' => $this->getQueue()->host,
+            'port' => $this->getQueue()->port,
+            'tube' => 'default',
+        ]);
+        $handled = 0;
+        $queue->messageHandler = static function () use (&$handled) {
+            $handled++;
+            return true;
+        };
+
+        $id = $queue->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertSame(1, $handled);
+        $this->assertFalse($this->jobIsExists($id));
+    }
+
     public function testRemove(): void
     {
         $id = $this->getQueue()->push($this->createSimpleJob());

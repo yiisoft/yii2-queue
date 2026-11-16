@@ -72,7 +72,7 @@ class Queue extends CliQueue
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 $pheanstalk = $this->getPheanstalk();
-                $pheanstalk->watch($this->getTubeName());
+                $this->watchOnlyTube($pheanstalk);
 
                 $job = $pheanstalk->reserveWithTimeout($timeout);
                 if (null !== $job) {
@@ -102,6 +102,24 @@ class Queue extends CliQueue
                 }
             }
         });
+    }
+
+    /**
+     * Makes the connection reserve jobs only from the queue tube.
+     *
+     * A new beanstalkd connection watches the `default` tube, so the worker would also take
+     * jobs that other clients put there. It is called on every iteration because pheanstalk
+     * opens a new connection, which watches `default` again, after a connection error.
+     */
+    private function watchOnlyTube(Pheanstalk $pheanstalk): void
+    {
+        $tube = $this->getTubeName();
+        $pheanstalk->watch($tube);
+
+        $default = TubeName::default();
+        if ($tube->value !== $default->value) {
+            $pheanstalk->ignore($default);
+        }
     }
 
     /**

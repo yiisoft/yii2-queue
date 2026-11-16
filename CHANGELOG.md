@@ -20,6 +20,7 @@ Yii2 Queue Extension Change Log
 - Enh #565: Add the missing `@property` tags (@mspirkov)
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (@mspirkov)
 - Bug #578: Beanstalk driver retries a failed job after the remaining part of its TTR instead of immediately (@s1lver)
+- Bug #579: Beanstalk driver worker no longer reserves jobs from the `default` tube (@s1lver)
 
 2.3.8 January 08, 2026
 ----------------------
