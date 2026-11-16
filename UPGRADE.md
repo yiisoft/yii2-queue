@@ -86,6 +86,11 @@ Upgrade to 3.0.0
   | Stomp        | `enqueue/stomp` `^0.10`                                                 |
   | Redis        | `yiisoft/yii2-redis` `~2.1.0`                                           |
 
+### DB driver
+
+* The public property `M161119140200Queue::$tableOptions` was removed. If you extend the migration
+  or set this property, pass the table options in your own migration instead.
+
 ### Beanstalk driver
 
 * The driver now uses `pda/pheanstalk` `8.x` instead of `3.x`. If you extend the driver or call
