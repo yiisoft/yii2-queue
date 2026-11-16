@@ -53,9 +53,10 @@ final class QueueTest extends AmqpTestCase
     {
         $this->startProcess(['php', 'yii', 'queue/listen']);
         $job = $this->createSimpleJob();
+        $pushedAt = time();
         $this->getQueue()->delay(2)->push($job);
 
-        $this->assertSimpleJobLaterDone($job, 2);
+        $this->assertSimpleJobLaterDone($job, 2, $pushedAt);
     }
 
     public function testRetry(): void

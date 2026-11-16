@@ -19,7 +19,9 @@ use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Throwable;
 use Yii;
+use yii\log\Logger;
 use yii\queue\beanstalk\Queue;
+use yii\queue\Queue as BaseQueue;
 
 /**
  * Beanstalk Queue Test.
@@ -74,9 +76,10 @@ final class QueueTest extends CliTestCase
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
+        $pushedAt = time();
         $this->getQueue()->delay(2)->push($job);
 
-        $this->assertSimpleJobLaterDone($job, 2);
+        $this->assertSimpleJobLaterDone($job, 2, $pushedAt);
     }
 
     public function testRetry(): void
@@ -176,6 +179,14 @@ final class QueueTest extends CliTestCase
 
         $this->assertEquals(2, $attempts);
         $this->assertFalse($this->jobIsExists($id));
+
+        $warnings = array_filter(
+            Yii::getLogger()->messages,
+            static fn (array $message) => $message[1] === Logger::LEVEL_WARNING
+                && $message[2] === BaseQueue::class
+                && str_starts_with((string)$message[0], "[$id] Job is not released for retry")
+        );
+        $this->assertCount(1, $warnings);
     }
 
     public function testWorkerIgnoresDefaultTube(): void

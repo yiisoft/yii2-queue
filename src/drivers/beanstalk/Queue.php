@@ -20,8 +20,10 @@ use Pheanstalk\Values\Timeout;
 use Pheanstalk\Values\TubeName;
 use Pheanstalk\Values\TubeStats;
 use Throwable;
+use Yii;
 use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\Queue as BaseQueue;
 
 /**
  * Beanstalk Queue.
@@ -147,7 +149,12 @@ class Queue extends CliQueue
         try {
             $this->getPheanstalk()->release($job, $priority, $delay);
         } catch (JobNotFoundException) {
-            // The TTR has already run out, so beanstalkd has returned the job to the ready queue itself.
+            // The job is not reserved by the worker anymore: its TTR has already run out and beanstalkd
+            // has returned it to the ready queue itself, or it was deleted. There is nothing to release.
+            Yii::warning(
+                "[{$job->getId()}] Job is not released for retry: its TTR has already run out or it was deleted.",
+                BaseQueue::class
+            );
         }
     }
 
