@@ -13,6 +13,7 @@ namespace yii\queue\beanstalk;
 use Pheanstalk\Contract\JobIdInterface;
 use Pheanstalk\Contract\PheanstalkPublisherInterface;
 use Pheanstalk\Contract\SocketFactoryInterface;
+use Pheanstalk\Exception\JobNotFoundException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Values\JobId;
 use Pheanstalk\Values\Timeout;
@@ -76,11 +77,13 @@ class Queue extends CliQueue
 
                 $job = $pheanstalk->reserveWithTimeout($timeout);
                 if (null !== $job) {
-                    $reservedAt = microtime(true);
+                    $reservedAt = hrtime(true);
                     $ttr = $this->ttr;
+                    $priority = PheanstalkPublisherInterface::DEFAULT_PRIORITY;
                     try {
                         $info = $pheanstalk->statsJob($job);
                         $ttr = $info->timeToRelease;
+                        $priority = $info->priority;
 
                         if (
                             $this->handleMessage(
@@ -92,10 +95,10 @@ class Queue extends CliQueue
                         ) {
                             $pheanstalk->delete($job);
                         } else {
-                            $this->releaseForRetry($job, $ttr, $reservedAt);
+                            $this->releaseForRetry($job, $ttr, $priority, $reservedAt);
                         }
                     } catch (Throwable) {
-                        $this->releaseForRetry($job, $ttr, $reservedAt);
+                        $this->releaseForRetry($job, $ttr, $priority, $reservedAt);
                     }
                 } elseif (!$repeat) {
                     break;
@@ -129,14 +132,23 @@ class Queue extends CliQueue
      * and in 2.x versions of the Beanstalk driver. The job is not left reserved, because
      * pheanstalk 8 throws `DeadlineSoonException` on the next reserve in that case.
      *
+     * The job keeps its priority, because `release` sets a new one.
+     *
      * @param JobIdInterface $job the reserved job.
      * @param int $ttr time to run of the job in seconds.
-     * @param float $reservedAt timestamp when the job was reserved.
+     * @param int $priority priority of the job.
+     * @param int $reservedAt monotonic time in nanoseconds when the job was reserved, see `hrtime()`.
      */
-    private function releaseForRetry(JobIdInterface $job, int $ttr, float $reservedAt): void
+    private function releaseForRetry(JobIdInterface $job, int $ttr, int $priority, int $reservedAt): void
     {
-        $delay = max(0, (int)ceil($ttr - (microtime(true) - $reservedAt)));
-        $this->getPheanstalk()->release($job, PheanstalkPublisherInterface::DEFAULT_PRIORITY, $delay);
+        $elapsed = (hrtime(true) - $reservedAt) / 1e9;
+        $delay = max(0, (int)ceil($ttr - $elapsed));
+
+        try {
+            $this->getPheanstalk()->release($job, $priority, $delay);
+        } catch (JobNotFoundException) {
+            // The TTR has already run out, so beanstalkd has returned the job to the ready queue itself.
+        }
     }
 
     /**
