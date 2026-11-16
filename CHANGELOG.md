@@ -18,6 +18,7 @@ Yii2 Queue Extension Change Log
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (mspirkov)
 - Enh #564: Allow `symfony/process` `^8.0` (lukascernydis)
 - Enh #565: Add the missing `@property` tags (mspirkov)
+- Bug: Beanstalk driver retries a failed job after the remaining part of its TTR instead of immediately (@s1lver)
 
 2.3.8 January 08, 2026
 ----------------------

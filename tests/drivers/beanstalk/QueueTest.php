@@ -99,10 +99,17 @@ final class QueueTest extends CliTestCase
             return $attempt >= 2;
         };
 
-        $queue->push($this->createSimpleJob());
+        $id = $queue->ttr(2)->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertEquals(1, $attempt, 'The failed job must not be retried immediately.');
+        $this->assertJobDelayedForRetry($id, 2);
+
+        sleep(3);
         $queue->run(false);
 
         $this->assertEquals(2, $attempt);
+        $this->assertFalse($this->jobIsExists($id));
     }
 
     public function testReleaseOnException(): void
@@ -117,10 +124,23 @@ final class QueueTest extends CliTestCase
             return true;
         };
 
-        $queue->push($this->createSimpleJob());
+        $id = $queue->ttr(1)->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertEquals(1, $attempts, 'The failed job must not be retried immediately.');
+        $this->assertJobDelayedForRetry($id, 1);
+
+        sleep(2);
+        $queue->run(false);
+
+        $this->assertEquals(2, $attempts);
+        $this->assertJobDelayedForRetry($id, 1);
+
+        sleep(2);
         $queue->run(false);
 
         $this->assertEquals(3, $attempts);
+        $this->assertFalse($this->jobIsExists($id));
     }
 
     public function testRemove(): void
@@ -176,7 +196,28 @@ final class QueueTest extends CliTestCase
         while ($job = $pheanstalk->reserveWithTimeout(0)) {
             $pheanstalk->delete($job);
         }
+        $pheanstalk->useTube($tube);
+        while ($job = $pheanstalk->peekDelayed()) {
+            $pheanstalk->delete($job);
+        }
         parent::tearDown();
+    }
+
+    /**
+     * Asserts that a failed job was put back to the tube with a delay instead of being retried at once.
+     *
+     * @param int|string|null $id of a job
+     * @param int $ttr of the job in seconds
+     */
+    private function assertJobDelayedForRetry(int|string|null $id, int $ttr): void
+    {
+        $this->assertNotNull($id);
+        $connection = Pheanstalk::create($this->getQueue()->host, $this->getQueue()->port);
+        $stats = $connection->statsJob(new JobId($id));
+
+        $this->assertSame('delayed', $stats->state->value);
+        $this->assertGreaterThan(0, $stats->delay);
+        $this->assertLessThanOrEqual($ttr, $stats->delay);
     }
 
     /**

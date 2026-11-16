@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yii\queue\beanstalk;
 
+use Pheanstalk\Contract\JobIdInterface;
 use Pheanstalk\Contract\PheanstalkPublisherInterface;
 use Pheanstalk\Contract\SocketFactoryInterface;
 use Pheanstalk\Pheanstalk;
@@ -75,8 +76,11 @@ class Queue extends CliQueue
 
                 $job = $pheanstalk->reserveWithTimeout($timeout);
                 if (null !== $job) {
+                    $reservedAt = microtime(true);
+                    $ttr = $this->ttr;
                     try {
                         $info = $pheanstalk->statsJob($job);
+                        $ttr = $info->timeToRelease;
 
                         if (
                             $this->handleMessage(
@@ -88,16 +92,33 @@ class Queue extends CliQueue
                         ) {
                             $pheanstalk->delete($job);
                         } else {
-                            $pheanstalk->release($job);
+                            $this->releaseForRetry($job, $ttr, $reservedAt);
                         }
                     } catch (Throwable) {
-                        $pheanstalk->release($job);
+                        $this->releaseForRetry($job, $ttr, $reservedAt);
                     }
                 } elseif (!$repeat) {
                     break;
                 }
             }
         });
+    }
+
+    /**
+     * Returns a failed job to the queue so that it is retried after the remaining part of its TTR.
+     *
+     * The job becomes ready again when its TTR would have run out, as it does in other drivers
+     * and in 2.x versions of the Beanstalk driver. The job is not left reserved, because
+     * pheanstalk 8 throws `DeadlineSoonException` on the next reserve in that case.
+     *
+     * @param JobIdInterface $job the reserved job.
+     * @param int $ttr time to run of the job in seconds.
+     * @param float $reservedAt timestamp when the job was reserved.
+     */
+    private function releaseForRetry(JobIdInterface $job, int $ttr, float $reservedAt): void
+    {
+        $delay = max(0, (int)ceil($ttr - (microtime(true) - $reservedAt)));
+        $this->getPheanstalk()->release($job, PheanstalkPublisherInterface::DEFAULT_PRIORITY, $delay);
     }
 
     /**
