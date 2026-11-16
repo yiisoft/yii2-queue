@@ -435,7 +435,7 @@ parameters:
 		-
 			message: '#^PHPDoc tag @var for variable \$data has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 9
+			count: 4
 			path: src/drivers/file/Queue.php
 
 		-
@@ -663,7 +663,7 @@ parameters:
 		-
 			message: '#^PHPDoc tag @var for variable \$message has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 2
+			count: 1
 			path: src/drivers/sqs/Payload.php
 
 		-
@@ -833,6 +833,12 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: tests/closure/ClosureTest.php
+
+		-
+			message: '#^Cannot access offset 0 on list\<mixed\>\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: tests/docker/mysql-lock.php
 
 		-
 			message: '#^Parameter \#2 \$username of class PDO constructor expects string\|null, string\|false given\.$#'
