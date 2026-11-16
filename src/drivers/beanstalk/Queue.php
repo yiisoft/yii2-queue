@@ -76,7 +76,7 @@ class Queue extends CliQueue
 
                 $job = $pheanstalk->reserveWithTimeout($timeout);
                 if (null !== $job) {
-                    $reservedAt = microtime(true);
+                    $reservedAt = hrtime(true);
                     $ttr = $this->ttr;
                     try {
                         $info = $pheanstalk->statsJob($job);
@@ -113,11 +113,12 @@ class Queue extends CliQueue
      *
      * @param JobIdInterface $job the reserved job.
      * @param int $ttr time to run of the job in seconds.
-     * @param float $reservedAt timestamp when the job was reserved.
+     * @param int $reservedAt monotonic time in nanoseconds when the job was reserved, see `hrtime()`.
      */
-    private function releaseForRetry(JobIdInterface $job, int $ttr, float $reservedAt): void
+    private function releaseForRetry(JobIdInterface $job, int $ttr, int $reservedAt): void
     {
-        $delay = max(0, (int)ceil($ttr - (microtime(true) - $reservedAt)));
+        $elapsed = (hrtime(true) - $reservedAt) / 1e9;
+        $delay = max(0, (int)ceil($ttr - $elapsed));
         $this->getPheanstalk()->release($job, PheanstalkPublisherInterface::DEFAULT_PRIORITY, $delay);
     }
 

@@ -99,13 +99,13 @@ final class QueueTest extends CliTestCase
             return $attempt >= 2;
         };
 
-        $id = $queue->ttr(2)->push($this->createSimpleJob());
+        $id = $queue->ttr(60)->push($this->createSimpleJob());
         $queue->run(false);
 
         $this->assertEquals(1, $attempt, 'The failed job must not be retried immediately.');
-        $this->assertJobDelayedForRetry($id, 2);
+        $this->assertJobDelayedForRetry($id, 60);
 
-        sleep(3);
+        $this->kickJob($id);
         $queue->run(false);
 
         $this->assertEquals(2, $attempt);
@@ -124,19 +124,19 @@ final class QueueTest extends CliTestCase
             return true;
         };
 
-        $id = $queue->ttr(1)->push($this->createSimpleJob());
+        $id = $queue->ttr(60)->push($this->createSimpleJob());
         $queue->run(false);
 
         $this->assertEquals(1, $attempts, 'The failed job must not be retried immediately.');
-        $this->assertJobDelayedForRetry($id, 1);
+        $this->assertJobDelayedForRetry($id, 60);
 
-        sleep(2);
+        $this->kickJob($id);
         $queue->run(false);
 
         $this->assertEquals(2, $attempts);
-        $this->assertJobDelayedForRetry($id, 1);
+        $this->assertJobDelayedForRetry($id, 60);
 
-        sleep(2);
+        $this->kickJob($id);
         $queue->run(false);
 
         $this->assertEquals(3, $attempts);
@@ -216,8 +216,22 @@ final class QueueTest extends CliTestCase
         $stats = $connection->statsJob(new JobId($id));
 
         $this->assertSame('delayed', $stats->state->value);
-        $this->assertGreaterThan(0, $stats->delay);
+        // The delay is the TTR minus the time the job took. The tests use a long TTR, so it stays
+        // close to the TTR even on a slow machine.
+        $this->assertGreaterThanOrEqual($ttr - 10, $stats->delay);
         $this->assertLessThanOrEqual($ttr, $stats->delay);
+    }
+
+    /**
+     * Moves a delayed job to the ready state, so a test does not have to wait for its delay.
+     *
+     * @param int|string|null $id of a job
+     */
+    private function kickJob(int|string|null $id): void
+    {
+        $this->assertNotNull($id);
+        $connection = Pheanstalk::create($this->getQueue()->host, $this->getQueue()->port);
+        $connection->kickJob(new JobId($id));
     }
 
     /**
