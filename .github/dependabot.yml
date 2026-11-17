@@ -25,4 +25,7 @@ updates:
       composer-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "phpunit/phpunit"
+        update-types: ["version-update:semver-major"]
     versioning-strategy: increase-if-necessary
