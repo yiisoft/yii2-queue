@@ -103,6 +103,14 @@ Yii::$app->queue->isDone($id);
 
 - [the guide](docs/guide/README.md)
 
+## Security
+
+[![Zizmor](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2-queue/zizmor.yml?style=for-the-badge&label=Zizmor&logo=github)](https://github.com/yiisoft/yii2-queue/actions/workflows/zizmor.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/yiisoft/yii2-queue/badge?style=for-the-badge)](https://scorecard.dev/viewer/?uri=github.com/yiisoft/yii2-queue)
+
+GitHub Actions workflows are analyzed by [zizmor](https://github.com/yiisoft/yii2-queue/actions/workflows/zizmor.yml) for supply-chain vulnerabilities and workflow misconfigurations.
+Supply-chain security is tracked via the [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/yiisoft/yii2-queue), which evaluates security practices across the repository.
+
 ## Support the project
 
 [![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?style=for-the-badge&logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/yiisoft)
