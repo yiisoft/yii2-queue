@@ -20,6 +20,9 @@ Upgrade to 3.0.0
   | `yii\queue\serializers\Serializer`  | `yii\queue\serializers\SerializerInterface`  |
   | `yii\queue\cli\Signal`              | `yii\queue\cli\SignalLoop`                   |
   | `yii\queue\cli\Verbose`             | `yii\queue\cli\VerboseBehavior`              |
+  | `yii\queue\db\InfoAction`           | `yii\queue\cli\InfoAction`                   |
+  | `yii\queue\file\InfoAction`         | `yii\queue\cli\InfoAction`                   |
+  | `yii\queue\redis\InfoAction`        | `yii\queue\cli\InfoAction`                   |
 
 * The deprecated Amqp driver (`yii\queue\amqp\Queue`) was removed.
   Use [Amqp Interop](docs/guide/driver-amqp-interop.md) instead.

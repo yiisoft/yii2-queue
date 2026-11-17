@@ -18,6 +18,7 @@ Yii2 Queue Extension Change Log
 - Enh #578: Bump the composer-dependencies `mspirkov/yii2-rector` (@s1lver)
 - Enh #564: Allow `symfony/process` `^8.0` (@lukascernydis)
 - Enh #565: Add the missing `@property` tags (@mspirkov)
+- Enh #586: Removed deprecated classes `yii\queue\db\InfoAction`, `yii\queue\file\InfoAction` and `yii\queue\redis\InfoAction` (@s1lver)
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (@mspirkov)
 - Bug #578: Beanstalk driver retries a failed job after the remaining part of its TTR instead of immediately (@s1lver)
 - Bug #579: Beanstalk driver worker no longer reserves jobs from the `default` tube (@s1lver)
