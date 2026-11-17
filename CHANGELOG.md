@@ -21,6 +21,7 @@ Yii2 Queue Extension Change Log
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (@mspirkov)
 - Bug #578: Beanstalk driver retries a failed job after the remaining part of its TTR instead of immediately (@s1lver)
 - Bug #579: Beanstalk driver worker no longer reserves jobs from the `default` tube (@s1lver)
+- Bug #552: Move signal handling from AMQP Interop queue component to controller (@snewer, @s1lver)
 
 2.3.8 January 08, 2026
 ----------------------
