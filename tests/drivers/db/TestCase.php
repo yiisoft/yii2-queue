@@ -68,9 +68,10 @@ abstract class TestCase extends CliTestCase
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
+        $pushedAt = time();
         $this->getQueue()->delay(2)->push($job);
 
-        $this->assertSimpleJobLaterDone($job, 2);
+        $this->assertSimpleJobLaterDone($job, 2, $pushedAt);
     }
 
     public function testRetry(): void

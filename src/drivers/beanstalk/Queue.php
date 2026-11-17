@@ -13,14 +13,17 @@ namespace yii\queue\beanstalk;
 use Pheanstalk\Contract\JobIdInterface;
 use Pheanstalk\Contract\PheanstalkPublisherInterface;
 use Pheanstalk\Contract\SocketFactoryInterface;
+use Pheanstalk\Exception\JobNotFoundException;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Values\JobId;
 use Pheanstalk\Values\Timeout;
 use Pheanstalk\Values\TubeName;
 use Pheanstalk\Values\TubeStats;
 use Throwable;
+use Yii;
 use yii\base\InvalidArgumentException;
 use yii\queue\cli\Queue as CliQueue;
+use yii\queue\Queue as BaseQueue;
 
 /**
  * Beanstalk Queue.
@@ -72,15 +75,17 @@ class Queue extends CliQueue
         return $this->runWorker(function (callable $canContinue) use ($repeat, $timeout) {
             while ($canContinue()) {
                 $pheanstalk = $this->getPheanstalk();
-                $pheanstalk->watch($this->getTubeName());
+                $this->watchOnlyTube($pheanstalk);
 
                 $job = $pheanstalk->reserveWithTimeout($timeout);
                 if (null !== $job) {
                     $reservedAt = hrtime(true);
                     $ttr = $this->ttr;
+                    $priority = PheanstalkPublisherInterface::DEFAULT_PRIORITY;
                     try {
                         $info = $pheanstalk->statsJob($job);
                         $ttr = $info->timeToRelease;
+                        $priority = $info->priority;
 
                         if (
                             $this->handleMessage(
@@ -92,10 +97,10 @@ class Queue extends CliQueue
                         ) {
                             $pheanstalk->delete($job);
                         } else {
-                            $this->releaseForRetry($job, $ttr, $reservedAt);
+                            $this->releaseForRetry($job, $ttr, $priority, $reservedAt);
                         }
                     } catch (Throwable) {
-                        $this->releaseForRetry($job, $ttr, $reservedAt);
+                        $this->releaseForRetry($job, $ttr, $priority, $reservedAt);
                     }
                 } elseif (!$repeat) {
                     break;
@@ -105,21 +110,52 @@ class Queue extends CliQueue
     }
 
     /**
+     * Makes the connection reserve jobs only from the queue tube.
+     *
+     * A new beanstalkd connection watches the `default` tube, so the worker would also take
+     * jobs that other clients put there. It is called on every iteration because pheanstalk
+     * opens a new connection, which watches `default` again, after a connection error.
+     */
+    private function watchOnlyTube(Pheanstalk $pheanstalk): void
+    {
+        $tube = $this->getTubeName();
+        $pheanstalk->watch($tube);
+
+        $default = TubeName::default();
+        if ($tube->value !== $default->value) {
+            $pheanstalk->ignore($default);
+        }
+    }
+
+    /**
      * Returns a failed job to the queue so that it is retried after the remaining part of its TTR.
      *
      * The job becomes ready again when its TTR would have run out, as it does in other drivers
      * and in 2.x versions of the Beanstalk driver. The job is not left reserved, because
      * pheanstalk 8 throws `DeadlineSoonException` on the next reserve in that case.
      *
+     * The job keeps its priority, because `release` sets a new one.
+     *
      * @param JobIdInterface $job the reserved job.
      * @param int $ttr time to run of the job in seconds.
+     * @param int $priority priority of the job.
      * @param int $reservedAt monotonic time in nanoseconds when the job was reserved, see `hrtime()`.
      */
-    private function releaseForRetry(JobIdInterface $job, int $ttr, int $reservedAt): void
+    private function releaseForRetry(JobIdInterface $job, int $ttr, int $priority, int $reservedAt): void
     {
         $elapsed = (hrtime(true) - $reservedAt) / 1e9;
         $delay = max(0, (int)ceil($ttr - $elapsed));
-        $this->getPheanstalk()->release($job, PheanstalkPublisherInterface::DEFAULT_PRIORITY, $delay);
+
+        try {
+            $this->getPheanstalk()->release($job, $priority, $delay);
+        } catch (JobNotFoundException) {
+            // The job is not reserved by the worker anymore: its TTR has already run out and beanstalkd
+            // has returned it to the ready queue itself, or it was deleted. There is nothing to release.
+            Yii::warning(
+                "[{$job->getId()}] Job is not released for retry: its TTR has already run out or it was deleted.",
+                BaseQueue::class
+            );
+        }
     }
 
     /**

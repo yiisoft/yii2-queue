@@ -19,7 +19,9 @@ use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Throwable;
 use Yii;
+use yii\log\Target;
 use yii\queue\beanstalk\Queue;
+use yii\queue\Queue as BaseQueue;
 
 /**
  * Beanstalk Queue Test.
@@ -74,9 +76,10 @@ final class QueueTest extends CliTestCase
     {
         $this->startProcess(['php', 'yii', 'queue/listen', '1']);
         $job = $this->createSimpleJob();
+        $pushedAt = time();
         $this->getQueue()->delay(2)->push($job);
 
-        $this->assertSimpleJobLaterDone($job, 2);
+        $this->assertSimpleJobLaterDone($job, 2, $pushedAt);
     }
 
     public function testRetry(): void
@@ -140,6 +143,113 @@ final class QueueTest extends CliTestCase
         $queue->run(false);
 
         $this->assertEquals(3, $attempts);
+        $this->assertFalse($this->jobIsExists($id));
+    }
+
+    public function testRetryKeepsPriority(): void
+    {
+        $queue = $this->getQueue();
+        $queue->messageHandler = static fn () => false;
+
+        $id = $queue->ttr(60)->priority(100)->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertJobDelayedForRetry($id, 60);
+        $this->assertNotNull($id);
+        $connection = Pheanstalk::create($queue->host, $queue->port);
+        $this->assertSame(100, $connection->statsJob(new JobId($id))->priority);
+    }
+
+    public function testRetryAfterTtrExpired(): void
+    {
+        $queue = $this->getQueue();
+        $attempts = 0;
+        $queue->messageHandler = static function () use (&$attempts) {
+            $attempts++;
+            if ($attempts === 1) {
+                // The job runs longer than its TTR, so beanstalkd returns it to the ready queue itself.
+                sleep(3);
+                return false;
+            }
+            return true;
+        };
+
+        // The logger flushes its messages when there are too many of them, so they are caught by a target.
+        $target = new class() extends Target {
+            /** @var array<int, array<int, mixed>> */
+            public array $exported = [];
+
+            public function export(): void
+            {
+                array_push($this->exported, ...$this->messages);
+            }
+        };
+        $target->setLevels(['warning']);
+        $target->categories = [BaseQueue::class];
+        $target->logVars = [];
+        $target->exportInterval = 1;
+        $this->assertNotNull(Yii::$app);
+        $log = Yii::$app->getLog();
+        $log->targets['retryAfterTtrExpired'] = $target;
+
+        try {
+            $id = $queue->ttr(1)->push($this->createSimpleJob());
+            $queue->run(false);
+            Yii::getLogger()->flush();
+        } finally {
+            unset($log->targets['retryAfterTtrExpired']);
+        }
+
+        $this->assertEquals(2, $attempts);
+        $this->assertFalse($this->jobIsExists($id));
+
+        $warnings = array_filter(
+            $target->exported,
+            static fn (array $message) => str_starts_with((string)$message[0], "[$id] Job is not released for retry")
+        );
+        $this->assertCount(1, $warnings);
+    }
+
+    public function testWorkerIgnoresDefaultTube(): void
+    {
+        $queue = $this->getQueue();
+        $handled = 0;
+        $queue->messageHandler = static function () use (&$handled) {
+            $handled++;
+            return true;
+        };
+
+        $pheanstalk = Pheanstalk::create($queue->host, $queue->port);
+        $pheanstalk->useTube(TubeName::default());
+        $foreignJob = $pheanstalk->put('foreign job');
+
+        try {
+            $queue->run(false);
+
+            $this->assertSame(0, $handled, 'The worker must not reserve jobs from the "default" tube.');
+            $this->assertSame('ready', $pheanstalk->statsJob($foreignJob)->state->value);
+        } finally {
+            $pheanstalk->delete($foreignJob);
+        }
+    }
+
+    public function testWorkerWithDefaultTube(): void
+    {
+        $queue = new Queue([
+            'host' => $this->getQueue()->host,
+            'port' => $this->getQueue()->port,
+            'tube' => 'default',
+        ]);
+        $handled = 0;
+        $queue->messageHandler = static function () use (&$handled) {
+            $handled++;
+            return true;
+        };
+
+        $id = $queue->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertSame(1, $handled);
         $this->assertFalse($this->jobIsExists($id));
     }
 

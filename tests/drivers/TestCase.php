@@ -41,9 +41,15 @@ abstract class TestCase extends \tests\TestCase
         $this->assertFileExists($job->getFileName());
     }
 
-    protected function assertSimpleJobLaterDone(SimpleJob $job, int $delay): void
+    /**
+     * @param SimpleJob $job
+     * @param int $delay of the job in seconds
+     * @param int $pushedAt time before the job was pushed. It must be taken before the push, because
+     * drivers count the delay in whole seconds from the push time.
+     */
+    protected function assertSimpleJobLaterDone(SimpleJob $job, int $delay, int $pushedAt): void
     {
-        $time = time() + $delay;
+        $time = $pushedAt + $delay;
         sleep($delay);
         $timeout = 5000000; // 5 sec
         $step = 50000;
