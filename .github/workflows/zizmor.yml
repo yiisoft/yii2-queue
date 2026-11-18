@@ -1,3 +1,4 @@
+---
 name: GitHub Actions Security Analysis with zizmor 🌈
 
 on:
@@ -5,13 +6,11 @@ on:
     branches:
       - master
       - main
-    paths:
+    paths: &paths
       - '.github/**.yml'
       - '.github/**.yaml'
   pull_request:
-    paths:
-      - '.github/**.yml'
-      - '.github/**.yaml'
+    paths: *paths
 
 permissions:
   actions: read # Required by zizmor when reading workflow metadata through the API.

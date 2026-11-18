@@ -14,7 +14,7 @@ It supports queues based on **DB**, **Redis**, **RabbitMQ**, **AMQP**, **Beansta
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-queue.svg?style=for-the-badge&label=Stable&logo=packagist)](https://packagist.org/packages/yiisoft/yii2-queue)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-queue.svg?style=for-the-badge&label=Downloads)](https://packagist.org/packages/yiisoft/yii2-queue)
-[![build](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2-queue/main.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2-queue/actions?query=workflow%3Abuild)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2-queue/build.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2-queue/actions/workflows/build.yml)
 [![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2-queue.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Codecov)](https://codecov.io/gh/yiisoft/yii2-queue)
 [![Static Analysis](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2-queue/static.yml?style=for-the-badge&label=Static)](https://github.com/yiisoft/yii2-queue/actions/workflows/static.yml)
 
