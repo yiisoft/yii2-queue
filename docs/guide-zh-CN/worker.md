@@ -33,14 +33,55 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 
 有关 Supervisor 配置和使用的更多信息，请参阅[文档](http://supervisord.org)。
 
-以守护进程模式启动的Worker使用 `queue/listen` 命令支持 [File]、 [Db]、 [Redis]、 [RabbitMQ]、 [Beanstalk]、 [Gearman] 驱动。 有关其他参数，请参阅驱动程序指南。
+以守护进程模式启动的Worker使用 `queue/listen` 命令支持 [File]、 [Db]、 [Redis]、 [AMQP Interop]、 [Beanstalk]、 [Gearman] 驱动。 有关其他参数，请参阅驱动程序指南。
 
 [File]: driver-file.md
 [Db]: driver-db.md
 [Redis]: driver-redis.md
-[RabbitMQ]: driver-amqp.md
+[AMQP Interop]: driver-amqp-interop.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+
+Docker
+------
+
+[Docker Compose](https://docs.docker.com/compose/) can keep `queue/listen` workers running next to the application. Use the same image as the web (php-fpm) service and start one worker process in the container:
+
+```yaml
+services:
+  queue:
+    image: my-app-php # the same image the web (php-fpm) service uses
+    command: php /var/www/my_project/yii queue/listen --verbose=1 --color=0
+    restart: unless-stopped
+    depends_on:
+      - mysql
+```
+
+A worker container runs a single process, so one Compose service maps to one queue component. An application with several queue components defines a service for each of them.
+
+To run several workers of the same queue, duplicate the service or scale it:
+
+```sh
+docker compose up --scale queue=3
+```
+
+With Docker Swarm, set `deploy.replicas` instead of `--scale`.
+
+`restart: unless-stopped` restarts a stopped worker, the same way Supervisor does with `autorestart=true`. `restart: on-failure` restarts it only when the process exits with an error.
+
+The worker writes to the container stdout, so there is no log file to configure. `docker compose logs -f queue` shows the `--verbose=1` output.
+
+To keep workers out of a plain `docker compose up`, assign them a profile and start that profile explicitly:
+
+```yaml
+services:
+  queue:
+    profiles: ["worker"]
+```
+
+```sh
+docker compose --profile worker up
+```
 
 Systemd
 -------

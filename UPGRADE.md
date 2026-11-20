@@ -27,6 +27,8 @@ Upgrade to 3.0.0
 * The deprecated Amqp driver (`yii\queue\amqp\Queue`) was removed.
   Use [Amqp Interop](docs/guide/driver-amqp-interop.md) instead.
 
+* `\yii\queue\ErrorEvent` was removed. Use `\yii\queue\ExecEvent` instead.
+
 * All classes now declare `strict_types=1` and use native types for properties, parameters and
   return values. If you implement the package interfaces or extend its classes, update your
   signatures. The most common ones:
@@ -127,7 +129,7 @@ Upgrade to 2.1.1
 Upgrade from 2.0.1 to 2.0.2
 ---------------------------
 
-* The [Amqp driver](docs/guide/driver-amqp.md) has been deprecated and will be removed in `2.1`.
+* The Amqp driver (`yii\queue\amqp\Queue`) has been deprecated and will be removed in `2.1`.
   It is advised to migrate to [Amqp Interop](docs/guide/driver-amqp-interop.md) instead.
 
 * Added `\yii\queue\cli\Command::isWorkerAction()` abstract method. If you use your own console

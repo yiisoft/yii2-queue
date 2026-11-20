@@ -35,16 +35,56 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 Подробнее о настройке и использовании Supervisor читайте в [документации](http://supervisord.org).
 
 Запуск воркера в режиме демона командой `queue/listen` поддерживают драйвера [File], [Db], [Redis],
-[RabbitMQ], [Beanstalk], [Gearman], [AWS SQS]. Дополнительные опции смотрите в описании нужных вам драйверов.
+[AMQP Interop], [Beanstalk], [Gearman], [AWS SQS]. Дополнительные опции смотрите в описании нужных вам драйверов.
 
 [File]: driver-file.md
 [Db]: driver-db.md
 [Redis]: driver-redis.md
-[RabbitMQ]: driver-amqp.md
+[AMQP Interop]: driver-amqp-interop.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
 [AWS SQS]: driver-sqs.md
 
+Docker
+------
+
+[Docker Compose](https://docs.docker.com/compose/) может держать воркеры `queue/listen` запущенными рядом с приложением. Используйте тот же образ, что и у веб-сервиса (php-fpm), и запускайте в контейнере один процесс воркера:
+
+```yaml
+services:
+  queue:
+    image: my-app-php # тот же образ, что и у веб-сервиса (php-fpm)
+    command: php /var/www/my_project/yii queue/listen --verbose=1 --color=0
+    restart: unless-stopped
+    depends_on:
+      - mysql
+```
+
+Контейнер воркера выполняет один процесс, поэтому один сервис Compose соответствует одному компоненту очереди. Если в приложении несколько компонентов очереди, для каждого из них нужен свой сервис.
+
+Чтобы запустить несколько воркеров одной очереди, продублируйте сервис или масштабируйте его:
+
+```sh
+docker compose up --scale queue=3
+```
+
+В Docker Swarm вместо `--scale` задаётся `deploy.replicas`.
+
+`restart: unless-stopped` перезапускает остановленный воркер так же, как `autorestart=true` у Supervisor. `restart: on-failure` перезапускает его только при завершении с ошибкой.
+
+Воркер пишет в stdout контейнера, отдельный файл лога настраивать не нужно. Вывод `--verbose=1` смотрите командой `docker compose logs -f queue`.
+
+Чтобы воркеры не стартовали при обычном `docker compose up`, назначьте им профиль и запускайте его явно:
+
+```yaml
+services:
+  queue:
+    profiles: ["worker"]
+```
+
+```sh
+docker compose --profile worker up
+```
 
 Systemd
 -------

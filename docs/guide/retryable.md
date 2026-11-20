@@ -59,12 +59,12 @@ class SomeJob extends BaseObject implements RetryableJobInterface
         //...
     }
 
-    public function getTtr()
+    public function getTtr(): int
     {
         return 15 * 60;
     }
 
-    public function canRetry($attempt, $error)
+    public function canRetry(int $attempt, ?\Throwable $error): bool
     {
         return ($attempt < 5) && ($error instanceof TemporaryException);
     }
@@ -107,7 +107,6 @@ Restrictions
 
 Full support for retryable jobs is implemented in the [Beanstalk], [DB], [File], [AMQP Interop] and [Redis] drivers.
 The [Sync] driver will not retry failed jobs. The [Gearman] driver doesn't support retryable jobs.
-[RabbitMQ] has only its basic retryable support, where the number of attempts can not be set.
 
 [AWS SQS] uses [Dead Letter Queue] for handling messages that were failed to process.
 All unprocessed messages after a maximum number of attempts are moved to that queue.
@@ -119,7 +118,6 @@ You should set an address of a Dead Letter Queue and a maximum number of attempt
 [Redis]: driver-redis.md
 [Sync]: driver-sync.md
 [Gearman]: driver-gearman.md
-[RabbitMQ]: driver-amqp.md
 [AMQP Interop]: driver-amqp-interop.md
 [AWS SQS]: driver-sqs.md
 [Dead Letter Queue]: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html

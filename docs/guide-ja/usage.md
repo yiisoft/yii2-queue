@@ -102,7 +102,7 @@ Yii::$app->queue->isReserved($id);
 Yii::$app->queue->isDone($id);
 ```
 
-**重要:** RabbitMQ ドライバはジョブの状態追跡をサポートしていません。
+**重要:** AMQP Interop ドライバはジョブの状態追跡をサポートしていません。
 
 
 サード・パーティのワーカにメッセージを送る

@@ -76,7 +76,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     },
     "repositories": [
@@ -89,7 +89,7 @@
         "cs": "./vendor/bin/php-cs-fixer check",
         "cs-fix": "./vendor/bin/php-cs-fixer fix",
         "static": "./vendor/bin/phpstan --memory-limit=-1",
-        "tests": "./make test",
+        "tests": "make test",
         "rector": "./vendor/bin/rector"
     }
 }

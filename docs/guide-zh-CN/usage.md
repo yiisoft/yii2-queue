@@ -90,7 +90,7 @@ Yii::$app->queue->isReserved($id);
 Yii::$app->queue->isDone($id);
 ```
 
-**Important:** RabbitMQ 驱动不支持作业状态。
+**Important:** AMQP Interop 驱动不支持作业状态。
 
 
 消息传递的第三方员工Messaging third party workers

@@ -45,12 +45,12 @@ class SomeJob extends BaseObject implements RetryableJobInterface
         //...
     }
 
-    public function getTtr()
+    public function getTtr(): int
     {
         return 15 * 60;
     }
 
-    public function canRetry($attempt, $error)
+    public function canRetry(int $attempt, ?\Throwable $error): bool
     {
         return ($attempt < 5) && ($error instanceof TemporaryException);
     }
@@ -90,9 +90,8 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
 限制
 ------------
 
-[Beanstalk], [DB], [File] 和 [Redis] 驱动程序实现了对可重试作业的完全支持。
+[Beanstalk], [DB], [File], [AMQP Interop] 和 [Redis] 驱动程序实现了对可重试作业的完全支持。
 [Sync] 驱动不会重试失败的作业 [Gearman] 不支持重试作业。
-[RabbitMQ] 只有其基本的可重试支持，其中无法设置尝试次数。
 
 [Beanstalk]: driver-beanstalk.md
 [DB]: driver-db.md
@@ -100,4 +99,4 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
 [Redis]: driver-redis.md
 [Sync]: driver-sync.md
 [Gearman]: driver-gearman.md
-[RabbitMQ]: driver-amqp.md
+[AMQP Interop]: driver-amqp-interop.md

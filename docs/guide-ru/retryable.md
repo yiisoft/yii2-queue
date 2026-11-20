@@ -51,12 +51,12 @@ class SomeJob extends BaseObject implements RetryableJobInterface
         //...
     }
 
-    public function getTtr()
+    public function getTtr(): int
     {
         return 15 * 60;
     }
 
-    public function canRetry($attempt, $error)
+    public function canRetry(int $attempt, ?\Throwable $error): bool
     {
         return ($attempt < 5) && ($error instanceof TemporaryException);
     }
@@ -102,11 +102,9 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
 -----------
 
 Не все драйверы одинаково хорошо поддерживают повторное выполнение заданий. Полноценную поддержку
-обеспечивают драйвера: [Beanstalk], [DB], [File] и [Redis]. [Синхронный драйвер], как отладочный,
+обеспечивают драйвера: [Beanstalk], [DB], [File], [AMQP Interop] и [Redis]. [Синхронный драйвер], как отладочный,
 не будет повторять невыполненные задания. [Gearman] не поддерживает повторное выполнение вообще.
-А [RabbitMQ] имеет только свою базовую поддержку повторов, при которой номер попытки узнать
-не получится.    
- 
+
 В [AWS SQS] для обработки сообщений, которые не могут быть обработаны, используется [Dead Letter очередь].
 В эту очередь попадают сообщения, которые не обработались после максимального количества попыток.
 Указать Dead Letter очередь и максимальное количество попыток можно при создании очереди через консоль AWS.   
@@ -117,6 +115,6 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
 [Redis]: driver-redis.md
 [Синхронный драйвер]: driver-sync.md
 [Gearman]: driver-gearman.md
-[RabbitMQ]: driver-amqp.md
+[AMQP Interop]: driver-amqp-interop.md
 [AWS SQS]: driver-sqs.md
 [Dead Letter очередь]: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html
