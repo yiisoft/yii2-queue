@@ -4,48 +4,29 @@
 環境
 ----
 
-テストを実行するためには、Docker, Docker Compose および `make` ユーティリティをインストールする必要があります。
-Docker の構成ファイルは `tests/docker` の下にあり、Docker Compose ファイルは `tests/docker-compose.yml` です。
-PHP のバージョン (5.6, 7.0, 7.1, 7.2, 7.3) によって構成ファイルは異なります。`docker-compose.yml` ファイルがある場所を指定するために `.env` ファイルを作成する必要があります。
-プロジェクトのルート・ディレクトリにある `.env.example` ファイルから`.env` ファイルを作成すると良いでしょう。
+テストを実行するためには Docker、Docker Compose および `make` が必要です。Compose ファイルはプロジェクトルートの `docker-compose.yml` です。アプリケーションコンテナと、ドライバが必要とする MySQL、PostgreSQL、Redis、RabbitMQ、Beanstalk、Gearman、ActiveMQ、および AWS SQS 用の LocalStack を起動します。
+
+PHP のバージョンは `PHP_VERSION` で選びます。デフォルトは `8.3` です。テストワークフローでは `8.3`、`8.4`、`8.5` を実行します。
 
 テストを実行する
 ----------------
 
-テストを実行するためには、次のコマンドを実行します。
-
 ```bash
-# PHP のすべてのバージョン
+# PHP 8.3
 make test
 
-# PHP 7.3 のみ
-make test73
+# 別のサポート対象バージョン。例: 8.4
+make test v=8.4
 ```
 
-`phpunit` にオプションを渡す必要があるとき (例えば一つのテストファイルだけを実行するとき) は、以下のコマンドを使います。
-```bash
-docker-compose build --pull php73
-docker-compose run php73 vendor/bin/phpunit tests\\drivers\\sqs\\QueueTest /code/tests/drivers/sqs/QueueTest.php
-docker-compose down
-```
+`make test` はイメージをビルドし、LocalStack の SQS キューを作成し、PHPUnit を実行してコンテナを停止します。
 
-さまざまな理由で、いくつかのテストをデフォルトで無効にしたいことがあるでしょう。(例えば、AWS SQS テストは AWS にキューがセットアップされていることを要求します。)
-テスト実行時には `AWS_SQS_ENABLED` 環境変数がチェックされます。(`\tests\drivers\sqs\QueueTest::setUp` を参照。)
-AWS SQS テストを実行するためにはこの環境変数を `1` に設定する必要があります。コンテナに渡したい環境変数を
-ベース・ディレクトリの `.env` ファイルで指定することが出来ます。(`.env.example` を参照)
-AWS SQS テストでは、`.env` ファイルによってキューの認証情報もコンテナに渡す必要があります。(`tests/app/config/main.php` を参照)
+一つのテストファイルだけを実行するときは、スタックを起動してアプリケーションコンテナで PHPUnit を呼び出します。
 
 ```bash
-# .env
-
-AWS_SQS_ENABLED=1
-AWS_KEY=KEY
-AWS_SECRET=SECRET
-AWS_REGION=us-east-1
-AWS_SQS_URL=https://sqs.us-east-1.amazonaws.com/234888945020/queue1
+make build v=8.4
+docker compose run yii2-queue-php vendor/bin/phpunit tests/drivers/sqs/QueueTest.php
+make down
 ```
 
-```bash
-# これで AWS SQS テストはスキップされなくなる
-make test73
-```
+AWS SQS のテストは `docker-compose.yml` の LocalStack を使います。エンドポイント、キュー URL、認証情報のデフォルトはそこに定義されています。別の SQS エンドポイントを使うときだけ `AWS_KEY`、`AWS_SECRET`、`AWS_REGION`、`AWS_SQS_ENDPOINT`、`AWS_SQS_URL` を上書きして下さい。

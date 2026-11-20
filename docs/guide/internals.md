@@ -4,11 +4,11 @@ This package provides a consistent set of [Composer](https://getcomposer.org/) s
 
 Tool references:
 
-- [PHPCodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) for code style checks.
+- [PHP CS Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) for code style checks.
 - [PHPStan](https://phpstan.org/) for static analysis.
 - [PHPUnit](https://phpunit.de/) for unit tests.
 
-## Code style checks (PHPCodeSniffer)
+## Code style checks (PHP CS Fixer)
 
 Run code style checks.
 

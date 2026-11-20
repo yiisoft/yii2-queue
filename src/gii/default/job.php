@@ -45,7 +45,7 @@ class <?= $jobClass ?> extends <?= $baseClass ?> <?= $implements ?>
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute(\yii\queue\Queue $queue)
     {
     }
 <?php if ($generator->retryable): ?>
@@ -53,7 +53,7 @@ class <?= $jobClass ?> extends <?= $baseClass ?> <?= $implements ?>
     /**
      * @inheritdoc
      */
-    public function getTtr()
+    public function getTtr(): int
     {
         return 60;
     }
@@ -61,7 +61,7 @@ class <?= $jobClass ?> extends <?= $baseClass ?> <?= $implements ?>
     /**
      * @inheritdoc
      */
-    public function canRetry($attempt, $error)
+    public function canRetry(int $attempt, ?\Throwable $error): bool
     {
         return $attempt < 3;
     }

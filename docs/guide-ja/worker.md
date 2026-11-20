@@ -34,15 +34,55 @@ stdout_logfile=/var/www/my_project/log/yii-queue-worker.log
 Supervisor の構成と使用方法については、その [ドキュメント](http://supervisord.org) を参照して下さい。
 
 `queue/listen` で開始されるワーカ・デーモンがサポートされているのは、[ファイル]、[データベース]、[Redis]、
-[RabbitMQ]、[AMQP Interop]、[Beanstalk] および [Gearman] のドライバだけであることに留意して下さい。追加のオプションについては、ドライバのガイドを参照して下さい。
+[AMQP Interop]、[Beanstalk] および [Gearman] のドライバだけであることに留意して下さい。追加のオプションについては、ドライバのガイドを参照して下さい。
 
 [ファイル]: driver-file.md
 [データベース]: driver-db.md
 [Redis]: driver-redis.md
 [AMQP Interop]: driver-amqp-interop.md
-[RabbitMQ]: driver-amqp.md
 [Beanstalk]: driver-beanstalk.md
 [Gearman]: driver-gearman.md
+
+Docker
+------
+
+[Docker Compose](https://docs.docker.com/compose/) can keep `queue/listen` workers running next to the application. Use the same image as the web (php-fpm) service and start one worker process in the container:
+
+```yaml
+services:
+  queue:
+    image: my-app-php # the same image the web (php-fpm) service uses
+    command: php /var/www/my_project/yii queue/listen --verbose=1 --color=0
+    restart: unless-stopped
+    depends_on:
+      - mysql
+```
+
+A worker container runs a single process, so one Compose service maps to one queue component. An application with several queue components defines a service for each of them.
+
+To run several workers of the same queue, duplicate the service or scale it:
+
+```sh
+docker compose up --scale queue=3
+```
+
+With Docker Swarm, set `deploy.replicas` instead of `--scale`.
+
+`restart: unless-stopped` restarts a stopped worker, the same way Supervisor does with `autorestart=true`. `restart: on-failure` restarts it only when the process exits with an error.
+
+The worker writes to the container stdout, so there is no log file to configure. `docker compose logs -f queue` shows the `--verbose=1` output.
+
+To keep workers out of a plain `docker compose up`, assign them a profile and start that profile explicitly:
+
+```yaml
+services:
+  queue:
+    profiles: ["worker"]
+```
+
+```sh
+docker compose --profile worker up
+```
 
 Systemd
 -------

@@ -59,12 +59,12 @@ class SomeJob extends BaseObject implements RetryableJobInterface
         //...
     }
 
-    public function getTtr()
+    public function getTtr(): int
     {
         return 15 * 60;
     }
 
-    public function canRetry($attempt, $error)
+    public function canRetry(int $attempt, ?\Throwable $error): bool
     {
         return ($attempt < 5) && ($error instanceof TemporaryException);
     }
@@ -107,7 +107,6 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
 
 ジョブの再試行のフル・サポートが実装されているのは、[Beanstalk]、[データベース]、[ファイル]、[AMQP Interop] および [Redis] のドライバです。
 [同期] ドライバは失敗したジョブを再試行しません。 [Gearman] ドライバは、再試行可能ジョブをサポートしていません。
-[RabbitMQ] は基本的な再試行のみをサポートしており、試行回数は指定することが出来ません。
 
 [Beanstalk]: driver-beanstalk.md
 [データベース]: driver-db.md
@@ -115,5 +114,4 @@ Yii::$app->queue->on(Queue::EVENT_AFTER_ERROR, function (ExecEvent $event) {
 [Redis]: driver-redis.md
 [同期]: driver-sync.md
 [Gearman]: driver-gearman.md
-[RabbitMQ]: driver-amqp.md
 [AMQP Interop]: driver-amqp-interop.md

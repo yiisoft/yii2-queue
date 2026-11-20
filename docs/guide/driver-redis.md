@@ -18,7 +18,7 @@ return [
             // ...
 
             // retry connecting after connection has timed out
-            // yiisoft/yii2-redis >=2.0.7 is required for this.
+            // Requires yiisoft/yii2-redis ~2.1.0.
             'retries' => 1,
         ],
         'queue' => [

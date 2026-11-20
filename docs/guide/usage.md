@@ -102,7 +102,7 @@ Yii::$app->queue->isReserved($id);
 Yii::$app->queue->isDone($id);
 ```
 
-**Important:** The RabbitMQ and AWS SQS drivers don't support job statuses.
+**Important:** The AMQP Interop and AWS SQS drivers don't support job statuses.
 
 
 Messaging third party workers
