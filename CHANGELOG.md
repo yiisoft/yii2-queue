@@ -1,9 +1,18 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-3.0.0 under development
+3.1.0 under development
 ---
 
+
+
+3.0.0 November 24, 2026
+---
+
+- Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (@mspirkov)
+- Bug #578: Beanstalk driver retries a failed job after the remaining part of its TTR instead of immediately (@s1lver)
+- Bug #579: Beanstalk driver worker no longer reserves jobs from the `default` tube (@s1lver)
+- Bug #552: Move signal handling from AMQP Interop queue component to controller (@snewer, @s1lver)
 - Enh #542: The minimum supported PHP version is 8.3 (@s1lver)
 - Enh #503, #546: Added PHPStan for static code analysis. Error level set to 8 (@s1lver)
 - Enh #503: Added strict typing (@s1lver)
@@ -19,10 +28,14 @@ Yii2 Queue Extension Change Log
 - Enh #564: Allow `symfony/process` `^8.0` (@lukascernydis)
 - Enh #565: Add the missing `@property` tags (@mspirkov)
 - Enh #586: Removed deprecated classes `yii\queue\db\InfoAction`, `yii\queue\file\InfoAction` and `yii\queue\redis\InfoAction` (@s1lver)
-- Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (@mspirkov)
-- Bug #578: Beanstalk driver retries a failed job after the remaining part of its TTR instead of immediately (@s1lver)
-- Bug #579: Beanstalk driver worker no longer reserves jobs from the `default` tube (@s1lver)
-- Bug #552: Move signal handling from AMQP Interop queue component to controller (@snewer, @s1lver)
+
+
+2.3.9 November 15, 2026
+-----------------------
+
+- Bug #551: Revert "Prevent multiple execution of aborted jobs" (terabytesoftw)
+- Enh #564: Allow `symfony/process` `^8.0` (lukascernydis)
+
 
 2.3.8 January 08, 2026
 ----------------------
