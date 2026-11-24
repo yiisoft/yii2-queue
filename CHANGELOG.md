@@ -6,7 +6,7 @@ Yii2 Queue Extension Change Log
 
 
 
-3.0.0 November 11, 2026
+3.0.0 November 24, 2026
 ---
 
 - Bug #563: Fix `@property` annotations in `InfoAction` and `Queue` drivers (@mspirkov)
