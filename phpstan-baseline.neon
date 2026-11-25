@@ -1051,30 +1051,6 @@ parameters:
 			path: tests/drivers/file/QueueTest.php
 
 		-
-			message: '#^Call to an undefined method yii\\queue\\interfaces\\StatisticsInterface\:\:getDelayedCount\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: tests/drivers/file/QueueTest.php
-
-		-
-			message: '#^Call to an undefined method yii\\queue\\interfaces\\StatisticsInterface\:\:getDoneCount\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: tests/drivers/file/QueueTest.php
-
-		-
-			message: '#^Call to an undefined method yii\\queue\\interfaces\\StatisticsInterface\:\:getReservedCount\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: tests/drivers/file/QueueTest.php
-
-		-
-			message: '#^Call to an undefined method yii\\queue\\interfaces\\StatisticsInterface\:\:getWaitingCount\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: tests/drivers/file/QueueTest.php
-
-		-
 			message: '#^Cannot access property \$fileQueue on yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\|null\.$#'
 			identifier: property.nonObject
 			count: 1

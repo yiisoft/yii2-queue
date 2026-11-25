@@ -75,11 +75,28 @@ final class QueueTest extends CliTestCase
 
     public function testClear(): void
     {
-        $this->getQueue()->push($this->createSimpleJob());
-        $this->assertNotEmpty(glob($this->getQueue()->path . '/job*.data'));
+        $queue = $this->getQueue();
+        $queue->push($this->createSimpleJob());
+        $queue->delay(60)->push($this->createSimpleJob());
+        $this->assertNotEmpty(glob($queue->path . '/job*.data'));
+        $this->assertEquals(1, $queue->getStatisticsProvider()->getWaitingCount());
+        $this->assertEquals(1, $queue->getStatisticsProvider()->getDelayedCount());
+
         $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
 
-        $this->assertEmpty(glob($this->getQueue()->path . '/job*.data'));
+        $this->assertEmpty(glob($queue->path . '/job*.data'));
+        $indexFile = $queue->path . '/index.data';
+        $this->assertFileExists($indexFile);
+        $index = unserialize((string) file_get_contents($indexFile));
+        $this->assertSame([], $index);
+        $this->assertEquals(0, $queue->getStatisticsProvider()->getWaitingCount());
+        $this->assertEquals(0, $queue->getStatisticsProvider()->getDelayedCount());
+        $this->assertEquals(0, $queue->getStatisticsProvider()->getReservedCount());
+
+        $this->runProcess(['php', 'yii', 'queue/run']);
+
+        $id = $queue->push($this->createSimpleJob());
+        $this->assertSame(1, $id);
     }
 
     public function testRemove(): void

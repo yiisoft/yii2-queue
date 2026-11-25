@@ -16,13 +16,12 @@ use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\helpers\FileHelper;
 use yii\queue\cli\Queue as CliQueue;
-use yii\queue\interfaces\StatisticsInterface;
 use yii\queue\interfaces\StatisticsProviderInterface;
 
 /**
  * File Queue.
  *
- * @property-read StatisticsInterface $statisticsProvider
+ * @property-read StatisticsProvider $statisticsProvider
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -124,7 +123,8 @@ class Queue extends CliQueue implements StatisticsProviderInterface
      */
     public function clear(): void
     {
-        $this->touchIndex(function () {
+        $this->touchIndex(function (array &$data) {
+            $data = [];
             foreach (glob("$this->path/job*.data") as $fileName) {
                 unlink($fileName);
             }
@@ -334,12 +334,12 @@ class Queue extends CliQueue implements StatisticsProviderInterface
         }
     }
 
-    private StatisticsInterface $_statisticsProvider;
+    private StatisticsProvider $_statisticsProvider;
 
     /**
-     * @return StatisticsInterface
+     * @return StatisticsProvider
      */
-    public function getStatisticsProvider(): StatisticsInterface
+    public function getStatisticsProvider(): StatisticsProvider
     {
         if (!isset($this->_statisticsProvider)) {
             $this->_statisticsProvider = new StatisticsProvider($this);

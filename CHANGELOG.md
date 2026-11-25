@@ -1,9 +1,10 @@
 Yii2 Queue Extension Change Log
 ===============================
 
-3.1.0 under development
+3.0.1 under development
 ---
 
+- Bug #591: File driver `clear()` resets `index.data` along with job files (@s1lver)
 
 
 3.0.0 November 24, 2026
