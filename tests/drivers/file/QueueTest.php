@@ -82,7 +82,7 @@ final class QueueTest extends CliTestCase
         $this->assertEquals(1, $queue->getStatisticsProvider()->getWaitingCount());
         $this->assertEquals(1, $queue->getStatisticsProvider()->getDelayedCount());
 
-        $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
+        $queue->clear();
 
         $this->assertEmpty(glob($queue->path . '/job*.data'));
         $indexFile = $queue->path . '/index.data';
