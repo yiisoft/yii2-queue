@@ -411,7 +411,7 @@ parameters:
 		-
 			message: '#^PHPDoc tag @var for variable \$data has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 4
+			count: 3
 			path: src/drivers/file/Queue.php
 
 		-
@@ -429,12 +429,6 @@ parameters:
 		-
 			message: '#^Strict comparison using \!\=\= between false and string will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: src/drivers/file/Queue.php
-
-		-
-			message: '#^Variable \$data in PHPDoc tag @var does not match any variable in the foreach loop\: \$key, \$payload$#'
-			identifier: varTag.differentVariable
 			count: 1
 			path: src/drivers/file/Queue.php
 

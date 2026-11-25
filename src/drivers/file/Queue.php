@@ -125,7 +125,13 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     public function clear(): void
     {
         $this->touchIndex(function (array &$data) {
-            $data = [];
+            $lastId = isset($data['lastId']) ? (int) $data['lastId'] : 0;
+            $data = [
+                'lastId' => $lastId,
+                'waiting' => [],
+                'delayed' => [],
+                'reserved' => [],
+            ];
             foreach (glob("$this->path/job*.data") as $fileName) {
                 unlink($fileName);
             }
@@ -235,17 +241,23 @@ class Queue extends CliQueue implements StatisticsProviderInterface
     protected function delete(array $payload): void
     {
         $id = $payload[0];
-        $this->touchIndex(function (array &$data) use ($id) {
-            /** @var array{reserved: array} $data */
+        $removed = false;
+        $this->touchIndex(function (array &$data) use ($id, &$removed) {
+            if (empty($data['reserved'])) {
+                return;
+            }
             foreach ($data['reserved'] as $key => $payload) {
                 /** @psalm-var array $payload */
                 if ($payload[0] === $id) {
                     unset($data['reserved'][$key]);
+                    $removed = true;
                     break;
                 }
             }
         });
-        unlink("$this->path/job$id.data");
+        if ($removed) {
+            unlink("$this->path/job$id.data");
+        }
     }
 
     /**
