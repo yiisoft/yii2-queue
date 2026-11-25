@@ -14,6 +14,7 @@ use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\file\Queue;
+use yii\queue\file\StatisticsProvider;
 
 /**
  * File Queue Test.
@@ -79,8 +80,8 @@ final class QueueTest extends CliTestCase
         $queue->push($this->createSimpleJob());
         $queue->delay(60)->push($this->createSimpleJob());
         $this->assertNotEmpty(glob($queue->path . '/job*.data'));
-        $this->assertEquals(1, $queue->getStatisticsProvider()->getWaitingCount());
-        $this->assertEquals(1, $queue->getStatisticsProvider()->getDelayedCount());
+        $this->assertEquals(1, $this->getStatistics()->getWaitingCount());
+        $this->assertEquals(1, $this->getStatistics()->getDelayedCount());
 
         $queue->clear();
 
@@ -89,9 +90,9 @@ final class QueueTest extends CliTestCase
         $this->assertFileExists($indexFile);
         $index = unserialize((string) file_get_contents($indexFile));
         $this->assertSame([], $index);
-        $this->assertEquals(0, $queue->getStatisticsProvider()->getWaitingCount());
-        $this->assertEquals(0, $queue->getStatisticsProvider()->getDelayedCount());
-        $this->assertEquals(0, $queue->getStatisticsProvider()->getReservedCount());
+        $this->assertEquals(0, $this->getStatistics()->getWaitingCount());
+        $this->assertEquals(0, $this->getStatistics()->getDelayedCount());
+        $this->assertEquals(0, $this->getStatistics()->getReservedCount());
 
         $this->runProcess(['php', 'yii', 'queue/run']);
 
@@ -112,20 +113,20 @@ final class QueueTest extends CliTestCase
     {
         $this->getQueue()->push($this->createSimpleJob());
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
+        $this->assertEquals(1, $this->getStatistics()->getWaitingCount());
     }
 
     public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
+        $this->assertEquals(1, $this->getStatistics()->getDelayedCount());
     }
 
     public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
-            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            $this->assertEquals(1, $this->getStatistics()->getReservedCount());
             return true;
         };
 
@@ -141,12 +142,20 @@ final class QueueTest extends CliTestCase
 
         $this->assertSimpleJobDone($job);
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
+        $this->assertEquals(1, $this->getStatistics()->getDoneCount());
     }
 
     protected function getQueue(): Queue
     {
         return Yii::$app->fileQueue;
+    }
+
+    private function getStatistics(): StatisticsProvider
+    {
+        $statistics = $this->getQueue()->getStatisticsProvider();
+        $this->assertInstanceOf(StatisticsProvider::class, $statistics);
+
+        return $statistics;
     }
 
     protected function tearDown(): void
