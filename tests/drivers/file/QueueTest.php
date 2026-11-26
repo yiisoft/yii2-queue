@@ -14,6 +14,7 @@ use tests\app\RetryJob;
 use tests\drivers\CliTestCase;
 use Yii;
 use yii\queue\file\Queue;
+use yii\queue\file\StatisticsProvider;
 
 /**
  * File Queue Test.
@@ -75,11 +76,70 @@ final class QueueTest extends CliTestCase
 
     public function testClear(): void
     {
-        $this->getQueue()->push($this->createSimpleJob());
-        $this->assertNotEmpty(glob($this->getQueue()->path . '/job*.data'));
-        $this->runProcess(['php', 'yii', 'queue/clear', '--interactive=0']);
+        $queue = $this->getQueue();
+        $queue->push($this->createSimpleJob());
+        $queue->delay(60)->push($this->createSimpleJob());
+        $this->assertNotEmpty(glob($queue->path . '/job*.data'));
+        $this->assertEquals(1, $this->getStatistics()->getWaitingCount());
+        $this->assertEquals(1, $this->getStatistics()->getDelayedCount());
 
-        $this->assertEmpty(glob($this->getQueue()->path . '/job*.data'));
+        $queue->clear();
+
+        $this->assertEmpty(glob($queue->path . '/job*.data'));
+        $indexFile = $queue->path . '/index.data';
+        $this->assertFileExists($indexFile);
+        $index = unserialize((string) file_get_contents($indexFile));
+        $this->assertSame([
+            'lastId' => 2,
+            'waiting' => [],
+            'delayed' => [],
+            'reserved' => [],
+        ], $index);
+        $this->assertEquals(0, $this->getStatistics()->getWaitingCount());
+        $this->assertEquals(0, $this->getStatistics()->getDelayedCount());
+        $this->assertEquals(0, $this->getStatistics()->getReservedCount());
+
+        $this->runProcess(['php', 'yii', 'queue/run']);
+
+        $id = $queue->push($this->createSimpleJob());
+        $this->assertSame(3, $id);
+    }
+
+    public function testClearDoesNotReuseJobId(): void
+    {
+        $queue = $this->getQueue();
+        $firstId = $queue->push($this->createSimpleJob());
+        $this->assertIsInt($firstId);
+
+        $queue->clear();
+
+        $secondId = $queue->push($this->createSimpleJob());
+        $this->assertIsInt($secondId);
+        $this->assertNotSame($firstId, $secondId);
+        $this->assertFileExists($queue->path . "/job$secondId.data");
+        $this->assertTrue($queue->isWaiting($secondId));
+        $this->assertFalse($queue->isWaiting($firstId));
+        $this->assertFalse($queue->remove($firstId));
+        $this->assertFileExists($queue->path . "/job$secondId.data");
+    }
+
+    public function testClearDuringExecutionKeepsTheNewJob(): void
+    {
+        $queue = $this->getQueue();
+        $newId = null;
+        $queue->messageHandler = function () use ($queue, &$newId) {
+            $queue->clear();
+            $newId = $queue->delay(30)->push($this->createSimpleJob());
+
+            return true;
+        };
+        $queue->push($this->createSimpleJob());
+        $queue->run(false);
+
+        $this->assertIsInt($newId);
+        $this->assertFileExists($queue->path . "/job$newId.data");
+        $this->assertTrue($queue->isWaiting($newId));
+        $this->assertEquals(1, $this->getStatistics()->getDelayedCount());
     }
 
     public function testRemove(): void
@@ -95,20 +155,20 @@ final class QueueTest extends CliTestCase
     {
         $this->getQueue()->push($this->createSimpleJob());
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getWaitingCount());
+        $this->assertEquals(1, $this->getStatistics()->getWaitingCount());
     }
 
     public function testDelayedCount(): void
     {
         $this->getQueue()->delay(5)->push($this->createSimpleJob());
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDelayedCount());
+        $this->assertEquals(1, $this->getStatistics()->getDelayedCount());
     }
 
     public function testReservedCount(): void
     {
         $this->getQueue()->messageHandler = function () {
-            $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getReservedCount());
+            $this->assertEquals(1, $this->getStatistics()->getReservedCount());
             return true;
         };
 
@@ -124,7 +184,7 @@ final class QueueTest extends CliTestCase
 
         $this->assertSimpleJobDone($job);
 
-        $this->assertEquals(1, $this->getQueue()->getStatisticsProvider()->getDoneCount());
+        $this->assertEquals(1, $this->getStatistics()->getDoneCount());
     }
 
     protected function getQueue(): Queue
@@ -132,12 +192,22 @@ final class QueueTest extends CliTestCase
         return Yii::$app->fileQueue;
     }
 
+    private function getStatistics(): StatisticsProvider
+    {
+        $statistics = $this->getQueue()->getStatisticsProvider();
+        $this->assertInstanceOf(StatisticsProvider::class, $statistics);
+
+        return $statistics;
+    }
+
     protected function tearDown(): void
     {
         $this->getQueue()->messageHandler = null;
-        foreach (glob(Yii::getAlias('@runtime/queue/*')) as $fileName) {
-            unlink($fileName);
-        }
         parent::tearDown();
+        foreach (glob(Yii::getAlias('@runtime/queue/*')) as $fileName) {
+            if (is_file($fileName)) {
+                unlink($fileName);
+            }
+        }
     }
 }
