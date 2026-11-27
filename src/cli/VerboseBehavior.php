@@ -14,7 +14,6 @@ use yii\base\Behavior;
 use yii\base\Component;
 use yii\console\Controller;
 use yii\helpers\BaseConsole;
-use yii\helpers\Console;
 use yii\queue\ExecEvent;
 use yii\queue\JobInterface;
 
@@ -63,10 +62,10 @@ class VerboseBehavior extends Behavior
     public function beforeExec(ExecEvent $event): void
     {
         $this->jobStartedAt = microtime(true);
-        Console::ansiFormat(date('Y-m-d H:i:s'), [BaseConsole::FG_YELLOW]);
-        Console::ansiFormat($this->jobTitle($event), [BaseConsole::FG_GREY]);
-        Console::ansiFormat(' - ', [BaseConsole::FG_YELLOW]);
-        Console::ansiFormat('Started', [BaseConsole::FG_GREEN]);
+        $this->command->stdout(date('Y-m-d H:i:s'), BaseConsole::FG_YELLOW);
+        $this->command->stdout($this->jobTitle($event), BaseConsole::FG_GREY);
+        $this->command->stdout(' - ', BaseConsole::FG_YELLOW);
+        $this->command->stdout('Started', BaseConsole::FG_GREEN);
         $this->command->stdout(PHP_EOL);
     }
 

@@ -4,6 +4,7 @@ Yii2 Queue Extension Change Log
 3.1.0 under development
 ---
 
+- Bug #593: Fix "Started" message missing from `--verbose` output (@tonitomystery)
 
 
 3.0.1 November 26, 2026
