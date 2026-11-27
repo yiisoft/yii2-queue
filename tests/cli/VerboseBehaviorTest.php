@@ -33,7 +33,7 @@ final class VerboseBehaviorTest extends TestCase
         $controller
             ->expects($this->atLeastOnce())
             ->method('stdout')
-            ->willReturnCallback(static function (string $string, int ...$args) use (&$output): int {
+            ->willReturnCallback(static function (string $string, mixed ...$args) use (&$output): int {
                 $output[] = [$string, $args];
                 return strlen($string);
             });
